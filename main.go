@@ -34,6 +34,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Autos)
 	cmd.AutomationsInit()
 	rootCmd.AddCommand(cmd.Automations)
+	cmd.BandwidthSnapshotsInit()
+	rootCmd.AddCommand(cmd.BandwidthSnapshots)
 	cmd.BehaviorsInit()
 	rootCmd.AddCommand(cmd.Behaviors)
 	cmd.BundlesInit()
