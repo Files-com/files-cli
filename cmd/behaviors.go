@@ -64,7 +64,6 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsBehaviorFind.Id, "id", "i", 0, "Show Behavior")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdFind)
 	var fieldsListFor string
@@ -149,7 +148,6 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsBehaviorUpdate.Id, "id", "i", 0, "Update Behavior")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Value, "value", "v", "", "Update Behavior")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Behavior, "behavior", "b", "", "Update Behavior")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Update Behavior")
@@ -169,7 +167,6 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsBehaviorDelete.Id, "id", "i", 0, "Delete Behavior")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdDelete)
 }

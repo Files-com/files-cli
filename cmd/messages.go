@@ -42,11 +42,9 @@ func MessagesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsMessageList.UserId, "user-id", "u", 0, "List Messages")
 	cmdList.Flags().IntVarP(&paramsMessageList.Page, "page", "p", 0, "List Messages")
 	cmdList.Flags().IntVarP(&paramsMessageList.PerPage, "per-page", "e", 0, "List Messages")
 	cmdList.Flags().StringVarP(&paramsMessageList.Action, "action", "a", "", "List Messages")
-	cmdList.Flags().IntVarP(&paramsMessageList.ProjectId, "project-id", "r", 0, "List Messages")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Messages.AddCommand(cmdList)
@@ -64,7 +62,6 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsMessageFind.Id, "id", "i", 0, "Show Message")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Messages.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -81,8 +78,6 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsMessageCreate.UserId, "user-id", "u", 0, "Create Message")
-	cmdCreate.Flags().IntVarP(&paramsMessageCreate.ProjectId, "project-id", "p", 0, "Create Message")
 	cmdCreate.Flags().StringVarP(&paramsMessageCreate.Subject, "subject", "s", "", "Create Message")
 	cmdCreate.Flags().StringVarP(&paramsMessageCreate.Body, "body", "b", "", "Create Message")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
@@ -101,8 +96,6 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsMessageUpdate.Id, "id", "i", 0, "Update Message")
-	cmdUpdate.Flags().IntVarP(&paramsMessageUpdate.ProjectId, "project-id", "p", 0, "Update Message")
 	cmdUpdate.Flags().StringVarP(&paramsMessageUpdate.Subject, "subject", "s", "", "Update Message")
 	cmdUpdate.Flags().StringVarP(&paramsMessageUpdate.Body, "body", "b", "", "Update Message")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
@@ -121,7 +114,6 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsMessageDelete.Id, "id", "i", 0, "Delete Message")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Messages.AddCommand(cmdDelete)
 }

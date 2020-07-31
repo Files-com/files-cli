@@ -62,7 +62,6 @@ func PaymentsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsPaymentFind.Id, "id", "i", 0, "Show Payment")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Payments.AddCommand(cmdFind)
 }

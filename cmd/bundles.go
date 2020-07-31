@@ -42,7 +42,6 @@ func BundlesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsBundleList.UserId, "user-id", "u", 0, "List Bundles")
 	cmdList.Flags().IntVarP(&paramsBundleList.Page, "page", "p", 0, "List Bundles")
 	cmdList.Flags().IntVarP(&paramsBundleList.PerPage, "per-page", "r", 0, "List Bundles")
 	cmdList.Flags().StringVarP(&paramsBundleList.Action, "action", "a", "", "List Bundles")
@@ -64,7 +63,6 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsBundleFind.Id, "id", "i", 0, "Show Bundle")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -81,15 +79,12 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsBundleCreate.UserId, "user-id", "u", 0, "Create Bundle")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Password, "password", "p", "", "Create Bundle")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.ExpiresAt, "expires-at", "e", "", "Create Bundle")
 	cmdCreate.Flags().IntVarP(&paramsBundleCreate.MaxUses, "max-uses", "a", 0, "Create Bundle")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Description, "description", "d", "", "Create Bundle")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Note, "note", "n", "", "Create Bundle")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Code, "code", "o", "", "Create Bundle")
-	cmdCreate.Flags().IntVarP(&paramsBundleCreate.ClickwrapId, "clickwrap-id", "c", 0, "Create Bundle")
-	cmdCreate.Flags().IntVarP(&paramsBundleCreate.InboxId, "inbox-id", "i", 0, "Create Bundle")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdCreate)
 	var fieldsShare string
@@ -106,7 +101,6 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsShare)
 		},
 	}
-	cmdShare.Flags().IntVarP(&paramsBundleShare.Id, "id", "i", 0, "Send email(s) with a link to bundle")
 	cmdShare.Flags().StringVarP(&paramsBundleShare.Note, "note", "n", "", "Send email(s) with a link to bundle")
 	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "f", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdShare)
@@ -124,13 +118,10 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.Id, "id", "i", 0, "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Password, "password", "p", "", "Update Bundle")
-	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.ClickwrapId, "clickwrap-id", "c", 0, "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Code, "code", "o", "", "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Description, "description", "d", "", "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.ExpiresAt, "expires-at", "e", "", "Update Bundle")
-	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.InboxId, "inbox-id", "n", 0, "Update Bundle")
 	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.MaxUses, "max-uses", "a", 0, "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Note, "note", "t", "", "Update Bundle")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
@@ -149,7 +140,6 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsBundleDelete.Id, "id", "i", 0, "Delete Bundle")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdDelete)
 }

@@ -64,7 +64,6 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsGroupFind.Id, "id", "i", 0, "Show Group")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Groups.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -101,7 +100,6 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsGroupUpdate.Id, "id", "i", 0, "Update Group")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Name, "name", "n", "", "Update Group")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Notes, "notes", "o", "", "Update Group")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.UserIds, "user-ids", "u", "", "Update Group")
@@ -122,7 +120,6 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsGroupDelete.Id, "id", "i", 0, "Delete Group")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Groups.AddCommand(cmdDelete)
 }

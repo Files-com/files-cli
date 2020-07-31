@@ -42,7 +42,6 @@ func As2KeysInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsAs2KeyList.UserId, "user-id", "u", 0, "List As2 Keys")
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.Page, "page", "p", 0, "List As2 Keys")
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.PerPage, "per-page", "e", 0, "List As2 Keys")
 	cmdList.Flags().StringVarP(&paramsAs2KeyList.Action, "action", "a", "", "List As2 Keys")
@@ -63,7 +62,6 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsAs2KeyFind.Id, "id", "i", 0, "Show As2 Key")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	As2Keys.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -80,7 +78,6 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsAs2KeyCreate.UserId, "user-id", "u", 0, "Create As2 Key")
 	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.As2PartnershipName, "as2-partnership-name", "a", "", "Create As2 Key")
 	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.PublicKey, "public-key", "p", "", "Create As2 Key")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
@@ -99,7 +96,6 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsAs2KeyUpdate.Id, "id", "i", 0, "Update As2 Key")
 	cmdUpdate.Flags().StringVarP(&paramsAs2KeyUpdate.As2PartnershipName, "as2-partnership-name", "a", "", "Update As2 Key")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	As2Keys.AddCommand(cmdUpdate)
@@ -117,7 +113,6 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsAs2KeyDelete.Id, "id", "i", 0, "Delete As2 Key")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	As2Keys.AddCommand(cmdDelete)
 }

@@ -42,7 +42,6 @@ func ApiKeysInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsApiKeyList.UserId, "user-id", "u", 0, "List Api Keys")
 	cmdList.Flags().IntVarP(&paramsApiKeyList.Page, "page", "p", 0, "List Api Keys")
 	cmdList.Flags().IntVarP(&paramsApiKeyList.PerPage, "per-page", "r", 0, "List Api Keys")
 	cmdList.Flags().StringVarP(&paramsApiKeyList.Action, "action", "a", "", "List Api Keys")
@@ -79,7 +78,6 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsApiKeyFind.Id, "id", "i", 0, "Show Api Key")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -96,7 +94,6 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsApiKeyCreate.UserId, "user-id", "u", 0, "Create Api Key")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Name, "name", "n", "", "Create Api Key")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.ExpiresAt, "expires-at", "e", "", "Create Api Key")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.PermissionSet, "permission-set", "r", "", "Create Api Key")
@@ -136,7 +133,6 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsApiKeyUpdate.Id, "id", "i", 0, "Update Api Key")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.Name, "name", "n", "", "Update Api Key")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.ExpiresAt, "expires-at", "e", "", "Update Api Key")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.PermissionSet, "permission-set", "p", "", "Update Api Key")
@@ -171,7 +167,6 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsApiKeyDelete.Id, "id", "i", 0, "Delete Api Key")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDelete)
 }

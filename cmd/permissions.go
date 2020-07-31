@@ -66,10 +66,8 @@ func PermissionsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsPermissionCreate.GroupId, "group-id", "g", 0, "Create Permission")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Path, "path", "p", "", "Create Permission")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Permission, "permission", "e", "", "Create Permission")
-	cmdCreate.Flags().IntVarP(&paramsPermissionCreate.UserId, "user-id", "u", 0, "Create Permission")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Username, "username", "s", "", "Create Permission")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	Permissions.AddCommand(cmdCreate)
@@ -87,7 +85,6 @@ func PermissionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsPermissionDelete.Id, "id", "i", 0, "Delete Permission")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Permissions.AddCommand(cmdDelete)
 }

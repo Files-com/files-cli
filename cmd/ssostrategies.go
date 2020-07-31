@@ -62,7 +62,6 @@ func SsoStrategiesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsSsoStrategyFind.Id, "id", "i", 0, "Show Sso Strategy")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	SsoStrategies.AddCommand(cmdFind)
 }

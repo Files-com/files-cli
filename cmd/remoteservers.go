@@ -62,7 +62,6 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsRemoteServerFind.Id, "id", "i", 0, "Show Remote Server")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -129,7 +128,6 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsRemoteServerUpdate.Id, "id", "", 0, "Update Remote Server")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AwsAccessKey, "aws-access-key", "k", "", "Update Remote Server")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AwsSecretKey, "aws-secret-key", "e", "", "Update Remote Server")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Password, "password", "p", "", "Update Remote Server")
@@ -180,7 +178,6 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsRemoteServerDelete.Id, "id", "i", 0, "Delete Remote Server")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdDelete)
 }

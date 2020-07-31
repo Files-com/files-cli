@@ -40,8 +40,6 @@ func FileCommentReactionsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsFileCommentReactionCreate.UserId, "user-id", "u", 0, "Create File Comment Reaction")
-	cmdCreate.Flags().IntVarP(&paramsFileCommentReactionCreate.FileCommentId, "file-comment-id", "i", 0, "Create File Comment Reaction")
 	cmdCreate.Flags().StringVarP(&paramsFileCommentReactionCreate.Emoji, "emoji", "e", "", "Create File Comment Reaction")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	FileCommentReactions.AddCommand(cmdCreate)
@@ -59,7 +57,6 @@ func FileCommentReactionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsFileCommentReactionDelete.Id, "id", "i", 0, "Delete File Comment Reaction")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	FileCommentReactions.AddCommand(cmdDelete)
 }

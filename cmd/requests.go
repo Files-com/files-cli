@@ -105,7 +105,6 @@ func RequestsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsRequestDelete.Id, "id", "i", 0, "Delete Request")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Requests.AddCommand(cmdDelete)
 }

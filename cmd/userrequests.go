@@ -62,7 +62,6 @@ func UserRequestsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsUserRequestFind.Id, "id", "i", 0, "Show User Request")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	UserRequests.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -98,7 +97,6 @@ func UserRequestsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsUserRequestDelete.Id, "id", "i", 0, "Delete User Request")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	UserRequests.AddCommand(cmdDelete)
 }

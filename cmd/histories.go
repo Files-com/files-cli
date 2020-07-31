@@ -95,7 +95,6 @@ func HistoriesInit() {
 	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.PerPage, "per-page", "r", 0, "List history for specific user")
 	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Action, "action", "a", "", "List history for specific user")
 	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Cursor, "cursor", "c", "", "List history for specific user")
-	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.UserId, "user-id", "u", 0, "List history for specific user")
 	cmdListForUser.Flags().StringVarP(&fieldsListForUser, "fields", "f", "", "comma separated list of field names")
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins string

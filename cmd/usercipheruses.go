@@ -42,7 +42,6 @@ func UserCipherUsesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsUserCipherUseList.UserId, "user-id", "u", 0, "List User Cipher Uses")
 	cmdList.Flags().IntVarP(&paramsUserCipherUseList.Page, "page", "p", 0, "List User Cipher Uses")
 	cmdList.Flags().IntVarP(&paramsUserCipherUseList.PerPage, "per-page", "e", 0, "List User Cipher Uses")
 	cmdList.Flags().StringVarP(&paramsUserCipherUseList.Action, "action", "a", "", "List User Cipher Uses")

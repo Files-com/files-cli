@@ -62,7 +62,6 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsClickwrapFind.Id, "id", "i", 0, "Show Clickwrap")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -100,7 +99,6 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsClickwrapUpdate.Id, "id", "i", 0, "Update Clickwrap")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Name, "name", "n", "", "Update Clickwrap")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Body, "body", "b", "", "Update Clickwrap")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithBundles, "use-with-bundles", "u", "", "Update Clickwrap")
@@ -122,7 +120,6 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsClickwrapDelete.Id, "id", "i", 0, "Delete Clickwrap")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdDelete)
 }

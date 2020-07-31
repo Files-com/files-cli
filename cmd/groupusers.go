@@ -42,11 +42,9 @@ func GroupUsersInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsGroupUserList.UserId, "user-id", "u", 0, "List Group Users")
 	cmdList.Flags().IntVarP(&paramsGroupUserList.Page, "page", "p", 0, "List Group Users")
 	cmdList.Flags().IntVarP(&paramsGroupUserList.PerPage, "per-page", "e", 0, "List Group Users")
 	cmdList.Flags().StringVarP(&paramsGroupUserList.Action, "action", "a", "", "List Group Users")
-	cmdList.Flags().IntVarP(&paramsGroupUserList.GroupId, "group-id", "g", 0, "List Group Users")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	GroupUsers.AddCommand(cmdList)
@@ -64,9 +62,6 @@ func GroupUsersInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsGroupUserUpdate.Id, "id", "i", 0, "Update Group User")
-	cmdUpdate.Flags().IntVarP(&paramsGroupUserUpdate.GroupId, "group-id", "g", 0, "Update Group User")
-	cmdUpdate.Flags().IntVarP(&paramsGroupUserUpdate.UserId, "user-id", "u", 0, "Update Group User")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	GroupUsers.AddCommand(cmdUpdate)
 	var fieldsDelete string
@@ -83,9 +78,6 @@ func GroupUsersInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsGroupUserDelete.Id, "id", "i", 0, "Delete Group User")
-	cmdDelete.Flags().IntVarP(&paramsGroupUserDelete.GroupId, "group-id", "g", 0, "Delete Group User")
-	cmdDelete.Flags().IntVarP(&paramsGroupUserDelete.UserId, "user-id", "u", 0, "Delete Group User")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	GroupUsers.AddCommand(cmdDelete)
 }

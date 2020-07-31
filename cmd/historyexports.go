@@ -42,7 +42,6 @@ func HistoryExportsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsHistoryExportList.UserId, "user-id", "u", 0, "List History Exports")
 	cmdList.Flags().IntVarP(&paramsHistoryExportList.Page, "page", "p", 0, "List History Exports")
 	cmdList.Flags().IntVarP(&paramsHistoryExportList.PerPage, "per-page", "e", 0, "List History Exports")
 	cmdList.Flags().StringVarP(&paramsHistoryExportList.Action, "action", "a", "", "List History Exports")
@@ -63,7 +62,6 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsHistoryExportFind.Id, "id", "i", 0, "Show History Export")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -80,14 +78,10 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.UserId, "user-id", "", 0, "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.StartAt, "start-at", "", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.EndAt, "end-at", "e", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryAction, "query-action", "a", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryInterface, "query-interface", "n", "", "Create History Export")
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.QueryUserId, "query-user-id", "", 0, "Create History Export")
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.QueryFileId, "query-file-id", "i", 0, "Create History Export")
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.QueryParentId, "query-parent-id", "", 0, "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryPath, "query-path", "", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFolder, "query-folder", "o", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QuerySrc, "query-src", "s", "", "Create History Export")
@@ -95,10 +89,8 @@ func HistoryExportsInit() {
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryIp, "query-ip", "p", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUsername, "query-username", "", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFailureType, "query-failure-type", "t", "", "Create History Export")
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.QueryTargetId, "query-target-id", "", 0, "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetName, "query-target-name", "", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermission, "query-target-permission", "r", "", "Create History Export")
-	cmdCreate.Flags().IntVarP(&paramsHistoryExportCreate.QueryTargetUserId, "query-target-user-id", "", 0, "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetUsername, "query-target-username", "u", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPlatform, "query-target-platform", "l", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "", "Create History Export")
@@ -118,7 +110,6 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsHistoryExportDelete.Id, "id", "i", 0, "Delete History Export")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdDelete)
 }

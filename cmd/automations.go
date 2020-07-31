@@ -64,7 +64,6 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsAutomationFind.Id, "id", "i", 0, "Show Automation")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Automations.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -106,7 +105,6 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsAutomationUpdate.Id, "id", "i", 0, "Update Automation")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Update Automation")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "s", "", "Update Automation")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Update Automation")
@@ -132,7 +130,6 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsAutomationDelete.Id, "id", "i", 0, "Delete Automation")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Automations.AddCommand(cmdDelete)
 }

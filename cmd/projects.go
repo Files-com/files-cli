@@ -62,7 +62,6 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsProjectFind.Id, "id", "i", 0, "Show Project")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Projects.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -96,7 +95,6 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsProjectUpdate.Id, "id", "i", 0, "Update Project")
 	cmdUpdate.Flags().StringVarP(&paramsProjectUpdate.GlobalAccess, "global-access", "g", "", "Update Project")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	Projects.AddCommand(cmdUpdate)
@@ -114,7 +112,6 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsProjectDelete.Id, "id", "i", 0, "Delete Project")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Projects.AddCommand(cmdDelete)
 }

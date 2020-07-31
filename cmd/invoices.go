@@ -62,7 +62,6 @@ func InvoicesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsInvoiceFind.Id, "id", "i", 0, "Show Invoice")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Invoices.AddCommand(cmdFind)
 }

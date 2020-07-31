@@ -42,11 +42,9 @@ func MessageCommentReactionsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsMessageCommentReactionList.UserId, "user-id", "u", 0, "List Message Comment Reactions")
 	cmdList.Flags().IntVarP(&paramsMessageCommentReactionList.Page, "page", "p", 0, "List Message Comment Reactions")
 	cmdList.Flags().IntVarP(&paramsMessageCommentReactionList.PerPage, "per-page", "r", 0, "List Message Comment Reactions")
 	cmdList.Flags().StringVarP(&paramsMessageCommentReactionList.Action, "action", "a", "", "List Message Comment Reactions")
-	cmdList.Flags().IntVarP(&paramsMessageCommentReactionList.MessageCommentId, "message-comment-id", "e", 0, "List Message Comment Reactions")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	MessageCommentReactions.AddCommand(cmdList)
@@ -64,7 +62,6 @@ func MessageCommentReactionsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsMessageCommentReactionFind.Id, "id", "i", 0, "Show Message Comment Reaction")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	MessageCommentReactions.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -81,7 +78,6 @@ func MessageCommentReactionsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsMessageCommentReactionCreate.UserId, "user-id", "u", 0, "Create Message Comment Reaction")
 	cmdCreate.Flags().StringVarP(&paramsMessageCommentReactionCreate.Emoji, "emoji", "e", "", "Create Message Comment Reaction")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	MessageCommentReactions.AddCommand(cmdCreate)
@@ -99,7 +95,6 @@ func MessageCommentReactionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsMessageCommentReactionDelete.Id, "id", "i", 0, "Delete Message Comment Reaction")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	MessageCommentReactions.AddCommand(cmdDelete)
 }

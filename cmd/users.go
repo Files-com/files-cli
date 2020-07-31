@@ -60,7 +60,6 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsUserFind.Id, "id", "i", 0, "Show User")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	Users.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -81,7 +80,6 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.ChangePasswordConfirmation, "change-password-confirmation", "c", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Email, "email", "", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GrantPermission, "grant-permission", "g", "", "Create User")
-	cmdCreate.Flags().IntVarP(&paramsUserCreate.GroupId, "group-id", "", 0, "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GroupIds, "group-ids", "", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Password, "password", "", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.PasswordConfirmation, "password-confirmation", "", "", "Create User")
@@ -95,7 +93,6 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Notes, "notes", "o", "", "Create User")
 	cmdCreate.Flags().IntVarP(&paramsUserCreate.PasswordValidityDays, "password-validity-days", "", 0, "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.SslRequired, "ssl-required", "", "", "Create User")
-	cmdCreate.Flags().IntVarP(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", "", 0, "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.TimeZone, "time-zone", "z", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.UserRoot, "user-root", "", "", "Create User")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Username, "username", "", "", "Create User")
@@ -115,7 +112,6 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUnlock)
 		},
 	}
-	cmdUnlock.Flags().IntVarP(&paramsUserUnlock.Id, "id", "i", 0, "Unlock user who has been locked out due to failed logins")
 	cmdUnlock.Flags().StringVarP(&fieldsUnlock, "fields", "f", "", "comma separated list of field names")
 	Users.AddCommand(cmdUnlock)
 	var fieldsResendWelcomeEmail string
@@ -132,7 +128,6 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsResendWelcomeEmail)
 		},
 	}
-	cmdResendWelcomeEmail.Flags().IntVarP(&paramsUserResendWelcomeEmail.Id, "id", "i", 0, "Resend user welcome email")
 	cmdResendWelcomeEmail.Flags().StringVarP(&fieldsResendWelcomeEmail, "fields", "f", "", "comma separated list of field names")
 	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset string
@@ -149,7 +144,6 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUser2faReset)
 		},
 	}
-	cmdUser2faReset.Flags().IntVarP(&paramsUserUser2faReset.Id, "id", "i", 0, "Trigger 2FA Reset process for user who has lost access to their existing 2FA methods")
 	cmdUser2faReset.Flags().StringVarP(&fieldsUser2faReset, "fields", "f", "", "comma separated list of field names")
 	Users.AddCommand(cmdUser2faReset)
 	var fieldsUpdate string
@@ -166,12 +160,10 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsUserUpdate.Id, "id", "", 0, "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.ChangePassword, "change-password", "w", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.ChangePasswordConfirmation, "change-password-confirmation", "c", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Email, "email", "", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GrantPermission, "grant-permission", "g", "", "Update User")
-	cmdUpdate.Flags().IntVarP(&paramsUserUpdate.GroupId, "group-id", "", 0, "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GroupIds, "group-ids", "", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Password, "password", "", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.PasswordConfirmation, "password-confirmation", "", "", "Update User")
@@ -185,7 +177,6 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Notes, "notes", "o", "", "Update User")
 	cmdUpdate.Flags().IntVarP(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", "", 0, "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.SslRequired, "ssl-required", "", "", "Update User")
-	cmdUpdate.Flags().IntVarP(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", "", 0, "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.TimeZone, "time-zone", "z", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.UserRoot, "user-root", "", "", "Update User")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Username, "username", "", "", "Update User")
@@ -205,7 +196,6 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsUserDelete.Id, "id", "i", 0, "Delete User")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Users.AddCommand(cmdDelete)
 }

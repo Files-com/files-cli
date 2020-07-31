@@ -42,7 +42,6 @@ func PublicKeysInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsPublicKeyList.UserId, "user-id", "u", 0, "List Public Keys")
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.Page, "page", "p", 0, "List Public Keys")
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.PerPage, "per-page", "e", 0, "List Public Keys")
 	cmdList.Flags().StringVarP(&paramsPublicKeyList.Action, "action", "a", "", "List Public Keys")
@@ -63,7 +62,6 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsPublicKeyFind.Id, "id", "i", 0, "Show Public Key")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	PublicKeys.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -80,7 +78,6 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsPublicKeyCreate.UserId, "user-id", "u", 0, "Create Public Key")
 	cmdCreate.Flags().StringVarP(&paramsPublicKeyCreate.Title, "title", "t", "", "Create Public Key")
 	cmdCreate.Flags().StringVarP(&paramsPublicKeyCreate.PublicKey, "public-key", "p", "", "Create Public Key")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
@@ -99,7 +96,6 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsPublicKeyUpdate.Id, "id", "i", 0, "Update Public Key")
 	cmdUpdate.Flags().StringVarP(&paramsPublicKeyUpdate.Title, "title", "t", "", "Update Public Key")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	PublicKeys.AddCommand(cmdUpdate)
@@ -117,7 +113,6 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsPublicKeyDelete.Id, "id", "i", 0, "Delete Public Key")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	PublicKeys.AddCommand(cmdDelete)
 }

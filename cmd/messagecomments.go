@@ -42,11 +42,9 @@ func MessageCommentsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsMessageCommentList.UserId, "user-id", "u", 0, "List Message Comments")
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.Page, "page", "p", 0, "List Message Comments")
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.PerPage, "per-page", "r", 0, "List Message Comments")
 	cmdList.Flags().StringVarP(&paramsMessageCommentList.Action, "action", "a", "", "List Message Comments")
-	cmdList.Flags().IntVarP(&paramsMessageCommentList.MessageId, "message-id", "e", 0, "List Message Comments")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	MessageComments.AddCommand(cmdList)
@@ -64,7 +62,6 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().IntVarP(&paramsMessageCommentFind.Id, "id", "i", 0, "Show Message Comment")
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdFind)
 	var fieldsCreate string
@@ -81,7 +78,6 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().IntVarP(&paramsMessageCommentCreate.UserId, "user-id", "u", 0, "Create Message Comment")
 	cmdCreate.Flags().StringVarP(&paramsMessageCommentCreate.Body, "body", "b", "", "Create Message Comment")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdCreate)
@@ -99,7 +95,6 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().IntVarP(&paramsMessageCommentUpdate.Id, "id", "i", 0, "Update Message Comment")
 	cmdUpdate.Flags().StringVarP(&paramsMessageCommentUpdate.Body, "body", "b", "", "Update Message Comment")
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdUpdate)
@@ -117,7 +112,6 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().IntVarP(&paramsMessageCommentDelete.Id, "id", "i", 0, "Delete Message Comment")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdDelete)
 }
