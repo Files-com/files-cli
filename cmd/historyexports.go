@@ -26,28 +26,6 @@ var (
 )
 
 func HistoryExportsInit() {
-	var fieldsList string
-	paramsHistoryExportList := files_sdk.HistoryExportListParams{}
-	var MaxPagesList int
-	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "list",
-		Long:  `list`,
-		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
-			params := paramsHistoryExportList
-			params.MaxPages = MaxPagesList
-			it := history_export.List(params)
-
-			lib.JsonMarshalIter(it, fieldsList)
-		},
-	}
-	cmdList.Flags().IntVarP(&paramsHistoryExportList.Page, "page", "p", 0, "List History Exports")
-	cmdList.Flags().IntVarP(&paramsHistoryExportList.PerPage, "per-page", "e", 0, "List History Exports")
-	cmdList.Flags().StringVarP(&paramsHistoryExportList.Action, "action", "a", "", "List History Exports")
-	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
-	HistoryExports.AddCommand(cmdList)
 	var fieldsFind string
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
 	cmdFind := &cobra.Command{
@@ -96,20 +74,4 @@ func HistoryExportsInit() {
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "", "Create History Export")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdCreate)
-	var fieldsDelete string
-	paramsHistoryExportDelete := files_sdk.HistoryExportDeleteParams{}
-	cmdDelete := &cobra.Command{
-		Use: "delete",
-		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history_export.Delete(paramsHistoryExportDelete)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			lib.JsonMarshal(result, fieldsDelete)
-		},
-	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
-	HistoryExports.AddCommand(cmdDelete)
 }

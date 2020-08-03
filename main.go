@@ -70,6 +70,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Histories)
 	cmd.HistoryExportsInit()
 	rootCmd.AddCommand(cmd.HistoryExports)
+	cmd.HistoryExportResultsInit()
+	rootCmd.AddCommand(cmd.HistoryExportResults)
 	cmd.ImagesInit()
 	rootCmd.AddCommand(cmd.Images)
 	cmd.InvoicesInit()
