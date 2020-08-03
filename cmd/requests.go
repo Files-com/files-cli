@@ -50,27 +50,27 @@ func RequestsInit() {
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Requests.AddCommand(cmdList)
-	var fieldsFindFolder string
-	paramsRequestFindFolder := files_sdk.RequestFindFolderParams{}
-	cmdFindFolder := &cobra.Command{
-		Use: "find-folder",
+	var fieldsGetFolder string
+	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
+	cmdGetFolder := &cobra.Command{
+		Use: "get-folder",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := request.FindFolder(paramsRequestFindFolder)
+			result, err := request.GetFolder(paramsRequestGetFolder)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFindFolder)
+			lib.JsonMarshal(result, fieldsGetFolder)
 		},
 	}
-	cmdFindFolder.Flags().IntVarP(&paramsRequestFindFolder.Page, "page", "p", 0, "List Requests")
-	cmdFindFolder.Flags().IntVarP(&paramsRequestFindFolder.PerPage, "per-page", "e", 0, "List Requests")
-	cmdFindFolder.Flags().StringVarP(&paramsRequestFindFolder.Action, "action", "a", "", "List Requests")
-	cmdFindFolder.Flags().StringVarP(&paramsRequestFindFolder.Cursor, "cursor", "c", "", "List Requests")
-	cmdFindFolder.Flags().StringVarP(&paramsRequestFindFolder.Path, "path", "t", "", "List Requests")
-	cmdFindFolder.Flags().StringVarP(&fieldsFindFolder, "fields", "f", "", "comma separated list of field names")
-	Requests.AddCommand(cmdFindFolder)
+	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.Page, "page", "p", 0, "List Requests")
+	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.PerPage, "per-page", "e", 0, "List Requests")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Action, "action", "a", "", "List Requests")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "List Requests")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "t", "", "List Requests")
+	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "f", "", "comma separated list of field names")
+	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
 	cmdCreate := &cobra.Command{
