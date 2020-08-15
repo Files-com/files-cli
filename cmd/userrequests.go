@@ -45,6 +45,7 @@ func UserRequestsInit() {
 	cmdList.Flags().IntVarP(&paramsUserRequestList.Page, "page", "p", 0, "List User Requests")
 	cmdList.Flags().IntVarP(&paramsUserRequestList.PerPage, "per-page", "e", 0, "List User Requests")
 	cmdList.Flags().StringVarP(&paramsUserRequestList.Action, "action", "a", "", "List User Requests")
+	cmdList.Flags().StringVarP(&paramsUserRequestList.Cursor, "cursor", "c", "", "List User Requests")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	UserRequests.AddCommand(cmdList)

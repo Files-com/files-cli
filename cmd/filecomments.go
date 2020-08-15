@@ -48,6 +48,7 @@ func FileCommentsInit() {
 	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.Page, "page", "p", 0, "List File Comments by path")
 	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.PerPage, "per-page", "e", 0, "List File Comments by path")
 	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Action, "action", "a", "", "List File Comments by path")
+	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Cursor, "cursor", "c", "", "List File Comments by path")
 	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Path, "path", "t", "", "List File Comments by path")
 	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "f", "", "comma separated list of field names to include in response")

@@ -45,6 +45,7 @@ func UsageSnapshotsInit() {
 	cmdList.Flags().IntVarP(&paramsUsageSnapshotList.Page, "page", "p", 0, "List Usage Snapshots")
 	cmdList.Flags().IntVarP(&paramsUsageSnapshotList.PerPage, "per-page", "e", 0, "List Usage Snapshots")
 	cmdList.Flags().StringVarP(&paramsUsageSnapshotList.Action, "action", "a", "", "List Usage Snapshots")
+	cmdList.Flags().StringVarP(&paramsUsageSnapshotList.Cursor, "cursor", "c", "", "List Usage Snapshots")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	UsageSnapshots.AddCommand(cmdList)

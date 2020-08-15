@@ -45,6 +45,7 @@ func IpAddressesInit() {
 	cmdList.Flags().IntVarP(&paramsIpAddressList.Page, "page", "p", 0, "List IP Addresses associated with the current site")
 	cmdList.Flags().IntVarP(&paramsIpAddressList.PerPage, "per-page", "e", 0, "List IP Addresses associated with the current site")
 	cmdList.Flags().StringVarP(&paramsIpAddressList.Action, "action", "a", "", "List IP Addresses associated with the current site")
+	cmdList.Flags().StringVarP(&paramsIpAddressList.Cursor, "cursor", "c", "", "List IP Addresses associated with the current site")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	IpAddresses.AddCommand(cmdList)
@@ -65,6 +66,7 @@ func IpAddressesInit() {
 	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.Page, "page", "p", 0, "List all possible public IP addresses")
 	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.PerPage, "per-page", "e", 0, "List all possible public IP addresses")
 	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Action, "action", "a", "", "List all possible public IP addresses")
+	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Cursor, "cursor", "c", "", "List all possible public IP addresses")
 	cmdGetReserved.Flags().StringVarP(&fieldsGetReserved, "fields", "f", "", "comma separated list of field names")
 	IpAddresses.AddCommand(cmdGetReserved)
 }

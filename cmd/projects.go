@@ -45,6 +45,7 @@ func ProjectsInit() {
 	cmdList.Flags().IntVarP(&paramsProjectList.Page, "page", "p", 0, "List Projects")
 	cmdList.Flags().IntVarP(&paramsProjectList.PerPage, "per-page", "e", 0, "List Projects")
 	cmdList.Flags().StringVarP(&paramsProjectList.Action, "action", "a", "", "List Projects")
+	cmdList.Flags().StringVarP(&paramsProjectList.Cursor, "cursor", "c", "", "List Projects")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Projects.AddCommand(cmdList)

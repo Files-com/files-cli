@@ -45,6 +45,7 @@ func UserCipherUsesInit() {
 	cmdList.Flags().IntVarP(&paramsUserCipherUseList.Page, "page", "p", 0, "List User Cipher Uses")
 	cmdList.Flags().IntVarP(&paramsUserCipherUseList.PerPage, "per-page", "e", 0, "List User Cipher Uses")
 	cmdList.Flags().StringVarP(&paramsUserCipherUseList.Action, "action", "a", "", "List User Cipher Uses")
+	cmdList.Flags().StringVarP(&paramsUserCipherUseList.Cursor, "cursor", "c", "", "List User Cipher Uses")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	UserCipherUses.AddCommand(cmdList)

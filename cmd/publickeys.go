@@ -45,6 +45,7 @@ func PublicKeysInit() {
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.Page, "page", "p", 0, "List Public Keys")
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.PerPage, "per-page", "e", 0, "List Public Keys")
 	cmdList.Flags().StringVarP(&paramsPublicKeyList.Action, "action", "a", "", "List Public Keys")
+	cmdList.Flags().StringVarP(&paramsPublicKeyList.Cursor, "cursor", "c", "", "List Public Keys")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	PublicKeys.AddCommand(cmdList)

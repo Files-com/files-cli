@@ -45,6 +45,7 @@ func RemoteServersInit() {
 	cmdList.Flags().IntVarP(&paramsRemoteServerList.Page, "page", "p", 0, "List Remote Servers")
 	cmdList.Flags().IntVarP(&paramsRemoteServerList.PerPage, "per-page", "e", 0, "List Remote Servers")
 	cmdList.Flags().StringVarP(&paramsRemoteServerList.Action, "action", "a", "", "List Remote Servers")
+	cmdList.Flags().StringVarP(&paramsRemoteServerList.Cursor, "cursor", "c", "", "List Remote Servers")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	RemoteServers.AddCommand(cmdList)

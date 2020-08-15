@@ -50,6 +50,8 @@ func main() {
 	rootCmd.AddCommand(cmd.DnsRecords)
 	cmd.ErrorsInit()
 	rootCmd.AddCommand(cmd.Errors)
+	cmd.ExternalEventsInit()
+	rootCmd.AddCommand(cmd.ExternalEvents)
 	cmd.FilesInit()
 	rootCmd.AddCommand(cmd.Files)
 	cmd.FileActionsInit()

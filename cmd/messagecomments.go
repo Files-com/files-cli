@@ -45,6 +45,7 @@ func MessageCommentsInit() {
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.Page, "page", "p", 0, "List Message Comments")
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.PerPage, "per-page", "r", 0, "List Message Comments")
 	cmdList.Flags().StringVarP(&paramsMessageCommentList.Action, "action", "a", "", "List Message Comments")
+	cmdList.Flags().StringVarP(&paramsMessageCommentList.Cursor, "cursor", "c", "", "List Message Comments")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	MessageComments.AddCommand(cmdList)

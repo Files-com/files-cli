@@ -45,6 +45,7 @@ func DnsRecordsInit() {
 	cmdList.Flags().IntVarP(&paramsDnsRecordList.Page, "page", "p", 0, "Show site DNS configuration")
 	cmdList.Flags().IntVarP(&paramsDnsRecordList.PerPage, "per-page", "e", 0, "Show site DNS configuration")
 	cmdList.Flags().StringVarP(&paramsDnsRecordList.Action, "action", "a", "", "Show site DNS configuration")
+	cmdList.Flags().StringVarP(&paramsDnsRecordList.Cursor, "cursor", "c", "", "Show site DNS configuration")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	DnsRecords.AddCommand(cmdList)

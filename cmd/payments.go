@@ -45,6 +45,7 @@ func PaymentsInit() {
 	cmdList.Flags().IntVarP(&paramsPaymentList.Page, "page", "p", 0, "List Payments")
 	cmdList.Flags().IntVarP(&paramsPaymentList.PerPage, "per-page", "e", 0, "List Payments")
 	cmdList.Flags().StringVarP(&paramsPaymentList.Action, "action", "a", "", "List Payments")
+	cmdList.Flags().StringVarP(&paramsPaymentList.Cursor, "cursor", "c", "", "List Payments")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Payments.AddCommand(cmdList)

@@ -45,6 +45,7 @@ func InvoicesInit() {
 	cmdList.Flags().IntVarP(&paramsInvoiceList.Page, "page", "p", 0, "List Invoices")
 	cmdList.Flags().IntVarP(&paramsInvoiceList.PerPage, "per-page", "e", 0, "List Invoices")
 	cmdList.Flags().StringVarP(&paramsInvoiceList.Action, "action", "a", "", "List Invoices")
+	cmdList.Flags().StringVarP(&paramsInvoiceList.Cursor, "cursor", "c", "", "List Invoices")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Invoices.AddCommand(cmdList)

@@ -48,6 +48,7 @@ func LocksInit() {
 	cmdListFor.Flags().IntVarP(&paramsLockListFor.Page, "page", "p", 0, "List Locks by path")
 	cmdListFor.Flags().IntVarP(&paramsLockListFor.PerPage, "per-page", "e", 0, "List Locks by path")
 	cmdListFor.Flags().StringVarP(&paramsLockListFor.Action, "action", "a", "", "List Locks by path")
+	cmdListFor.Flags().StringVarP(&paramsLockListFor.Cursor, "cursor", "c", "", "List Locks by path")
 	cmdListFor.Flags().StringVarP(&paramsLockListFor.Path, "path", "t", "", "List Locks by path")
 	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "f", "", "comma separated list of field names to include in response")

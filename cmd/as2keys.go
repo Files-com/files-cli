@@ -45,6 +45,7 @@ func As2KeysInit() {
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.Page, "page", "p", 0, "List As2 Keys")
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.PerPage, "per-page", "e", 0, "List As2 Keys")
 	cmdList.Flags().StringVarP(&paramsAs2KeyList.Action, "action", "a", "", "List As2 Keys")
+	cmdList.Flags().StringVarP(&paramsAs2KeyList.Cursor, "cursor", "c", "", "List As2 Keys")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	As2Keys.AddCommand(cmdList)

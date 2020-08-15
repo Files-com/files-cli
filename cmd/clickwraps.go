@@ -45,6 +45,7 @@ func ClickwrapsInit() {
 	cmdList.Flags().IntVarP(&paramsClickwrapList.Page, "page", "p", 0, "List Clickwraps")
 	cmdList.Flags().IntVarP(&paramsClickwrapList.PerPage, "per-page", "e", 0, "List Clickwraps")
 	cmdList.Flags().StringVarP(&paramsClickwrapList.Action, "action", "a", "", "List Clickwraps")
+	cmdList.Flags().StringVarP(&paramsClickwrapList.Cursor, "cursor", "c", "", "List Clickwraps")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	Clickwraps.AddCommand(cmdList)
