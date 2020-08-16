@@ -27,10 +27,11 @@ var (
 
 func SitesInit() {
 	var fieldsGet string
+	paramsSiteGet := files_sdk.SiteGetParams{}
 	cmdGet := &cobra.Command{
 		Use: "get",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := site.Get()
+			result, err := site.Get(paramsSiteGet)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -39,13 +40,15 @@ func SitesInit() {
 			lib.JsonMarshal(result, fieldsGet)
 		},
 	}
+	cmdGet.Flags().StringVarP(&paramsSiteGet.Format, "format", "o", "", "Show site settings")
 	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "f", "", "comma separated list of field names")
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage string
+	paramsSiteGetUsage := files_sdk.SiteGetUsageParams{}
 	cmdGetUsage := &cobra.Command{
 		Use: "get-usage",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := site.GetUsage()
+			result, err := site.GetUsage(paramsSiteGetUsage)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -54,6 +57,7 @@ func SitesInit() {
 			lib.JsonMarshal(result, fieldsGetUsage)
 		},
 	}
+	cmdGetUsage.Flags().StringVarP(&paramsSiteGetUsage.Format, "format", "o", "", "Get the most recent usage snapshot (usage data for billing purposes) for a Site")
 	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "f", "", "comma separated list of field names")
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate string

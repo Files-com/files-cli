@@ -50,10 +50,11 @@ func ApiKeysInit() {
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
 	ApiKeys.AddCommand(cmdList)
 	var fieldsFindCurrent string
+	paramsApiKeyFindCurrent := files_sdk.ApiKeyFindCurrentParams{}
 	cmdFindCurrent := &cobra.Command{
 		Use: "find-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.FindCurrent()
+			result, err := api_key.FindCurrent(paramsApiKeyFindCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -62,6 +63,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsFindCurrent)
 		},
 	}
+	cmdFindCurrent.Flags().StringVarP(&paramsApiKeyFindCurrent.Format, "format", "o", "", "Show information about current API key.  (Requires current API connection to be using an API key.)")
 	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "f", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsFind string
@@ -139,10 +141,11 @@ func ApiKeysInit() {
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdate)
 	var fieldsDeleteCurrent string
+	paramsApiKeyDeleteCurrent := files_sdk.ApiKeyDeleteCurrentParams{}
 	cmdDeleteCurrent := &cobra.Command{
 		Use: "delete-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.DeleteCurrent()
+			result, err := api_key.DeleteCurrent(paramsApiKeyDeleteCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -151,6 +154,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsDeleteCurrent)
 		},
 	}
+	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "o", "", "Delete current API key.  (Requires current API connection to be using an API key.)")
 	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "f", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDeleteCurrent)
 	var fieldsDelete string

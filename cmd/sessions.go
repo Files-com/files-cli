@@ -47,10 +47,11 @@ func SessionsInit() {
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	paramsSessionDelete := files_sdk.SessionDeleteParams{}
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := session.Delete()
+			result, err := session.Delete(paramsSessionDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -59,6 +60,7 @@ func SessionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().StringVarP(&paramsSessionDelete.Format, "format", "o", "", "Delete user session (log out)")
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdDelete)
 }
