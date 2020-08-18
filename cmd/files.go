@@ -60,6 +60,15 @@ func FilesInit() {
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsFileCreate.Path, "path", "", "", "Upload file")
+	cmdCreate.Flags().StringVarP(&paramsFileCreate.Action, "action", "a", "", "Upload file")
+	cmdCreate.Flags().IntVarP(&paramsFileCreate.Length, "length", "l", 0, "Upload file")
+	cmdCreate.Flags().IntVarP(&paramsFileCreate.Part, "part", "p", 0, "Upload file")
+	cmdCreate.Flags().IntVarP(&paramsFileCreate.Parts, "parts", "r", 0, "Upload file")
+	cmdCreate.Flags().StringVarP(&paramsFileCreate.ProvidedMtime, "provided-mtime", "o", "", "Upload file")
+	cmdCreate.Flags().StringVarP(&paramsFileCreate.Ref, "ref", "", "", "Upload file")
+	cmdCreate.Flags().IntVarP(&paramsFileCreate.Restart, "restart", "s", 0, "Upload file")
+	cmdCreate.Flags().IntVarP(&paramsFileCreate.Size, "size", "i", 0, "Upload file")
+	cmdCreate.Flags().StringVarP(&paramsFileCreate.Structure, "structure", "u", "", "Upload file")
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
 	Files.AddCommand(cmdCreate)
 	var fieldsUpdate string
