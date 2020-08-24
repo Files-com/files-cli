@@ -1,20 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/filecomment"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = file_comment.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
+	"os"
+
+	file_comment "github.com/Files-com/files-sdk-go/filecomment"
 )
 
 var (
@@ -45,13 +40,13 @@ func FileCommentsInit() {
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}
-	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.Page, "page", "p", 0, "List File Comments by path")
-	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.PerPage, "per-page", "e", 0, "List File Comments by path")
-	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Action, "action", "a", "", "List File Comments by path")
-	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Cursor, "cursor", "c", "", "List File Comments by path")
-	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Path, "path", "t", "", "List File Comments by path")
+	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.Page, "page", "p", 0, "Current page number.")
+	cmdListFor.Flags().IntVarP(&paramsFileCommentListFor.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Path, "path", "t", "", "Path to operate on.")
 	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
@@ -67,9 +62,10 @@ func FileCommentsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Body, "body", "b", "", "Create File Comment")
-	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Path, "path", "p", "", "Create File Comment")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Body, "body", "b", "", "Comment body.")
+	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Path, "path", "p", "", "File path.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	FileComments.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
@@ -85,8 +81,9 @@ func FileCommentsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsFileCommentUpdate.Body, "body", "b", "", "Update File Comment")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsFileCommentUpdate.Body, "body", "b", "", "Comment body.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	FileComments.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsFileCommentDelete := files_sdk.FileCommentDeleteParams{}
@@ -102,6 +99,7 @@ func FileCommentsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	FileComments.AddCommand(cmdDelete)
 }

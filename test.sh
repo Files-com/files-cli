@@ -7,6 +7,8 @@ go mod tidy > /dev/null 2>&1
 go mod edit -replace github.com/Files-com/files-sdk-go=../go
 go mod tidy
 go get -d -v
-go fmt ./...
+go get golang.org/x/tools/cmd/goimports
+goimports -w .
+gofmt -s -w .
 go test ./...
 go mod edit -dropreplace github.com/Files-com/files-sdk-go

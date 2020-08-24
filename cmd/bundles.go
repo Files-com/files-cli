@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/bundle"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = bundle.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,12 +36,12 @@ func BundlesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsBundleList.Page, "page", "p", 0, "List Bundles")
-	cmdList.Flags().IntVarP(&paramsBundleList.PerPage, "per-page", "r", 0, "List Bundles")
-	cmdList.Flags().StringVarP(&paramsBundleList.Action, "action", "a", "", "List Bundles")
-	cmdList.Flags().StringVarP(&paramsBundleList.Cursor, "cursor", "c", "", "List Bundles")
+	cmdList.Flags().IntVarP(&paramsBundleList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsBundleList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsBundleList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsBundleList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Bundles.AddCommand(cmdList)
 	var fieldsFind string
 	paramsBundleFind := files_sdk.BundleFindParams{}
@@ -63,7 +57,8 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
@@ -79,13 +74,14 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Password, "password", "p", "", "Create Bundle")
-	cmdCreate.Flags().StringVarP(&paramsBundleCreate.ExpiresAt, "expires-at", "e", "", "Create Bundle")
-	cmdCreate.Flags().IntVarP(&paramsBundleCreate.MaxUses, "max-uses", "a", 0, "Create Bundle")
-	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Description, "description", "d", "", "Create Bundle")
-	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Note, "note", "n", "", "Create Bundle")
-	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Code, "code", "o", "", "Create Bundle")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Password, "password", "p", "", "Password for this bundle.")
+	lib.TimeVarP(cmdCreate.Flags(), &paramsBundleCreate.ExpiresAt, "expires-at", "e")
+	cmdCreate.Flags().IntVarP(&paramsBundleCreate.MaxUses, "max-uses", "a", 0, "Maximum number of times bundle can be accessed")
+	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Description, "description", "d", "", "Public description")
+	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Note, "note", "n", "", "Bundle internal note")
+	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Code, "code", "o", "", "Bundle code.  This code forms the end part of the Public URL.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdCreate)
 	var fieldsShare string
 	paramsBundleShare := files_sdk.BundleShareParams{}
@@ -101,8 +97,9 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsShare)
 		},
 	}
-	cmdShare.Flags().StringVarP(&paramsBundleShare.Note, "note", "n", "", "Send email(s) with a link to bundle")
-	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "f", "", "comma separated list of field names")
+	cmdShare.Flags().StringVarP(&paramsBundleShare.Note, "note", "n", "", "Note to include in email.")
+
+	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdShare)
 	var fieldsUpdate string
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
@@ -118,13 +115,14 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Password, "password", "p", "", "Update Bundle")
-	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Code, "code", "o", "", "Update Bundle")
-	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Description, "description", "d", "", "Update Bundle")
-	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.ExpiresAt, "expires-at", "e", "", "Update Bundle")
-	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.MaxUses, "max-uses", "a", 0, "Update Bundle")
-	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Note, "note", "t", "", "Update Bundle")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Password, "password", "p", "", "Password for this bundle.")
+	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Code, "code", "o", "", "Bundle code.  This code forms the end part of the Public URL.")
+	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Description, "description", "d", "", "Public description")
+	lib.TimeVarP(cmdUpdate.Flags(), &paramsBundleUpdate.ExpiresAt, "expires-at", "e")
+	cmdUpdate.Flags().IntVarP(&paramsBundleUpdate.MaxUses, "max-uses", "a", 0, "Maximum number of times bundle can be accessed")
+	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Note, "note", "t", "", "Bundle internal note")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsBundleDelete := files_sdk.BundleDeleteParams{}
@@ -140,6 +138,7 @@ func BundlesInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdDelete)
 }

@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/notification"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = notification.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,13 +36,13 @@ func NotificationsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsNotificationList.Page, "page", "p", 0, "List Notifications")
-	cmdList.Flags().IntVarP(&paramsNotificationList.PerPage, "per-page", "", 0, "List Notifications")
-	cmdList.Flags().StringVarP(&paramsNotificationList.Action, "action", "a", "", "List Notifications")
-	cmdList.Flags().StringVarP(&paramsNotificationList.Cursor, "cursor", "c", "", "List Notifications")
-	cmdList.Flags().StringVarP(&paramsNotificationList.Path, "path", "", "", "List Notifications")
+	cmdList.Flags().IntVarP(&paramsNotificationList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsNotificationList.PerPage, "per-page", "", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsNotificationList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsNotificationList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsNotificationList.Path, "path", "", "", "Show notifications for this Path.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Notifications.AddCommand(cmdList)
 	var fieldsFind string
 	paramsNotificationFind := files_sdk.NotificationFindParams{}
@@ -64,7 +58,8 @@ func NotificationsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Notifications.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsNotificationCreate := files_sdk.NotificationCreateParams{}
@@ -80,10 +75,11 @@ func NotificationsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.SendInterval, "send-interval", "s", "", "Create Notification")
-	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.Path, "path", "p", "", "Create Notification")
-	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.Username, "username", "e", "", "Create Notification")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.SendInterval, "send-interval", "s", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.Path, "path", "p", "", "Path")
+	cmdCreate.Flags().StringVarP(&paramsNotificationCreate.Username, "username", "e", "", "The username of the user to notify.  Provide `user_id`, `username` or `group_id`.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Notifications.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
@@ -99,8 +95,9 @@ func NotificationsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsNotificationUpdate.SendInterval, "send-interval", "s", "", "Update Notification")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsNotificationUpdate.SendInterval, "send-interval", "s", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Notifications.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsNotificationDelete := files_sdk.NotificationDeleteParams{}
@@ -116,6 +113,7 @@ func NotificationsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Notifications.AddCommand(cmdDelete)
 }

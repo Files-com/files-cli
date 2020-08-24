@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/group"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = group.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,13 +36,13 @@ func GroupsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsGroupList.Page, "page", "p", 0, "List Groups")
-	cmdList.Flags().IntVarP(&paramsGroupList.PerPage, "per-page", "r", 0, "List Groups")
-	cmdList.Flags().StringVarP(&paramsGroupList.Action, "action", "a", "", "List Groups")
-	cmdList.Flags().StringVarP(&paramsGroupList.Cursor, "cursor", "c", "", "List Groups")
-	cmdList.Flags().StringVarP(&paramsGroupList.Ids, "ids", "d", "", "List Groups")
+	cmdList.Flags().IntVarP(&paramsGroupList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsGroupList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsGroupList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsGroupList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsGroupList.Ids, "ids", "i", "", "Comma-separated list of group ids to include in results.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Groups.AddCommand(cmdList)
 	var fieldsFind string
 	paramsGroupFind := files_sdk.GroupFindParams{}
@@ -64,7 +58,8 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsGroupCreate := files_sdk.GroupCreateParams{}
@@ -80,11 +75,12 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsGroupCreate.Name, "name", "n", "", "Create Group")
-	cmdCreate.Flags().StringVarP(&paramsGroupCreate.Notes, "notes", "o", "", "Create Group")
-	cmdCreate.Flags().StringVarP(&paramsGroupCreate.UserIds, "user-ids", "u", "", "Create Group")
-	cmdCreate.Flags().StringVarP(&paramsGroupCreate.AdminIds, "admin-ids", "a", "", "Create Group")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsGroupCreate.Name, "name", "n", "", "Group name.")
+	cmdCreate.Flags().StringVarP(&paramsGroupCreate.Notes, "notes", "o", "", "Group notes.")
+	cmdCreate.Flags().StringVarP(&paramsGroupCreate.UserIds, "user-ids", "u", "", "A list of user ids. If sent as a string, should be comma-delimited.")
+	cmdCreate.Flags().StringVarP(&paramsGroupCreate.AdminIds, "admin-ids", "a", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsGroupUpdate := files_sdk.GroupUpdateParams{}
@@ -100,11 +96,12 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Name, "name", "n", "", "Update Group")
-	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Notes, "notes", "o", "", "Update Group")
-	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.UserIds, "user-ids", "u", "", "Update Group")
-	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.AdminIds, "admin-ids", "a", "", "Update Group")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Name, "name", "n", "", "Group name.")
+	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Notes, "notes", "o", "", "Group notes.")
+	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.UserIds, "user-ids", "u", "", "A list of user ids. If sent as a string, should be comma-delimited.")
+	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.AdminIds, "admin-ids", "a", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsGroupDelete := files_sdk.GroupDeleteParams{}
@@ -120,6 +117,7 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdDelete)
 }

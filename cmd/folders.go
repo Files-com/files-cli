@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/folder"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = folder.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -45,16 +39,16 @@ func FoldersInit() {
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}
-	cmdListFor.Flags().IntVarP(&paramsFolderListFor.Page, "page", "p", 0, "List Folders by path")
-	cmdListFor.Flags().IntVarP(&paramsFolderListFor.PerPage, "per-page", "e", 0, "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Action, "action", "a", "", "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Cursor, "cursor", "c", "", "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Path, "path", "t", "", "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Filter, "filter", "i", "", "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.PreviewSize, "preview-size", "r", "", "List Folders by path")
-	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Search, "search", "s", "", "List Folders by path")
+	cmdListFor.Flags().IntVarP(&paramsFolderListFor.Page, "page", "p", 0, "Current page number.")
+	cmdListFor.Flags().IntVarP(&paramsFolderListFor.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Action, "action", "a", "", "Action to take.  Can be `count`, `size`, `permissions`, or blank.")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor header.")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Path, "path", "t", "", "Path to operate on.")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Filter, "filter", "f", "", "If specified, will to filter folders/files list by this string.  Wildcards of `*` and `?` are acceptable here.")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
+	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Search, "search", "s", "", "If `search_all` is `true`, provide the search string here.  Otherwise, this parameter acts like an alias of `filter`.")
 	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
@@ -70,7 +64,8 @@ func FoldersInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsFolderCreate.Path, "path", "p", "", "Create folder")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsFolderCreate.Path, "path", "p", "", "Path to operate on.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Folders.AddCommand(cmdCreate)
 }

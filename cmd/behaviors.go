@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/behavior"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = behavior.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,13 +36,13 @@ func BehaviorsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsBehaviorList.Page, "page", "p", 0, "List Behaviors")
-	cmdList.Flags().IntVarP(&paramsBehaviorList.PerPage, "per-page", "r", 0, "List Behaviors")
-	cmdList.Flags().StringVarP(&paramsBehaviorList.Action, "action", "a", "", "List Behaviors")
-	cmdList.Flags().StringVarP(&paramsBehaviorList.Cursor, "cursor", "c", "", "List Behaviors")
-	cmdList.Flags().StringVarP(&paramsBehaviorList.Behavior, "behavior", "b", "", "List Behaviors")
+	cmdList.Flags().IntVarP(&paramsBehaviorList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsBehaviorList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsBehaviorList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsBehaviorList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsBehaviorList.Behavior, "behavior", "b", "", "If set, only shows folder behaviors matching this behavior type.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
 	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
@@ -64,7 +58,8 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdFind)
 	var fieldsListFor string
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
@@ -85,15 +80,15 @@ func BehaviorsInit() {
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}
-	cmdListFor.Flags().IntVarP(&paramsBehaviorListFor.Page, "page", "p", 0, "List Behaviors by path")
-	cmdListFor.Flags().IntVarP(&paramsBehaviorListFor.PerPage, "per-page", "r", 0, "List Behaviors by path")
-	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Action, "action", "a", "", "List Behaviors by path")
-	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Cursor, "cursor", "c", "", "List Behaviors by path")
-	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Path, "path", "", "", "List Behaviors by path")
-	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Recursive, "recursive", "u", "", "List Behaviors by path")
-	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Behavior, "behavior", "b", "", "List Behaviors by path")
+	cmdListFor.Flags().IntVarP(&paramsBehaviorListFor.Page, "page", "p", 0, "Current page number.")
+	cmdListFor.Flags().IntVarP(&paramsBehaviorListFor.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Path, "path", "", "", "Path to operate on.")
+	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Recursive, "recursive", "u", "", "Show behaviors above this path?")
+	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Behavior, "behavior", "b", "", "DEPRECATED: If set only shows folder behaviors matching this behavior type. Use `filter[behavior]` instead.")
 	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
@@ -109,10 +104,11 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Value, "value", "v", "", "Create Behavior")
-	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Path, "path", "p", "", "Create Behavior")
-	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Behavior, "behavior", "b", "", "Create Behavior")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior.")
+	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Path, "path", "p", "", "Folder behaviors path.")
+	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Behavior, "behavior", "b", "", "Behavior type.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdCreate)
 	var fieldsWebhookTest string
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
@@ -128,11 +124,12 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsWebhookTest)
 		},
 	}
-	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Url, "url", "u", "", "Test webhook")
-	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Method, "method", "t", "", "Test webhook")
-	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Encoding, "encoding", "e", "", "Test webhook")
-	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Action, "action", "a", "", "Test webhook")
-	cmdWebhookTest.Flags().StringVarP(&fieldsWebhookTest, "fields", "f", "", "comma separated list of field names")
+	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Url, "url", "u", "", "URL for testing the webhook.")
+	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Method, "method", "t", "", "HTTP method(GET or POST).")
+	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Encoding, "encoding", "e", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
+	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Action, "action", "a", "", "action for test body")
+
+	cmdWebhookTest.Flags().StringVarP(&fieldsWebhookTest, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdWebhookTest)
 	var fieldsUpdate string
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
@@ -148,10 +145,11 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Value, "value", "v", "", "Update Behavior")
-	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Behavior, "behavior", "b", "", "Update Behavior")
-	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Update Behavior")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior.")
+	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Behavior, "behavior", "b", "", "Behavior type.")
+	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Folder behaviors path.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
@@ -167,6 +165,7 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdDelete)
 }

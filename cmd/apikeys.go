@@ -1,20 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/apikey"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = api_key.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
+	"os"
+
+	api_key "github.com/Files-com/files-sdk-go/apikey"
 )
 
 var (
@@ -42,12 +37,12 @@ func ApiKeysInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsApiKeyList.Page, "page", "p", 0, "List Api Keys")
-	cmdList.Flags().IntVarP(&paramsApiKeyList.PerPage, "per-page", "r", 0, "List Api Keys")
-	cmdList.Flags().StringVarP(&paramsApiKeyList.Action, "action", "a", "", "List Api Keys")
-	cmdList.Flags().StringVarP(&paramsApiKeyList.Cursor, "cursor", "c", "", "List Api Keys")
+	cmdList.Flags().IntVarP(&paramsApiKeyList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsApiKeyList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsApiKeyList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsApiKeyList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	ApiKeys.AddCommand(cmdList)
 	var fieldsFindCurrent string
 	paramsApiKeyFindCurrent := files_sdk.ApiKeyFindCurrentParams{}
@@ -63,8 +58,9 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsFindCurrent)
 		},
 	}
-	cmdFindCurrent.Flags().StringVarP(&paramsApiKeyFindCurrent.Format, "format", "o", "", "Show information about current API key.  (Requires current API connection to be using an API key.)")
-	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "f", "", "comma separated list of field names")
+	cmdFindCurrent.Flags().StringVarP(&paramsApiKeyFindCurrent.Format, "format", "f", "", "")
+
+	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsFind string
 	paramsApiKeyFind := files_sdk.ApiKeyFindParams{}
@@ -80,7 +76,8 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
@@ -96,11 +93,12 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Name, "name", "n", "", "Create Api Key")
-	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.ExpiresAt, "expires-at", "e", "", "Create Api Key")
-	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.PermissionSet, "permission-set", "r", "", "Create Api Key")
-	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Path, "path", "p", "", "Create Api Key")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
+	lib.TimeVarP(cmdCreate.Flags(), &paramsApiKeyCreate.ExpiresAt, "expires-at", "e")
+	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.PermissionSet, "permission-set", "r", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Path, "path", "p", "", "Folder path restriction for this api key.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdCreate)
 	var fieldsUpdateCurrent string
 	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
@@ -116,10 +114,11 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdateCurrent)
 		},
 	}
-	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e", "", "Update current API key.  (Requires current API connection to be using an API key.)")
-	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.Name, "name", "n", "", "Update current API key.  (Requires current API connection to be using an API key.)")
-	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.PermissionSet, "permission-set", "p", "", "Update current API key.  (Requires current API connection to be using an API key.)")
-	cmdUpdateCurrent.Flags().StringVarP(&fieldsUpdateCurrent, "fields", "f", "", "comma separated list of field names")
+	lib.TimeVarP(cmdUpdateCurrent.Flags(), &paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e")
+	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
+	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.PermissionSet, "permission-set", "p", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+
+	cmdUpdateCurrent.Flags().StringVarP(&fieldsUpdateCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdateCurrent)
 	var fieldsUpdate string
 	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
@@ -135,10 +134,11 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.Name, "name", "n", "", "Update Api Key")
-	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.ExpiresAt, "expires-at", "e", "", "Update Api Key")
-	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.PermissionSet, "permission-set", "p", "", "Update Api Key")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
+	lib.TimeVarP(cmdUpdate.Flags(), &paramsApiKeyUpdate.ExpiresAt, "expires-at", "e")
+	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.PermissionSet, "permission-set", "p", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdate)
 	var fieldsDeleteCurrent string
 	paramsApiKeyDeleteCurrent := files_sdk.ApiKeyDeleteCurrentParams{}
@@ -154,8 +154,9 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsDeleteCurrent)
 		},
 	}
-	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "o", "", "Delete current API key.  (Requires current API connection to be using an API key.)")
-	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "f", "", "comma separated list of field names")
+	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "f", "", "")
+
+	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDeleteCurrent)
 	var fieldsDelete string
 	paramsApiKeyDelete := files_sdk.ApiKeyDeleteParams{}
@@ -171,6 +172,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDelete)
 }

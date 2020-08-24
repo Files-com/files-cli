@@ -1,3 +1,64 @@
 # Files.com Command Line App
 
-More README content coming soon!
+The Files.com CLI App provides convenient access to the Files.com API.
+
+## Installation
+
+Download latest release for Windows, MacOS, or Linux [here](https://github.com/Files-com/files-cli/releases)
+
+## Documentation
+
+### Setting API Key
+
+#### Setting by ENV 
+
+``` sh
+export FILES_API_KEY="XXXX-XXXX..."
+```
+
+#### Set Via a Flag
+
+```sh 
+files-cli folders list-for --api-key "XXXX-XXXX..."
+```
+
+### List files
+
+*Return root folder listing*
+
+```sh 
+files-cli folders list-for --fields path,type
+
+[{
+    "path": "document.docx",
+    "type": "file"
+},
+{
+    "path": "other",
+    "type": "directory"
+}]
+```
+
+*List a Folder*
+
+```sh 
+file-cli folders list-for other
+```
+
+### Download a File
+
+```sh
+files-cli download [remote-path] [local-path]
+```
+
+### Upload a File
+
+```sh
+files-cli download [source-path] [remote-path]
+```
+
+### Command Help
+
+```sh
+files-cli [command] --help
+```

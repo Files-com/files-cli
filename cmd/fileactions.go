@@ -1,20 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/fileaction"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = file_action.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
+	"os"
+
+	file_action "github.com/Files-com/files-sdk-go/fileaction"
 )
 
 var (
@@ -40,9 +35,10 @@ func FileActionsInit() {
 			lib.JsonMarshal(result, fieldsCopy)
 		},
 	}
-	cmdCopy.Flags().StringVarP(&paramsFileActionCopy.Path, "path", "p", "", "Copy file/folder")
-	cmdCopy.Flags().StringVarP(&paramsFileActionCopy.Destination, "destination", "d", "", "Copy file/folder")
-	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "f", "", "comma separated list of field names")
+	cmdCopy.Flags().StringVarP(&paramsFileActionCopy.Path, "path", "p", "", "Path to operate on.")
+	cmdCopy.Flags().StringVarP(&paramsFileActionCopy.Destination, "destination", "d", "", "Copy destination path.")
+
+	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
 	FileActions.AddCommand(cmdCopy)
 	var fieldsMove string
 	paramsFileActionMove := files_sdk.FileActionMoveParams{}
@@ -58,9 +54,10 @@ func FileActionsInit() {
 			lib.JsonMarshal(result, fieldsMove)
 		},
 	}
-	cmdMove.Flags().StringVarP(&paramsFileActionMove.Path, "path", "p", "", "Move file/folder")
-	cmdMove.Flags().StringVarP(&paramsFileActionMove.Destination, "destination", "d", "", "Move file/folder")
-	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "f", "", "comma separated list of field names")
+	cmdMove.Flags().StringVarP(&paramsFileActionMove.Path, "path", "p", "", "Path to operate on.")
+	cmdMove.Flags().StringVarP(&paramsFileActionMove.Destination, "destination", "d", "", "Move destination path.")
+
+	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
 	FileActions.AddCommand(cmdMove)
 	var fieldsBeginUpload string
 	paramsFileActionBeginUpload := files_sdk.FileActionBeginUploadParams{}
@@ -76,11 +73,12 @@ func FileActionsInit() {
 			lib.JsonMarshal(result, fieldsBeginUpload)
 		},
 	}
-	cmdBeginUpload.Flags().StringVarP(&paramsFileActionBeginUpload.Path, "path", "t", "", "Begin file upload")
-	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Part, "part", "p", 0, "Begin file upload")
-	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Parts, "parts", "a", 0, "Begin file upload")
-	cmdBeginUpload.Flags().StringVarP(&paramsFileActionBeginUpload.Ref, "ref", "r", "", "Begin file upload")
-	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Restart, "restart", "e", 0, "Begin file upload")
-	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "f", "", "comma separated list of field names")
+	cmdBeginUpload.Flags().StringVarP(&paramsFileActionBeginUpload.Path, "path", "t", "", "Path to operate on.")
+	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Part, "part", "p", 0, "Part if uploading a part.")
+	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Parts, "parts", "a", 0, "How many parts to fetch?")
+	cmdBeginUpload.Flags().StringVarP(&paramsFileActionBeginUpload.Ref, "ref", "r", "", "")
+	cmdBeginUpload.Flags().IntVarP(&paramsFileActionBeginUpload.Restart, "restart", "e", 0, "File byte offset to restart from.")
+
+	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")
 	FileActions.AddCommand(cmdBeginUpload)
 }

@@ -1,20 +1,12 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/bundledownload"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = bundle_download.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	bundle_download "github.com/Files-com/files-sdk-go/bundledownload"
 )
 
 var (
@@ -42,11 +34,11 @@ func BundleDownloadsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsBundleDownloadList.Page, "page", "p", 0, "List Bundle Downloads")
-	cmdList.Flags().IntVarP(&paramsBundleDownloadList.PerPage, "per-page", "e", 0, "List Bundle Downloads")
-	cmdList.Flags().StringVarP(&paramsBundleDownloadList.Action, "action", "a", "", "List Bundle Downloads")
-	cmdList.Flags().StringVarP(&paramsBundleDownloadList.Cursor, "cursor", "c", "", "List Bundle Downloads")
+	cmdList.Flags().IntVarP(&paramsBundleDownloadList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsBundleDownloadList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsBundleDownloadList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsBundleDownloadList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	BundleDownloads.AddCommand(cmdList)
 }

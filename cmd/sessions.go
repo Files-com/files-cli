@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/session"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = session.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -40,11 +34,12 @@ func SessionsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Username, "username", "u", "", "Create user session (log in)")
-	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Password, "password", "a", "", "Create user session (log in)")
-	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Otp, "otp", "o", "", "Create user session (log in)")
-	cmdCreate.Flags().StringVarP(&paramsSessionCreate.PartialSessionId, "partial-session-id", "p", "", "Create user session (log in)")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Username, "username", "u", "", "Username to sign in as")
+	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Password, "password", "a", "", "Password for sign in")
+	cmdCreate.Flags().StringVarP(&paramsSessionCreate.Otp, "otp", "o", "", "If this user has a 2FA device, provide its OTP or code here.")
+	cmdCreate.Flags().StringVarP(&paramsSessionCreate.PartialSessionId, "partial-session-id", "p", "", "Identifier for a partially-completed login")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsSessionDelete := files_sdk.SessionDeleteParams{}
@@ -60,7 +55,8 @@ func SessionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&paramsSessionDelete.Format, "format", "o", "", "Delete user session (log out)")
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&paramsSessionDelete.Format, "format", "f", "", "")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdDelete)
 }

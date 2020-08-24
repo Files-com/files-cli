@@ -1,20 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/ipaddress"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = ip_address.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
+	"os"
+
+	ip_address "github.com/Files-com/files-sdk-go/ipaddress"
 )
 
 var (
@@ -42,12 +37,12 @@ func IpAddressesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsIpAddressList.Page, "page", "p", 0, "List IP Addresses associated with the current site")
-	cmdList.Flags().IntVarP(&paramsIpAddressList.PerPage, "per-page", "e", 0, "List IP Addresses associated with the current site")
-	cmdList.Flags().StringVarP(&paramsIpAddressList.Action, "action", "a", "", "List IP Addresses associated with the current site")
-	cmdList.Flags().StringVarP(&paramsIpAddressList.Cursor, "cursor", "c", "", "List IP Addresses associated with the current site")
+	cmdList.Flags().IntVarP(&paramsIpAddressList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsIpAddressList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsIpAddressList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsIpAddressList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetReserved string
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
@@ -63,10 +58,11 @@ func IpAddressesInit() {
 			lib.JsonMarshal(result, fieldsGetReserved)
 		},
 	}
-	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.Page, "page", "p", 0, "List all possible public IP addresses")
-	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.PerPage, "per-page", "e", 0, "List all possible public IP addresses")
-	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Action, "action", "a", "", "List all possible public IP addresses")
-	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Cursor, "cursor", "c", "", "List all possible public IP addresses")
-	cmdGetReserved.Flags().StringVarP(&fieldsGetReserved, "fields", "f", "", "comma separated list of field names")
+	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.Page, "page", "p", 0, "Current page number.")
+	cmdGetReserved.Flags().IntVarP(&paramsIpAddressGetReserved.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+
+	cmdGetReserved.Flags().StringVarP(&fieldsGetReserved, "fields", "", "", "comma separated list of field names")
 	IpAddresses.AddCommand(cmdGetReserved)
 }

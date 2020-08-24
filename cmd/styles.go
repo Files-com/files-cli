@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/style"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = style.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -40,8 +34,9 @@ func StylesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&paramsStyleFind.Path, "path", "p", "", "Show Style")
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&paramsStyleFind.Path, "path", "p", "", "Style path.")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Styles.AddCommand(cmdFind)
 	var fieldsUpdate string
 	paramsStyleUpdate := files_sdk.StyleUpdateParams{}
@@ -57,8 +52,9 @@ func StylesInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsStyleUpdate.Path, "path", "p", "", "Update Style")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsStyleUpdate.Path, "path", "p", "", "Style path.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Styles.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsStyleDelete := files_sdk.StyleDeleteParams{}
@@ -74,7 +70,8 @@ func StylesInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&paramsStyleDelete.Path, "path", "p", "", "Delete Style")
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&paramsStyleDelete.Path, "path", "p", "", "Style path.")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Styles.AddCommand(cmdDelete)
 }

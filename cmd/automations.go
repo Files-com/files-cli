@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/automation"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = automation.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,13 +36,13 @@ func AutomationsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsAutomationList.Page, "page", "p", 0, "List Automations")
-	cmdList.Flags().IntVarP(&paramsAutomationList.PerPage, "per-page", "r", 0, "List Automations")
-	cmdList.Flags().StringVarP(&paramsAutomationList.Action, "action", "a", "", "List Automations")
-	cmdList.Flags().StringVarP(&paramsAutomationList.Cursor, "cursor", "c", "", "List Automations")
-	cmdList.Flags().StringVarP(&paramsAutomationList.Automation, "automation", "u", "", "List Automations")
+	cmdList.Flags().IntVarP(&paramsAutomationList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsAutomationList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsAutomationList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsAutomationList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsAutomationList.Automation, "automation", "u", "", "DEPRECATED: Type of automation to filter by. Use `filter[automation]` instead.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Automations.AddCommand(cmdList)
 	var fieldsFind string
 	paramsAutomationFind := files_sdk.AutomationFindParams{}
@@ -64,7 +58,8 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
@@ -80,16 +75,17 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Automation, "automation", "a", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "s", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "r", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "t", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Interval, "interval", "i", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Path, "path", "p", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.UserIds, "user-ids", "u", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.GroupIds, "group-ids", "g", "", "Create Automation")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Automation, "automation", "a", "", "Type of automation.  One of: `create_folder`, `request_file`, `request_move`")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "s", "", "Source Path")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "Destination Path")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Interval, "interval", "i", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
@@ -105,16 +101,17 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "s", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "r", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "t", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Interval, "interval", "n", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Path, "path", "p", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.UserIds, "user-ids", "u", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.GroupIds, "group-ids", "g", "", "Update Automation")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Type of automation.  One of: `create_folder`, `request_file`, `request_move`")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "s", "", "Source Path")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Destination Path")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Interval, "interval", "n", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsAutomationDelete := files_sdk.AutomationDeleteParams{}
@@ -130,6 +127,7 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdDelete)
 }

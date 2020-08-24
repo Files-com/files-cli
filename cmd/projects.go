@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/project"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = project.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,12 +36,12 @@ func ProjectsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsProjectList.Page, "page", "p", 0, "List Projects")
-	cmdList.Flags().IntVarP(&paramsProjectList.PerPage, "per-page", "e", 0, "List Projects")
-	cmdList.Flags().StringVarP(&paramsProjectList.Action, "action", "a", "", "List Projects")
-	cmdList.Flags().StringVarP(&paramsProjectList.Cursor, "cursor", "c", "", "List Projects")
+	cmdList.Flags().IntVarP(&paramsProjectList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsProjectList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsProjectList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsProjectList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Projects.AddCommand(cmdList)
 	var fieldsFind string
 	paramsProjectFind := files_sdk.ProjectFindParams{}
@@ -63,7 +57,8 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsProjectCreate := files_sdk.ProjectCreateParams{}
@@ -79,8 +74,9 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsProjectCreate.GlobalAccess, "global-access", "g", "", "Create Project")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsProjectCreate.GlobalAccess, "global-access", "g", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsProjectUpdate := files_sdk.ProjectUpdateParams{}
@@ -96,8 +92,9 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsProjectUpdate.GlobalAccess, "global-access", "g", "", "Update Project")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsProjectUpdate.GlobalAccess, "global-access", "g", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsProjectDelete := files_sdk.ProjectDeleteParams{}
@@ -113,6 +110,7 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdDelete)
 }

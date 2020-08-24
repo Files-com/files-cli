@@ -2,15 +2,19 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/Files-com/files-cli/cmd"
 	files "github.com/Files-com/files-sdk-go"
 	"github.com/spf13/cobra"
-	"os"
 )
+
+var VERSION = "_VERSION"
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use: "files-cli [resource]",
+		Use:     "files-cli [resource]",
+		Version: VERSION,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			setting := files.Config{}
 			if setting.GetAPIKey() == "" {
@@ -20,6 +24,9 @@ func main() {
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&files.APIKey, "api-key", "", "API Key")
+	rootCmd.AddCommand(cmd.UploadCmd())
+	rootCmd.AddCommand(cmd.DownloadCmd())
+	rootCmd.AddCommand(cmd.VersionCmd(VERSION))
 	cmd.AccountLineItemsInit()
 	rootCmd.AddCommand(cmd.AccountLineItems)
 	cmd.ActionsInit()

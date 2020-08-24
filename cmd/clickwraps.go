@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/clickwrap"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = clickwrap.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,12 +36,12 @@ func ClickwrapsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsClickwrapList.Page, "page", "p", 0, "List Clickwraps")
-	cmdList.Flags().IntVarP(&paramsClickwrapList.PerPage, "per-page", "e", 0, "List Clickwraps")
-	cmdList.Flags().StringVarP(&paramsClickwrapList.Action, "action", "a", "", "List Clickwraps")
-	cmdList.Flags().StringVarP(&paramsClickwrapList.Cursor, "cursor", "c", "", "List Clickwraps")
+	cmdList.Flags().IntVarP(&paramsClickwrapList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsClickwrapList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsClickwrapList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsClickwrapList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Clickwraps.AddCommand(cmdList)
 	var fieldsFind string
 	paramsClickwrapFind := files_sdk.ClickwrapFindParams{}
@@ -63,7 +57,8 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsClickwrapCreate := files_sdk.ClickwrapCreateParams{}
@@ -79,12 +74,13 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.Name, "name", "n", "", "Create Clickwrap")
-	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.Body, "body", "b", "", "Create Clickwrap")
-	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithBundles, "use-with-bundles", "u", "", "Create Clickwrap")
-	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithInboxes, "use-with-inboxes", "i", "", "Create Clickwrap")
-	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithUsers, "use-with-users", "s", "", "Create Clickwrap")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.Name, "name", "n", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
+	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.Body, "body", "b", "", "Body text of Clickwrap (supports Markdown formatting).")
+	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithBundles, "use-with-bundles", "u", "", "Use this Clickwrap for Bundles?")
+	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithInboxes, "use-with-inboxes", "i", "", "Use this Clickwrap for Inboxes?")
+	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.UseWithUsers, "use-with-users", "s", "", "Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsClickwrapUpdate := files_sdk.ClickwrapUpdateParams{}
@@ -100,12 +96,13 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Name, "name", "n", "", "Update Clickwrap")
-	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Body, "body", "b", "", "Update Clickwrap")
-	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithBundles, "use-with-bundles", "u", "", "Update Clickwrap")
-	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithInboxes, "use-with-inboxes", "o", "", "Update Clickwrap")
-	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithUsers, "use-with-users", "s", "", "Update Clickwrap")
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "f", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Name, "name", "n", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
+	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Body, "body", "b", "", "Body text of Clickwrap (supports Markdown formatting).")
+	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithBundles, "use-with-bundles", "u", "", "Use this Clickwrap for Bundles?")
+	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithInboxes, "use-with-inboxes", "o", "", "Use this Clickwrap for Inboxes?")
+	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithUsers, "use-with-users", "s", "", "Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password.")
+
+	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsClickwrapDelete := files_sdk.ClickwrapDeleteParams{}
@@ -121,6 +118,7 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdDelete)
 }

@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/request"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = request.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,13 +36,13 @@ func RequestsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsRequestList.Page, "page", "p", 0, "List Requests")
-	cmdList.Flags().IntVarP(&paramsRequestList.PerPage, "per-page", "e", 0, "List Requests")
-	cmdList.Flags().StringVarP(&paramsRequestList.Action, "action", "a", "", "List Requests")
-	cmdList.Flags().StringVarP(&paramsRequestList.Cursor, "cursor", "c", "", "List Requests")
-	cmdList.Flags().StringVarP(&paramsRequestList.Path, "path", "t", "", "List Requests")
+	cmdList.Flags().IntVarP(&paramsRequestList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsRequestList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsRequestList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsRequestList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsRequestList.Path, "path", "t", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
@@ -64,12 +58,13 @@ func RequestsInit() {
 			lib.JsonMarshal(result, fieldsGetFolder)
 		},
 	}
-	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.Page, "page", "p", 0, "List Requests")
-	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.PerPage, "per-page", "e", 0, "List Requests")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Action, "action", "a", "", "List Requests")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "List Requests")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "t", "", "List Requests")
-	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "f", "", "comma separated list of field names")
+	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.Page, "page", "p", 0, "Current page number.")
+	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "t", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
+
+	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "", "", "comma separated list of field names")
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
@@ -85,11 +80,12 @@ func RequestsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsRequestCreate.Path, "path", "p", "", "Create Request")
-	cmdCreate.Flags().StringVarP(&paramsRequestCreate.Destination, "destination", "d", "", "Create Request")
-	cmdCreate.Flags().StringVarP(&paramsRequestCreate.UserIds, "user-ids", "u", "", "Create Request")
-	cmdCreate.Flags().StringVarP(&paramsRequestCreate.GroupIds, "group-ids", "g", "", "Create Request")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&paramsRequestCreate.Path, "path", "p", "", "Folder path on which to request the file.")
+	cmdCreate.Flags().StringVarP(&paramsRequestCreate.Destination, "destination", "d", "", "Destination filename (without extension) to request.")
+	cmdCreate.Flags().StringVarP(&paramsRequestCreate.UserIds, "user-ids", "u", "", "A list of user IDs to request the file from. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().StringVarP(&paramsRequestCreate.GroupIds, "group-ids", "g", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Requests.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsRequestDelete := files_sdk.RequestDeleteParams{}
@@ -105,6 +101,7 @@ func RequestsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "f", "", "comma separated list of field names")
+
+	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Requests.AddCommand(cmdDelete)
 }

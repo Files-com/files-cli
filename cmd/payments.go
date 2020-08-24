@@ -1,20 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/payment"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = payment.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,12 +36,12 @@ func PaymentsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsPaymentList.Page, "page", "p", 0, "List Payments")
-	cmdList.Flags().IntVarP(&paramsPaymentList.PerPage, "per-page", "e", 0, "List Payments")
-	cmdList.Flags().StringVarP(&paramsPaymentList.Action, "action", "a", "", "List Payments")
-	cmdList.Flags().StringVarP(&paramsPaymentList.Cursor, "cursor", "c", "", "List Payments")
+	cmdList.Flags().IntVarP(&paramsPaymentList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsPaymentList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsPaymentList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsPaymentList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Payments.AddCommand(cmdList)
 	var fieldsFind string
 	paramsPaymentFind := files_sdk.PaymentFindParams{}
@@ -63,6 +57,7 @@ func PaymentsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Payments.AddCommand(cmdFind)
 }

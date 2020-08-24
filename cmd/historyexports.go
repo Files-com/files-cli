@@ -1,20 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/historyexport"
-	"os"
-)
+	"github.com/spf13/cobra"
 
-var (
-	_ = files_sdk.Config{}
-	_ = history_export.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
+	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
+	"os"
+
+	history_export "github.com/Files-com/files-sdk-go/historyexport"
 )
 
 var (
@@ -40,7 +35,8 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "f", "", "comma separated list of field names")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsHistoryExportCreate := files_sdk.HistoryExportCreateParams{}
@@ -56,27 +52,28 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.StartAt, "start-at", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.EndAt, "end-at", "e", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryAction, "query-action", "a", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryInterface, "query-interface", "n", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUserId, "query-user-id", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFileId, "query-file-id", "i", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryParentId, "query-parent-id", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryPath, "query-path", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFolder, "query-folder", "o", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QuerySrc, "query-src", "s", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryDestination, "query-destination", "d", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryIp, "query-ip", "p", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUsername, "query-username", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFailureType, "query-failure-type", "t", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetId, "query-target-id", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetName, "query-target-name", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermission, "query-target-permission", "r", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetUserId, "query-target-user-id", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetUsername, "query-target-username", "u", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPlatform, "query-target-platform", "l", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "", "Create History Export")
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "f", "", "comma separated list of field names")
+	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.StartAt, "start-at", "")
+	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.EndAt, "end-at", "e")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryAction, "query-action", "a", "", "Filter results by this this action type. Valid values: `create`, `read`, `update`, `destroy`, `move`, `login`, `failedlogin`, `copy`, `user_create`, `user_update`, `user_destroy`, `group_create`, `group_update`, `group_destroy`, `permission_create`, `permission_destroy`, `api_key_create`, `api_key_update`, `api_key_destroy`")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryInterface, "query-interface", "n", "", "Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUserId, "query-user-id", "", "", "Return results that are actions performed by the user indiciated by this User ID")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFileId, "query-file-id", "i", "", "Return results that are file actions related to the file indicated by this File ID")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryParentId, "query-parent-id", "", "", "Return results that are file actions inside the parent folder specified by this folder ID")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryPath, "query-path", "", "", "Return results that are file actions related to this path.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFolder, "query-folder", "f", "", "Return results that are file actions related to files or folders inside this folder path.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QuerySrc, "query-src", "s", "", "Return results that are file moves originating from this path.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryDestination, "query-destination", "d", "", "Return results that are file moves with this path as destination.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryIp, "query-ip", "p", "", "Filter results by this IP address.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUsername, "query-username", "", "", "Filter results by this username.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFailureType, "query-failure-type", "t", "", "If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetId, "query-target-id", "", "", "If searching for Histories about specific objects (such as Users, or API Keys), this paremeter restricts results to objects that match this ID.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetName, "query-target-name", "", "", "If searching for Histories about Users, Groups or other objects with names, this parameter restricts results to objects with this name/username.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermission, "query-target-permission", "r", "", "If searching for Histories about Permisisons, this parameter restricts results to permissions of this level.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetUserId, "query-target-user-id", "", "", "If searching for Histories about API keys, this parameter restricts results to API keys created by/for this user ID.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetUsername, "query-target-username", "u", "", "If searching for Histories about API keys, this parameter restricts results to API keys created by/for this username.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPlatform, "query-target-platform", "l", "", "If searching for Histories about API keys, this parameter restricts results to API keys associated with this platform.")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "", "If searching for Histories about API keys, this parameter restricts results to API keys with this permission set.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdCreate)
 }

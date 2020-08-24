@@ -1,20 +1,11 @@
 package cmd
 
-import "github.com/spf13/cobra"
 import (
-	"fmt"
 	"github.com/Files-com/files-cli/lib"
+	"github.com/spf13/cobra"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/app"
-	"os"
-)
-
-var (
-	_ = files_sdk.Config{}
-	_ = app.Client{}
-	_ = lib.OnlyFields
-	_ = fmt.Println
-	_ = os.Exit
 )
 
 var (
@@ -42,11 +33,11 @@ func AppsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsAppList.Page, "page", "p", 0, "List Apps")
-	cmdList.Flags().IntVarP(&paramsAppList.PerPage, "per-page", "r", 0, "List Apps")
-	cmdList.Flags().StringVarP(&paramsAppList.Action, "action", "a", "", "List Apps")
-	cmdList.Flags().StringVarP(&paramsAppList.Cursor, "cursor", "c", "", "List Apps")
+	cmdList.Flags().IntVarP(&paramsAppList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().IntVarP(&paramsAppList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVarP(&paramsAppList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
+	cmdList.Flags().StringVarP(&paramsAppList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "f", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Apps.AddCommand(cmdList)
 }
