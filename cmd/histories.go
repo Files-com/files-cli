@@ -91,6 +91,7 @@ func HistoriesInit() {
 	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
 	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListForUser.Flags().Int64VarP(&paramsHistoryListForUser.UserId, "user-id", "u", 0, "User ID.")
 
 	cmdListForUser.Flags().StringVarP(&fieldsListForUser, "fields", "", "", "comma separated list of field names")
 	Histories.AddCommand(cmdListForUser)
@@ -129,8 +130,11 @@ func HistoriesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
-			it := history.List(params)
-
+			it, err := history.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

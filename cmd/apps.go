@@ -4,6 +4,9 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/app"
 )
@@ -28,8 +31,11 @@ func AppsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsAppList
 			params.MaxPages = MaxPagesList
-			it := app.List(params)
-
+			it, err := app.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

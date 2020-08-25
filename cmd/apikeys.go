@@ -32,11 +32,15 @@ func ApiKeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsApiKeyList
 			params.MaxPages = MaxPagesList
-			it := api_key.List(params)
-
+			it, err := api_key.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
+	cmdList.Flags().Int64VarP(&paramsApiKeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().IntVarP(&paramsApiKeyList.Page, "page", "p", 0, "Current page number.")
 	cmdList.Flags().IntVarP(&paramsApiKeyList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsApiKeyList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
@@ -76,6 +80,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsApiKeyFind.Id, "id", "i", 0, "Api Key ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFind)
@@ -93,6 +98,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsApiKeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsApiKeyCreate.ExpiresAt, "expires-at", "e")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.PermissionSet, "permission-set", "r", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
@@ -134,6 +140,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsApiKeyUpdate.Id, "id", "i", 0, "Api Key ID.")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
 	lib.TimeVarP(cmdUpdate.Flags(), &paramsApiKeyUpdate.ExpiresAt, "expires-at", "e")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.PermissionSet, "permission-set", "p", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
@@ -172,6 +179,7 @@ func ApiKeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsApiKeyDelete.Id, "id", "i", 0, "Api Key ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDelete)

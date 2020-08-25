@@ -31,8 +31,11 @@ func UsersInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUserList
 			params.MaxPages = MaxPagesList
-			it := user.List(params)
-
+			it, err := user.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -59,6 +62,7 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsUserFind.Id, "id", "i", 0, "User ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Users.AddCommand(cmdFind)
@@ -80,6 +84,7 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.ChangePasswordConfirmation, "change-password-confirmation", "c", "", "Optional, but if provided, we will ensure that it matches the value sent in `change_password`.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Email, "email", "", "", "User's email.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GrantPermission, "grant-permission", "g", "", "Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, or `history`.")
+	cmdCreate.Flags().Int64VarP(&paramsUserCreate.GroupId, "group-id", "", 0, "Group ID to associate this user with.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GroupIds, "group-ids", "", "", "A list of group ids to associate this user with.  Comma delimited.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Password, "password", "w", "", "User password.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.PasswordConfirmation, "password-confirmation", "", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
@@ -93,6 +98,7 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Notes, "notes", "o", "", "Any internal notes on the user")
 	cmdCreate.Flags().IntVarP(&paramsUserCreate.PasswordValidityDays, "password-validity-days", "", 0, "Number of days to allow user to use the same password")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.SslRequired, "ssl-required", "", "", "SSL required setting")
+	cmdCreate.Flags().Int64VarP(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", "", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.TimeZone, "time-zone", "", "", "User time zone")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.UserRoot, "user-root", "", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Username, "username", "", "", "User's username")
@@ -113,6 +119,7 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUnlock)
 		},
 	}
+	cmdUnlock.Flags().Int64VarP(&paramsUserUnlock.Id, "id", "i", 0, "User ID.")
 
 	cmdUnlock.Flags().StringVarP(&fieldsUnlock, "fields", "", "", "comma separated list of field names")
 	Users.AddCommand(cmdUnlock)
@@ -130,6 +137,7 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsResendWelcomeEmail)
 		},
 	}
+	cmdResendWelcomeEmail.Flags().Int64VarP(&paramsUserResendWelcomeEmail.Id, "id", "i", 0, "User ID.")
 
 	cmdResendWelcomeEmail.Flags().StringVarP(&fieldsResendWelcomeEmail, "fields", "", "", "comma separated list of field names")
 	Users.AddCommand(cmdResendWelcomeEmail)
@@ -147,6 +155,7 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUser2faReset)
 		},
 	}
+	cmdUser2faReset.Flags().Int64VarP(&paramsUserUser2faReset.Id, "id", "i", 0, "User ID.")
 
 	cmdUser2faReset.Flags().StringVarP(&fieldsUser2faReset, "fields", "", "", "comma separated list of field names")
 	Users.AddCommand(cmdUser2faReset)
@@ -164,10 +173,12 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.Id, "id", "", 0, "User ID.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.ChangePassword, "change-password", "s", "", "Used for changing a password on an existing user.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.ChangePasswordConfirmation, "change-password-confirmation", "c", "", "Optional, but if provided, we will ensure that it matches the value sent in `change_password`.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Email, "email", "", "", "User's email.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GrantPermission, "grant-permission", "g", "", "Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, or `history`.")
+	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.GroupId, "group-id", "", 0, "Group ID to associate this user with.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GroupIds, "group-ids", "", "", "A list of group ids to associate this user with.  Comma delimited.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Password, "password", "w", "", "User password.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.PasswordConfirmation, "password-confirmation", "", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
@@ -181,6 +192,7 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Notes, "notes", "o", "", "Any internal notes on the user")
 	cmdUpdate.Flags().IntVarP(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", "", 0, "Number of days to allow user to use the same password")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.SslRequired, "ssl-required", "", "", "SSL required setting")
+	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", "", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.TimeZone, "time-zone", "", "", "User time zone")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.UserRoot, "user-root", "", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Username, "username", "", "", "User's username")
@@ -201,6 +213,7 @@ func UsersInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsUserDelete.Id, "id", "i", 0, "User ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Users.AddCommand(cmdDelete)

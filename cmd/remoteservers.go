@@ -32,8 +32,11 @@ func RemoteServersInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
-			it := remote_server.List(params)
-
+			it, err := remote_server.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsRemoteServerFind.Id, "id", "i", 0, "Remote Server ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdFind)
@@ -126,6 +130,7 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsRemoteServerUpdate.Id, "id", "", 0, "Remote Server ID.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AwsAccessKey, "aws-access-key", "k", "", "AWS Access Key.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AwsSecretKey, "aws-secret-key", "e", "", "AWS secret key.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Password, "password", "p", "", "Password if needed.")
@@ -177,6 +182,7 @@ func RemoteServersInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsRemoteServerDelete.Id, "id", "i", 0, "Remote Server ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdDelete)

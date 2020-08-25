@@ -6,6 +6,9 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+	"os"
+
 	external_event "github.com/Files-com/files-sdk-go/externalevent"
 )
 
@@ -29,8 +32,11 @@ func ExternalEventsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsExternalEventList
 			params.MaxPages = MaxPagesList
-			it := external_event.List(params)
-
+			it, err := external_event.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

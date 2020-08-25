@@ -31,8 +31,11 @@ func ProjectsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsProjectList
 			params.MaxPages = MaxPagesList
-			it := project.List(params)
-
+			it, err := project.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -57,6 +60,7 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsProjectFind.Id, "id", "i", 0, "Project ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdFind)
@@ -92,6 +96,7 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsProjectUpdate.Id, "id", "i", 0, "Project ID.")
 	cmdUpdate.Flags().StringVarP(&paramsProjectUpdate.GlobalAccess, "global-access", "g", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
@@ -110,6 +115,7 @@ func ProjectsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsProjectDelete.Id, "id", "i", 0, "Project ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Projects.AddCommand(cmdDelete)

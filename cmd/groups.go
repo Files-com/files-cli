@@ -31,8 +31,11 @@ func GroupsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsGroupList
 			params.MaxPages = MaxPagesList
-			it := group.List(params)
-
+			it, err := group.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsGroupFind.Id, "id", "i", 0, "Group ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdFind)
@@ -96,6 +100,7 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsGroupUpdate.Id, "id", "i", 0, "Group ID.")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Name, "name", "n", "", "Group name.")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.Notes, "notes", "o", "", "Group notes.")
 	cmdUpdate.Flags().StringVarP(&paramsGroupUpdate.UserIds, "user-ids", "u", "", "A list of user ids. If sent as a string, should be comma-delimited.")
@@ -117,6 +122,7 @@ func GroupsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsGroupDelete.Id, "id", "i", 0, "Group ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Groups.AddCommand(cmdDelete)

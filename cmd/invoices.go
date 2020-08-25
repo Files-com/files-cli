@@ -31,8 +31,11 @@ func InvoicesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsInvoiceList
 			params.MaxPages = MaxPagesList
-			it := invoice.List(params)
-
+			it, err := invoice.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -57,6 +60,7 @@ func InvoicesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsInvoiceFind.Id, "id", "i", 0, "Invoice ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Invoices.AddCommand(cmdFind)

@@ -32,11 +32,15 @@ func PublicKeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsPublicKeyList
 			params.MaxPages = MaxPagesList
-			it := public_key.List(params)
-
+			it, err := public_key.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
+	cmdList.Flags().Int64VarP(&paramsPublicKeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.Page, "page", "p", 0, "Current page number.")
 	cmdList.Flags().IntVarP(&paramsPublicKeyList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsPublicKeyList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
@@ -58,6 +62,7 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsPublicKeyFind.Id, "id", "i", 0, "Public Key ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	PublicKeys.AddCommand(cmdFind)
@@ -75,6 +80,7 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsPublicKeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVarP(&paramsPublicKeyCreate.Title, "title", "t", "", "Internal reference for key.")
 	cmdCreate.Flags().StringVarP(&paramsPublicKeyCreate.PublicKey, "public-key", "p", "", "Actual contents of SSH key.")
 
@@ -94,6 +100,7 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsPublicKeyUpdate.Id, "id", "i", 0, "Public Key ID.")
 	cmdUpdate.Flags().StringVarP(&paramsPublicKeyUpdate.Title, "title", "t", "", "Internal reference for key.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
@@ -112,6 +119,7 @@ func PublicKeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsPublicKeyDelete.Id, "id", "i", 0, "Public Key ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	PublicKeys.AddCommand(cmdDelete)

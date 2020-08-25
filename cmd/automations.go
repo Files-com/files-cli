@@ -31,8 +31,11 @@ func AutomationsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
-			it := automation.List(params)
-
+			it, err := automation.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsAutomationFind.Id, "id", "i", 0, "Automation ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdFind)
@@ -101,6 +105,7 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsAutomationUpdate.Id, "id", "i", 0, "Automation ID.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Type of automation.  One of: `create_folder`, `request_file`, `request_move`")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "s", "", "Source Path")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Destination Path")
@@ -127,6 +132,7 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsAutomationDelete.Id, "id", "i", 0, "Automation ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdDelete)

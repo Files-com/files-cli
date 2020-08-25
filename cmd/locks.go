@@ -34,8 +34,11 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it := lock.ListFor(params)
-
+			it, err := lock.ListFor(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}

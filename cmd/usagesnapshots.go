@@ -6,6 +6,9 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+	"os"
+
 	usage_snapshot "github.com/Files-com/files-sdk-go/usagesnapshot"
 )
 
@@ -29,8 +32,11 @@ func UsageSnapshotsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUsageSnapshotList
 			params.MaxPages = MaxPagesList
-			it := usage_snapshot.List(params)
-
+			it, err := usage_snapshot.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

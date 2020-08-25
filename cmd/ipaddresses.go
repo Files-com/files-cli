@@ -32,8 +32,11 @@ func IpAddressesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsIpAddressList
 			params.MaxPages = MaxPagesList
-			it := ip_address.List(params)
-
+			it, err := ip_address.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

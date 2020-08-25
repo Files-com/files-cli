@@ -35,6 +35,7 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsHistoryExportFind.Id, "id", "i", 0, "History Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	HistoryExports.AddCommand(cmdFind)
@@ -52,6 +53,7 @@ func HistoryExportsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsHistoryExportCreate.UserId, "user-id", "", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.StartAt, "start-at", "")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.EndAt, "end-at", "e")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryAction, "query-action", "a", "", "Filter results by this this action type. Valid values: `create`, `read`, `update`, `destroy`, `move`, `login`, `failedlogin`, `copy`, `user_create`, `user_update`, `user_destroy`, `group_create`, `group_update`, `group_destroy`, `permission_create`, `permission_destroy`, `api_key_create`, `api_key_update`, `api_key_destroy`")

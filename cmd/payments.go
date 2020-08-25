@@ -31,8 +31,11 @@ func PaymentsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsPaymentList
 			params.MaxPages = MaxPagesList
-			it := payment.List(params)
-
+			it, err := payment.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -57,6 +60,7 @@ func PaymentsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsPaymentFind.Id, "id", "i", 0, "Payment ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Payments.AddCommand(cmdFind)

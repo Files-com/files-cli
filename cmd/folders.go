@@ -34,8 +34,11 @@ func FoldersInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it := folder.ListFor(params)
-
+			it, err := folder.ListFor(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}

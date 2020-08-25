@@ -32,11 +32,15 @@ func As2KeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsAs2KeyList
 			params.MaxPages = MaxPagesList
-			it := as2_key.List(params)
-
+			it, err := as2_key.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
+	cmdList.Flags().Int64VarP(&paramsAs2KeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.Page, "page", "p", 0, "Current page number.")
 	cmdList.Flags().IntVarP(&paramsAs2KeyList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsAs2KeyList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
@@ -58,6 +62,7 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsAs2KeyFind.Id, "id", "i", 0, "As2 Key ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	As2Keys.AddCommand(cmdFind)
@@ -75,6 +80,7 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsAs2KeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.As2PartnershipName, "as2-partnership-name", "a", "", "AS2 Partnership Name")
 	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.PublicKey, "public-key", "p", "", "Actual contents of Public key.")
 
@@ -94,6 +100,7 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsAs2KeyUpdate.Id, "id", "i", 0, "As2 Key ID.")
 	cmdUpdate.Flags().StringVarP(&paramsAs2KeyUpdate.As2PartnershipName, "as2-partnership-name", "a", "", "AS2 Partnership Name")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
@@ -112,6 +119,7 @@ func As2KeysInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsAs2KeyDelete.Id, "id", "i", 0, "As2 Key ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	As2Keys.AddCommand(cmdDelete)

@@ -42,7 +42,7 @@ files-cli folders list-for --fields path,type
 *List a Folder*
 
 ```sh 
-file-cli folders list-for other
+files-cli folders list-for other
 ```
 
 ### Download a File
@@ -54,7 +54,7 @@ files-cli download [remote-path] [local-path]
 ### Upload a File
 
 ```sh
-files-cli download [source-path] [remote-path]
+files-cli upload [source-path] [remote-path]
 ```
 
 ### Command Help

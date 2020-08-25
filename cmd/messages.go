@@ -31,15 +31,20 @@ func MessagesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsMessageList
 			params.MaxPages = MaxPagesList
-			it := message.List(params)
-
+			it, err := message.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
+	cmdList.Flags().Int64VarP(&paramsMessageList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().IntVarP(&paramsMessageList.Page, "page", "p", 0, "Current page number.")
 	cmdList.Flags().IntVarP(&paramsMessageList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsMessageList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
 	cmdList.Flags().StringVarP(&paramsMessageList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64VarP(&paramsMessageList.ProjectId, "project-id", "r", 0, "Project for which to return messages.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Messages.AddCommand(cmdList)
@@ -57,6 +62,7 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsMessageFind.Id, "id", "i", 0, "Message ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Messages.AddCommand(cmdFind)
@@ -74,6 +80,8 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsMessageCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64VarP(&paramsMessageCreate.ProjectId, "project-id", "p", 0, "Project to which the message should be attached.")
 	cmdCreate.Flags().StringVarP(&paramsMessageCreate.Subject, "subject", "s", "", "Message subject.")
 	cmdCreate.Flags().StringVarP(&paramsMessageCreate.Body, "body", "b", "", "Message body.")
 
@@ -93,6 +101,8 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsMessageUpdate.Id, "id", "i", 0, "Message ID.")
+	cmdUpdate.Flags().Int64VarP(&paramsMessageUpdate.ProjectId, "project-id", "p", 0, "Project to which the message should be attached.")
 	cmdUpdate.Flags().StringVarP(&paramsMessageUpdate.Subject, "subject", "s", "", "Message subject.")
 	cmdUpdate.Flags().StringVarP(&paramsMessageUpdate.Body, "body", "b", "", "Message body.")
 
@@ -112,6 +122,7 @@ func MessagesInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsMessageDelete.Id, "id", "i", 0, "Message ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Messages.AddCommand(cmdDelete)

@@ -32,8 +32,11 @@ func SsoStrategiesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsSsoStrategyList
 			params.MaxPages = MaxPagesList
-			it := sso_strategy.List(params)
-
+			it, err := sso_strategy.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func SsoStrategiesInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsSsoStrategyFind.Id, "id", "i", 0, "Sso Strategy ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	SsoStrategies.AddCommand(cmdFind)

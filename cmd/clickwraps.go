@@ -31,8 +31,11 @@ func ClickwrapsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsClickwrapList
 			params.MaxPages = MaxPagesList
-			it := clickwrap.List(params)
-
+			it, err := clickwrap.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -57,6 +60,7 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsClickwrapFind.Id, "id", "i", 0, "Clickwrap ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdFind)
@@ -96,6 +100,7 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsClickwrapUpdate.Id, "id", "i", 0, "Clickwrap ID.")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Name, "name", "n", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.Body, "body", "b", "", "Body text of Clickwrap (supports Markdown formatting).")
 	cmdUpdate.Flags().StringVarP(&paramsClickwrapUpdate.UseWithBundles, "use-with-bundles", "u", "", "Use this Clickwrap for Bundles?")
@@ -118,6 +123,7 @@ func ClickwrapsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsClickwrapDelete.Id, "id", "i", 0, "Clickwrap ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Clickwraps.AddCommand(cmdDelete)

@@ -6,6 +6,9 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+	"os"
+
 	dns_record "github.com/Files-com/files-sdk-go/dnsrecord"
 )
 
@@ -29,8 +32,11 @@ func DnsRecordsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsDnsRecordList
 			params.MaxPages = MaxPagesList
-			it := dns_record.List(params)
-
+			it, err := dns_record.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

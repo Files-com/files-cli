@@ -31,8 +31,11 @@ func PermissionsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
-			it := permission.List(params)
-
+			it, err := permission.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -60,8 +63,10 @@ func PermissionsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsPermissionCreate.GroupId, "group-id", "g", 0, "Group ID")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Path, "path", "p", "", "Folder path")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Permission, "permission", "e", "", " Permission type.  Can be `admin`, `full`, `readonly`, `writeonly`, `list`, or `history`")
+	cmdCreate.Flags().Int64VarP(&paramsPermissionCreate.UserId, "user-id", "u", 0, "User ID.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Username, "username", "s", "", "User username.  Provide `username` or `user_id`")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
@@ -80,6 +85,7 @@ func PermissionsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsPermissionDelete.Id, "id", "i", 0, "Permission ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Permissions.AddCommand(cmdDelete)

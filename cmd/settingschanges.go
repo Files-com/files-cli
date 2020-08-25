@@ -6,6 +6,9 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+	"os"
+
 	settings_change "github.com/Files-com/files-sdk-go/settingschange"
 )
 
@@ -29,8 +32,11 @@ func SettingsChangesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsSettingsChangeList
 			params.MaxPages = MaxPagesList
-			it := settings_change.List(params)
-
+			it, err := settings_change.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

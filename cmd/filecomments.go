@@ -35,8 +35,11 @@ func FileCommentsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it := file_comment.ListFor(params)
-
+			it, err := file_comment.ListFor(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}
@@ -81,6 +84,7 @@ func FileCommentsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsFileCommentUpdate.Id, "id", "i", 0, "File Comment ID.")
 	cmdUpdate.Flags().StringVarP(&paramsFileCommentUpdate.Body, "body", "b", "", "Comment body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
@@ -99,6 +103,7 @@ func FileCommentsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsFileCommentDelete.Id, "id", "i", 0, "File Comment ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	FileComments.AddCommand(cmdDelete)

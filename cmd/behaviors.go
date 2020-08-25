@@ -31,8 +31,11 @@ func BehaviorsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
-			it := behavior.List(params)
-
+			it, err := behavior.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsBehaviorFind.Id, "id", "i", 0, "Behavior ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdFind)
@@ -75,8 +79,11 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it := behavior.ListFor(params)
-
+			it, err := behavior.ListFor(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsListFor)
 		},
 	}
@@ -145,6 +152,7 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsBehaviorUpdate.Id, "id", "i", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Behavior, "behavior", "b", "", "Behavior type.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Folder behaviors path.")
@@ -165,6 +173,7 @@ func BehaviorsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsBehaviorDelete.Id, "id", "i", 0, "Behavior ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Behaviors.AddCommand(cmdDelete)

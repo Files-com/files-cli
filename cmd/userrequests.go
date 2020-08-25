@@ -32,8 +32,11 @@ func UserRequestsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUserRequestList
 			params.MaxPages = MaxPagesList
-			it := user_request.List(params)
-
+			it, err := user_request.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
@@ -58,6 +61,7 @@ func UserRequestsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsUserRequestFind.Id, "id", "i", 0, "User Request ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	UserRequests.AddCommand(cmdFind)
@@ -95,6 +99,7 @@ func UserRequestsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsUserRequestDelete.Id, "id", "i", 0, "User Request ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	UserRequests.AddCommand(cmdDelete)

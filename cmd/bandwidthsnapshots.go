@@ -6,6 +6,9 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+	"os"
+
 	bandwidth_snapshot "github.com/Files-com/files-sdk-go/bandwidthsnapshot"
 )
 
@@ -29,8 +32,11 @@ func BandwidthSnapshotsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsBandwidthSnapshotList
 			params.MaxPages = MaxPagesList
-			it := bandwidth_snapshot.List(params)
-
+			it, err := bandwidth_snapshot.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}

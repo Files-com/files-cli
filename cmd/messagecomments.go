@@ -32,15 +32,20 @@ func MessageCommentsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsMessageCommentList
 			params.MaxPages = MaxPagesList
-			it := message_comment.List(params)
-
+			it, err := message_comment.List(params)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
+	cmdList.Flags().Int64VarP(&paramsMessageCommentList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.Page, "page", "p", 0, "Current page number.")
 	cmdList.Flags().IntVarP(&paramsMessageCommentList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsMessageCommentList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
 	cmdList.Flags().StringVarP(&paramsMessageCommentList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64VarP(&paramsMessageCommentList.MessageId, "message-id", "e", 0, "Message comment to return comments for.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	MessageComments.AddCommand(cmdList)
@@ -58,6 +63,7 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsFind)
 		},
 	}
+	cmdFind.Flags().Int64VarP(&paramsMessageCommentFind.Id, "id", "i", 0, "Message Comment ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdFind)
@@ -75,6 +81,7 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
+	cmdCreate.Flags().Int64VarP(&paramsMessageCommentCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVarP(&paramsMessageCommentCreate.Body, "body", "b", "", "Comment body.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
@@ -93,6 +100,7 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsUpdate)
 		},
 	}
+	cmdUpdate.Flags().Int64VarP(&paramsMessageCommentUpdate.Id, "id", "i", 0, "Message Comment ID.")
 	cmdUpdate.Flags().StringVarP(&paramsMessageCommentUpdate.Body, "body", "b", "", "Comment body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
@@ -111,6 +119,7 @@ func MessageCommentsInit() {
 			lib.JsonMarshal(result, fieldsDelete)
 		},
 	}
+	cmdDelete.Flags().Int64VarP(&paramsMessageCommentDelete.Id, "id", "i", 0, "Message Comment ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	MessageComments.AddCommand(cmdDelete)
