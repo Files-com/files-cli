@@ -59,7 +59,7 @@ func FilesInit() {
 	cmdCreate.Flags().IntVarP(&paramsFileCreate.Length, "length", "l", 0, "Length of file.")
 	cmdCreate.Flags().IntVarP(&paramsFileCreate.Part, "part", "p", 0, "Part if uploading a part.")
 	cmdCreate.Flags().IntVarP(&paramsFileCreate.Parts, "parts", "r", 0, "How many parts to fetch?")
-	cmdCreate.Flags().StringVarP(&paramsFileCreate.ProvidedMtime, "provided-mtime", "o", "", "User provided modification time.")
+	lib.TimeVarP(cmdCreate.Flags(), &paramsFileCreate.ProvidedMtime, "provided-mtime", "o")
 	cmdCreate.Flags().StringVarP(&paramsFileCreate.Ref, "ref", "f", "", "")
 	cmdCreate.Flags().IntVarP(&paramsFileCreate.Restart, "restart", "s", 0, "File byte offset to restart from.")
 	cmdCreate.Flags().IntVarP(&paramsFileCreate.Size, "size", "i", 0, "Size of file.")

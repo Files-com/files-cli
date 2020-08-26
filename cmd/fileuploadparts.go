@@ -3,12 +3,12 @@ package cmd
 import "github.com/spf13/cobra"
 
 var (
-	FilePartUploads = &cobra.Command{
-		Use:  "file-part-uploads [command]",
+	FileUploadParts = &cobra.Command{
+		Use:  "file-upload-parts [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
 )
 
-func FilePartUploadsInit() {
+func FileUploadPartsInit() {
 }
