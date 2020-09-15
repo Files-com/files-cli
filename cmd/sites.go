@@ -74,6 +74,7 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.Subdomain, "subdomain", "", "", "Site subdomain")
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.Domain, "domain", "", "", "Custom domain")
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.Email, "email", "", "", "Main email for this site")
+	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.ReplyToEmail, "reply-to-email", "", "", "Reply-to email for this site")
 	cmdUpdate.Flags().IntVarP(&paramsSiteUpdate.BundleExpiration, "bundle-expiration", "e", 0, "Site-wide Bundle expiration in days")
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.WelcomeEmailCc, "welcome-email-cc", "", "", "Include this email in welcome emails if enabled")
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.WelcomeCustomText, "welcome-custom-text", "", "", "Custom text send in user welcome email")
