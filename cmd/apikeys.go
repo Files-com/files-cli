@@ -147,24 +147,24 @@ func ApiKeysInit() {
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdate)
-	var fieldsCurrent string
-	paramsApiKeyCurrent := files_sdk.ApiKeyCurrentParams{}
-	cmdCurrent := &cobra.Command{
-		Use: "current",
+	var fieldsDeleteCurrent string
+	paramsApiKeyDeleteCurrent := files_sdk.ApiKeyDeleteCurrentParams{}
+	cmdDeleteCurrent := &cobra.Command{
+		Use: "delete-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.Current(paramsApiKeyCurrent)
+			result, err := api_key.DeleteCurrent(paramsApiKeyDeleteCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCurrent)
+			lib.JsonMarshal(result, fieldsDeleteCurrent)
 		},
 	}
-	cmdCurrent.Flags().StringVarP(&paramsApiKeyCurrent.Format, "format", "f", "", "")
+	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "f", "", "")
 
-	cmdCurrent.Flags().StringVarP(&fieldsCurrent, "fields", "", "", "comma separated list of field names")
-	ApiKeys.AddCommand(cmdCurrent)
+	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "", "", "comma separated list of field names")
+	ApiKeys.AddCommand(cmdDeleteCurrent)
 	var fieldsDelete string
 	paramsApiKeyDelete := files_sdk.ApiKeyDeleteParams{}
 	cmdDelete := &cobra.Command{
