@@ -39,11 +39,9 @@ func RequestsInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	cmdList.Flags().IntVarP(&paramsRequestList.Page, "page", "p", 0, "Current page number.")
+	cmdList.Flags().StringVarP(&paramsRequestList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().IntVarP(&paramsRequestList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVarP(&paramsRequestList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdList.Flags().StringVarP(&paramsRequestList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().StringVarP(&paramsRequestList.Path, "path", "t", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
+	cmdList.Flags().StringVarP(&paramsRequestList.Path, "path", "p", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Requests.AddCommand(cmdList)
@@ -61,11 +59,9 @@ func RequestsInit() {
 			lib.JsonMarshal(result, fieldsGetFolder)
 		},
 	}
-	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.Page, "page", "p", 0, "Current page number.")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdGetFolder.Flags().IntVarP(&paramsRequestGetFolder.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "t", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
+	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "p", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
 	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "", "", "comma separated list of field names")
 	Requests.AddCommand(cmdGetFolder)

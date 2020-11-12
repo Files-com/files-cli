@@ -34,14 +34,12 @@ func HistoriesInit() {
 			lib.JsonMarshal(result, fieldsListForFile)
 		},
 	}
-	lib.TimeVarP(cmdListForFile.Flags(), &paramsHistoryListForFile.StartAt, "start-at", "")
+	lib.TimeVarP(cmdListForFile.Flags(), &paramsHistoryListForFile.StartAt, "start-at", "t")
 	lib.TimeVarP(cmdListForFile.Flags(), &paramsHistoryListForFile.EndAt, "end-at", "e")
 	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
-	cmdListForFile.Flags().IntVarP(&paramsHistoryListForFile.Page, "page", "p", 0, "Current page number.")
+	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdListForFile.Flags().IntVarP(&paramsHistoryListForFile.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Path, "path", "t", "", "Path to operate on.")
+	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Path, "path", "p", "", "Path to operate on.")
 
 	cmdListForFile.Flags().StringVarP(&fieldsListForFile, "fields", "", "", "comma separated list of field names")
 	Histories.AddCommand(cmdListForFile)
@@ -59,14 +57,12 @@ func HistoriesInit() {
 			lib.JsonMarshal(result, fieldsListForFolder)
 		},
 	}
-	lib.TimeVarP(cmdListForFolder.Flags(), &paramsHistoryListForFolder.StartAt, "start-at", "")
+	lib.TimeVarP(cmdListForFolder.Flags(), &paramsHistoryListForFolder.StartAt, "start-at", "t")
 	lib.TimeVarP(cmdListForFolder.Flags(), &paramsHistoryListForFolder.EndAt, "end-at", "e")
 	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
-	cmdListForFolder.Flags().IntVarP(&paramsHistoryListForFolder.Page, "page", "p", 0, "Current page number.")
+	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdListForFolder.Flags().IntVarP(&paramsHistoryListForFolder.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Path, "path", "t", "", "Path to operate on.")
+	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Path, "path", "p", "", "Path to operate on.")
 
 	cmdListForFolder.Flags().StringVarP(&fieldsListForFolder, "fields", "", "", "comma separated list of field names")
 	Histories.AddCommand(cmdListForFolder)
@@ -87,10 +83,8 @@ func HistoriesInit() {
 	lib.TimeVarP(cmdListForUser.Flags(), &paramsHistoryListForUser.StartAt, "start-at", "t")
 	lib.TimeVarP(cmdListForUser.Flags(), &paramsHistoryListForUser.EndAt, "end-at", "e")
 	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
-	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.Page, "page", "p", 0, "Current page number.")
-	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListForUser.Flags().StringVarP(&paramsHistoryListForUser.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListForUser.Flags().IntVarP(&paramsHistoryListForUser.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListForUser.Flags().Int64VarP(&paramsHistoryListForUser.UserId, "user-id", "u", 0, "User ID.")
 
 	cmdListForUser.Flags().StringVarP(&fieldsListForUser, "fields", "", "", "comma separated list of field names")
@@ -112,10 +106,8 @@ func HistoriesInit() {
 	lib.TimeVarP(cmdListLogins.Flags(), &paramsHistoryListLogins.StartAt, "start-at", "t")
 	lib.TimeVarP(cmdListLogins.Flags(), &paramsHistoryListLogins.EndAt, "end-at", "e")
 	cmdListLogins.Flags().StringVarP(&paramsHistoryListLogins.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
-	cmdListLogins.Flags().IntVarP(&paramsHistoryListLogins.Page, "page", "p", 0, "Current page number.")
-	cmdListLogins.Flags().IntVarP(&paramsHistoryListLogins.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListLogins.Flags().StringVarP(&paramsHistoryListLogins.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdListLogins.Flags().StringVarP(&paramsHistoryListLogins.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListLogins.Flags().StringVarP(&paramsHistoryListLogins.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListLogins.Flags().IntVarP(&paramsHistoryListLogins.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdListLogins.Flags().StringVarP(&fieldsListLogins, "fields", "", "", "comma separated list of field names")
 	Histories.AddCommand(cmdListLogins)
@@ -138,13 +130,11 @@ func HistoriesInit() {
 			lib.JsonMarshalIter(it, fieldsList)
 		},
 	}
-	lib.TimeVarP(cmdList.Flags(), &paramsHistoryList.StartAt, "start-at", "")
+	lib.TimeVarP(cmdList.Flags(), &paramsHistoryList.StartAt, "start-at", "a")
 	lib.TimeVarP(cmdList.Flags(), &paramsHistoryList.EndAt, "end-at", "e")
 	cmdList.Flags().StringVarP(&paramsHistoryList.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
-	cmdList.Flags().IntVarP(&paramsHistoryList.Page, "page", "p", 0, "Current page number.")
-	cmdList.Flags().IntVarP(&paramsHistoryList.PerPage, "per-page", "r", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVarP(&paramsHistoryList.Action, "action", "a", "", "Deprecated: If set to `count` returns a count of matching records rather than the records themselves.")
-	cmdList.Flags().StringVarP(&paramsHistoryList.Cursor, "cursor", "c", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVarP(&paramsHistoryList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().IntVarP(&paramsHistoryList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Histories.AddCommand(cmdList)
