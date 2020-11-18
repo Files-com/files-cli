@@ -51,7 +51,7 @@ files-cli folders list-for other
 files-cli download [remote-path] [local-path]
 ```
 
-### Upload a File
+### Upload a File/Folder
 
 ```sh
 files-cli upload [source-path] [remote-path]

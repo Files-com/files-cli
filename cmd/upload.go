@@ -3,6 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
+
+	files_sdk "github.com/Files-com/files-sdk-go"
 
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -25,8 +28,21 @@ func UploadCmd() *cobra.Command {
 			}
 
 			client := file.Client{}
-
-			_, err := client.UploadFile(sourcePath, remotePath)
+			firstRun := true
+			_, err := client.UploadFolder(sourcePath, remotePath, func(source string, file files_sdk.File, largestSize int, largestFilePath int, totalUploads int, err error) {
+				if firstRun {
+					fmt.Printf("Uploading %d files\n", totalUploads)
+					firstRun = false
+				}
+				if err != nil {
+					fmt.Println(file.Path, err)
+				} else {
+					fmt.Println(
+						fmt.Sprintf("%-"+strconv.Itoa(len(strconv.Itoa(largestSize)))+"d bytes", file.Size),
+						fmt.Sprintf("%-"+strconv.Itoa(largestFilePath)+"s => %s", source, file.Path),
+					)
+				}
+			})
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)

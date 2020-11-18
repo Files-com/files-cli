@@ -77,8 +77,8 @@ func AutomationsInit() {
 			lib.JsonMarshal(result, fieldsCreate)
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Automation, "automation", "a", "", "Type of automation.  One of: `create_folder`, `request_file`, `request_move`")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "s", "", "Source Path")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Automation, "automation", "a", "", "Automation type")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "o", "", "Source Path")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "Destination Path")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
@@ -86,6 +86,7 @@ func AutomationsInit() {
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime` or `custom_schedule`.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdCreate)
@@ -104,8 +105,8 @@ func AutomationsInit() {
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsAutomationUpdate.Id, "id", "i", 0, "Automation ID.")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Type of automation.  One of: `create_folder`, `request_file`, `request_move`")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "s", "", "Source Path")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Automation type")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "o", "", "Source Path")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Destination Path")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
@@ -113,6 +114,7 @@ func AutomationsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime` or `custom_schedule`.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdUpdate)

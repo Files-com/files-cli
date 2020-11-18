@@ -63,6 +63,60 @@ func RemoteServersInit() {
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdFind)
+	var fieldsListForTesting string
+	paramsRemoteServerListForTesting := files_sdk.RemoteServerListForTestingParams{}
+	cmdListForTesting := &cobra.Command{
+		Use: "list-for-testing",
+		Run: func(cmd *cobra.Command, args []string) {
+			result, err := remote_server.ListForTesting(paramsRemoteServerListForTesting)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			lib.JsonMarshal(result, fieldsListForTesting)
+		},
+	}
+	cmdListForTesting.Flags().Int64VarP(&paramsRemoteServerListForTesting.RemoteServerId, "remote-server-id", "", 0, "RemoteServer ID")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Root, "root", "", "", "Remote path to list")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.AwsAccessKey, "aws-access-key", "k", "", "AWS Access Key.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.AwsSecretKey, "aws-secret-key", "e", "", "AWS secret key.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Password, "password", "p", "", "Password if needed.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.PrivateKey, "private-key", "v", "", "Private key if needed.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.SslCertificate, "ssl-certificate", "", "", "SSL client certificate.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.GoogleCloudStorageCredentialsJson, "google-cloud-storage-credentials-json", "j", "", "A JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.WasabiAccessKey, "wasabi-access-key", "", "", "Wasabi access key.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.WasabiSecretKey, "wasabi-secret-key", "", "", "Wasabi secret key.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.BackblazeB2KeyId, "backblaze-b2-key-id", "i", "", "Backblaze B2 Cloud Storage keyID.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.BackblazeB2ApplicationKey, "backblaze-b2-application-key", "", "", "Backblaze B2 Cloud Storage applicationKey.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.RackspaceApiKey, "rackspace-api-key", "", "", "Rackspace API key from the Rackspace Cloud Control Panel.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.AzureBlobStorageAccessKey, "azure-blob-storage-access-key", "y", "", "Azure Blob Storage secret key.")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Hostname, "hostname", "o", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Name, "name", "", "", "")
+	cmdListForTesting.Flags().IntVarP(&paramsRemoteServerListForTesting.MaxConnections, "max-connections", "x", 0, "")
+	cmdListForTesting.Flags().IntVarP(&paramsRemoteServerListForTesting.Port, "port", "t", 0, "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.S3Bucket, "s3-bucket", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.S3Region, "s3-region", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.ServerCertificate, "server-certificate", "f", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.ServerHostKey, "server-host-key", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.ServerType, "server-type", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Ssl, "ssl", "l", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.Username, "username", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "u", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "d", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.BackblazeB2Bucket, "backblaze-b2-bucket", "b", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.BackblazeB2S3Endpoint, "backblaze-b2-s3-endpoint", "n", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.WasabiBucket, "wasabi-bucket", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.WasabiRegion, "wasabi-region", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.RackspaceUsername, "rackspace-username", "s", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.RackspaceRegion, "rackspace-region", "g", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.RackspaceContainer, "rackspace-container", "", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.OneDriveAccountType, "one-drive-account-type", "r", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.AzureBlobStorageAccount, "azure-blob-storage-account", "a", "", "")
+	cmdListForTesting.Flags().StringVarP(&paramsRemoteServerListForTesting.AzureBlobStorageContainer, "azure-blob-storage-container", "c", "", "")
+
+	cmdListForTesting.Flags().StringVarP(&fieldsListForTesting, "fields", "", "", "comma separated list of field names")
+	RemoteServers.AddCommand(cmdListForTesting)
 	var fieldsCreate string
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	cmdCreate := &cobra.Command{
