@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"path/filepath"
+	"fmt"
 
-	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -25,19 +24,21 @@ func DownloadCmd() *cobra.Command {
 				localPath = args[1]
 			}
 
-			if localPath == "" {
-				_, fileName := filepath.Split(remotePath)
-				localPath = fileName
-			}
-
 			client := file.Client{}
 
-			fileResult, err := client.DownloadToFile(files_sdk.FileDownloadParams{Path: remotePath}, localPath)
+			err := client.DownloadFolder(files_sdk.FolderListForParams{Path: remotePath}, localPath, func(file files_sdk.File, destination string, err error) {
+				if err != nil {
+					fmt.Println(file.Path, err)
+				} else {
+					fmt.Println(
+						fmt.Sprintf("%d bytes ", file.Size),
+						fmt.Sprintf("%s => %s", file.Path, destination),
+					)
+				}
+			})
 			if err != nil {
 				panic(err)
 			}
-
-			lib.JsonMarshal(fileResult, "")
 		},
 	}
 

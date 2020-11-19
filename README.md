@@ -45,7 +45,7 @@ files-cli folders list-for --fields path,type
 files-cli folders list-for other
 ```
 
-### Download a File
+### Download a File/Folder
 
 ```sh
 files-cli download [remote-path] [local-path]
