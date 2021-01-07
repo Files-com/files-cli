@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"sync"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
+	"github.com/vbauerster/mpb/v5"
+	"github.com/vbauerster/mpb/v5/decor"
 )
 
 func DownloadCmd() *cobra.Command {
@@ -25,17 +28,75 @@ func DownloadCmd() *cobra.Command {
 			}
 
 			client := file.Client{}
+			bars := map[string]*mpb.Bar{}
+			barsMapMutex := sync.RWMutex{}
+			mainTotalMutex := sync.RWMutex{}
+			p := mpb.New(mpb.WithWidth(64))
+			totalBytes := 0
+			pathPadding := 40
+			var mainTotal *mpb.Bar
+			err := client.DownloadFolder(
+				files_sdk.FolderListForParams{Path: remotePath},
+				localPath,
+				func(bytes int64, file files_sdk.File, destination string, err error) {
+					mainTotalMutex.Lock()
+					if mainTotal == nil {
+						mainTotal = p.AddBar(int64(totalBytes),
+							mpb.PrependDecorators(
+								decor.Name("Downloading Files", decor.WC{W: pathPadding + 1, C: decor.DidentRight}),
+								decor.Counters(decor.UnitKB, " % .1f / % .1f"),
+							),
+							mpb.AppendDecorators(
+								decor.Percentage(decor.WCSyncSpace),
+							),
+						)
 
-			err := client.DownloadFolder(files_sdk.FolderListForParams{Path: remotePath}, localPath, func(file files_sdk.File, destination string, err error) {
-				if err != nil {
-					fmt.Println(file.Path, err)
-				} else {
-					fmt.Println(
-						fmt.Sprintf("%d bytes ", file.Size),
-						fmt.Sprintf("%s => %s", file.Path, destination),
-					)
-				}
-			})
+						mainTotal.SetPriority(-1)
+					}
+					mainTotalMutex.Unlock()
+					barsMapMutex.RLock()
+					bar, ok := bars[destination]
+					barsMapMutex.RUnlock()
+					if !ok {
+						barsMapMutex.Lock()
+						totalBytes += file.Size
+						bars[destination] = p.AddBar(int64(file.Size),
+							mpb.PrependDecorators(
+								// simple name decorator
+								decor.Name(destination, decor.WC{W: pathPadding + 1, C: decor.DidentRight}),
+								// decor.DSyncWidth bit enables column width synchronization
+								decor.Counters(decor.UnitKB, " % .1f / % .1f"),
+							),
+							mpb.AppendDecorators(
+								// replace ETA decorator with "done" message, OnComplete event
+								decor.Percentage(decor.WCSyncSpace),
+							),
+							mpb.BarRemoveOnComplete(),
+						)
+						barsMapMutex.Unlock()
+						barsMapMutex.RLock()
+						bar = bars[destination]
+						barsMapMutex.RUnlock()
+
+						mainTotal.SetTotal(int64(totalBytes), false)
+					}
+
+					if err != nil {
+						bar.Abort(true)
+						fmt.Println(file.Path, err)
+						mainTotal.IncrBy(file.Size)
+					} else {
+						bar.IncrInt64(bytes)
+						mainTotal.IncrInt64(bytes)
+					}
+				})
+			for int64(totalBytes) < mainTotal.Current() {
+
+			}
+			for _, bar := range bars {
+				bar.Completed()
+			}
+			mainTotal.Completed()
 			if err != nil {
 				panic(err)
 			}
