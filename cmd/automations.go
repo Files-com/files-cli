@@ -86,7 +86,8 @@ func AutomationsInit() {
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, or `email`.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdCreate)
@@ -114,7 +115,8 @@ func AutomationsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, or `email`.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Trigger, "trigger", "r", "", "How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	Automations.AddCommand(cmdUpdate)
