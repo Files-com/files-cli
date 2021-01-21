@@ -47,4 +47,27 @@ func BundleRecipientsInit() {
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	BundleRecipients.AddCommand(cmdList)
+	var fieldsCreate string
+	paramsBundleRecipientCreate := files_sdk.BundleRecipientCreateParams{}
+	cmdCreate := &cobra.Command{
+		Use: "create",
+		Run: func(cmd *cobra.Command, args []string) {
+			result, err := bundle_recipient.Create(paramsBundleRecipientCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			lib.JsonMarshal(result, fieldsCreate)
+		},
+	}
+	cmdCreate.Flags().Int64VarP(&paramsBundleRecipientCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64VarP(&paramsBundleRecipientCreate.BundleId, "bundle-id", "b", 0, "Bundle to share.")
+	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Recipient, "recipient", "r", "", "Email addresses to share this bundle with.")
+	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Name, "name", "n", "", "Name of recipient.")
+	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Company, "company", "c", "", "Company of recipient.")
+	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Note, "note", "o", "", "Note to include in email.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	BundleRecipients.AddCommand(cmdCreate)
 }

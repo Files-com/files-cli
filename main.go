@@ -89,6 +89,8 @@ func main() {
 	rootCmd.AddCommand(cmd.HistoryExportResults)
 	cmd.ImagesInit()
 	rootCmd.AddCommand(cmd.Images)
+	cmd.InboxRecipientsInit()
+	rootCmd.AddCommand(cmd.InboxRecipients)
 	cmd.InboxRegistrationsInit()
 	rootCmd.AddCommand(cmd.InboxRegistrations)
 	cmd.InboxUploadsInit()
