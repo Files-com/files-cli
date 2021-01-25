@@ -62,3 +62,13 @@ files-cli upload [source-path] [remote-path]
 ```sh
 files-cli [command] --help
 ```
+
+## Development
+
+To build for testing it assumes the go package is in parallel directory. 
+
+```sh
+DEVELOPMENT_BUILD ./build.sh
+```
+
+This will build both the compressed release version and an uncompressed executable for the 3 platforms.
