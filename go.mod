@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.14
 
 require (
-	github.com/Files-com/files-sdk-go v1.0.142
+	github.com/Files-com/files-sdk-go v1.0.143
 	github.com/hashicorp/go-version v1.2.1 // indirect
 	github.com/mitchellh/gox v1.0.1 // indirect
 	github.com/spf13/cobra v1.0.0
