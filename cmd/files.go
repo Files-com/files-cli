@@ -20,26 +20,7 @@ var (
 )
 
 func FilesInit() {
-	var fieldsDownload string
-	paramsFileDownload := files_sdk.FileDownloadParams{}
-	cmdDownload := &cobra.Command{
-		Use: "download",
-		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file.Download(paramsFileDownload)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			lib.JsonMarshal(result, fieldsDownload)
-		},
-	}
-	cmdDownload.Flags().StringVarP(&paramsFileDownload.Path, "path", "p", "", "Path to operate on.")
-	cmdDownload.Flags().StringVarP(&paramsFileDownload.Action, "action", "a", "", "Can be blank, `redirect` or `stat`.  If set to `stat`, we will return file information but without a download URL, and without logging a download.  If set to `redirect` we will serve a 302 redirect directly to the file.  This is used for integrations with Zapier, and is not recommended for most integrations.")
-	cmdDownload.Flags().StringVarP(&paramsFileDownload.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
-
-	cmdDownload.Flags().StringVarP(&fieldsDownload, "fields", "", "", "comma separated list of field names")
-	Files.AddCommand(cmdDownload)
+	Files.AddCommand(DownloadCmd())
 	var fieldsCreate string
 	paramsFileCreate := files_sdk.FileCreateParams{}
 	cmdCreate := &cobra.Command{

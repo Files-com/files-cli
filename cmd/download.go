@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"sync"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
@@ -38,7 +39,11 @@ func DownloadCmd() *cobra.Command {
 			err := client.DownloadFolder(
 				files_sdk.FolderListForParams{Path: remotePath},
 				localPath,
-				func(bytes int64, file files_sdk.File, destination string, err error) {
+				func(bytes int64, file files_sdk.File, destination string, err error, message string) {
+					if message != "" {
+						fmt.Println(message)
+						return
+					}
 					mainTotalMutex.Lock()
 					if mainTotal == nil {
 						mainTotal = p.AddBar(int64(totalBytes),
@@ -90,15 +95,19 @@ func DownloadCmd() *cobra.Command {
 						mainTotal.IncrInt64(bytes)
 					}
 				})
-			for int64(totalBytes) < mainTotal.Current() {
-
-			}
-			for _, bar := range bars {
-				bar.Completed()
-			}
-			mainTotal.Completed()
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			if mainTotal != nil {
+				for int64(totalBytes) < mainTotal.Current() {
+
+				}
+				for _, bar := range bars {
+					bar.Completed()
+				}
+				mainTotal.Completed()
 			}
 		},
 	}
