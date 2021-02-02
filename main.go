@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/Files-com/files-cli/cmd"
+	"github.com/Files-com/files-cli/lib"
 	files "github.com/Files-com/files-sdk-go"
 	"github.com/spf13/cobra"
+
+	"fmt"
+	"os"
 )
 
 var VERSION = "_VERSION"
@@ -15,18 +16,49 @@ func main() {
 	var rootCmd = &cobra.Command{
 		Use:     "files-cli [resource]",
 		Version: VERSION,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			setting := files.Config{}
-			if setting.GetAPIKey() == "" {
-				fmt.Println("No API Key found")
+		PersistentPreRun: func(x *cobra.Command, args []string) {
+			if len(x.Aliases) != 0 && (x.Aliases[0] == "config-set" || x.Aliases[0] == "config-reset") {
+				return
+			}
+			config := &lib.Config{}
+			err := config.Load()
+			if err != nil {
+				fmt.Println(err)
 				os.Exit(1)
+			}
+
+			if files.GlobalConfig.GetAPIKey() != "" {
+				return
+			}
+
+			if config.ValidSession() {
+				return
+			}
+
+			if config.SessionExpired() {
+				fmt.Println("The session has expired, you must log in again.")
+				err = lib.CreateSession(files.SessionCreateParams{}, *config)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				return
+			}
+
+			if files.GlobalConfig.GetAPIKey() == "" {
+				fmt.Println("No API Key found. Using session login.")
+				err = lib.CreateSession(files.SessionCreateParams{}, *config)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&files.APIKey, "api-key", "", "API Key")
-	rootCmd.AddCommand(cmd.UploadCmd())
-	rootCmd.AddCommand(cmd.DownloadCmd())
-	rootCmd.AddCommand(cmd.VersionCmd(VERSION))
+	rootCmd.SuggestionsMinimumDistance = 1
+	cmd.ConfigInit()
+	rootCmd.AddCommand(cmd.Config)
 	cmd.AccountLineItemsInit()
 	rootCmd.AddCommand(cmd.AccountLineItems)
 	cmd.ActionsInit()

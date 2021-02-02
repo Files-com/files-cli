@@ -32,12 +32,17 @@ func IpAddressesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsIpAddressList
 			params.MaxPages = MaxPagesList
-			it, err := ip_address.List(params)
+			client := ip_address.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsIpAddressList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -50,13 +55,18 @@ func IpAddressesInit() {
 	cmdGetReserved := &cobra.Command{
 		Use: "get-reserved",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := ip_address.GetReserved(paramsIpAddressGetReserved)
+			client := ip_address.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.GetReserved(paramsIpAddressGetReserved)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsGetReserved)
+			err = lib.JsonMarshal(result, fieldsGetReserved)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdGetReserved.Flags().StringVarP(&paramsIpAddressGetReserved.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")

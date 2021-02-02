@@ -32,12 +32,17 @@ func RemoteServersInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
-			it, err := remote_server.List(params)
+			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsRemoteServerList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -50,13 +55,18 @@ func RemoteServersInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := remote_server.Find(paramsRemoteServerFind)
+			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsRemoteServerFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsRemoteServerFind.Id, "id", "i", 0, "Remote Server ID.")
@@ -68,13 +78,18 @@ func RemoteServersInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := remote_server.Create(paramsRemoteServerCreate)
+			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsRemoteServerCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "k", "", "AWS Access Key.")
@@ -120,13 +135,18 @@ func RemoteServersInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := remote_server.Update(paramsRemoteServerUpdate)
+			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsRemoteServerUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsRemoteServerUpdate.Id, "id", "", 0, "Remote Server ID.")
@@ -173,13 +193,18 @@ func RemoteServersInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := remote_server.Delete(paramsRemoteServerDelete)
+			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsRemoteServerDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsRemoteServerDelete.Id, "id", "i", 0, "Remote Server ID.")

@@ -31,12 +31,17 @@ func NotificationsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsNotificationList
 			params.MaxPages = MaxPagesList
-			it, err := notification.List(params)
+			client := notification.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsNotificationList.UserId, "user-id", "u", 0, "DEPRECATED: Show notifications for this User ID. Use `filter[user_id]` instead.")
@@ -52,13 +57,18 @@ func NotificationsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := notification.Find(paramsNotificationFind)
+			client := notification.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsNotificationFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsNotificationFind.Id, "id", "i", 0, "Notification ID.")
@@ -70,13 +80,18 @@ func NotificationsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := notification.Create(paramsNotificationCreate)
+			client := notification.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsNotificationCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsNotificationCreate.UserId, "user-id", "u", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
@@ -92,13 +107,18 @@ func NotificationsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := notification.Update(paramsNotificationUpdate)
+			client := notification.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsNotificationUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsNotificationUpdate.Id, "id", "i", 0, "Notification ID.")
@@ -111,13 +131,18 @@ func NotificationsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := notification.Delete(paramsNotificationDelete)
+			client := notification.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsNotificationDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsNotificationDelete.Id, "id", "i", 0, "Notification ID.")

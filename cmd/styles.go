@@ -25,13 +25,18 @@ func StylesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := style.Find(paramsStyleFind)
+			client := style.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsStyleFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().StringVarP(&paramsStyleFind.Path, "path", "p", "", "Style path.")
@@ -43,13 +48,18 @@ func StylesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := style.Update(paramsStyleUpdate)
+			client := style.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsStyleUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().StringVarP(&paramsStyleUpdate.Path, "path", "p", "", "Style path.")
@@ -61,13 +71,18 @@ func StylesInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := style.Delete(paramsStyleDelete)
+			client := style.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsStyleDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().StringVarP(&paramsStyleDelete.Path, "path", "p", "", "Style path.")

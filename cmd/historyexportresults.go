@@ -32,12 +32,17 @@ func HistoryExportResultsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsHistoryExportResultList
 			params.MaxPages = MaxPagesList
-			it, err := history_export_result.List(params)
+			client := history_export_result.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsHistoryExportResultList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

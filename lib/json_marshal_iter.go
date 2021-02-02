@@ -11,12 +11,12 @@ type Iter interface {
 	Err() error
 }
 
-func JsonMarshalIter(it Iter, fields string) {
+func JsonMarshalIter(it Iter, fields string) error {
 	firstObject := true
 	for it.Next() {
 		recordMap, err := OnlyFields(fields, it.Current())
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 		prettyJSON, err := json.MarshalIndent(recordMap, "", "    ")
 		if err != nil {
@@ -35,18 +35,20 @@ func JsonMarshalIter(it Iter, fields string) {
 	}
 	fmt.Println("]")
 	if it.Err() != nil {
-		fmt.Println(it.Err())
+		return it.Err()
 	}
+	return nil
 }
 
-func JsonMarshal(i interface{}, fields string) {
+func JsonMarshal(i interface{}, fields string) error {
 	recordMap, err := OnlyFields(fields, i)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	prettyJSON, err := json.MarshalIndent(recordMap, "", "    ")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(string(prettyJSON))
+	return err
 }

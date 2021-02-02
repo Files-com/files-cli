@@ -26,13 +26,18 @@ func FileActionsInit() {
 	cmdCopy := &cobra.Command{
 		Use: "copy",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_action.Copy(paramsFileActionCopy)
+			client := file_action.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Copy(paramsFileActionCopy)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCopy)
+			err = lib.JsonMarshal(result, fieldsCopy)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCopy.Flags().StringVarP(&paramsFileActionCopy.Path, "path", "p", "", "Path to operate on.")
@@ -45,13 +50,18 @@ func FileActionsInit() {
 	cmdMove := &cobra.Command{
 		Use: "move",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_action.Move(paramsFileActionMove)
+			client := file_action.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Move(paramsFileActionMove)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsMove)
+			err = lib.JsonMarshal(result, fieldsMove)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdMove.Flags().StringVarP(&paramsFileActionMove.Path, "path", "p", "", "Path to operate on.")
@@ -64,13 +74,18 @@ func FileActionsInit() {
 	cmdBeginUpload := &cobra.Command{
 		Use: "begin-upload",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_action.BeginUpload(paramsFileActionBeginUpload)
+			client := file_action.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.BeginUpload(paramsFileActionBeginUpload)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsBeginUpload)
+			err = lib.JsonMarshal(result, fieldsBeginUpload)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdBeginUpload.Flags().StringVarP(&paramsFileActionBeginUpload.Path, "path", "t", "", "Path to operate on.")

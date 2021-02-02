@@ -32,12 +32,17 @@ func UserRequestsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUserRequestList
 			params.MaxPages = MaxPagesList
-			it, err := user_request.List(params)
+			client := user_request.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsUserRequestList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -50,13 +55,18 @@ func UserRequestsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user_request.Find(paramsUserRequestFind)
+			client := user_request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsUserRequestFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsUserRequestFind.Id, "id", "i", 0, "User Request ID.")
@@ -68,13 +78,18 @@ func UserRequestsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user_request.Create(paramsUserRequestCreate)
+			client := user_request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsUserRequestCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsUserRequestCreate.Name, "name", "n", "", "Name of user requested")
@@ -88,13 +103,18 @@ func UserRequestsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user_request.Delete(paramsUserRequestDelete)
+			client := user_request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsUserRequestDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsUserRequestDelete.Id, "id", "i", 0, "User Request ID.")

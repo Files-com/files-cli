@@ -32,12 +32,17 @@ func InboxRecipientsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsInboxRecipientList
 			params.MaxPages = MaxPagesList
-			it, err := inbox_recipient.List(params)
+			client := inbox_recipient.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsInboxRecipientList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -52,13 +57,18 @@ func InboxRecipientsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := inbox_recipient.Create(paramsInboxRecipientCreate)
+			client := inbox_recipient.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsInboxRecipientCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsInboxRecipientCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

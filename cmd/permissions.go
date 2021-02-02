@@ -31,12 +31,17 @@ func PermissionsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
-			it, err := permission.List(params)
+			client := permission.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsPermissionList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -52,13 +57,18 @@ func PermissionsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := permission.Create(paramsPermissionCreate)
+			client := permission.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsPermissionCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsPermissionCreate.GroupId, "group-id", "g", 0, "Group ID")
@@ -74,13 +84,18 @@ func PermissionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := permission.Delete(paramsPermissionDelete)
+			client := permission.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsPermissionDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsPermissionDelete.Id, "id", "i", 0, "Permission ID.")

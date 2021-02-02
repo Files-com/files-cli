@@ -32,12 +32,17 @@ func PublicKeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsPublicKeyList
 			params.MaxPages = MaxPagesList
-			it, err := public_key.List(params)
+			client := public_key.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsPublicKeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -51,13 +56,18 @@ func PublicKeysInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := public_key.Find(paramsPublicKeyFind)
+			client := public_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsPublicKeyFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsPublicKeyFind.Id, "id", "i", 0, "Public Key ID.")
@@ -69,13 +79,18 @@ func PublicKeysInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := public_key.Create(paramsPublicKeyCreate)
+			client := public_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsPublicKeyCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsPublicKeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -89,13 +104,18 @@ func PublicKeysInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := public_key.Update(paramsPublicKeyUpdate)
+			client := public_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsPublicKeyUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsPublicKeyUpdate.Id, "id", "i", 0, "Public Key ID.")
@@ -108,13 +128,18 @@ func PublicKeysInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := public_key.Delete(paramsPublicKeyDelete)
+			client := public_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsPublicKeyDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsPublicKeyDelete.Id, "id", "i", 0, "Public Key ID.")

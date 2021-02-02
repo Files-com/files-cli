@@ -35,12 +35,17 @@ func FileCommentsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it, err := file_comment.ListFor(params)
+			client := file_comment.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.ListFor(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.JsonMarshalIter(it, fieldsListFor)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -54,13 +59,18 @@ func FileCommentsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_comment.Create(paramsFileCommentCreate)
+			client := file_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsFileCommentCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Body, "body", "b", "", "Comment body.")
@@ -73,13 +83,18 @@ func FileCommentsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_comment.Update(paramsFileCommentUpdate)
+			client := file_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsFileCommentUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsFileCommentUpdate.Id, "id", "i", 0, "File Comment ID.")
@@ -92,13 +107,18 @@ func FileCommentsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := file_comment.Delete(paramsFileCommentDelete)
+			client := file_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsFileCommentDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsFileCommentDelete.Id, "id", "i", 0, "File Comment ID.")

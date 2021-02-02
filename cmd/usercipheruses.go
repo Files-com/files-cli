@@ -32,12 +32,17 @@ func UserCipherUsesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUserCipherUseList
 			params.MaxPages = MaxPagesList
-			it, err := user_cipher_use.List(params)
+			client := user_cipher_use.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsUserCipherUseList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

@@ -32,12 +32,17 @@ func As2KeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsAs2KeyList
 			params.MaxPages = MaxPagesList
-			it, err := as2_key.List(params)
+			client := as2_key.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsAs2KeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -51,13 +56,18 @@ func As2KeysInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := as2_key.Find(paramsAs2KeyFind)
+			client := as2_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsAs2KeyFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsAs2KeyFind.Id, "id", "i", 0, "As2 Key ID.")
@@ -69,13 +79,18 @@ func As2KeysInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := as2_key.Create(paramsAs2KeyCreate)
+			client := as2_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsAs2KeyCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsAs2KeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -89,13 +104,18 @@ func As2KeysInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := as2_key.Update(paramsAs2KeyUpdate)
+			client := as2_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsAs2KeyUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsAs2KeyUpdate.Id, "id", "i", 0, "As2 Key ID.")
@@ -108,13 +128,18 @@ func As2KeysInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := as2_key.Delete(paramsAs2KeyDelete)
+			client := as2_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsAs2KeyDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsAs2KeyDelete.Id, "id", "i", 0, "As2 Key ID.")

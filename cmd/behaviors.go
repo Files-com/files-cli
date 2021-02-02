@@ -31,12 +31,17 @@ func BehaviorsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
-			it, err := behavior.List(params)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsBehaviorList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -50,13 +55,18 @@ func BehaviorsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := behavior.Find(paramsBehaviorFind)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsBehaviorFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsBehaviorFind.Id, "id", "i", 0, "Behavior ID.")
@@ -77,12 +87,17 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it, err := behavior.ListFor(params)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.ListFor(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.JsonMarshalIter(it, fieldsListFor)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -98,13 +113,18 @@ func BehaviorsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := behavior.Create(paramsBehaviorCreate)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsBehaviorCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior.")
@@ -118,13 +138,18 @@ func BehaviorsInit() {
 	cmdWebhookTest := &cobra.Command{
 		Use: "webhook-test",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := behavior.WebhookTest(paramsBehaviorWebhookTest)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.WebhookTest(paramsBehaviorWebhookTest)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsWebhookTest)
+			err = lib.JsonMarshal(result, fieldsWebhookTest)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Url, "url", "u", "", "URL for testing the webhook.")
@@ -139,13 +164,18 @@ func BehaviorsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := behavior.Update(paramsBehaviorUpdate)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsBehaviorUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsBehaviorUpdate.Id, "id", "i", 0, "Behavior ID.")
@@ -160,13 +190,18 @@ func BehaviorsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := behavior.Delete(paramsBehaviorDelete)
+			client := behavior.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsBehaviorDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsBehaviorDelete.Id, "id", "i", 0, "Behavior ID.")

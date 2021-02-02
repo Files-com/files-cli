@@ -32,12 +32,17 @@ func DnsRecordsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsDnsRecordList
 			params.MaxPages = MaxPagesList
-			it, err := dns_record.List(params)
+			client := dns_record.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsDnsRecordList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")

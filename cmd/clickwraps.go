@@ -31,12 +31,17 @@ func ClickwrapsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsClickwrapList
 			params.MaxPages = MaxPagesList
-			it, err := clickwrap.List(params)
+			client := clickwrap.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsClickwrapList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -49,13 +54,18 @@ func ClickwrapsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := clickwrap.Find(paramsClickwrapFind)
+			client := clickwrap.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsClickwrapFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsClickwrapFind.Id, "id", "i", 0, "Clickwrap ID.")
@@ -67,13 +77,18 @@ func ClickwrapsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := clickwrap.Create(paramsClickwrapCreate)
+			client := clickwrap.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsClickwrapCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsClickwrapCreate.Name, "name", "n", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -89,13 +104,18 @@ func ClickwrapsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := clickwrap.Update(paramsClickwrapUpdate)
+			client := clickwrap.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsClickwrapUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsClickwrapUpdate.Id, "id", "i", 0, "Clickwrap ID.")
@@ -112,13 +132,18 @@ func ClickwrapsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := clickwrap.Delete(paramsClickwrapDelete)
+			client := clickwrap.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsClickwrapDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsClickwrapDelete.Id, "id", "i", 0, "Clickwrap ID.")

@@ -34,12 +34,17 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			it, err := lock.ListFor(params)
+			client := lock.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.ListFor(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.JsonMarshalIter(it, fieldsListFor)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdListFor.Flags().StringVarP(&paramsLockListFor.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -53,13 +58,18 @@ func LocksInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := lock.Create(paramsLockCreate)
+			client := lock.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsLockCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsLockCreate.Path, "path", "p", "", "Path")
@@ -72,13 +82,18 @@ func LocksInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := lock.Delete(paramsLockDelete)
+			client := lock.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsLockDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().StringVarP(&paramsLockDelete.Path, "path", "p", "", "Path")

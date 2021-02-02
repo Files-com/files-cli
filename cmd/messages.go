@@ -31,12 +31,17 @@ func MessagesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsMessageList
 			params.MaxPages = MaxPagesList
-			it, err := message.List(params)
+			client := message.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsMessageList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -51,13 +56,18 @@ func MessagesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message.Find(paramsMessageFind)
+			client := message.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsMessageFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsMessageFind.Id, "id", "i", 0, "Message ID.")
@@ -69,13 +79,18 @@ func MessagesInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message.Create(paramsMessageCreate)
+			client := message.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsMessageCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsMessageCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -90,13 +105,18 @@ func MessagesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message.Update(paramsMessageUpdate)
+			client := message.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsMessageUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsMessageUpdate.Id, "id", "i", 0, "Message ID.")
@@ -111,13 +131,18 @@ func MessagesInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message.Delete(paramsMessageDelete)
+			client := message.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsMessageDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsMessageDelete.Id, "id", "i", 0, "Message ID.")

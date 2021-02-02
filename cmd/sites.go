@@ -25,13 +25,18 @@ func SitesInit() {
 	cmdGet := &cobra.Command{
 		Use: "get",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := site.Get(paramsSiteGet)
+			client := site.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Get(paramsSiteGet)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsGet)
+			err = lib.JsonMarshal(result, fieldsGet)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdGet.Flags().StringVarP(&paramsSiteGet.Format, "format", "f", "", "")
@@ -43,13 +48,18 @@ func SitesInit() {
 	cmdGetUsage := &cobra.Command{
 		Use: "get-usage",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := site.GetUsage(paramsSiteGetUsage)
+			client := site.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.GetUsage(paramsSiteGetUsage)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsGetUsage)
+			err = lib.JsonMarshal(result, fieldsGetUsage)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdGetUsage.Flags().StringVarP(&paramsSiteGetUsage.Format, "format", "f", "", "")
@@ -61,13 +71,18 @@ func SitesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := site.Update(paramsSiteUpdate)
+			client := site.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsSiteUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.Name, "name", "", "", "Site name")

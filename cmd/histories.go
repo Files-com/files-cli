@@ -25,13 +25,18 @@ func HistoriesInit() {
 	cmdListForFile := &cobra.Command{
 		Use: "list-for-file",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history.ListForFile(paramsHistoryListForFile)
+			client := history.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.ListForFile(paramsHistoryListForFile)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsListForFile)
+			err = lib.JsonMarshal(result, fieldsListForFile)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdListForFile.Flags(), &paramsHistoryListForFile.StartAt, "start-at", "t")
@@ -48,13 +53,18 @@ func HistoriesInit() {
 	cmdListForFolder := &cobra.Command{
 		Use: "list-for-folder",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history.ListForFolder(paramsHistoryListForFolder)
+			client := history.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.ListForFolder(paramsHistoryListForFolder)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsListForFolder)
+			err = lib.JsonMarshal(result, fieldsListForFolder)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdListForFolder.Flags(), &paramsHistoryListForFolder.StartAt, "start-at", "t")
@@ -71,13 +81,18 @@ func HistoriesInit() {
 	cmdListForUser := &cobra.Command{
 		Use: "list-for-user",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history.ListForUser(paramsHistoryListForUser)
+			client := history.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.ListForUser(paramsHistoryListForUser)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsListForUser)
+			err = lib.JsonMarshal(result, fieldsListForUser)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdListForUser.Flags(), &paramsHistoryListForUser.StartAt, "start-at", "t")
@@ -94,13 +109,18 @@ func HistoriesInit() {
 	cmdListLogins := &cobra.Command{
 		Use: "list-logins",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history.ListLogins(paramsHistoryListLogins)
+			client := history.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.ListLogins(paramsHistoryListLogins)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsListLogins)
+			err = lib.JsonMarshal(result, fieldsListLogins)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdListLogins.Flags(), &paramsHistoryListLogins.StartAt, "start-at", "t")
@@ -122,12 +142,17 @@ func HistoriesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
-			it, err := history.List(params)
+			client := history.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdList.Flags(), &paramsHistoryList.StartAt, "start-at", "a")

@@ -32,12 +32,17 @@ func FormFieldSetsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsFormFieldSetList
 			params.MaxPages = MaxPagesList
-			it, err := form_field_set.List(params)
+			client := form_field_set.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsFormFieldSetList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -51,13 +56,18 @@ func FormFieldSetsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := form_field_set.Find(paramsFormFieldSetFind)
+			client := form_field_set.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsFormFieldSetFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsFormFieldSetFind.Id, "id", "i", 0, "Form Field Set ID.")
@@ -69,13 +79,18 @@ func FormFieldSetsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := form_field_set.Create(paramsFormFieldSetCreate)
+			client := form_field_set.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsFormFieldSetCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsFormFieldSetCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -88,13 +103,18 @@ func FormFieldSetsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := form_field_set.Update(paramsFormFieldSetUpdate)
+			client := form_field_set.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsFormFieldSetUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsFormFieldSetUpdate.Id, "id", "i", 0, "Form Field Set ID.")
@@ -107,13 +127,18 @@ func FormFieldSetsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := form_field_set.Delete(paramsFormFieldSetDelete)
+			client := form_field_set.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsFormFieldSetDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsFormFieldSetDelete.Id, "id", "i", 0, "Form Field Set ID.")

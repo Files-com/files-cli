@@ -32,12 +32,17 @@ func ApiKeysInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsApiKeyList
 			params.MaxPages = MaxPagesList
-			it, err := api_key.List(params)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsApiKeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -51,13 +56,18 @@ func ApiKeysInit() {
 	cmdFindCurrent := &cobra.Command{
 		Use: "find-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.FindCurrent(paramsApiKeyFindCurrent)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.FindCurrent(paramsApiKeyFindCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFindCurrent)
+			err = lib.JsonMarshal(result, fieldsFindCurrent)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFindCurrent.Flags().StringVarP(&paramsApiKeyFindCurrent.Format, "format", "f", "", "")
@@ -69,13 +79,18 @@ func ApiKeysInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.Find(paramsApiKeyFind)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsApiKeyFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsApiKeyFind.Id, "id", "i", 0, "Api Key ID.")
@@ -87,13 +102,18 @@ func ApiKeysInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.Create(paramsApiKeyCreate)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsApiKeyCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsApiKeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -109,13 +129,18 @@ func ApiKeysInit() {
 	cmdUpdateCurrent := &cobra.Command{
 		Use: "update-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.UpdateCurrent(paramsApiKeyUpdateCurrent)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.UpdateCurrent(paramsApiKeyUpdateCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdateCurrent)
+			err = lib.JsonMarshal(result, fieldsUpdateCurrent)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	lib.TimeVarP(cmdUpdateCurrent.Flags(), &paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e")
@@ -129,13 +154,18 @@ func ApiKeysInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.Update(paramsApiKeyUpdate)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsApiKeyUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsApiKeyUpdate.Id, "id", "i", 0, "Api Key ID.")
@@ -150,13 +180,18 @@ func ApiKeysInit() {
 	cmdDeleteCurrent := &cobra.Command{
 		Use: "delete-current",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.DeleteCurrent(paramsApiKeyDeleteCurrent)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.DeleteCurrent(paramsApiKeyDeleteCurrent)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDeleteCurrent)
+			err = lib.JsonMarshal(result, fieldsDeleteCurrent)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "f", "", "")
@@ -168,13 +203,18 @@ func ApiKeysInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := api_key.Delete(paramsApiKeyDelete)
+			client := api_key.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsApiKeyDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsApiKeyDelete.Id, "id", "i", 0, "Api Key ID.")

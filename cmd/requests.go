@@ -31,12 +31,17 @@ func RequestsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsRequestList
 			params.MaxPages = MaxPagesList
-			it, err := request.List(params)
+			client := request.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsRequestList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -50,13 +55,18 @@ func RequestsInit() {
 	cmdGetFolder := &cobra.Command{
 		Use: "get-folder",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := request.GetFolder(paramsRequestGetFolder)
+			client := request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.GetFolder(paramsRequestGetFolder)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsGetFolder)
+			err = lib.JsonMarshal(result, fieldsGetFolder)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -70,13 +80,18 @@ func RequestsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := request.Create(paramsRequestCreate)
+			client := request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsRequestCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsRequestCreate.Path, "path", "p", "", "Folder path on which to request the file.")
@@ -91,13 +106,18 @@ func RequestsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := request.Delete(paramsRequestDelete)
+			client := request.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsRequestDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsRequestDelete.Id, "id", "i", 0, "Request ID.")

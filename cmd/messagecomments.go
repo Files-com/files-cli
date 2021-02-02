@@ -32,12 +32,17 @@ func MessageCommentsInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsMessageCommentList
 			params.MaxPages = MaxPagesList
-			it, err := message_comment.List(params)
+			client := message_comment.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsMessageCommentList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -52,13 +57,18 @@ func MessageCommentsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message_comment.Find(paramsMessageCommentFind)
+			client := message_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsMessageCommentFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsMessageCommentFind.Id, "id", "i", 0, "Message Comment ID.")
@@ -70,13 +80,18 @@ func MessageCommentsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message_comment.Create(paramsMessageCommentCreate)
+			client := message_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsMessageCommentCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsMessageCommentCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -89,13 +104,18 @@ func MessageCommentsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message_comment.Update(paramsMessageCommentUpdate)
+			client := message_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsMessageCommentUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsMessageCommentUpdate.Id, "id", "i", 0, "Message Comment ID.")
@@ -108,13 +128,18 @@ func MessageCommentsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := message_comment.Delete(paramsMessageCommentDelete)
+			client := message_comment.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsMessageCommentDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsMessageCommentDelete.Id, "id", "i", 0, "Message Comment ID.")

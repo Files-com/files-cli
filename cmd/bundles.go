@@ -31,12 +31,17 @@ func BundlesInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsBundleList
 			params.MaxPages = MaxPagesList
-			it, err := bundle.List(params)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().Int64VarP(&paramsBundleList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -50,13 +55,18 @@ func BundlesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := bundle.Find(paramsBundleFind)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsBundleFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsBundleFind.Id, "id", "i", 0, "Bundle ID.")
@@ -68,13 +78,18 @@ func BundlesInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := bundle.Create(paramsBundleCreate)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsBundleCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsBundleCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -95,13 +110,18 @@ func BundlesInit() {
 	cmdShare := &cobra.Command{
 		Use: "share",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := bundle.Share(paramsBundleShare)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Share(paramsBundleShare)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsShare)
+			err = lib.JsonMarshal(result, fieldsShare)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdShare.Flags().Int64VarP(&paramsBundleShare.Id, "id", "i", 0, "Bundle ID.")
@@ -114,13 +134,18 @@ func BundlesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := bundle.Update(paramsBundleUpdate)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsBundleUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsBundleUpdate.Id, "id", "i", 0, "Bundle ID.")
@@ -141,13 +166,18 @@ func BundlesInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := bundle.Delete(paramsBundleDelete)
+			client := bundle.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsBundleDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsBundleDelete.Id, "id", "i", 0, "Bundle ID.")

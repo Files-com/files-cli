@@ -26,13 +26,18 @@ func HistoryExportsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history_export.Find(paramsHistoryExportFind)
+			client := history_export.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsHistoryExportFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsHistoryExportFind.Id, "id", "i", 0, "History Export ID.")
@@ -44,13 +49,18 @@ func HistoryExportsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := history_export.Create(paramsHistoryExportCreate)
+			client := history_export.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsHistoryExportCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().Int64VarP(&paramsHistoryExportCreate.UserId, "user-id", "", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

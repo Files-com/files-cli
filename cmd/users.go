@@ -31,12 +31,17 @@ func UsersInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			params := paramsUserList
 			params.MaxPages = MaxPagesList
-			it, err := user.List(params)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			it, err := client.List(params)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			lib.JsonMarshalIter(it, fieldsList)
+			err = lib.JsonMarshalIter(it, fieldsList)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsUserList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
@@ -51,13 +56,18 @@ func UsersInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.Find(paramsUserFind)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Find(paramsUserFind)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsFind)
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdFind.Flags().Int64VarP(&paramsUserFind.Id, "id", "i", 0, "User ID.")
@@ -69,13 +79,18 @@ func UsersInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.Create(paramsUserCreate)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsUserCreate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsCreate)
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.ChangePassword, "change-password", "s", "", "Used for changing a password on an existing user.")
@@ -110,13 +125,18 @@ func UsersInit() {
 	cmdUnlock := &cobra.Command{
 		Use: "unlock",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.Unlock(paramsUserUnlock)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Unlock(paramsUserUnlock)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUnlock)
+			err = lib.JsonMarshal(result, fieldsUnlock)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUnlock.Flags().Int64VarP(&paramsUserUnlock.Id, "id", "i", 0, "User ID.")
@@ -128,13 +148,18 @@ func UsersInit() {
 	cmdResendWelcomeEmail := &cobra.Command{
 		Use: "resend-welcome-email",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.ResendWelcomeEmail(paramsUserResendWelcomeEmail)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.ResendWelcomeEmail(paramsUserResendWelcomeEmail)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsResendWelcomeEmail)
+			err = lib.JsonMarshal(result, fieldsResendWelcomeEmail)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdResendWelcomeEmail.Flags().Int64VarP(&paramsUserResendWelcomeEmail.Id, "id", "i", 0, "User ID.")
@@ -146,13 +171,18 @@ func UsersInit() {
 	cmdUser2faReset := &cobra.Command{
 		Use: "user-2fa-reset",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.User2faReset(paramsUserUser2faReset)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.User2faReset(paramsUserUser2faReset)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUser2faReset)
+			err = lib.JsonMarshal(result, fieldsUser2faReset)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUser2faReset.Flags().Int64VarP(&paramsUserUser2faReset.Id, "id", "i", 0, "User ID.")
@@ -164,13 +194,18 @@ func UsersInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.Update(paramsUserUpdate)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Update(paramsUserUpdate)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.JsonMarshal(result, fieldsUpdate)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.Id, "id", "", 0, "User ID.")
@@ -206,13 +241,18 @@ func UsersInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			result, err := user.Delete(paramsUserDelete)
+			client := user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Delete(paramsUserDelete)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			lib.JsonMarshal(result, fieldsDelete)
+			err = lib.JsonMarshal(result, fieldsDelete)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		},
 	}
 	cmdDelete.Flags().Int64VarP(&paramsUserDelete.Id, "id", "i", 0, "User ID.")
