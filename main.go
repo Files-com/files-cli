@@ -59,6 +59,9 @@ func main() {
 	rootCmd.SuggestionsMinimumDistance = 1
 	cmd.ConfigInit()
 	rootCmd.AddCommand(cmd.Config)
+	rootCmd.AddCommand(cmd.UploadCmd())
+	rootCmd.AddCommand(cmd.DownloadCmd())
+	rootCmd.AddCommand(cmd.VersionCmd(VERSION))
 	cmd.AccountLineItemsInit()
 	rootCmd.AddCommand(cmd.AccountLineItems)
 	cmd.ActionsInit()
