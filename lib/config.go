@@ -26,6 +26,7 @@ type Config struct {
 	Subdomain          string    `json:"subdomain"`
 	Username           string    `json:"username"`
 	APIKey             string    `json:"api_key"`
+	Endpoint           string    `json:"endpoint,omitempty"`
 	configPathOverride string    `json:"-"`
 }
 
@@ -67,6 +68,7 @@ func (c *Config) SetGlobal() {
 	files_sdk.GlobalConfig.SessionId = c.SessionId
 	files_sdk.GlobalConfig.Subdomain = c.Subdomain
 	files_sdk.GlobalConfig.APIKey = c.APIKey
+	files_sdk.GlobalConfig.Endpoint = c.Endpoint
 }
 
 func (c *Config) Save() error {
@@ -139,7 +141,10 @@ func contains(s []string, e string) bool {
 }
 
 func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error) (files_sdk.SessionCreateParams, error) {
-	responseError := err.(files_sdk.ResponseError)
+	responseError, ok := err.(files_sdk.ResponseError)
+	if !ok {
+		return paramsSessionCreate, err
+	}
 	switch eType := responseError.Type; eType {
 	case "not-authorized/authentication-required":
 		return paramsSessionCreate, err

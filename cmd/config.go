@@ -25,6 +25,7 @@ func ConfigInit() {
 	subdomainCreate.Flags().StringVarP(&configParams.Subdomain, "subdomain", "s", "", "Subdomain of site")
 	subdomainCreate.Flags().StringVarP(&configParams.Username, "username", "u", "", "Username to sign in as")
 	subdomainCreate.Flags().StringVarP(&configParams.APIKey, "api-key", "a", "", "API Key")
+	subdomainCreate.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", "", "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
 
 	Config.AddCommand(subdomainCreate)
 	resetDelete := &cobra.Command{
