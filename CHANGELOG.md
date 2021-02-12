@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.190] - 2021/02/12
+### Fix
+- version command now display current version correctly.
+
 ## [1.0.189] - 2021/02/12
 ### Fix
 - `download` and `upload` command now support session login
 
-## [1.0.170] - 2021/02/02
+
 ### Added
 - Support basic login and 2FA methods sms, u2f, yubi, and otp.
 - Command `config` holds configuration in `~/.config/files-cli`

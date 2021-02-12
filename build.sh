@@ -14,9 +14,21 @@ fi
 go mod edit -replace github.com/Files-com/files-sdk-go=../go
 go mod tidy
 go get -d -v
+
+project_root="$(git rev-parse --show-toplevel)"
+next_version_path="${project_root}/next_version.rb"
+if [[ -f "${next_version_path}" ]] ; then
+  sed -i.bu "s/_VERSION/$(ruby "${next_version_path}" cli)/g" main.go
+fi
+
 go get -u github.com/mitchellh/gox
 gox -os="linux darwin windows" -arch="amd64" -output="../../cli_dist/{{.OS}}/files-cli_{{.OS}}_{{.Arch}}"
 go mod edit -dropreplace github.com/Files-com/files-sdk-go
+
+if [[ -f "main.go.bu" ]] ; then
+  rm main.go
+  cp main.go.bu main.go
+fi
 
 cd ../../
 cd cli_dist || exit
