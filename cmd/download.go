@@ -28,7 +28,7 @@ func DownloadCmd() *cobra.Command {
 				localPath = args[1]
 			}
 
-			client := file.Client{}
+			client := file.Client{Config: files_sdk.GlobalConfig}
 			bars := map[string]*mpb.Bar{}
 			barsMapMutex := sync.RWMutex{}
 			mainTotalMutex := sync.RWMutex{}

@@ -29,7 +29,7 @@ func UploadCmd() *cobra.Command {
 			}
 			barsMapMutex := sync.RWMutex{}
 			mainTotalMutex := sync.RWMutex{}
-			client := file.Client{}
+			client := file.Client{Config: files_sdk.GlobalConfig}
 			p := mpb.New(mpb.WithWidth(64))
 
 			var mainTotal *mpb.Bar
