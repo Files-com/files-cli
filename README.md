@@ -6,6 +6,13 @@ The Files.com CLI App provides convenient access to the Files.com API.
 
 Download latest release for Windows, MacOS, or Linux [here](https://github.com/Files-com/files-cli/releases)
 
+### Homebrew 
+
+```sh
+brew tap Files-com/homebrew-tap
+brew install files-cli
+```
+
 ## Documentation
 
 ### Setting API Key

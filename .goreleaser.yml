@@ -1,0 +1,55 @@
+# This is an example .goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+release:
+  github:
+    owner: Files-com
+    name: files-cli
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    main: ./main.go
+    binary: files-cli
+archives:
+  # default format for Mac (darwin) and Linux
+  - format: tar.gz
+    # if the OS is windows, we override and put everything in a .zip instead.
+    format_overrides:
+      - goos: windows
+        format: zip
+    # Just the naming convention for tarballs... Example: msconsole_1.0.0_darwin_64bit
+    name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}'
+    # Replace the cryptic arch's with readable human naming conventions
+    replacements:
+      amd64: 64bit
+      386: 32bit
+      arm: ARM
+      arm64: ARM64
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}"
+brews:
+  -
+    name: files-cli
+    tap:
+      owner: files-opensource-bot
+      name: files-cli
+    commit_author:
+      name: files-opensource-bot
+      email: info@files.com
+    folder: Formula
+    homepage: "https://files.com/"
+    description: Files.com command-line interface
+    license: "MIT"
+    test: system "#{bin}/files-cli --version"
