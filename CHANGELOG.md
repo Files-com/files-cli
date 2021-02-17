@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.194] - 2021/02/16
+## [1.0.195] - 2021/02/17
 ### Fix
 - version command now display current version correctly.
 
-## [1.0.193] - 2021/02/15
+## [1.0.194] - 2021/02/16
 ### Fix
 - `download` and `upload` command now support session login
 
