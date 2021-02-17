@@ -6,8 +6,10 @@ release:
     name: files-cli
 before:
   hooks:
-    - go mod tidy
-    - go mod download
+    - go mod edit -replace github.com/Files-com/files-sdk-go=../go
+after:
+  hooks:
+    - go mod edit -dropreplace github.com/Files-com/files-sdk-go
 builds:
   - env:
       - CGO_ENABLED=0
