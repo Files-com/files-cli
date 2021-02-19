@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.210] - 2021/02/19
+### Fix
+- Windows command prompt for session login now formats input correctly.
+
 ## [1.0.196] - 2021/02/17
 ### Fix
 - version command now display current version correctly.

@@ -175,21 +175,29 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	return paramsSessionCreate, err
 }
 
+func stringInput(reader *bufio.Reader, label string) string {
+	fmt.Printf("%v: ", label)
+	text, _ := reader.ReadString('\n')
+	return parseTermInput(text)
+}
+
+func parseTermInput(text string) string {
+	text = strings.Replace(text, "\r", "", -1)
+	text = strings.Replace(text, "\n", "", -1) // Windows command prompt
+	return text
+}
+
 func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Config) error {
 	reader := bufio.NewReader(os.Stdin)
 
 	if config.Subdomain == "" {
-		fmt.Print("Subdomain: ")
-		text, _ := reader.ReadString('\n')
-		config.Subdomain = strings.Replace(text, "\n", "", -1)
+		config.Subdomain = stringInput(reader, "Subdomain")
 	} else {
 		fmt.Printf("Subdomain: %v\n", config.Subdomain)
 	}
 
 	if paramsSessionCreate.Username == "" && config.Username == "" {
-		fmt.Print("Username: ")
-		text, _ := reader.ReadString('\n')
-		paramsSessionCreate.Username = strings.Replace(text, "\n", "", -1)
+		paramsSessionCreate.Username = stringInput(reader, "Username")
 		config.Username = paramsSessionCreate.Username
 	} else {
 		if paramsSessionCreate.Username != "" {
@@ -206,8 +214,8 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Con
 		if err != nil {
 			return err
 		}
-		password := string(bytePassword)
-		paramsSessionCreate.Password = strings.Replace(password, "\n", "", -1)
+
+		paramsSessionCreate.Password = parseTermInput(string(bytePassword))
 		fmt.Println("")
 	}
 
