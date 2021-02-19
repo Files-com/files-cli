@@ -39,8 +39,8 @@ brews:
   -
     name: files-cli
     tap:
-      owner: files-opensource-bot
-      name: files-cli
+      owner: Files-com
+      name: homebrew-tap
     commit_author:
       name: files-opensource-bot
       email: info@files.com
