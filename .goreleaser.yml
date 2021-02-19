@@ -49,3 +49,14 @@ brews:
     description: Files.com command-line interface
     license: "MIT"
     test: system "#{bin}/files-cli --version"
+nfpms:
+  -
+    package_name: files-cli
+    vendor: Files.com
+    homepage: https://files.com/
+    description: Files.com command-line interface
+    license: "MIT"
+    formats:
+      - apk
+      - deb
+      - rpm
