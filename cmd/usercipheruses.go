@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	user_cipher_use "github.com/Files-com/files-sdk-go/usercipheruse"
 )
 
@@ -35,13 +32,11 @@ func UserCipherUsesInit() {
 			client := user_cipher_use.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

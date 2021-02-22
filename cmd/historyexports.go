@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	history_export "github.com/Files-com/files-sdk-go/historyexport"
 )
 
@@ -29,14 +26,12 @@ func HistoryExportsInit() {
 			client := history_export.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsHistoryExportFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -52,14 +47,12 @@ func HistoryExportsInit() {
 			client := history_export.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsHistoryExportCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

@@ -4,9 +4,6 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	"fmt"
-	"os"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/file"
 )
@@ -29,14 +26,12 @@ func FilesInit() {
 			client := file.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsFileCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -61,14 +56,12 @@ func FilesInit() {
 			client := file.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Update(paramsFileUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -86,14 +79,12 @@ func FilesInit() {
 			client := file.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsFileDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

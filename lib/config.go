@@ -30,7 +30,34 @@ type Config struct {
 	configPathOverride string    `json:"-"`
 }
 
+type ResetConfig struct {
+	Subdomain bool
+	Username  bool
+	APIKey    bool
+	Endpoint  bool
+	Session   bool
+}
+
 var SessionExpiry = time.Hour * 6
+
+func (c Config) ResetWith(reset ResetConfig) error {
+	if reset.Subdomain == true {
+		c.Subdomain = ""
+	}
+	if reset.Username == true {
+		c.Username = ""
+	}
+	if reset.APIKey == true {
+		c.APIKey = ""
+	}
+	if reset.Endpoint == true {
+		c.Endpoint = ""
+	}
+	if reset.Session == true {
+		c.SessionId = ""
+	}
+	return c.Save()
+}
 
 func (c Config) Reset() error {
 	return initConfig()

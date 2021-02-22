@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	public_key "github.com/Files-com/files-sdk-go/publickey"
 )
 
@@ -35,13 +32,11 @@ func PublicKeysInit() {
 			client := public_key.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -59,14 +54,12 @@ func PublicKeysInit() {
 			client := public_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsPublicKeyFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -82,14 +75,12 @@ func PublicKeysInit() {
 			client := public_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsPublicKeyCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -107,14 +98,12 @@ func PublicKeysInit() {
 			client := public_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Update(paramsPublicKeyUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -131,14 +120,12 @@ func PublicKeysInit() {
 			client := public_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsPublicKeyDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

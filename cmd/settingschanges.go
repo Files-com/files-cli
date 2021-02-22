@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	settings_change "github.com/Files-com/files-sdk-go/settingschange"
 )
 
@@ -35,13 +32,11 @@ func SettingsChangesInit() {
 			client := settings_change.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

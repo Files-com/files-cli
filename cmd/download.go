@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"sync"
 
+	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -96,8 +96,7 @@ func DownloadCmd() *cobra.Command {
 					}
 				})
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			if mainTotal != nil {

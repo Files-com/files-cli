@@ -4,9 +4,6 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	"fmt"
-	"os"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/app"
 )
@@ -34,13 +31,11 @@ func AppsInit() {
 			client := app.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

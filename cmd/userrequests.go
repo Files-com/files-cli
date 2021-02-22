@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	user_request "github.com/Files-com/files-sdk-go/userrequest"
 )
 
@@ -35,13 +32,11 @@ func UserRequestsInit() {
 			client := user_request.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -58,14 +53,12 @@ func UserRequestsInit() {
 			client := user_request.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsUserRequestFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -81,14 +74,12 @@ func UserRequestsInit() {
 			client := user_request.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsUserRequestCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -106,14 +97,12 @@ func UserRequestsInit() {
 			client := user_request.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsUserRequestDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

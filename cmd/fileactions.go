@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	file_action "github.com/Files-com/files-sdk-go/fileaction"
 )
 
@@ -29,14 +26,12 @@ func FileActionsInit() {
 			client := file_action.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Copy(paramsFileActionCopy)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCopy)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -53,14 +48,12 @@ func FileActionsInit() {
 			client := file_action.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Move(paramsFileActionMove)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsMove)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -77,14 +70,12 @@ func FileActionsInit() {
 			client := file_action.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.BeginUpload(paramsFileActionBeginUpload)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsBeginUpload)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

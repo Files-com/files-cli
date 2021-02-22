@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	sso_strategy "github.com/Files-com/files-sdk-go/ssostrategy"
 )
 
@@ -35,13 +32,11 @@ func SsoStrategiesInit() {
 			client := sso_strategy.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -58,14 +53,12 @@ func SsoStrategiesInit() {
 			client := sso_strategy.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsSsoStrategyFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

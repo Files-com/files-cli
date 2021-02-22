@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	message_reaction "github.com/Files-com/files-sdk-go/messagereaction"
 )
 
@@ -35,13 +32,11 @@ func MessageReactionsInit() {
 			client := message_reaction.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -60,14 +55,12 @@ func MessageReactionsInit() {
 			client := message_reaction.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsMessageReactionFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -83,14 +76,12 @@ func MessageReactionsInit() {
 			client := message_reaction.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsMessageReactionCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -107,14 +98,12 @@ func MessageReactionsInit() {
 			client := message_reaction.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsMessageReactionDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

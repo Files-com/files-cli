@@ -4,9 +4,6 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	"fmt"
-	"os"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/history"
 )
@@ -28,14 +25,12 @@ func HistoriesInit() {
 			client := history.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.ListForFile(paramsHistoryListForFile)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForFile)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -56,14 +51,12 @@ func HistoriesInit() {
 			client := history.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.ListForFolder(paramsHistoryListForFolder)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForFolder)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -84,14 +77,12 @@ func HistoriesInit() {
 			client := history.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.ListForUser(paramsHistoryListForUser)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForUser)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -112,14 +103,12 @@ func HistoriesInit() {
 			client := history.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.ListLogins(paramsHistoryListLogins)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListLogins)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -145,13 +134,11 @@ func HistoriesInit() {
 			client := history.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

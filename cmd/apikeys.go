@@ -6,9 +6,6 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
-	"fmt"
-	"os"
-
 	api_key "github.com/Files-com/files-sdk-go/apikey"
 )
 
@@ -35,13 +32,11 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.List(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -59,14 +54,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.FindCurrent(paramsApiKeyFindCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFindCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -82,14 +75,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Find(paramsApiKeyFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -105,14 +96,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsApiKeyCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -132,14 +121,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.UpdateCurrent(paramsApiKeyUpdateCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdateCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -157,14 +144,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Update(paramsApiKeyUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -183,14 +168,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.DeleteCurrent(paramsApiKeyDeleteCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDeleteCurrent)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -206,14 +189,12 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsApiKeyDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

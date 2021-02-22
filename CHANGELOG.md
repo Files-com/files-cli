@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.215] - 2021/02/22
+### Added
+- New commands `login` and `logout`
+- `config reset` now takes flags to reset a specific key.
+
+### Fix
+- In some cases API errors were not being returned correctly.
+- `session delete` no longer returns an error.
+
 ## [1.0.210] - 2021/02/19
 ### Fix
 - Windows command prompt for session login now formats input correctly.

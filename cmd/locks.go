@@ -4,9 +4,6 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	"fmt"
-	"os"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/lock"
 )
@@ -37,13 +34,11 @@ func LocksInit() {
 			client := lock.Client{Config: files_sdk.GlobalConfig}
 			it, err := client.ListFor(params)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsListFor)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -61,14 +56,12 @@ func LocksInit() {
 			client := lock.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsLockCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -85,14 +78,12 @@ func LocksInit() {
 			client := lock.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Delete(paramsLockDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}

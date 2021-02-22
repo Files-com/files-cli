@@ -4,9 +4,6 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	"fmt"
-	"os"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/site"
 )
@@ -28,14 +25,12 @@ func SitesInit() {
 			client := site.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Get(paramsSiteGet)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGet)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -51,14 +46,12 @@ func SitesInit() {
 			client := site.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.GetUsage(paramsSiteGetUsage)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGetUsage)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
@@ -74,14 +67,12 @@ func SitesInit() {
 			client := site.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Update(paramsSiteUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				lib.ClientError(err)
 			}
 		},
 	}
