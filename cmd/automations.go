@@ -85,7 +85,7 @@ func AutomationsInit() {
 	}
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Automation, "automation", "a", "", "Automation type")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "o", "", "Source Path")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "Destination Path")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "DEPRECATED: Destination Path")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Interval, "interval", "i", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
@@ -117,7 +117,7 @@ func AutomationsInit() {
 	cmdUpdate.Flags().Int64VarP(&paramsAutomationUpdate.Id, "id", "i", 0, "Automation ID.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Automation, "automation", "a", "", "Automation type")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "o", "", "Source Path")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "Destination Path")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "DEPRECATED: Destination Path")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Interval, "interval", "n", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
