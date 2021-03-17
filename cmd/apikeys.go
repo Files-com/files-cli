@@ -47,11 +47,12 @@ func ApiKeysInit() {
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	ApiKeys.AddCommand(cmdList)
 	var fieldsFindCurrent string
+	paramsApiKeyFindCurrent := files_sdk.ApiKeyFindCurrentParams{}
 	cmdFindCurrent := &cobra.Command{
 		Use: "find-current",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
-			result, err := client.FindCurrent()
+			result, err := client.FindCurrent(paramsApiKeyFindCurrent)
 			if err != nil {
 				lib.ClientError(err)
 			}
@@ -62,6 +63,7 @@ func ApiKeysInit() {
 			}
 		},
 	}
+	cmdFindCurrent.Flags().StringVarP(&paramsApiKeyFindCurrent.Format, "format", "f", "", "")
 
 	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdFindCurrent)
@@ -159,11 +161,12 @@ func ApiKeysInit() {
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdate)
 	var fieldsDeleteCurrent string
+	paramsApiKeyDeleteCurrent := files_sdk.ApiKeyDeleteCurrentParams{}
 	cmdDeleteCurrent := &cobra.Command{
 		Use: "delete-current",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api_key.Client{Config: files_sdk.GlobalConfig}
-			result, err := client.DeleteCurrent()
+			result, err := client.DeleteCurrent(paramsApiKeyDeleteCurrent)
 			if err != nil {
 				lib.ClientError(err)
 			}
@@ -174,6 +177,7 @@ func ApiKeysInit() {
 			}
 		},
 	}
+	cmdDeleteCurrent.Flags().StringVarP(&paramsApiKeyDeleteCurrent.Format, "format", "f", "", "")
 
 	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdDeleteCurrent)

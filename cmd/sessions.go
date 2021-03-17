@@ -42,11 +42,12 @@ func SessionsInit() {
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	paramsSessionDelete := files_sdk.SessionDeleteParams{}
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := session.Client{Config: files_sdk.GlobalConfig}
-			result, err := client.Delete()
+			result, err := client.Delete(paramsSessionDelete)
 			if err != nil {
 				lib.ClientError(err)
 			}
@@ -57,6 +58,7 @@ func SessionsInit() {
 			}
 		},
 	}
+	cmdDelete.Flags().StringVarP(&paramsSessionDelete.Format, "format", "f", "", "")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	Sessions.AddCommand(cmdDelete)

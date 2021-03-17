@@ -18,11 +18,12 @@ var (
 
 func SitesInit() {
 	var fieldsGet string
+	paramsSiteGet := files_sdk.SiteGetParams{}
 	cmdGet := &cobra.Command{
 		Use: "get",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := site.Client{Config: files_sdk.GlobalConfig}
-			result, err := client.Get()
+			result, err := client.Get(paramsSiteGet)
 			if err != nil {
 				lib.ClientError(err)
 			}
@@ -33,15 +34,17 @@ func SitesInit() {
 			}
 		},
 	}
+	cmdGet.Flags().StringVarP(&paramsSiteGet.Format, "format", "f", "", "")
 
 	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "", "", "comma separated list of field names")
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage string
+	paramsSiteGetUsage := files_sdk.SiteGetUsageParams{}
 	cmdGetUsage := &cobra.Command{
 		Use: "get-usage",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := site.Client{Config: files_sdk.GlobalConfig}
-			result, err := client.GetUsage()
+			result, err := client.GetUsage(paramsSiteGetUsage)
 			if err != nil {
 				lib.ClientError(err)
 			}
@@ -52,6 +55,7 @@ func SitesInit() {
 			}
 		},
 	}
+	cmdGetUsage.Flags().StringVarP(&paramsSiteGetUsage.Format, "format", "f", "", "")
 
 	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "", "", "comma separated list of field names")
 	Sites.AddCommand(cmdGetUsage)
