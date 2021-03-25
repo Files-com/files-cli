@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.501"
+var VERSION = "1.0.502"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -190,6 +190,8 @@ func main() {
 	rootCmd.AddCommand(cmd.UserCipherUses)
 	cmd.UserRequestsInit()
 	rootCmd.AddCommand(cmd.UserRequests)
+	cmd.WebhookTestsInit()
+	rootCmd.AddCommand(cmd.WebhookTests)
 
 	rootCmd.Execute()
 }
