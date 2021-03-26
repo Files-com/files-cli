@@ -47,6 +47,28 @@ func GroupUsersInit() {
 	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	GroupUsers.AddCommand(cmdList)
+	var fieldsCreate string
+	paramsGroupUserCreate := files_sdk.GroupUserCreateParams{}
+	cmdCreate := &cobra.Command{
+		Use: "create",
+		Run: func(cmd *cobra.Command, args []string) {
+			client := group_user.Client{Config: files_sdk.GlobalConfig}
+			result, err := client.Create(paramsGroupUserCreate)
+			if err != nil {
+				lib.ClientError(err)
+			}
+
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				lib.ClientError(err)
+			}
+		},
+	}
+	cmdCreate.Flags().Int64VarP(&paramsGroupUserCreate.GroupId, "group-id", "g", 0, "Group ID to add user to.")
+	cmdCreate.Flags().Int64VarP(&paramsGroupUserCreate.UserId, "user-id", "u", 0, "User ID to add to group.")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	GroupUsers.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsGroupUserUpdate := files_sdk.GroupUserUpdateParams{}
 	cmdUpdate := &cobra.Command{
