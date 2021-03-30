@@ -5,7 +5,8 @@ import (
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/webhooktest"
+
+	webhook_test "github.com/Files-com/files-sdk-go/webhooktest"
 )
 
 var (
@@ -22,7 +23,7 @@ func WebhookTestsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := webhooktest.Client{Config: files_sdk.GlobalConfig}
+			client := webhook_test.Client{Config: files_sdk.GlobalConfig}
 			result, err := client.Create(paramsWebhookTestCreate)
 			if err != nil {
 				lib.ClientError(err)

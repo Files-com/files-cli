@@ -48,7 +48,7 @@ func FoldersInit() {
 	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Filter, "filter", "f", "", "If specified, will filter folders/files list by this string.  Wildcards of `*` and `?` are acceptable here.")
 	cmdListFor.Flags().StringVarP(&paramsFolderListFor.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
 	cmdListFor.Flags().StringVarP(&paramsFolderListFor.Search, "search", "s", "", "If `search_all` is `true`, provide the search string here.  Otherwise, this parameter acts like an alias of `filter`.")
-	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListFor.Flags().IntVarP(&MaxPagesListFor, "max-pages", "m", 1, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
