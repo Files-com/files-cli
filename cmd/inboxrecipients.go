@@ -66,7 +66,7 @@ func InboxRecipientsInit() {
 	}
 	cmdCreate.Flags().Int64VarP(&paramsInboxRecipientCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64VarP(&paramsInboxRecipientCreate.InboxId, "inbox-id", "i", 0, "Inbox to share.")
-	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Recipient, "recipient", "r", "", "Email addresses to share this inbox with.")
+	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Recipient, "recipient", "r", "", "Email address to share this inbox with.")
 	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Name, "name", "n", "", "Name of recipient.")
 	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Company, "company", "c", "", "Company of recipient.")
 	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Note, "note", "o", "", "Note to include in email.")
