@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.643"
+var VERSION = "1.0.644"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -180,6 +180,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Statuses)
 	cmd.StylesInit()
 	rootCmd.AddCommand(cmd.Styles)
+	cmd.SyncJobsInit()
+	rootCmd.AddCommand(cmd.SyncJobs)
 	cmd.UsageDailySnapshotsInit()
 	rootCmd.AddCommand(cmd.UsageDailySnapshots)
 	cmd.UsageSnapshotsInit()
