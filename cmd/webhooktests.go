@@ -9,28 +9,31 @@ import (
 )
 
 var (
+	WebhookTests = &cobra.Command{}
+)
+
+func WebhookTestsInit() {
 	WebhookTests = &cobra.Command{
 		Use:  "webhook-tests [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func WebhookTestsInit() {
 	var fieldsCreate string
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := webhooktest.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := webhooktest.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Create(paramsWebhookTestCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}

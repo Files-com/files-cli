@@ -1,15 +1,12 @@
 package lib
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"sync"
 	"testing"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
@@ -17,36 +14,6 @@ import (
 	recorder "github.com/dnaeon/go-vcr/recorder"
 	"github.com/stretchr/testify/assert"
 )
-
-func captureOutput(f func()) string {
-	reader, writer, err := os.Pipe()
-	if err != nil {
-		panic(err)
-	}
-	stdout := os.Stdout
-	stderr := os.Stderr
-	defer func() {
-		os.Stdout = stdout
-		os.Stderr = stderr
-		log.SetOutput(os.Stderr)
-	}()
-	os.Stdout = writer
-	os.Stderr = writer
-	log.SetOutput(writer)
-	out := make(chan string)
-	wg := new(sync.WaitGroup)
-	wg.Add(1)
-	go func() {
-		var buf bytes.Buffer
-		wg.Done()
-		io.Copy(&buf, reader)
-		out <- buf.String()
-	}()
-	wg.Wait()
-	f()
-	writer.Close()
-	return <-out
-}
 
 func pipeInput(input string, f func()) {
 	inputBytes := []byte(input)
@@ -118,7 +85,7 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	file, config := createTempConfig()
 	defer os.Remove(file.Name())
 	var err error
-	re := captureOutput(func() {
+	re := CaptureOutput(func() {
 		pipeInput("testdomain\ntestuser\n", func() {
 			err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config)
 		})
@@ -136,7 +103,7 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	file, config := createTempConfig()
 	defer os.Remove(file.Name())
 	var err error
-	re := captureOutput(func() {
+	re := CaptureOutput(func() {
 		pipeInput("testdomain\ntestuser\n", func() {
 			err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
 		})
@@ -157,7 +124,7 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 	var params files_sdk.SessionCreateParams
 	var err error
 
-	re := captureOutput(func() {
+	re := CaptureOutput(func() {
 		params, err = SessionUnauthorizedError(
 			files_sdk.SessionCreateParams{Password: "password"},
 			files_sdk.ResponseError{
@@ -190,7 +157,7 @@ func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
 	var params files_sdk.SessionCreateParams
 	var err error
 
-	re := captureOutput(func() {
+	re := CaptureOutput(func() {
 		pipeInput("123456\n", func() {
 			params, err = SessionUnauthorizedError(
 				files_sdk.SessionCreateParams{Password: "password"},

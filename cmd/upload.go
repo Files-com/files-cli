@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/Files-com/files-cli/lib"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -13,10 +14,12 @@ import (
 )
 
 func UploadCmd() *cobra.Command {
+	MaxConcurrentConnections := 0
 	Upload := &cobra.Command{
 		Use:  "upload [source-path] [remote-path]",
 		Args: cobra.MaximumNArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
 			var sourcePath string
 			var remotePath string
 
@@ -29,7 +32,9 @@ func UploadCmd() *cobra.Command {
 			}
 			barsMapMutex := sync.RWMutex{}
 			mainTotalMutex := sync.RWMutex{}
-			client := file.Client{Config: files_sdk.GlobalConfig}
+			config := ctx.GetConfig()
+			config.SetMaxConcurrentConnections(MaxConcurrentConnections)
+			client := file.Client{Config: *config}
 			p := mpb.New(mpb.WithWidth(64))
 
 			var mainTotal *mpb.Bar
@@ -86,7 +91,7 @@ func UploadCmd() *cobra.Command {
 						if err != nil {
 							bar.Abort(true)
 							fmt.Println(file.Path, err)
-							mainTotal.IncrBy(file.Size)
+							mainTotal.IncrInt64(file.Size)
 						} else {
 							bar.IncrInt64(uploadedBytesCount)
 							mainTotal.IncrInt64(uploadedBytesCount)
@@ -96,10 +101,12 @@ func UploadCmd() *cobra.Command {
 			)
 
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
+
+	Upload.Flags().IntVarP(&MaxConcurrentConnections, "max-concurrent-connections", "c", 0, "Default is 10")
 
 	return Upload
 }

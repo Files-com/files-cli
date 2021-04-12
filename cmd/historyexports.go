@@ -10,28 +10,31 @@ import (
 )
 
 var (
+	HistoryExports = &cobra.Command{}
+)
+
+func HistoryExportsInit() {
 	HistoryExports = &cobra.Command{
 		Use:  "history-exports [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func HistoryExportsInit() {
 	var fieldsFind string
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := history_export.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := history_export.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Find(paramsHistoryExportFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -44,15 +47,17 @@ func HistoryExportsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := history_export.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := history_export.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Create(paramsHistoryExportCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}

@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/Files-com/files-cli/lib"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -13,10 +14,12 @@ import (
 )
 
 func DownloadCmd() *cobra.Command {
+	MaxConcurrentConnections := 0
 	Download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
 			var remotePath string
 			var localPath string
 
@@ -28,44 +31,58 @@ func DownloadCmd() *cobra.Command {
 				localPath = args[1]
 			}
 
-			client := file.Client{Config: files_sdk.GlobalConfig}
+			client := file.Client{Config: *ctx.GetConfig()}
+			files := map[string]files_sdk.File{}
 			bars := map[string]*mpb.Bar{}
 			barsMapMutex := sync.RWMutex{}
 			mainTotalMutex := sync.RWMutex{}
 			p := mpb.New(mpb.WithWidth(64))
-			totalBytes := 0
+			var totalBytes int64
+
+			calcTotalBytes := func(files map[string]files_sdk.File) int64 {
+				var total int64
+				for _, fileS := range files {
+					total += fileS.Size
+				}
+
+				return total
+			}
 			pathPadding := 40
 			var mainTotal *mpb.Bar
 			err := client.DownloadFolder(
 				files_sdk.FolderListForParams{Path: remotePath},
 				localPath,
-				func(bytes int64, file files_sdk.File, destination string, err error, message string) {
+				func(bytes int64, file files_sdk.File, destination string, err error, message string, filesCount int) {
 					if message != "" {
 						fmt.Println(message)
 						return
 					}
-					mainTotalMutex.Lock()
-					if mainTotal == nil {
-						mainTotal = p.AddBar(int64(totalBytes),
-							mpb.PrependDecorators(
-								decor.Name("Downloading Files", decor.WC{W: pathPadding + 1, C: decor.DidentRight}),
-								decor.Counters(decor.UnitKB, " % .1f / % .1f"),
-							),
-							mpb.AppendDecorators(
-								decor.Percentage(decor.WCSyncSpace),
-							),
-						)
+					if filesCount > 1 {
+						mainTotalMutex.Lock()
+						if mainTotal == nil {
+							mainTotal = p.AddBar(calcTotalBytes(files),
+								mpb.PrependDecorators(
+									decor.Name("Downloading Files", decor.WC{W: pathPadding + 1, C: decor.DidentRight}),
+									decor.Counters(decor.UnitKB, " % .1f / % .1f"),
+								),
+								mpb.AppendDecorators(
+									decor.Percentage(decor.WCSyncSpace),
+								),
+							)
 
-						mainTotal.SetPriority(-1)
+							mainTotal.SetPriority(-1)
+						}
+						mainTotalMutex.Unlock()
 					}
-					mainTotalMutex.Unlock()
+
 					barsMapMutex.RLock()
 					bar, ok := bars[destination]
+					files[destination] = file
 					barsMapMutex.RUnlock()
 					if !ok {
 						barsMapMutex.Lock()
 						totalBytes += file.Size
-						bars[destination] = p.AddBar(int64(file.Size),
+						bars[destination] = p.AddBar(file.Size,
 							mpb.PrependDecorators(
 								// simple name decorator
 								decor.Name(destination, decor.WC{W: pathPadding + 1, C: decor.DidentRight}),
@@ -80,27 +97,36 @@ func DownloadCmd() *cobra.Command {
 						)
 						barsMapMutex.Unlock()
 						barsMapMutex.RLock()
+						files[destination] = file
 						bar = bars[destination]
 						barsMapMutex.RUnlock()
 
-						mainTotal.SetTotal(int64(totalBytes), false)
+						if mainTotal != nil {
+							mainTotal.SetTotal(calcTotalBytes(files), false)
+						}
 					}
 
 					if err != nil {
 						bar.Abort(true)
 						fmt.Println(file.Path, err)
-						mainTotal.IncrBy(file.Size)
+						if mainTotal != nil {
+							mainTotal.IncrInt64(file.Size)
+						}
 					} else {
+						bar.SetTotal(file.Size, false)
 						bar.IncrInt64(bytes)
-						mainTotal.IncrInt64(bytes)
+						if mainTotal != nil {
+							mainTotal.SetTotal(calcTotalBytes(files), false)
+							mainTotal.IncrInt64(bytes)
+						}
 					}
 				})
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			if mainTotal != nil {
-				for int64(totalBytes) < mainTotal.Current() {
+				for calcTotalBytes(files) < mainTotal.Current() {
 
 				}
 				for _, bar := range bars {
@@ -110,6 +136,8 @@ func DownloadCmd() *cobra.Command {
 			}
 		},
 	}
+
+	Download.Flags().IntVarP(&MaxConcurrentConnections, "max-concurrent-connections", "c", 0, "Default is 10")
 
 	return Download
 }

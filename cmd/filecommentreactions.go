@@ -10,28 +10,31 @@ import (
 )
 
 var (
+	FileCommentReactions = &cobra.Command{}
+)
+
+func FileCommentReactionsInit() {
 	FileCommentReactions = &cobra.Command{
 		Use:  "file-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func FileCommentReactionsInit() {
 	var fieldsCreate string
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := file_comment_reaction.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := file_comment_reaction.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Create(paramsFileCommentReactionCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -46,15 +49,17 @@ func FileCommentReactionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := file_comment_reaction.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := file_comment_reaction.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Delete(paramsFileCommentReactionDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}

@@ -9,40 +9,42 @@ import (
 )
 
 var (
+	Automations = &cobra.Command{}
+)
+
+func AutomationsInit() {
 	Automations = &cobra.Command{
 		Use:  "automations [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func AutomationsInit() {
 	var fieldsList string
 	paramsAutomationList := files_sdk.AutomationListParams{}
-	var MaxPagesList int
+	var MaxPagesList int64
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
-			client := automation.Client{Config: files_sdk.GlobalConfig}
+			client := automation.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsAutomationList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().IntVarP(&paramsAutomationList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64VarP(&paramsAutomationList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsAutomationList.Automation, "automation", "a", "", "DEPRECATED: Type of automation to filter by. Use `filter[automation]` instead.")
-	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Automations.AddCommand(cmdList)
 	var fieldsFind string
@@ -50,15 +52,17 @@ func AutomationsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := automation.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := automation.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Find(paramsAutomationFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -69,17 +73,22 @@ func AutomationsInit() {
 	var fieldsCreate string
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := automation.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := automation.Client{Config: *ctx.GetConfig()}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsAutomationCreate.Path = args[0]
+			}
 			result, err := client.Create(paramsAutomationCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -100,17 +109,22 @@ func AutomationsInit() {
 	var fieldsUpdate string
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := automation.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := automation.Client{Config: *ctx.GetConfig()}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsAutomationUpdate.Path = args[0]
+			}
 			result, err := client.Update(paramsAutomationUpdate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -134,15 +148,17 @@ func AutomationsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := automation.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := automation.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Delete(paramsAutomationDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}

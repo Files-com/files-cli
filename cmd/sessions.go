@@ -9,28 +9,31 @@ import (
 )
 
 var (
+	Sessions = &cobra.Command{}
+)
+
+func SessionsInit() {
 	Sessions = &cobra.Command{
 		Use:  "sessions [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func SessionsInit() {
 	var fieldsCreate string
 	paramsSessionCreate := files_sdk.SessionCreateParams{}
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := session.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := session.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Create(paramsSessionCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -45,15 +48,17 @@ func SessionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := session.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := session.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Delete()
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}

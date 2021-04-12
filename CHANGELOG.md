@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.669] - 2021/04/12
+### Added
+- New flag `--max-concurrent-connections` to `download` and `upload` commands. (Default is 10)
+- `download` only shows one progress bar when downloading a single file.
+
+### Fix
+- Uploading nested folders could sometimes skip folders.
+- `files-cli download documents/report.pdf local-files` would result in `local-files/documents/report.pdf`. This is now fixed resulting in `local-files/report.pdf`
+- `files-cli download documents/report.pdf local-files/report-2020.pdf` would result in `local-files/documents/report-2020.pdf/report.pdf`. This is now fixed resulting in `local-files/report-2020.pdf`
+- Allows for downloaded of folders that contain more than 1000 files/folders.
+- Fix file size attribute from failing on 32-bit releases.
+- Downloading large files could hang once showing 100% due to inconsistencies in reported size.
+
 ## [1.0.215] - 2021/02/22
 ### Added
 - New commands `login` and `logout`
@@ -17,13 +30,13 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.196] - 2021/02/17
 ### Fix
-- version command now display current version correctly.
+- version command now displays the current version correctly.
 
-## [1.0.195] - 2021/02/17
+## [1.0.194] - 2021/02/16
 ### Fix
 - `download` and `upload` command now support session login
 
-## [1.0.194] - 2021/02/16
+
 ### Added
 - Support basic login and 2FA methods sms, u2f, yubi, and otp.
 - Command `config` holds configuration in `~/.config/files-cli`

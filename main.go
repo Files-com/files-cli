@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.668"
+var VERSION = "1.0.669"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -195,5 +195,5 @@ func main() {
 	cmd.WebhookTestsInit()
 	rootCmd.AddCommand(cmd.WebhookTests)
 
-	rootCmd.Execute()
+	rootCmd.ExecuteContext(lib.Context{Config: &files.GlobalConfig})
 }

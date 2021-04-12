@@ -6,43 +6,47 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	flib "github.com/Files-com/files-sdk-go/lib"
+
 	remote_server "github.com/Files-com/files-sdk-go/remoteserver"
 )
 
 var (
+	RemoteServers = &cobra.Command{}
+)
+
+func RemoteServersInit() {
 	RemoteServers = &cobra.Command{
 		Use:  "remote-servers [command]",
 		Args: cobra.ExactArgs(1),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func RemoteServersInit() {
 	var fieldsList string
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
-	var MaxPagesList int
+	var MaxPagesList int64
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
-			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			client := remote_server.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
 	cmdList.Flags().StringVarP(&paramsRemoteServerList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().IntVarP(&paramsRemoteServerList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().IntVarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdList.Flags().Int64VarP(&paramsRemoteServerList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind string
@@ -50,15 +54,17 @@ func RemoteServersInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := remote_server.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Find(paramsRemoteServerFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -67,19 +73,26 @@ func RemoteServersInit() {
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdFind)
 	var fieldsCreate string
+	createResetAuthentication := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := remote_server.Client{Config: *ctx.GetConfig()}
+
+			if createResetAuthentication {
+				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(true)
+			}
+
 			result, err := client.Create(paramsRemoteServerCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -94,11 +107,12 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.BackblazeB2KeyId, "backblaze-b2-key-id", "i", "", "Backblaze B2 Cloud Storage keyID.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.BackblazeB2ApplicationKey, "backblaze-b2-application-key", "", "", "Backblaze B2 Cloud Storage applicationKey.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceApiKey, "rackspace-api-key", "", "", "Rackspace API key from the Rackspace Cloud Control Panel.")
+	cmdCreate.Flags().BoolVarP(&createResetAuthentication, "reset-authentication", "", createResetAuthentication, "Reset authenticated account")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AzureBlobStorageAccessKey, "azure-blob-storage-access-key", "y", "", "Azure Blob Storage secret key.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.Hostname, "hostname", "o", "", "Hostname or IP address")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.Name, "name", "", "", "Internal name for your reference")
-	cmdCreate.Flags().IntVarP(&paramsRemoteServerCreate.MaxConnections, "max-connections", "x", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
-	cmdCreate.Flags().IntVarP(&paramsRemoteServerCreate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
+	cmdCreate.Flags().Int64VarP(&paramsRemoteServerCreate.MaxConnections, "max-connections", "x", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
+	cmdCreate.Flags().Int64VarP(&paramsRemoteServerCreate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "", "S3 bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3Region, "s3-region", "", "", "S3 region")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.ServerCertificate, "server-certificate", "f", "", "Remote server certificate")
@@ -122,19 +136,26 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	RemoteServers.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	updateResetAuthentication := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := remote_server.Client{Config: *ctx.GetConfig()}
+
+			if updateResetAuthentication {
+				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(true)
+			}
+
 			result, err := client.Update(paramsRemoteServerUpdate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
@@ -150,11 +171,12 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.BackblazeB2KeyId, "backblaze-b2-key-id", "i", "", "Backblaze B2 Cloud Storage keyID.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.BackblazeB2ApplicationKey, "backblaze-b2-application-key", "", "", "Backblaze B2 Cloud Storage applicationKey.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceApiKey, "rackspace-api-key", "", "", "Rackspace API key from the Rackspace Cloud Control Panel.")
+	cmdUpdate.Flags().BoolVarP(&updateResetAuthentication, "reset-authentication", "", updateResetAuthentication, "Reset authenticated account")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AzureBlobStorageAccessKey, "azure-blob-storage-access-key", "y", "", "Azure Blob Storage secret key.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Hostname, "hostname", "o", "", "Hostname or IP address")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Name, "name", "", "", "Internal name for your reference")
-	cmdUpdate.Flags().IntVarP(&paramsRemoteServerUpdate.MaxConnections, "max-connections", "x", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
-	cmdUpdate.Flags().IntVarP(&paramsRemoteServerUpdate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
+	cmdUpdate.Flags().Int64VarP(&paramsRemoteServerUpdate.MaxConnections, "max-connections", "x", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
+	cmdUpdate.Flags().Int64VarP(&paramsRemoteServerUpdate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "", "S3 region")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.ServerCertificate, "server-certificate", "f", "", "Remote server certificate")
@@ -182,15 +204,17 @@ func RemoteServersInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := remote_server.Client{Config: files_sdk.GlobalConfig}
+			ctx := cmd.Context().(lib.Context)
+			client := remote_server.Client{Config: *ctx.GetConfig()}
+
 			result, err := client.Delete(paramsRemoteServerDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err)
+				lib.ClientError(err, &ctx)
 			}
 		},
 	}
