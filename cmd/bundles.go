@@ -73,6 +73,7 @@ func BundlesInit() {
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdFind)
 	var fieldsCreate string
+	createPreviewOnly := false
 	createRequireRegistration := false
 	createRequireShareRecipient := false
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
@@ -82,6 +83,9 @@ func BundlesInit() {
 			ctx := cmd.Context().(lib.Context)
 			client := bundle.Client{Config: *ctx.GetConfig()}
 
+			if createPreviewOnly {
+				paramsBundleCreate.PreviewOnly = flib.Bool(true)
+			}
 			if createRequireRegistration {
 				paramsBundleCreate.RequireRegistration = flib.Bool(true)
 			}
@@ -108,7 +112,8 @@ func BundlesInit() {
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Description, "description", "d", "", "Public description")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Note, "note", "n", "", "Bundle internal note")
 	cmdCreate.Flags().StringVarP(&paramsBundleCreate.Code, "code", "o", "", "Bundle code.  This code forms the end part of the Public URL.")
-	cmdCreate.Flags().BoolVarP(&createRequireRegistration, "require-registration", "r", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
+	cmdCreate.Flags().BoolVarP(&createPreviewOnly, "preview-only", "r", createPreviewOnly, "Restrict users to previewing files only?")
+	cmdCreate.Flags().BoolVarP(&createRequireRegistration, "require-registration", "g", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdCreate.Flags().Int64VarP(&paramsBundleCreate.ClickwrapId, "clickwrap-id", "c", 0, "ID of the clickwrap to use with this bundle.")
 	cmdCreate.Flags().Int64VarP(&paramsBundleCreate.InboxId, "inbox-id", "i", 0, "ID of the associated inbox, if available.")
 	cmdCreate.Flags().BoolVarP(&createRequireShareRecipient, "require-share-recipient", "", createRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
@@ -140,6 +145,7 @@ func BundlesInit() {
 	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "", "", "comma separated list of field names")
 	Bundles.AddCommand(cmdShare)
 	var fieldsUpdate string
+	updatePreviewOnly := false
 	updateRequireRegistration := false
 	updateRequireShareRecipient := false
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
@@ -149,6 +155,9 @@ func BundlesInit() {
 			ctx := cmd.Context().(lib.Context)
 			client := bundle.Client{Config: *ctx.GetConfig()}
 
+			if updatePreviewOnly {
+				paramsBundleUpdate.PreviewOnly = flib.Bool(true)
+			}
 			if updateRequireRegistration {
 				paramsBundleUpdate.RequireRegistration = flib.Bool(true)
 			}
@@ -177,7 +186,8 @@ func BundlesInit() {
 	cmdUpdate.Flags().Int64VarP(&paramsBundleUpdate.InboxId, "inbox-id", "n", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64VarP(&paramsBundleUpdate.MaxUses, "max-uses", "a", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().StringVarP(&paramsBundleUpdate.Note, "note", "t", "", "Bundle internal note")
-	cmdUpdate.Flags().BoolVarP(&updateRequireRegistration, "require-registration", "r", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
+	cmdUpdate.Flags().BoolVarP(&updatePreviewOnly, "preview-only", "r", updatePreviewOnly, "Restrict users to previewing files only?")
+	cmdUpdate.Flags().BoolVarP(&updateRequireRegistration, "require-registration", "g", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVarP(&updateRequireShareRecipient, "require-share-recipient", "", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
