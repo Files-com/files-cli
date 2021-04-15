@@ -30,7 +30,12 @@ if [[ -f "main.go.bu" ]] ; then
 fi
 
 if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
-  goreleaser build --rm-dist --snapshot
+  if goreleaser build --rm-dist --snapshot ; then
+    true
+  else
+    curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+    ./bin/goreleaser build --rm-dist --snapshot
+  fi
 fi
 
 if [ -n "${SNAPSHOT}" ]; then
