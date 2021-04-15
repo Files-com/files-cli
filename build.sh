@@ -13,7 +13,7 @@ fi
 
 go mod tidy
 
-if [ -n "${DEVELOPMENT_BUILD}" ]; then
+if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
   go mod edit -replace github.com/Files-com/files-sdk-go=../go
 else
   go get -u github.com/Files-com/files-sdk-go
@@ -27,4 +27,12 @@ fi
 
 if [[ -f "main.go.bu" ]] ; then
   rm main.go.bu
+fi
+
+if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
+  goreleaser build --rm-dist --snapshot
+fi
+
+if [ -n "${SNAPSHOT}" ]; then
+    go mod edit -dropreplace github.com/Files-com/files-sdk-go
 fi
