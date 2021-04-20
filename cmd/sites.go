@@ -87,6 +87,7 @@ func SitesInit() {
 	updateImmutableFiles := false
 	updateSessionPinnedByIp := false
 	updateBundlePasswordRequired := false
+	updateBundleRequireShareRecipient := false
 	updatePasswordRequirementsApplyToBundles := false
 	updateOptOutGlobal := false
 	updateUseProvidedModifiedAt := false
@@ -186,6 +187,9 @@ func SitesInit() {
 			}
 			if updateBundlePasswordRequired {
 				paramsSiteUpdate.BundlePasswordRequired = flib.Bool(true)
+			}
+			if updateBundleRequireShareRecipient {
+				paramsSiteUpdate.BundleRequireShareRecipient = flib.Bool(true)
 			}
 			if updatePasswordRequirementsApplyToBundles {
 				paramsSiteUpdate.PasswordRequirementsApplyToBundles = flib.Bool(true)
@@ -308,10 +312,11 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVarP(&updateImmutableFiles, "immutable-files", "b", updateImmutableFiles, "Are files protected from modification?")
 	cmdUpdate.Flags().BoolVarP(&updateSessionPinnedByIp, "session-pinned-by-ip", "", updateSessionPinnedByIp, "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)")
 	cmdUpdate.Flags().BoolVarP(&updateBundlePasswordRequired, "bundle-password-required", "r", updateBundlePasswordRequired, "Do Bundles require password protection?")
+	cmdUpdate.Flags().BoolVarP(&updateBundleRequireShareRecipient, "bundle-require-share-recipient", "p", updateBundleRequireShareRecipient, "Do Bundles require recipients for sharing?")
 	cmdUpdate.Flags().BoolVarP(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", "", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
 	cmdUpdate.Flags().BoolVarP(&updateOptOutGlobal, "opt-out-global", "", updateOptOutGlobal, "Use servers in the USA only?")
 	cmdUpdate.Flags().BoolVarP(&updateUseProvidedModifiedAt, "use-provided-modified-at", "", updateUseProvidedModifiedAt, "Allow uploaders to set `provided_modified_at` for uploaded files?")
-	cmdUpdate.Flags().BoolVarP(&updateCustomNamespace, "custom-namespace", "p", updateCustomNamespace, "Is this site using a custom namespace for users?")
+	cmdUpdate.Flags().BoolVarP(&updateCustomNamespace, "custom-namespace", "", updateCustomNamespace, "Is this site using a custom namespace for users?")
 	cmdUpdate.Flags().Int64VarP(&paramsSiteUpdate.DisableUsersFromInactivityPeriodDays, "disable-users-from-inactivity-period-days", "", 0, "If greater than zero, users will unable to login if they do not show activity within this number of days.")
 	cmdUpdate.Flags().BoolVarP(&updateNonSsoGroupsAllowed, "non-sso-groups-allowed", "", updateNonSsoGroupsAllowed, "If true, groups can be manually created / modified / deleted by Site Admins. Otherwise, groups can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVarP(&updateNonSsoUsersAllowed, "non-sso-users-allowed", "", updateNonSsoUsersAllowed, "If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.")
