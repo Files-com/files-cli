@@ -130,6 +130,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceRegion, "rackspace-region", "g", "", "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceContainer, "rackspace-container", "", "", "The name of the container (top level directory) where files will sync.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.OneDriveAccountType, "one-drive-account-type", "r", "", "Either personal or business_other account types")
+	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.SharepointHostname, "sharepoint-hostname", "", "", "Cloud hosted sharepoint hostname")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AzureBlobStorageAccount, "azure-blob-storage-account", "a", "", "Azure Blob Storage Account name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AzureBlobStorageContainer, "azure-blob-storage-container", "c", "", "Azure Blob Storage Container name")
 
@@ -194,6 +195,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceRegion, "rackspace-region", "g", "", "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceContainer, "rackspace-container", "", "", "The name of the container (top level directory) where files will sync.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.OneDriveAccountType, "one-drive-account-type", "r", "", "Either personal or business_other account types")
+	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.SharepointHostname, "sharepoint-hostname", "", "", "Cloud hosted sharepoint hostname")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AzureBlobStorageAccount, "azure-blob-storage-account", "a", "", "Azure Blob Storage Account name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AzureBlobStorageContainer, "azure-blob-storage-container", "c", "", "Azure Blob Storage Container name")
 
