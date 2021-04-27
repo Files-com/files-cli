@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.842"
+var VERSION = "1.0.843"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -68,6 +68,10 @@ func main() {
 	rootCmd.AddCommand(cmd.AccountLineItems)
 	cmd.ActionsInit()
 	rootCmd.AddCommand(cmd.Actions)
+	cmd.ActionNotificationExportsInit()
+	rootCmd.AddCommand(cmd.ActionNotificationExports)
+	cmd.ActionNotificationExportResultsInit()
+	rootCmd.AddCommand(cmd.ActionNotificationExportResults)
 	cmd.ApiKeysInit()
 	rootCmd.AddCommand(cmd.ApiKeys)
 	cmd.AppsInit()
