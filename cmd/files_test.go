@@ -61,7 +61,7 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 
 	_, err = folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	assert.NoError(err)
-	_, err = fileClient.Upload(strings.NewReader("testing 1"), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, &file.UploadProgress{})
+	_, err = fileClient.Upload(strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, &file.UploadProgress{})
 	assert.NoError(err)
 	FilesInit()
 	str := clib.CaptureOutput(func() {
@@ -85,7 +85,7 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	fileClient := file.Client{Config: *config}
 
 	folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
-	_, err = fileClient.Upload(strings.NewReader("testing 1"), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, &file.UploadProgress{})
+	_, err = fileClient.Upload(strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, &file.UploadProgress{})
 	assert.NoError(err)
 	FilesInit()
 
