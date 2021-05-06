@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.960"
+var VERSION = "1.0.961"
 
 func main() {
 	var rootCmd = &cobra.Command{
