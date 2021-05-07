@@ -47,4 +47,27 @@ func ExternalEventsInit() {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	ExternalEvents.AddCommand(cmdList)
+	var fieldsFind string
+	paramsExternalEventFind := files_sdk.ExternalEventFindParams{}
+	cmdFind := &cobra.Command{
+		Use: "find",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
+			client := external_event.Client{Config: *ctx.GetConfig()}
+
+			result, err := client.Find(paramsExternalEventFind)
+			if err != nil {
+				lib.ClientError(err, &ctx)
+			}
+
+			err = lib.JsonMarshal(result, fieldsFind)
+			if err != nil {
+				lib.ClientError(err, &ctx)
+			}
+		},
+	}
+	cmdFind.Flags().Int64VarP(&paramsExternalEventFind.Id, "id", "i", 0, "External Event ID.")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	ExternalEvents.AddCommand(cmdFind)
 }
