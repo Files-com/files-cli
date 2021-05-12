@@ -13,8 +13,6 @@ cloud.google.com/go/storage v1.0.0/go.mod h1:IhtSnM/ZTZV8YYJWCY8RULGVqBDmpoyjwiy
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Files-com/files-sdk-go v1.0.401 h1:w0JUAIQ9Y0ilKglvQB7Zck7PF63bqfNB6KpqRHuCvzs=
-github.com/Files-com/files-sdk-go v1.0.401/go.mod h1:HzFaZBo06TbPl0afaQ7nRViLFuqT9aug0I54V51bibM=
 github.com/Files-com/files-sdk-go v1.0.404 h1:3j53pw2nkH5awE4kTyrL3Lcr8bK/cV1y74Wls7yUUW8=
 github.com/Files-com/files-sdk-go v1.0.404/go.mod h1:HzFaZBo06TbPl0afaQ7nRViLFuqT9aug0I54V51bibM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
