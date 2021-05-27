@@ -15,6 +15,7 @@ import (
 
 func DownloadCmd() *cobra.Command {
 	MaxConcurrentConnections := 0
+	syncFlag := false
 	Download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
@@ -41,16 +42,17 @@ func DownloadCmd() *cobra.Command {
 
 			calcTotalBytes := func(files map[string]files_sdk.File) int64 {
 				var total int64
+				barsMapMutex.Lock()
 				for _, fileS := range files {
 					total += fileS.Size
 				}
-
+				barsMapMutex.Unlock()
 				return total
 			}
 			pathPadding := 40
 			var mainTotal *mpb.Bar
 			err := client.DownloadFolder(
-				files_sdk.FolderListForParams{Path: remotePath},
+				file.DownloadFolderParams{FolderListForParams: files_sdk.FolderListForParams{Path: remotePath}, Sync: syncFlag},
 				localPath,
 				func(bytes int64, file files_sdk.File, destination string, err error, message string, filesCount int) {
 					if message != "" {
@@ -75,10 +77,10 @@ func DownloadCmd() *cobra.Command {
 						mainTotalMutex.Unlock()
 					}
 
-					barsMapMutex.RLock()
+					barsMapMutex.Lock()
 					bar, ok := bars[destination]
 					files[destination] = file
-					barsMapMutex.RUnlock()
+					barsMapMutex.Unlock()
 					if !ok {
 						barsMapMutex.Lock()
 						totalBytes += file.Size
@@ -138,6 +140,7 @@ func DownloadCmd() *cobra.Command {
 	}
 
 	Download.Flags().IntVarP(&MaxConcurrentConnections, "max-concurrent-connections", "c", 0, "Default is 10")
+	Download.Flags().BoolVarP(&syncFlag, "sync", "s", false, "Only download files with a more recent modified date")
 
 	return Download
 }
