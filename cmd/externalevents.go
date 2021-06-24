@@ -70,4 +70,28 @@ func ExternalEventsInit() {
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	ExternalEvents.AddCommand(cmdFind)
+	var fieldsCreate string
+	paramsExternalEventCreate := files_sdk.ExternalEventCreateParams{}
+	cmdCreate := &cobra.Command{
+		Use: "create",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context().(lib.Context)
+			client := external_event.Client{Config: *ctx.GetConfig()}
+
+			result, err := client.Create(paramsExternalEventCreate)
+			if err != nil {
+				lib.ClientError(err, &ctx)
+			}
+
+			err = lib.JsonMarshal(result, fieldsCreate)
+			if err != nil {
+				lib.ClientError(err, &ctx)
+			}
+		},
+	}
+	cmdCreate.Flags().StringVarP(&paramsExternalEventCreate.Status, "status", "s", "", "Status of event.")
+	cmdCreate.Flags().StringVarP(&paramsExternalEventCreate.Body, "body", "b", "", "Event body")
+
+	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	ExternalEvents.AddCommand(cmdCreate)
 }
