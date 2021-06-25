@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
 
 	external_event "github.com/Files-com/files-sdk-go/externalevent"
 )
@@ -72,12 +76,14 @@ func ExternalEventsInit() {
 	ExternalEvents.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsExternalEventCreate := files_sdk.ExternalEventCreateParams{}
+	ExternalEventCreateStatus := ""
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context().(lib.Context)
 			client := external_event.Client{Config: *ctx.GetConfig()}
 
+			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
 			result, err := client.Create(paramsExternalEventCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -89,7 +95,7 @@ func ExternalEventsInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsExternalEventCreate.Status, "status", "s", "", "Status of event.")
+	cmdCreate.Flags().StringVarP(&ExternalEventCreateStatus, "status", "s", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsExternalEventCreate.Body, "body", "b", "", "Event body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")

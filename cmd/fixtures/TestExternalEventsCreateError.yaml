@@ -1,0 +1,36 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"body":"this is a error test","status":"error"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/external_events
+    method: POST
+  response:
+    body: '{"id":9838009,"event_type":"client_log","status":"error","body":"this is
+      a error test","created_at":"2021-06-25T11:30:00-04:00","body_url":null}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "144"
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 25 Jun 2021 15:30:00 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 71821e4e-de75-4ed7-987a-58d9649f6f32
+    status: 201 Created
+    code: 201
+    duration: ""

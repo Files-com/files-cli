@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/Files-com/files-sdk-go/lib"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/dnaeon/go-vcr/cassette"
 	recorder "github.com/dnaeon/go-vcr/recorder"
@@ -67,8 +69,8 @@ func createRecorder(fixture string) *recorder.Recorder {
 	httpClient := &http.Client{
 		Transport: r,
 	}
-
-	files_sdk.GlobalConfig.HttpClient = httpClient
+	files_sdk.GlobalConfig.Debug = lib.Bool(false)
+	files_sdk.GlobalConfig.SetHttpClient(httpClient)
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Auth")

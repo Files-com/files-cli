@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
 
 	api_key "github.com/Files-com/files-sdk-go/apikey"
 )
@@ -94,6 +98,7 @@ func ApiKeysInit() {
 	ApiKeys.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
+	ApiKeyCreatePermissionSet := ""
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -103,6 +108,7 @@ func ApiKeysInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsApiKeyCreate.Path = args[0]
 			}
+			paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
 			result, err := client.Create(paramsApiKeyCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -117,19 +123,21 @@ func ApiKeysInit() {
 	cmdCreate.Flags().Int64VarP(&paramsApiKeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsApiKeyCreate.ExpiresAt, "expires-at", "e")
-	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.PermissionSet, "permission-set", "r", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+	cmdCreate.Flags().StringVarP(&ApiKeyCreatePermissionSet, "permission-set", "r", "", fmt.Sprintf("Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsApiKeyCreate.Path, "path", "p", "", "Folder path restriction for this api key.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdCreate)
 	var fieldsUpdateCurrent string
 	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
+	ApiKeyUpdateCurrentPermissionSet := ""
 	cmdUpdateCurrent := &cobra.Command{
 		Use: "update-current",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context().(lib.Context)
 			client := api_key.Client{Config: *ctx.GetConfig()}
 
+			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
 			result, err := client.UpdateCurrent(paramsApiKeyUpdateCurrent)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -143,18 +151,20 @@ func ApiKeysInit() {
 	}
 	lib.TimeVarP(cmdUpdateCurrent.Flags(), &paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e")
 	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
-	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.PermissionSet, "permission-set", "p", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+	cmdUpdateCurrent.Flags().StringVarP(&ApiKeyUpdateCurrentPermissionSet, "permission-set", "p", "", fmt.Sprintf("Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyUpdateCurrent.PermissionSet.Enum()).MapKeys()))
 
 	cmdUpdateCurrent.Flags().StringVarP(&fieldsUpdateCurrent, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdateCurrent)
 	var fieldsUpdate string
 	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
+	ApiKeyUpdatePermissionSet := ""
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context().(lib.Context)
 			client := api_key.Client{Config: *ctx.GetConfig()}
 
+			paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
 			result, err := client.Update(paramsApiKeyUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -169,7 +179,7 @@ func ApiKeysInit() {
 	cmdUpdate.Flags().Int64VarP(&paramsApiKeyUpdate.Id, "id", "i", 0, "Api Key ID.")
 	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
 	lib.TimeVarP(cmdUpdate.Flags(), &paramsApiKeyUpdate.ExpiresAt, "expires-at", "e")
-	cmdUpdate.Flags().StringVarP(&paramsApiKeyUpdate.PermissionSet, "permission-set", "p", "", "Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.")
+	cmdUpdate.Flags().StringVarP(&ApiKeyUpdatePermissionSet, "permission-set", "p", "", fmt.Sprintf("Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyUpdate.PermissionSet.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	ApiKeys.AddCommand(cmdUpdate)

@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
+
+	"fmt"
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/user"
@@ -93,6 +97,9 @@ func UsersInit() {
 	createSkipWelcomeScreen := false
 	createSubscribeToNewsletter := false
 	paramsUserCreate := files_sdk.UserCreateParams{}
+	UserCreateAuthenticationMethod := ""
+	UserCreateSslRequired := ""
+	UserCreateRequire2fa := ""
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -154,6 +161,9 @@ func UsersInit() {
 				paramsUserCreate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
+			paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
+			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
+			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
 			result, err := client.Create(paramsUserCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -178,7 +188,7 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.AllowedIps, "allowed-ips", "a", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdCreate.Flags().BoolVarP(&createAttachmentsPermission, "attachments-permission", "t", createAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsUserCreate.AuthenticateUntil, "authenticate-until", "u")
-	cmdCreate.Flags().StringVarP(&paramsUserCreate.AuthenticationMethod, "authentication-method", "e", "", "How is this user authenticated?")
+	cmdCreate.Flags().StringVarP(&UserCreateAuthenticationMethod, "authentication-method", "e", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVarP(&createBillingPermission, "billing-permission", "b", createBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
 	cmdCreate.Flags().BoolVarP(&createBypassInactiveDisable, "bypass-inactive-disable", "i", createBypassInactiveDisable, "Exempt this user from being disabled based on inactivity?")
 	cmdCreate.Flags().BoolVarP(&createBypassSiteAllowedIps, "bypass-site-allowed-ips", "p", createBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
@@ -200,10 +210,10 @@ func UsersInit() {
 	cmdCreate.Flags().BoolVarP(&createSftpPermission, "sftp-permission", "", createSftpPermission, "Can the user access with SFTP?")
 	cmdCreate.Flags().BoolVarP(&createSiteAdmin, "site-admin", "", createSiteAdmin, "Is the user an administrator for this site?")
 	cmdCreate.Flags().BoolVarP(&createSkipWelcomeScreen, "skip-welcome-screen", "k", createSkipWelcomeScreen, "Skip Welcome page in the UI?")
-	cmdCreate.Flags().StringVarP(&paramsUserCreate.SslRequired, "ssl-required", "q", "", "SSL required setting")
+	cmdCreate.Flags().StringVarP(&UserCreateSslRequired, "ssl-required", "q", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserCreate.SslRequired.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64VarP(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", "", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdCreate.Flags().BoolVarP(&createSubscribeToNewsletter, "subscribe-to-newsletter", "", createSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
-	cmdCreate.Flags().StringVarP(&paramsUserCreate.Require2fa, "require-2fa", "2", "", "2FA required setting")
+	cmdCreate.Flags().StringVarP(&UserCreateRequire2fa, "require-2fa", "2", "", fmt.Sprintf("2FA required setting %v", reflect.ValueOf(paramsUserCreate.Require2fa.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.TimeZone, "time-zone", "", "", "User time zone")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.UserRoot, "user-root", "", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Username, "username", "", "", "User's username")
@@ -299,6 +309,9 @@ func UsersInit() {
 	updateSkipWelcomeScreen := false
 	updateSubscribeToNewsletter := false
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
+	UserUpdateAuthenticationMethod := ""
+	UserUpdateSslRequired := ""
+	UserUpdateRequire2fa := ""
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -360,6 +373,9 @@ func UsersInit() {
 				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
+			paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
+			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
+			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
 			result, err := client.Update(paramsUserUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -385,7 +401,7 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.AllowedIps, "allowed-ips", "a", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdUpdate.Flags().BoolVarP(&updateAttachmentsPermission, "attachments-permission", "t", updateAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
 	lib.TimeVarP(cmdUpdate.Flags(), &paramsUserUpdate.AuthenticateUntil, "authenticate-until", "u")
-	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.AuthenticationMethod, "authentication-method", "e", "", "How is this user authenticated?")
+	cmdUpdate.Flags().StringVarP(&UserUpdateAuthenticationMethod, "authentication-method", "e", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVarP(&updateBillingPermission, "billing-permission", "b", updateBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
 	cmdUpdate.Flags().BoolVarP(&updateBypassInactiveDisable, "bypass-inactive-disable", "i", updateBypassInactiveDisable, "Exempt this user from being disabled based on inactivity?")
 	cmdUpdate.Flags().BoolVarP(&updateBypassSiteAllowedIps, "bypass-site-allowed-ips", "p", updateBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
@@ -407,10 +423,10 @@ func UsersInit() {
 	cmdUpdate.Flags().BoolVarP(&updateSftpPermission, "sftp-permission", "", updateSftpPermission, "Can the user access with SFTP?")
 	cmdUpdate.Flags().BoolVarP(&updateSiteAdmin, "site-admin", "", updateSiteAdmin, "Is the user an administrator for this site?")
 	cmdUpdate.Flags().BoolVarP(&updateSkipWelcomeScreen, "skip-welcome-screen", "k", updateSkipWelcomeScreen, "Skip Welcome page in the UI?")
-	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.SslRequired, "ssl-required", "q", "", "SSL required setting")
+	cmdUpdate.Flags().StringVarP(&UserUpdateSslRequired, "ssl-required", "q", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserUpdate.SslRequired.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", "", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdUpdate.Flags().BoolVarP(&updateSubscribeToNewsletter, "subscribe-to-newsletter", "", updateSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
-	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Require2fa, "require-2fa", "2", "", "2FA required setting")
+	cmdUpdate.Flags().StringVarP(&UserUpdateRequire2fa, "require-2fa", "2", "", fmt.Sprintf("2FA required setting %v", reflect.ValueOf(paramsUserUpdate.Require2fa.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.TimeZone, "time-zone", "", "", "User time zone")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.UserRoot, "user-root", "", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Username, "username", "", "", "User's username")

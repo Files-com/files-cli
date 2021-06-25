@@ -22,7 +22,7 @@ import (
 )
 
 func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error) {
-	config := files_sdk.GlobalConfig
+	config := files_sdk.Config{}
 	var r *recorder.Recorder
 	var err error
 	if os.Getenv("GITLAB") != "" {
@@ -39,7 +39,7 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 		Transport: r,
 	}
 	config.Debug = lib.Bool(false)
-	config.HttpClient = httpClient
+	config.SetHttpClient(httpClient)
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Key")

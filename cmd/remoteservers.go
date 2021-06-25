@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
 	flib "github.com/Files-com/files-sdk-go/lib"
+
+	"fmt"
 
 	remote_server "github.com/Files-com/files-sdk-go/remoteserver"
 )
@@ -75,6 +79,10 @@ func RemoteServersInit() {
 	var fieldsCreate string
 	createResetAuthentication := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
+	RemoteServerCreateServerCertificate := ""
+	RemoteServerCreateServerType := ""
+	RemoteServerCreateSsl := ""
+	RemoteServerCreateOneDriveAccountType := ""
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -85,6 +93,10 @@ func RemoteServersInit() {
 				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(true)
 			}
 
+			paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
+			paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
+			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
+			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
 			result, err := client.Create(paramsRemoteServerCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -115,10 +127,10 @@ func RemoteServersInit() {
 	cmdCreate.Flags().Int64VarP(&paramsRemoteServerCreate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "", "S3 bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3Region, "s3-region", "", "", "S3 region")
-	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.ServerCertificate, "server-certificate", "f", "", "Remote server certificate")
+	cmdCreate.Flags().StringVarP(&RemoteServerCreateServerCertificate, "server-certificate", "f", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
-	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.ServerType, "server-type", "", "", "Remote server type.")
-	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.Ssl, "ssl", "l", "", "Should we require SSL?")
+	cmdCreate.Flags().StringVarP(&RemoteServerCreateServerType, "server-type", "", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVarP(&RemoteServerCreateSsl, "ssl", "l", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.Username, "username", "", "", "Remote server username.  Not needed for S3 buckets.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "u", "", "Google Cloud Storage bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "d", "", "Google Cloud Project ID")
@@ -129,7 +141,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceUsername, "rackspace-username", "s", "", "Rackspace username used to login to the Rackspace Cloud Control Panel.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceRegion, "rackspace-region", "g", "", "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.RackspaceContainer, "rackspace-container", "", "", "The name of the container (top level directory) where files will sync.")
-	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.OneDriveAccountType, "one-drive-account-type", "r", "", "Either personal or business_other account types")
+	cmdCreate.Flags().StringVarP(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "r", "", fmt.Sprintf("Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AzureBlobStorageAccount, "azure-blob-storage-account", "a", "", "Azure Blob Storage Account name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.AzureBlobStorageContainer, "azure-blob-storage-container", "c", "", "Azure Blob Storage Container name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "", "S3-compatible Bucket name")
@@ -143,6 +155,10 @@ func RemoteServersInit() {
 	var fieldsUpdate string
 	updateResetAuthentication := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
+	RemoteServerUpdateServerCertificate := ""
+	RemoteServerUpdateServerType := ""
+	RemoteServerUpdateSsl := ""
+	RemoteServerUpdateOneDriveAccountType := ""
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -153,6 +169,10 @@ func RemoteServersInit() {
 				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(true)
 			}
 
+			paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
+			paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
+			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
+			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
 			result, err := client.Update(paramsRemoteServerUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -184,10 +204,10 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().Int64VarP(&paramsRemoteServerUpdate.Port, "port", "t", 0, "Port for remote server.  Not needed for S3.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "", "S3 region")
-	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.ServerCertificate, "server-certificate", "f", "", "Remote server certificate")
+	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateServerCertificate, "server-certificate", "f", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
-	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.ServerType, "server-type", "", "", "Remote server type.")
-	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Ssl, "ssl", "l", "", "Should we require SSL?")
+	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateServerType, "server-type", "", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateSsl, "ssl", "l", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Username, "username", "", "", "Remote server username.  Not needed for S3 buckets.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "u", "", "Google Cloud Storage bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "d", "", "Google Cloud Project ID")
@@ -198,7 +218,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceUsername, "rackspace-username", "s", "", "Rackspace username used to login to the Rackspace Cloud Control Panel.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceRegion, "rackspace-region", "g", "", "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.RackspaceContainer, "rackspace-container", "", "", "The name of the container (top level directory) where files will sync.")
-	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.OneDriveAccountType, "one-drive-account-type", "r", "", "Either personal or business_other account types")
+	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "r", "", fmt.Sprintf("Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AzureBlobStorageAccount, "azure-blob-storage-account", "a", "", "Azure Blob Storage Account name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.AzureBlobStorageContainer, "azure-blob-storage-container", "c", "", "Azure Blob Storage Container name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "", "S3-compatible Bucket name")
