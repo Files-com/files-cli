@@ -24,6 +24,7 @@ func PermissionsInit() {
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
 	listIncludeGroups := false
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -36,6 +37,7 @@ func PermissionsInit() {
 			if listIncludeGroups {
 				paramsPermissionList.IncludeGroups = flib.Bool(true)
 			}
+
 			client := permission.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -53,12 +55,14 @@ func PermissionsInit() {
 	cmdList.Flags().StringVarP(&paramsPermissionList.GroupId, "group-id", "r", "", "DEPRECATED: Group ID.  If provided, will scope permissions to this group. Use `filter[group_id]` instead.`")
 	cmdList.Flags().StringVarP(&paramsPermissionList.UserId, "user-id", "u", "", "DEPRECATED: User ID.  If provided, will scope permissions to this user. Use `filter[user_id]` instead.`")
 	cmdList.Flags().BoolVarP(&listIncludeGroups, "include-groups", "i", listIncludeGroups, "If searching by user or group, also include user's permissions that are inherited from its groups?")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Permissions.AddCommand(cmdList)
 	var fieldsCreate string
 	createRecursive := false
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -72,6 +76,7 @@ func PermissionsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsPermissionCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsPermissionCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -94,6 +99,7 @@ func PermissionsInit() {
 	Permissions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsPermissionDelete := files_sdk.PermissionDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

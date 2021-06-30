@@ -28,6 +28,7 @@ func RemoteServersInit() {
 	var fieldsList string
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -37,6 +38,7 @@ func RemoteServersInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
+
 			client := remote_server.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -50,11 +52,13 @@ func RemoteServersInit() {
 	}
 	cmdList.Flags().StringVarP(&paramsRemoteServerList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsRemoteServerList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind string
 	paramsRemoteServerFind := files_sdk.RemoteServerFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -83,6 +87,7 @@ func RemoteServersInit() {
 	RemoteServerCreateServerType := ""
 	RemoteServerCreateSsl := ""
 	RemoteServerCreateOneDriveAccountType := ""
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -97,6 +102,7 @@ func RemoteServersInit() {
 			paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
+
 			result, err := client.Create(paramsRemoteServerCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -159,6 +165,7 @@ func RemoteServersInit() {
 	RemoteServerUpdateServerType := ""
 	RemoteServerUpdateSsl := ""
 	RemoteServerUpdateOneDriveAccountType := ""
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -173,6 +180,7 @@ func RemoteServersInit() {
 			paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
+
 			result, err := client.Update(paramsRemoteServerUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -231,6 +239,7 @@ func RemoteServersInit() {
 	RemoteServers.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsRemoteServerDelete := files_sdk.RemoteServerDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

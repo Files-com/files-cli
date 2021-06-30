@@ -21,6 +21,7 @@ func GroupsInit() {
 	var fieldsList string
 	paramsGroupList := files_sdk.GroupListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -30,6 +31,7 @@ func GroupsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsGroupList
 			params.MaxPages = MaxPagesList
+
 			client := group.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -44,11 +46,13 @@ func GroupsInit() {
 	cmdList.Flags().StringVarP(&paramsGroupList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsGroupList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsGroupList.Ids, "ids", "i", "", "Comma-separated list of group ids to include in results.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Groups.AddCommand(cmdList)
 	var fieldsFind string
 	paramsGroupFind := files_sdk.GroupFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -72,6 +76,7 @@ func GroupsInit() {
 	Groups.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsGroupCreate := files_sdk.GroupCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -98,6 +103,7 @@ func GroupsInit() {
 	Groups.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsGroupUpdate := files_sdk.GroupUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -125,6 +131,7 @@ func GroupsInit() {
 	Groups.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsGroupDelete := files_sdk.GroupDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

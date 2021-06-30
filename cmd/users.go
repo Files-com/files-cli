@@ -27,6 +27,7 @@ func UsersInit() {
 	var fieldsList string
 	paramsUserList := files_sdk.UserListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -36,6 +37,7 @@ func UsersInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsUserList
 			params.MaxPages = MaxPagesList
+
 			client := user.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -51,11 +53,13 @@ func UsersInit() {
 	cmdList.Flags().Int64VarP(&paramsUserList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsUserList.Ids, "ids", "i", "", "comma-separated list of User IDs")
 	cmdList.Flags().StringVarP(&paramsUserList.Search, "search", "", "", "Searches for partial matches of name, username, or email.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Users.AddCommand(cmdList)
 	var fieldsFind string
 	paramsUserFind := files_sdk.UserFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -100,6 +104,7 @@ func UsersInit() {
 	UserCreateAuthenticationMethod := ""
 	UserCreateSslRequired := ""
 	UserCreateRequire2fa := ""
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -164,6 +169,7 @@ func UsersInit() {
 			paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
+
 			result, err := client.Create(paramsUserCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -222,6 +228,7 @@ func UsersInit() {
 	Users.AddCommand(cmdCreate)
 	var fieldsUnlock string
 	paramsUserUnlock := files_sdk.UserUnlockParams{}
+
 	cmdUnlock := &cobra.Command{
 		Use: "unlock",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -245,6 +252,7 @@ func UsersInit() {
 	Users.AddCommand(cmdUnlock)
 	var fieldsResendWelcomeEmail string
 	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
+
 	cmdResendWelcomeEmail := &cobra.Command{
 		Use: "resend-welcome-email",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -268,6 +276,7 @@ func UsersInit() {
 	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset string
 	paramsUserUser2faReset := files_sdk.UserUser2faResetParams{}
+
 	cmdUser2faReset := &cobra.Command{
 		Use: "user-2fa-reset",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -312,6 +321,7 @@ func UsersInit() {
 	UserUpdateAuthenticationMethod := ""
 	UserUpdateSslRequired := ""
 	UserUpdateRequire2fa := ""
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -376,6 +386,7 @@ func UsersInit() {
 			paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
+
 			result, err := client.Update(paramsUserUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -435,6 +446,7 @@ func UsersInit() {
 	Users.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsUserDelete := files_sdk.UserDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

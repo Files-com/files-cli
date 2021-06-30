@@ -21,6 +21,7 @@ func MessagesInit() {
 	var fieldsList string
 	paramsMessageList := files_sdk.MessageListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -30,6 +31,7 @@ func MessagesInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsMessageList
 			params.MaxPages = MaxPagesList
+
 			client := message.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -45,11 +47,13 @@ func MessagesInit() {
 	cmdList.Flags().StringVarP(&paramsMessageList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsMessageList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64VarP(&paramsMessageList.ProjectId, "project-id", "r", 0, "Project for which to return messages.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Messages.AddCommand(cmdList)
 	var fieldsFind string
 	paramsMessageFind := files_sdk.MessageFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -73,6 +77,7 @@ func MessagesInit() {
 	Messages.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsMessageCreate := files_sdk.MessageCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -99,6 +104,7 @@ func MessagesInit() {
 	Messages.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsMessageUpdate := files_sdk.MessageUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -125,6 +131,7 @@ func MessagesInit() {
 	Messages.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsMessageDelete := files_sdk.MessageDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

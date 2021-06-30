@@ -22,6 +22,7 @@ func FileCommentsInit() {
 	var fieldsListFor string
 	paramsFileCommentListFor := files_sdk.FileCommentListForParams{}
 	var MaxPagesListFor int64
+
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
 		Short: "list-for",
@@ -34,6 +35,7 @@ func FileCommentsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
+
 			client := file_comment.Client{Config: *ctx.GetConfig()}
 			it, err := client.ListFor(params)
 			if err != nil {
@@ -48,11 +50,13 @@ func FileCommentsInit() {
 	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdListFor.Flags().Int64VarP(&paramsFileCommentListFor.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVarP(&paramsFileCommentListFor.Path, "path", "p", "", "Path to operate on.")
+
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -62,6 +66,7 @@ func FileCommentsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCommentCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsFileCommentCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -80,6 +85,7 @@ func FileCommentsInit() {
 	FileComments.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -104,6 +110,7 @@ func FileCommentsInit() {
 	FileComments.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsFileCommentDelete := files_sdk.FileCommentDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

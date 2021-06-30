@@ -21,6 +21,7 @@ func HistoryExportsInit() {
 	}
 	var fieldsFind string
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -44,6 +45,7 @@ func HistoryExportsInit() {
 	HistoryExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsHistoryExportCreate := files_sdk.HistoryExportCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {

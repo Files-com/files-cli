@@ -23,6 +23,7 @@ func BundlesInit() {
 	var fieldsList string
 	paramsBundleList := files_sdk.BundleListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -32,6 +33,7 @@ func BundlesInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsBundleList
 			params.MaxPages = MaxPagesList
+
 			client := bundle.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -46,11 +48,13 @@ func BundlesInit() {
 	cmdList.Flags().Int64VarP(&paramsBundleList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVarP(&paramsBundleList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsBundleList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Bundles.AddCommand(cmdList)
 	var fieldsFind string
 	paramsBundleFind := files_sdk.BundleFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -77,6 +81,7 @@ func BundlesInit() {
 	createRequireRegistration := false
 	createRequireShareRecipient := false
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -122,6 +127,7 @@ func BundlesInit() {
 	Bundles.AddCommand(cmdCreate)
 	var fieldsShare string
 	paramsBundleShare := files_sdk.BundleShareParams{}
+
 	cmdShare := &cobra.Command{
 		Use: "share",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -149,6 +155,7 @@ func BundlesInit() {
 	updateRequireRegistration := false
 	updateRequireShareRecipient := false
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -194,6 +201,7 @@ func BundlesInit() {
 	Bundles.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsBundleDelete := files_sdk.BundleDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

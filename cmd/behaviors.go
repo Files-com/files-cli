@@ -21,6 +21,7 @@ func BehaviorsInit() {
 	var fieldsList string
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -30,6 +31,7 @@ func BehaviorsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
+
 			client := behavior.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -44,11 +46,13 @@ func BehaviorsInit() {
 	cmdList.Flags().StringVarP(&paramsBehaviorList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsBehaviorList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVarP(&paramsBehaviorList.Behavior, "behavior", "b", "", "If set, only shows folder behaviors matching this behavior type.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
 	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -73,6 +77,7 @@ func BehaviorsInit() {
 	var fieldsListFor string
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
+
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
 		Short: "list-for",
@@ -85,6 +90,7 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
+
 			client := behavior.Client{Config: *ctx.GetConfig()}
 			it, err := client.ListFor(params)
 			if err != nil {
@@ -101,11 +107,13 @@ func BehaviorsInit() {
 	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Path, "path", "p", "", "Path to operate on.")
 	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Recursive, "recursive", "u", "", "Show behaviors above this path?")
 	cmdListFor.Flags().StringVarP(&paramsBehaviorListFor.Behavior, "behavior", "b", "", "DEPRECATED: If set only shows folder behaviors matching this behavior type. Use `filter[behavior]` instead.")
+
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -115,6 +123,7 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsBehaviorCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -134,6 +143,7 @@ func BehaviorsInit() {
 	Behaviors.AddCommand(cmdCreate)
 	var fieldsWebhookTest string
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
+
 	cmdWebhookTest := &cobra.Command{
 		Use: "webhook-test",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -160,6 +170,7 @@ func BehaviorsInit() {
 	Behaviors.AddCommand(cmdWebhookTest)
 	var fieldsUpdate string
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -169,6 +180,7 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorUpdate.Path = args[0]
 			}
+
 			result, err := client.Update(paramsBehaviorUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -189,6 +201,7 @@ func BehaviorsInit() {
 	Behaviors.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

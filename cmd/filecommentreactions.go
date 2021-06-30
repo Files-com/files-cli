@@ -21,6 +21,7 @@ func FileCommentReactionsInit() {
 	}
 	var fieldsCreate string
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -46,6 +47,7 @@ func FileCommentReactionsInit() {
 	FileCommentReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsFileCommentReactionDelete := files_sdk.FileCommentReactionDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

@@ -110,6 +110,7 @@ func SitesInit() {
 	updateLogoDelete := false
 	updateDisable2faWithDelay := false
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {

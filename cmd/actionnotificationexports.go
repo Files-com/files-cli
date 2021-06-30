@@ -23,6 +23,7 @@ func ActionNotificationExportsInit() {
 	}
 	var fieldsFind string
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -47,6 +48,7 @@ func ActionNotificationExportsInit() {
 	var fieldsCreate string
 	createQuerySuccess := false
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {

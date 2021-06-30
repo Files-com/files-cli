@@ -24,6 +24,7 @@ func RequestsInit() {
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
 	listMine := false
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -36,6 +37,7 @@ func RequestsInit() {
 			if listMine {
 				paramsRequestList.Mine = flib.Bool(true)
 			}
+
 			client := request.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -51,12 +53,14 @@ func RequestsInit() {
 	cmdList.Flags().Int64VarP(&paramsRequestList.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().BoolVarP(&listMine, "mine", "i", listMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
 	cmdList.Flags().StringVarP(&paramsRequestList.Path, "path", "p", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
 	getFolderMine := false
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
+
 	cmdGetFolder := &cobra.Command{
 		Use: "get-folder [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -70,6 +74,7 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestGetFolder.Path = args[0]
 			}
+
 			result, err := client.GetFolder(paramsRequestGetFolder)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -90,6 +95,7 @@ func RequestsInit() {
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -99,6 +105,7 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsRequestCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -119,6 +126,7 @@ func RequestsInit() {
 	Requests.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsRequestDelete := files_sdk.RequestDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

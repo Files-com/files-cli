@@ -21,6 +21,7 @@ func PaymentsInit() {
 	var fieldsList string
 	paramsPaymentList := files_sdk.PaymentListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -30,6 +31,7 @@ func PaymentsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsPaymentList
 			params.MaxPages = MaxPagesList
+
 			client := payment.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -43,11 +45,13 @@ func PaymentsInit() {
 	}
 	cmdList.Flags().StringVarP(&paramsPaymentList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsPaymentList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Payments.AddCommand(cmdList)
 	var fieldsFind string
 	paramsPaymentFind := files_sdk.PaymentFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {

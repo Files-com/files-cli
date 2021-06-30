@@ -24,6 +24,7 @@ func BundleRecipientsInit() {
 	var fieldsList string
 	paramsBundleRecipientList := files_sdk.BundleRecipientListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -33,6 +34,7 @@ func BundleRecipientsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsBundleRecipientList
 			params.MaxPages = MaxPagesList
+
 			client := bundle_recipient.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -48,12 +50,14 @@ func BundleRecipientsInit() {
 	cmdList.Flags().StringVarP(&paramsBundleRecipientList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsBundleRecipientList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64VarP(&paramsBundleRecipientList.BundleId, "bundle-id", "b", 0, "List recipients for the bundle with this ID.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	BundleRecipients.AddCommand(cmdList)
 	var fieldsCreate string
 	createShareAfterCreate := false
 	paramsBundleRecipientCreate := files_sdk.BundleRecipientCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {

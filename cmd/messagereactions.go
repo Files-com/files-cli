@@ -22,6 +22,7 @@ func MessageReactionsInit() {
 	var fieldsList string
 	paramsMessageReactionList := files_sdk.MessageReactionListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -31,6 +32,7 @@ func MessageReactionsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsMessageReactionList
 			params.MaxPages = MaxPagesList
+
 			client := message_reaction.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -46,11 +48,13 @@ func MessageReactionsInit() {
 	cmdList.Flags().StringVarP(&paramsMessageReactionList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsMessageReactionList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64VarP(&paramsMessageReactionList.MessageId, "message-id", "e", 0, "Message to return reactions for.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	MessageReactions.AddCommand(cmdList)
 	var fieldsFind string
 	paramsMessageReactionFind := files_sdk.MessageReactionFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -74,6 +78,7 @@ func MessageReactionsInit() {
 	MessageReactions.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsMessageReactionCreate := files_sdk.MessageReactionCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -98,6 +103,7 @@ func MessageReactionsInit() {
 	MessageReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsMessageReactionDelete := files_sdk.MessageReactionDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

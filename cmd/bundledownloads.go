@@ -22,6 +22,7 @@ func BundleDownloadsInit() {
 	var fieldsList string
 	paramsBundleDownloadList := files_sdk.BundleDownloadListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -31,6 +32,7 @@ func BundleDownloadsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsBundleDownloadList
 			params.MaxPages = MaxPagesList
+
 			client := bundle_download.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -46,6 +48,7 @@ func BundleDownloadsInit() {
 	cmdList.Flags().Int64VarP(&paramsBundleDownloadList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64VarP(&paramsBundleDownloadList.BundleId, "bundle-id", "i", 0, "Bundle ID")
 	cmdList.Flags().Int64VarP(&paramsBundleDownloadList.BundleRegistrationId, "bundle-registration-id", "d", 0, "BundleRegistration ID")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	BundleDownloads.AddCommand(cmdList)

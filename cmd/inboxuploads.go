@@ -22,6 +22,7 @@ func InboxUploadsInit() {
 	var fieldsList string
 	paramsInboxUploadList := files_sdk.InboxUploadListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -31,6 +32,7 @@ func InboxUploadsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsInboxUploadList
 			params.MaxPages = MaxPagesList
+
 			client := inbox_upload.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -46,6 +48,7 @@ func InboxUploadsInit() {
 	cmdList.Flags().Int64VarP(&paramsInboxUploadList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64VarP(&paramsInboxUploadList.InboxRegistrationId, "inbox-registration-id", "d", 0, "InboxRegistration ID")
 	cmdList.Flags().Int64VarP(&paramsInboxUploadList.InboxId, "inbox-id", "i", 0, "Inbox ID")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	InboxUploads.AddCommand(cmdList)

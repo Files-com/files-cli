@@ -24,6 +24,7 @@ func NotificationsInit() {
 	paramsNotificationList := files_sdk.NotificationListParams{}
 	var MaxPagesList int64
 	listIncludeAncestors := false
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -36,6 +37,7 @@ func NotificationsInit() {
 			if listIncludeAncestors {
 				paramsNotificationList.IncludeAncestors = flib.Bool(true)
 			}
+
 			client := notification.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -53,11 +55,13 @@ func NotificationsInit() {
 	cmdList.Flags().Int64VarP(&paramsNotificationList.GroupId, "group-id", "r", 0, "DEPRECATED: Show notifications for this Group ID. Use `filter[group_id]` instead.")
 	cmdList.Flags().StringVarP(&paramsNotificationList.Path, "path", "p", "", "Show notifications for this Path.")
 	cmdList.Flags().BoolVarP(&listIncludeAncestors, "include-ancestors", "i", listIncludeAncestors, "If `include_ancestors` is `true` and `path` is specified, include notifications for any parent paths. Ignored if `path` is not specified.")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Notifications.AddCommand(cmdList)
 	var fieldsFind string
 	paramsNotificationFind := files_sdk.NotificationFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -84,6 +88,7 @@ func NotificationsInit() {
 	createNotifyUserActions := false
 	createRecursive := false
 	paramsNotificationCreate := files_sdk.NotificationCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -103,6 +108,7 @@ func NotificationsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsNotificationCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsNotificationCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -130,6 +136,7 @@ func NotificationsInit() {
 	updateNotifyUserActions := false
 	updateRecursive := false
 	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -167,6 +174,7 @@ func NotificationsInit() {
 	Notifications.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsNotificationDelete := files_sdk.NotificationDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

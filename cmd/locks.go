@@ -24,6 +24,7 @@ func LocksInit() {
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
 	listForIncludeChildren := false
+
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
 		Short: "list-for",
@@ -39,6 +40,7 @@ func LocksInit() {
 			if listForIncludeChildren {
 				paramsLockListFor.IncludeChildren = flib.Bool(true)
 			}
+
 			client := lock.Client{Config: *ctx.GetConfig()}
 			it, err := client.ListFor(params)
 			if err != nil {
@@ -54,11 +56,13 @@ func LocksInit() {
 	cmdListFor.Flags().Int64VarP(&paramsLockListFor.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVarP(&paramsLockListFor.Path, "path", "p", "", "Path to operate on.")
 	cmdListFor.Flags().BoolVarP(&listForIncludeChildren, "include-children", "i", listForIncludeChildren, "Include locks from children objects?")
+
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Locks.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsLockCreate := files_sdk.LockCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -68,6 +72,7 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsLockCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsLockCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -86,6 +91,7 @@ func LocksInit() {
 	Locks.AddCommand(cmdCreate)
 	var fieldsDelete string
 	paramsLockDelete := files_sdk.LockDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -95,6 +101,7 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsLockDelete.Path = args[0]
 			}
+
 			result, err := client.Delete(paramsLockDelete)
 			if err != nil {
 				lib.ClientError(err, &ctx)

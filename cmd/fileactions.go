@@ -24,6 +24,7 @@ func FileActionsInit() {
 	var fieldsCopy string
 	copyStructure := false
 	paramsFileActionCopy := files_sdk.FileActionCopyParams{}
+
 	cmdCopy := &cobra.Command{
 		Use: "copy [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -37,6 +38,7 @@ func FileActionsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileActionCopy.Path = args[0]
 			}
+
 			result, err := client.Copy(paramsFileActionCopy)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -56,6 +58,7 @@ func FileActionsInit() {
 	FileActions.AddCommand(cmdCopy)
 	var fieldsMove string
 	paramsFileActionMove := files_sdk.FileActionMoveParams{}
+
 	cmdMove := &cobra.Command{
 		Use: "move [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -65,6 +68,7 @@ func FileActionsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileActionMove.Path = args[0]
 			}
+
 			result, err := client.Move(paramsFileActionMove)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -85,6 +89,7 @@ func FileActionsInit() {
 	beginUploadMkdirParents := false
 	beginUploadWithRename := false
 	paramsFileActionBeginUpload := files_sdk.FileActionBeginUploadParams{}
+
 	cmdBeginUpload := &cobra.Command{
 		Use: "begin-upload [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -101,6 +106,7 @@ func FileActionsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileActionBeginUpload.Path = args[0]
 			}
+
 			result, err := client.BeginUpload(paramsFileActionBeginUpload)
 			if err != nil {
 				lib.ClientError(err, &ctx)

@@ -26,6 +26,7 @@ func FoldersInit() {
 	listForSearchAll := false
 	listForWithPreviews := false
 	listForWithPriorityColor := false
+
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
 		Short: "list-for",
@@ -47,6 +48,7 @@ func FoldersInit() {
 			if listForWithPriorityColor {
 				paramsFolderListFor.WithPriorityColor = flib.Bool(true)
 			}
+
 			client := folder.Client{Config: *ctx.GetConfig()}
 			it, err := client.ListFor(params)
 			if err != nil {
@@ -67,11 +69,13 @@ func FoldersInit() {
 	cmdListFor.Flags().BoolVarP(&listForSearchAll, "search-all", "a", listForSearchAll, "Search entire site?")
 	cmdListFor.Flags().BoolVarP(&listForWithPreviews, "with-previews", "v", listForWithPreviews, "Include file previews?")
 	cmdListFor.Flags().BoolVarP(&listForWithPriorityColor, "with-priority-color", "o", listForWithPriorityColor, "Include file priority color information?")
+
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -81,6 +85,7 @@ func FoldersInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsFolderCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)

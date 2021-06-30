@@ -20,6 +20,7 @@ func WebhookTestsInit() {
 	}
 	var fieldsCreate string
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {

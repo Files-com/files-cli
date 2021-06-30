@@ -5,9 +5,9 @@ cd "${DIR}" || exit 1
 go mod tidy > /dev/null 2>&1
 if [ -n "${DEVELOPMENT_BUILD}" ]
 then
-  sh test.sh
-  cd ../go || exit
-  sh test.sh
+  sh test.sh  || exit 1
+  cd ../go || exit 1
+  sh test.sh || exit 1
   cd "${DIR}" || exit 1
 fi
 
@@ -29,21 +29,15 @@ if [[ -f "main.go.bu" ]] ; then
   rm main.go.bu
 fi
 
-return_code=0
-
 if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
   if goreleaser build --rm-dist --snapshot ; then
-    return_code=$((return_code + $?))
     true
   else
     curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-    ./bin/goreleaser build --rm-dist --snapshot
-    return_code=$((return_code + $?))
+    ./bin/goreleaser build --rm-dist --snapshot || exit 1
   fi
 fi
 
 if [ -n "${SNAPSHOT}" ]; then
     go mod edit -dropreplace github.com/Files-com/files-sdk-go
 fi
-
-exit return_code

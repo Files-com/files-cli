@@ -26,6 +26,7 @@ func ApiKeysInit() {
 	var fieldsList string
 	paramsApiKeyList := files_sdk.ApiKeyListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -35,6 +36,7 @@ func ApiKeysInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsApiKeyList
 			params.MaxPages = MaxPagesList
+
 			client := api_key.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -49,6 +51,7 @@ func ApiKeysInit() {
 	cmdList.Flags().Int64VarP(&paramsApiKeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVarP(&paramsApiKeyList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsApiKeyList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	ApiKeys.AddCommand(cmdList)
@@ -75,6 +78,7 @@ func ApiKeysInit() {
 	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsFind string
 	paramsApiKeyFind := files_sdk.ApiKeyFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -99,6 +103,7 @@ func ApiKeysInit() {
 	var fieldsCreate string
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
 	ApiKeyCreatePermissionSet := ""
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -109,6 +114,7 @@ func ApiKeysInit() {
 				paramsApiKeyCreate.Path = args[0]
 			}
 			paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
+
 			result, err := client.Create(paramsApiKeyCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -131,6 +137,7 @@ func ApiKeysInit() {
 	var fieldsUpdateCurrent string
 	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
 	ApiKeyUpdateCurrentPermissionSet := ""
+
 	cmdUpdateCurrent := &cobra.Command{
 		Use: "update-current",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -138,6 +145,7 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: *ctx.GetConfig()}
 
 			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
+
 			result, err := client.UpdateCurrent(paramsApiKeyUpdateCurrent)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -158,6 +166,7 @@ func ApiKeysInit() {
 	var fieldsUpdate string
 	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
 	ApiKeyUpdatePermissionSet := ""
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -165,6 +174,7 @@ func ApiKeysInit() {
 			client := api_key.Client{Config: *ctx.GetConfig()}
 
 			paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
+
 			result, err := client.Update(paramsApiKeyUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -206,6 +216,7 @@ func ApiKeysInit() {
 	ApiKeys.AddCommand(cmdDeleteCurrent)
 	var fieldsDelete string
 	paramsApiKeyDelete := files_sdk.ApiKeyDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

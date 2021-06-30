@@ -25,6 +25,7 @@ func FilesInit() {
 	createMkdirParents := false
 	createWithRename := false
 	paramsFileCreate := files_sdk.FileCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -41,6 +42,7 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCreate.Path = args[0]
 			}
+
 			result, err := client.Create(paramsFileCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -69,6 +71,7 @@ func FilesInit() {
 	Files.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -78,6 +81,7 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileUpdate.Path = args[0]
 			}
+
 			result, err := client.Update(paramsFileUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -98,6 +102,7 @@ func FilesInit() {
 	var fieldsDelete string
 	deleteRecursive := false
 	paramsFileDelete := files_sdk.FileDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -111,6 +116,7 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileDelete.Path = args[0]
 			}
+
 			result, err := client.Delete(paramsFileDelete)
 			if err != nil {
 				lib.ClientError(err, &ctx)

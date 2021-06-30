@@ -26,6 +26,7 @@ func ExternalEventsInit() {
 	var fieldsList string
 	paramsExternalEventList := files_sdk.ExternalEventListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -35,6 +36,7 @@ func ExternalEventsInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsExternalEventList
 			params.MaxPages = MaxPagesList
+
 			client := external_event.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -48,11 +50,13 @@ func ExternalEventsInit() {
 	}
 	cmdList.Flags().StringVarP(&paramsExternalEventList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsExternalEventList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	ExternalEvents.AddCommand(cmdList)
 	var fieldsFind string
 	paramsExternalEventFind := files_sdk.ExternalEventFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -77,6 +81,7 @@ func ExternalEventsInit() {
 	var fieldsCreate string
 	paramsExternalEventCreate := files_sdk.ExternalEventCreateParams{}
 	ExternalEventCreateStatus := ""
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -84,6 +89,7 @@ func ExternalEventsInit() {
 			client := external_event.Client{Config: *ctx.GetConfig()}
 
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
+
 			result, err := client.Create(paramsExternalEventCreate)
 			if err != nil {
 				lib.ClientError(err, &ctx)

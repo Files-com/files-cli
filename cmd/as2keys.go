@@ -22,6 +22,7 @@ func As2KeysInit() {
 	var fieldsList string
 	paramsAs2KeyList := files_sdk.As2KeyListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -31,6 +32,7 @@ func As2KeysInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsAs2KeyList
 			params.MaxPages = MaxPagesList
+
 			client := as2_key.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -45,11 +47,13 @@ func As2KeysInit() {
 	cmdList.Flags().Int64VarP(&paramsAs2KeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVarP(&paramsAs2KeyList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsAs2KeyList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	As2Keys.AddCommand(cmdList)
 	var fieldsFind string
 	paramsAs2KeyFind := files_sdk.As2KeyFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -73,6 +77,7 @@ func As2KeysInit() {
 	As2Keys.AddCommand(cmdFind)
 	var fieldsCreate string
 	paramsAs2KeyCreate := files_sdk.As2KeyCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -98,6 +103,7 @@ func As2KeysInit() {
 	As2Keys.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	paramsAs2KeyUpdate := files_sdk.As2KeyUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -122,6 +128,7 @@ func As2KeysInit() {
 	As2Keys.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsAs2KeyDelete := files_sdk.As2KeyDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {

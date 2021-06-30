@@ -20,6 +20,7 @@ func HistoriesInit() {
 	}
 	var fieldsListForFile string
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
+
 	cmdListForFile := &cobra.Command{
 		Use: "list-for-file [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -29,6 +30,7 @@ func HistoriesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFile.Path = args[0]
 			}
+
 			result, err := client.ListForFile(paramsHistoryListForFile)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -51,6 +53,7 @@ func HistoriesInit() {
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder string
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
+
 	cmdListForFolder := &cobra.Command{
 		Use: "list-for-folder [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -60,6 +63,7 @@ func HistoriesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFolder.Path = args[0]
 			}
+
 			result, err := client.ListForFolder(paramsHistoryListForFolder)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -82,6 +86,7 @@ func HistoriesInit() {
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser string
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
+
 	cmdListForUser := &cobra.Command{
 		Use: "list-for-user",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -110,6 +115,7 @@ func HistoriesInit() {
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins string
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
+
 	cmdListLogins := &cobra.Command{
 		Use: "list-logins",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -138,6 +144,7 @@ func HistoriesInit() {
 	var fieldsList string
 	paramsHistoryList := files_sdk.HistoryListParams{}
 	var MaxPagesList int64
+
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "list",
@@ -147,6 +154,7 @@ func HistoriesInit() {
 			ctx := cmd.Context().(lib.Context)
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
+
 			client := history.Client{Config: *ctx.GetConfig()}
 			it, err := client.List(params)
 			if err != nil {
@@ -163,6 +171,7 @@ func HistoriesInit() {
 	cmdList.Flags().StringVarP(&paramsHistoryList.Display, "display", "d", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdList.Flags().StringVarP(&paramsHistoryList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64VarP(&paramsHistoryList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	Histories.AddCommand(cmdList)

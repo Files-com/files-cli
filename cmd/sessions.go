@@ -20,6 +20,7 @@ func SessionsInit() {
 	}
 	var fieldsCreate string
 	paramsSessionCreate := files_sdk.SessionCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {

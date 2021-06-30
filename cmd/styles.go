@@ -20,6 +20,7 @@ func StylesInit() {
 	}
 	var fieldsFind string
 	paramsStyleFind := files_sdk.StyleFindParams{}
+
 	cmdFind := &cobra.Command{
 		Use: "find [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -29,6 +30,7 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleFind.Path = args[0]
 			}
+
 			result, err := client.Find(paramsStyleFind)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -46,6 +48,7 @@ func StylesInit() {
 	Styles.AddCommand(cmdFind)
 	var fieldsUpdate string
 	paramsStyleUpdate := files_sdk.StyleUpdateParams{}
+
 	cmdUpdate := &cobra.Command{
 		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -55,6 +58,7 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleUpdate.Path = args[0]
 			}
+
 			result, err := client.Update(paramsStyleUpdate)
 			if err != nil {
 				lib.ClientError(err, &ctx)
@@ -72,6 +76,7 @@ func StylesInit() {
 	Styles.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	paramsStyleDelete := files_sdk.StyleDeleteParams{}
+
 	cmdDelete := &cobra.Command{
 		Use: "delete [path]",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -81,6 +86,7 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleDelete.Path = args[0]
 			}
+
 			result, err := client.Delete(paramsStyleDelete)
 			if err != nil {
 				lib.ClientError(err, &ctx)
