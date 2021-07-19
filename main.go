@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.1482"
+var VERSION = "1.0.1483"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -72,6 +72,8 @@ func main() {
 	rootCmd.AddCommand(cmd.ActionNotificationExports)
 	cmd.ActionNotificationExportResultsInit()
 	rootCmd.AddCommand(cmd.ActionNotificationExportResults)
+	cmd.ActionWebhookFailuresInit()
+	rootCmd.AddCommand(cmd.ActionWebhookFailures)
 	cmd.ApiKeysInit()
 	rootCmd.AddCommand(cmd.ApiKeys)
 	cmd.AppsInit()
