@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.1502"
+var VERSION = "1.0.1504"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -112,6 +112,8 @@ func main() {
 	rootCmd.AddCommand(cmd.FileComments)
 	cmd.FileCommentReactionsInit()
 	rootCmd.AddCommand(cmd.FileCommentReactions)
+	cmd.FileMigrationsInit()
+	rootCmd.AddCommand(cmd.FileMigrations)
 	cmd.FileUploadPartsInit()
 	rootCmd.AddCommand(cmd.FileUploadParts)
 	cmd.FoldersInit()
