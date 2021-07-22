@@ -61,6 +61,8 @@ func LocksInit() {
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
 	Locks.AddCommand(cmdListFor)
 	var fieldsCreate string
+	createAllowAccessByAnyUser := false
+	createExclusive := false
 	paramsLockCreate := files_sdk.LockCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -68,6 +70,13 @@ func LocksInit() {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context().(lib.Context)
 			client := lock.Client{Config: *ctx.GetConfig()}
+
+			if createAllowAccessByAnyUser {
+				paramsLockCreate.AllowAccessByAnyUser = flib.Bool(true)
+			}
+			if createExclusive {
+				paramsLockCreate.Exclusive = flib.Bool(true)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsLockCreate.Path = args[0]
@@ -85,6 +94,9 @@ func LocksInit() {
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsLockCreate.Path, "path", "p", "", "Path")
+	cmdCreate.Flags().BoolVarP(&createAllowAccessByAnyUser, "allow-access-by-any-user", "a", createAllowAccessByAnyUser, "Allow lock to be updated by any user?")
+	cmdCreate.Flags().BoolVarP(&createExclusive, "exclusive", "e", createExclusive, "Is lock exclusive?")
+	cmdCreate.Flags().StringVarP(&paramsLockCreate.Recursive, "recursive", "r", "", "Does lock apply to subfolders?")
 	cmdCreate.Flags().Int64VarP(&paramsLockCreate.Timeout, "timeout", "t", 0, "Lock timeout length")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
