@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	public_key "github.com/Files-com/files-sdk-go/publickey"
 )
 
@@ -17,7 +19,9 @@ func PublicKeysInit() {
 	PublicKeys = &cobra.Command{
 		Use:  "public-keys [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command public-keys\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsPublicKeyList := files_sdk.PublicKeyListParams{}
@@ -29,18 +33,19 @@ func PublicKeysInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPublicKeyList
 			params.MaxPages = MaxPagesList
 
-			client := public_key.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := public_key.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -57,17 +62,18 @@ func PublicKeysInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := public_key.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := public_key.Client{Config: *config}
 
-			result, err := client.Find(paramsPublicKeyFind)
+			result, err := client.Find(ctx, paramsPublicKeyFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -81,17 +87,18 @@ func PublicKeysInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := public_key.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := public_key.Client{Config: *config}
 
-			result, err := client.Create(paramsPublicKeyCreate)
+			result, err := client.Create(ctx, paramsPublicKeyCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -107,17 +114,18 @@ func PublicKeysInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := public_key.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := public_key.Client{Config: *config}
 
-			result, err := client.Update(paramsPublicKeyUpdate)
+			result, err := client.Update(ctx, paramsPublicKeyUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -132,17 +140,18 @@ func PublicKeysInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := public_key.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := public_key.Client{Config: *config}
 
-			result, err := client.Delete(paramsPublicKeyDelete)
+			result, err := client.Delete(ctx, paramsPublicKeyDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

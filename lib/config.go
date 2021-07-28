@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"os/user"
@@ -250,12 +251,12 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Con
 	files_sdk.GlobalConfig.SessionId = ""
 	client := session.Client{Config: files_sdk.GlobalConfig}
 
-	result, err := client.Create(paramsSessionCreate)
+	result, err := client.Create(context.TODO(), paramsSessionCreate)
 
 	if err != nil {
 		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err)
 		if err == nil {
-			result, err = client.Create(otpSessionCreate)
+			result, err = client.Create(context.TODO(), otpSessionCreate)
 		}
 
 		if err != nil {

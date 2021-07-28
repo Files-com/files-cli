@@ -4,6 +4,8 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	"fmt"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/behavior"
 )
@@ -16,7 +18,9 @@ func BehaviorsInit() {
 	Behaviors = &cobra.Command{
 		Use:  "behaviors [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command behaviors\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
@@ -28,18 +32,19 @@ func BehaviorsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
 
-			client := behavior.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := behavior.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -56,17 +61,18 @@ func BehaviorsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := behavior.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := behavior.Client{Config: *config}
 
-			result, err := client.Find(paramsBehaviorFind)
+			result, err := client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -84,21 +90,22 @@ func BehaviorsInit() {
 		Long:  `list-for`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBehaviorListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
 
-			client := behavior.Client{Config: *ctx.GetConfig()}
-			it, err := client.ListFor(params)
+			client := behavior.Client{Config: *config}
+			it, err := client.ListFor(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsListFor)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -117,21 +124,22 @@ func BehaviorsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := behavior.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := behavior.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsBehaviorCreate)
+			result, err := client.Create(ctx, paramsBehaviorCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -147,17 +155,18 @@ func BehaviorsInit() {
 	cmdWebhookTest := &cobra.Command{
 		Use: "webhook-test",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := behavior.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := behavior.Client{Config: *config}
 
-			result, err := client.WebhookTest(paramsBehaviorWebhookTest)
+			result, err := client.WebhookTest(ctx, paramsBehaviorWebhookTest)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsWebhookTest)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -174,21 +183,22 @@ func BehaviorsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := behavior.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := behavior.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorUpdate.Path = args[0]
 			}
 
-			result, err := client.Update(paramsBehaviorUpdate)
+			result, err := client.Update(ctx, paramsBehaviorUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -205,17 +215,18 @@ func BehaviorsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := behavior.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := behavior.Client{Config: *config}
 
-			result, err := client.Delete(paramsBehaviorDelete)
+			result, err := client.Delete(ctx, paramsBehaviorDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

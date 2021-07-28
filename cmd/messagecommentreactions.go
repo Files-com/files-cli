@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	message_comment_reaction "github.com/Files-com/files-sdk-go/messagecommentreaction"
 )
 
@@ -17,7 +19,9 @@ func MessageCommentReactionsInit() {
 	MessageCommentReactions = &cobra.Command{
 		Use:  "message-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command message-comment-reactions\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsMessageCommentReactionList := files_sdk.MessageCommentReactionListParams{}
@@ -29,18 +33,19 @@ func MessageCommentReactionsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsMessageCommentReactionList
 			params.MaxPages = MaxPagesList
 
-			client := message_comment_reaction.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := message_comment_reaction.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -58,17 +63,18 @@ func MessageCommentReactionsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := message_comment_reaction.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := message_comment_reaction.Client{Config: *config}
 
-			result, err := client.Find(paramsMessageCommentReactionFind)
+			result, err := client.Find(ctx, paramsMessageCommentReactionFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -82,17 +88,18 @@ func MessageCommentReactionsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := message_comment_reaction.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := message_comment_reaction.Client{Config: *config}
 
-			result, err := client.Create(paramsMessageCommentReactionCreate)
+			result, err := client.Create(ctx, paramsMessageCommentReactionCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -107,17 +114,18 @@ func MessageCommentReactionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := message_comment_reaction.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := message_comment_reaction.Client{Config: *config}
 
-			result, err := client.Delete(paramsMessageCommentReactionDelete)
+			result, err := client.Delete(ctx, paramsMessageCommentReactionDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

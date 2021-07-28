@@ -4,6 +4,8 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	"fmt"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/style"
 )
@@ -16,7 +18,9 @@ func StylesInit() {
 	Styles = &cobra.Command{
 		Use:  "styles [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command styles\n\t%v", args[0])
+		},
 	}
 	var fieldsFind string
 	paramsStyleFind := files_sdk.StyleFindParams{}
@@ -24,21 +28,22 @@ func StylesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := style.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := style.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleFind.Path = args[0]
 			}
 
-			result, err := client.Find(paramsStyleFind)
+			result, err := client.Find(ctx, paramsStyleFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -52,21 +57,22 @@ func StylesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := style.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := style.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleUpdate.Path = args[0]
 			}
 
-			result, err := client.Update(paramsStyleUpdate)
+			result, err := client.Update(ctx, paramsStyleUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -80,21 +86,22 @@ func StylesInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := style.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := style.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleDelete.Path = args[0]
 			}
 
-			result, err := client.Delete(paramsStyleDelete)
+			result, err := client.Delete(ctx, paramsStyleDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

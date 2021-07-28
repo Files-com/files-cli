@@ -8,6 +8,8 @@ import (
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 
+	"fmt"
+
 	form_field_set "github.com/Files-com/files-sdk-go/formfieldset"
 )
 
@@ -19,7 +21,9 @@ func FormFieldSetsInit() {
 	FormFieldSets = &cobra.Command{
 		Use:  "form-field-sets [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command form-field-sets\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsFormFieldSetList := files_sdk.FormFieldSetListParams{}
@@ -31,18 +35,19 @@ func FormFieldSetsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFormFieldSetList
 			params.MaxPages = MaxPagesList
 
-			client := form_field_set.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := form_field_set.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -59,17 +64,18 @@ func FormFieldSetsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := form_field_set.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := form_field_set.Client{Config: *config}
 
-			result, err := client.Find(paramsFormFieldSetFind)
+			result, err := client.Find(ctx, paramsFormFieldSetFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -86,8 +92,9 @@ func FormFieldSetsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := form_field_set.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := form_field_set.Client{Config: *config}
 
 			if createSkipEmail {
 				paramsFormFieldSetCreate.SkipEmail = flib.Bool(true)
@@ -99,14 +106,14 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetCreate.SkipCompany = flib.Bool(true)
 			}
 
-			result, err := client.Create(paramsFormFieldSetCreate)
+			result, err := client.Create(ctx, paramsFormFieldSetCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -127,8 +134,9 @@ func FormFieldSetsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := form_field_set.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := form_field_set.Client{Config: *config}
 
 			if updateSkipEmail {
 				paramsFormFieldSetUpdate.SkipEmail = flib.Bool(true)
@@ -140,14 +148,14 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(true)
 			}
 
-			result, err := client.Update(paramsFormFieldSetUpdate)
+			result, err := client.Update(ctx, paramsFormFieldSetUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -165,17 +173,18 @@ func FormFieldSetsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := form_field_set.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := form_field_set.Client{Config: *config}
 
-			result, err := client.Delete(paramsFormFieldSetDelete)
+			result, err := client.Delete(ctx, paramsFormFieldSetDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

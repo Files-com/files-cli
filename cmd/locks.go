@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/lock"
 )
@@ -18,7 +20,9 @@ func LocksInit() {
 	Locks = &cobra.Command{
 		Use:  "locks [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command locks\n\t%v", args[0])
+		},
 	}
 	var fieldsListFor string
 	paramsLockListFor := files_sdk.LockListForParams{}
@@ -31,7 +35,8 @@ func LocksInit() {
 		Long:  `list-for`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsLockListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
@@ -41,14 +46,14 @@ func LocksInit() {
 				paramsLockListFor.IncludeChildren = flib.Bool(true)
 			}
 
-			client := lock.Client{Config: *ctx.GetConfig()}
-			it, err := client.ListFor(params)
+			client := lock.Client{Config: *config}
+			it, err := client.ListFor(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsListFor)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -68,8 +73,9 @@ func LocksInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := lock.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := lock.Client{Config: *config}
 
 			if createAllowAccessByAnyUser {
 				paramsLockCreate.AllowAccessByAnyUser = flib.Bool(true)
@@ -82,14 +88,14 @@ func LocksInit() {
 				paramsLockCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsLockCreate)
+			result, err := client.Create(ctx, paramsLockCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -107,21 +113,22 @@ func LocksInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := lock.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := lock.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsLockDelete.Path = args[0]
 			}
 
-			result, err := client.Delete(paramsLockDelete)
+			result, err := client.Delete(ctx, paramsLockDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

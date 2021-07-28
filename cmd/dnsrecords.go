@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	dns_record "github.com/Files-com/files-sdk-go/dnsrecord"
 )
 
@@ -17,7 +19,9 @@ func DnsRecordsInit() {
 	DnsRecords = &cobra.Command{
 		Use:  "dns-records [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command dns-records\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsDnsRecordList := files_sdk.DnsRecordListParams{}
@@ -29,18 +33,19 @@ func DnsRecordsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsDnsRecordList
 			params.MaxPages = MaxPagesList
 
-			client := dns_record.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := dns_record.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

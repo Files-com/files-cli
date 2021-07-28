@@ -8,6 +8,8 @@ import (
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 
+	"fmt"
+
 	file_action "github.com/Files-com/files-sdk-go/fileaction"
 )
 
@@ -19,7 +21,9 @@ func FileActionsInit() {
 	FileActions = &cobra.Command{
 		Use:  "file-actions [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command file-actions\n\t%v", args[0])
+		},
 	}
 	var fieldsCopy string
 	copyStructure := false
@@ -28,8 +32,9 @@ func FileActionsInit() {
 	cmdCopy := &cobra.Command{
 		Use: "copy [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_action.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_action.Client{Config: *config}
 
 			if copyStructure {
 				paramsFileActionCopy.Structure = flib.Bool(true)
@@ -39,14 +44,14 @@ func FileActionsInit() {
 				paramsFileActionCopy.Path = args[0]
 			}
 
-			result, err := client.Copy(paramsFileActionCopy)
+			result, err := client.Copy(ctx, paramsFileActionCopy)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCopy)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -62,21 +67,22 @@ func FileActionsInit() {
 	cmdMove := &cobra.Command{
 		Use: "move [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_action.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_action.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFileActionMove.Path = args[0]
 			}
 
-			result, err := client.Move(paramsFileActionMove)
+			result, err := client.Move(ctx, paramsFileActionMove)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsMove)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -93,8 +99,9 @@ func FileActionsInit() {
 	cmdBeginUpload := &cobra.Command{
 		Use: "begin-upload [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_action.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_action.Client{Config: *config}
 
 			if beginUploadMkdirParents {
 				paramsFileActionBeginUpload.MkdirParents = flib.Bool(true)
@@ -107,14 +114,14 @@ func FileActionsInit() {
 				paramsFileActionBeginUpload.Path = args[0]
 			}
 
-			result, err := client.BeginUpload(paramsFileActionBeginUpload)
+			result, err := client.BeginUpload(ctx, paramsFileActionBeginUpload)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsBeginUpload)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

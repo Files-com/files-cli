@@ -145,7 +145,7 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 		assert.Equal("\n", re)
 	} else {
 		assert.EqualError(err, "failed to get authentication response after 25 seconds", "Unplug u2f device")
-		assert.Equal("\nDevice version: U2F_V2...................................................................................................", re)
+		assert.Contains(re, "Device version: U2F_V2")
 	}
 
 	assert.Equal("", params.Password, "clears password")

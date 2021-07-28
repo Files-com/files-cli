@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	"github.com/Files-com/files-sdk-go/folder"
 	flib "github.com/Files-com/files-sdk-go/lib"
 )
@@ -18,7 +20,9 @@ func FoldersInit() {
 	Folders = &cobra.Command{
 		Use:  "folders [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command folders\n\t%v", args[0])
+		},
 	}
 	var fieldsListFor string
 	paramsFolderListFor := files_sdk.FolderListForParams{}
@@ -33,7 +37,8 @@ func FoldersInit() {
 		Long:  `list-for`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFolderListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
@@ -49,14 +54,14 @@ func FoldersInit() {
 				paramsFolderListFor.WithPriorityColor = flib.Bool(true)
 			}
 
-			client := folder.Client{Config: *ctx.GetConfig()}
-			it, err := client.ListFor(params)
+			client := folder.Client{Config: *config}
+			it, err := client.ListFor(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsListFor)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -79,21 +84,22 @@ func FoldersInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := folder.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := folder.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsFolderCreate)
+			result, err := client.Create(ctx, paramsFolderCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

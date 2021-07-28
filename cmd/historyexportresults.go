@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	history_export_result "github.com/Files-com/files-sdk-go/historyexportresult"
 )
 
@@ -17,7 +19,9 @@ func HistoryExportResultsInit() {
 	HistoryExportResults = &cobra.Command{
 		Use:  "history-export-results [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command history-export-results\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsHistoryExportResultList := files_sdk.HistoryExportResultListParams{}
@@ -29,18 +33,19 @@ func HistoryExportResultsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryExportResultList
 			params.MaxPages = MaxPagesList
 
-			client := history_export_result.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := history_export_result.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

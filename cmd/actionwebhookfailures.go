@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	action_webhook_failure "github.com/Files-com/files-sdk-go/actionwebhookfailure"
 )
 
@@ -17,7 +19,9 @@ func ActionWebhookFailuresInit() {
 	ActionWebhookFailures = &cobra.Command{
 		Use:  "action-webhook-failures [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command action-webhook-failures\n\t%v", args[0])
+		},
 	}
 	var fieldsRetry string
 	paramsActionWebhookFailureRetry := files_sdk.ActionWebhookFailureRetryParams{}
@@ -25,17 +29,18 @@ func ActionWebhookFailuresInit() {
 	cmdRetry := &cobra.Command{
 		Use: "retry",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := action_webhook_failure.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := action_webhook_failure.Client{Config: *config}
 
-			result, err := client.Retry(paramsActionWebhookFailureRetry)
+			result, err := client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsRetry)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

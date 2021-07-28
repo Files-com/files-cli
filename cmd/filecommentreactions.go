@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	file_comment_reaction "github.com/Files-com/files-sdk-go/filecommentreaction"
 )
 
@@ -17,7 +19,9 @@ func FileCommentReactionsInit() {
 	FileCommentReactions = &cobra.Command{
 		Use:  "file-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command file-comment-reactions\n\t%v", args[0])
+		},
 	}
 	var fieldsCreate string
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
@@ -25,17 +29,18 @@ func FileCommentReactionsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_comment_reaction.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_comment_reaction.Client{Config: *config}
 
-			result, err := client.Create(paramsFileCommentReactionCreate)
+			result, err := client.Create(ctx, paramsFileCommentReactionCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -51,17 +56,18 @@ func FileCommentReactionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_comment_reaction.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_comment_reaction.Client{Config: *config}
 
-			result, err := client.Delete(paramsFileCommentReactionDelete)
+			result, err := client.Delete(ctx, paramsFileCommentReactionDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

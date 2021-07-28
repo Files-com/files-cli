@@ -8,6 +8,8 @@ import (
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 
+	"fmt"
+
 	action_notification_export "github.com/Files-com/files-sdk-go/actionnotificationexport"
 )
 
@@ -19,7 +21,9 @@ func ActionNotificationExportsInit() {
 	ActionNotificationExports = &cobra.Command{
 		Use:  "action-notification-exports [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command action-notification-exports\n\t%v", args[0])
+		},
 	}
 	var fieldsFind string
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
@@ -27,17 +31,18 @@ func ActionNotificationExportsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := action_notification_export.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := action_notification_export.Client{Config: *config}
 
-			result, err := client.Find(paramsActionNotificationExportFind)
+			result, err := client.Find(ctx, paramsActionNotificationExportFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -52,21 +57,22 @@ func ActionNotificationExportsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := action_notification_export.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := action_notification_export.Client{Config: *config}
 
 			if createQuerySuccess {
 				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(true)
 			}
 
-			result, err := client.Create(paramsActionNotificationExportCreate)
+			result, err := client.Create(ctx, paramsActionNotificationExportCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

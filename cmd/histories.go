@@ -4,6 +4,8 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	"fmt"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/history"
 )
@@ -16,7 +18,9 @@ func HistoriesInit() {
 	Histories = &cobra.Command{
 		Use:  "histories [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command histories\n\t%v", args[0])
+		},
 	}
 	var fieldsListForFile string
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
@@ -24,21 +28,22 @@ func HistoriesInit() {
 	cmdListForFile := &cobra.Command{
 		Use: "list-for-file [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFile.Path = args[0]
 			}
 
-			result, err := client.ListForFile(paramsHistoryListForFile)
+			result, err := client.ListForFile(ctx, paramsHistoryListForFile)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForFile)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -57,21 +62,22 @@ func HistoriesInit() {
 	cmdListForFolder := &cobra.Command{
 		Use: "list-for-folder [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFolder.Path = args[0]
 			}
 
-			result, err := client.ListForFolder(paramsHistoryListForFolder)
+			result, err := client.ListForFolder(ctx, paramsHistoryListForFolder)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForFolder)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -90,17 +96,18 @@ func HistoriesInit() {
 	cmdListForUser := &cobra.Command{
 		Use: "list-for-user",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history.Client{Config: *config}
 
-			result, err := client.ListForUser(paramsHistoryListForUser)
+			result, err := client.ListForUser(ctx, paramsHistoryListForUser)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListForUser)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -119,17 +126,18 @@ func HistoriesInit() {
 	cmdListLogins := &cobra.Command{
 		Use: "list-logins",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history.Client{Config: *config}
 
-			result, err := client.ListLogins(paramsHistoryListLogins)
+			result, err := client.ListLogins(ctx, paramsHistoryListLogins)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsListLogins)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -151,18 +159,19 @@ func HistoriesInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
 
-			client := history.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := history.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

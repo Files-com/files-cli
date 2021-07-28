@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/site"
 )
@@ -18,23 +20,26 @@ func SitesInit() {
 	Sites = &cobra.Command{
 		Use:  "sites [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command sites\n\t%v", args[0])
+		},
 	}
 	var fieldsGet string
 	cmdGet := &cobra.Command{
 		Use: "get",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := site.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := site.Client{Config: *config}
 
-			result, err := client.Get()
+			result, err := client.Get(ctx)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGet)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -45,17 +50,18 @@ func SitesInit() {
 	cmdGetUsage := &cobra.Command{
 		Use: "get-usage",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := site.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := site.Client{Config: *config}
 
-			result, err := client.GetUsage()
+			result, err := client.GetUsage(ctx)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGetUsage)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -114,8 +120,9 @@ func SitesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := site.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := site.Client{Config: *config}
 
 			if updateAllowBundleNames {
 				paramsSiteUpdate.AllowBundleNames = flib.Bool(true)
@@ -256,14 +263,14 @@ func SitesInit() {
 				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(true)
 			}
 
-			result, err := client.Update(paramsSiteUpdate)
+			result, err := client.Update(ctx, paramsSiteUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

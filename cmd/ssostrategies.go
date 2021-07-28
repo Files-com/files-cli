@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	sso_strategy "github.com/Files-com/files-sdk-go/ssostrategy"
 )
 
@@ -17,7 +19,9 @@ func SsoStrategiesInit() {
 	SsoStrategies = &cobra.Command{
 		Use:  "sso-strategies [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command sso-strategies\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsSsoStrategyList := files_sdk.SsoStrategyListParams{}
@@ -29,18 +33,19 @@ func SsoStrategiesInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsSsoStrategyList
 			params.MaxPages = MaxPagesList
 
-			client := sso_strategy.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := sso_strategy.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -56,17 +61,18 @@ func SsoStrategiesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := sso_strategy.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := sso_strategy.Client{Config: *config}
 
-			result, err := client.Find(paramsSsoStrategyFind)
+			result, err := client.Find(ctx, paramsSsoStrategyFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

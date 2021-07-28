@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	usage_daily_snapshot "github.com/Files-com/files-sdk-go/usagedailysnapshot"
 )
 
@@ -17,7 +19,9 @@ func UsageDailySnapshotsInit() {
 	UsageDailySnapshots = &cobra.Command{
 		Use:  "usage-daily-snapshots [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command usage-daily-snapshots\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsUsageDailySnapshotList := files_sdk.UsageDailySnapshotListParams{}
@@ -29,18 +33,19 @@ func UsageDailySnapshotsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsUsageDailySnapshotList
 			params.MaxPages = MaxPagesList
 
-			client := usage_daily_snapshot.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := usage_daily_snapshot.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

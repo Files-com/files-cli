@@ -1,13 +1,17 @@
 package lib
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 )
 
-func ClientError(err error, ctx *Context) {
+func ClientError(ctx context.Context, err error) {
+	if err == nil {
+		return
+	}
 	responseError, ok := err.(files_sdk.ResponseError)
 	config := Config{}
 	config.Load()
@@ -28,7 +32,7 @@ func ClientError(err error, ctx *Context) {
 		fmt.Println(err)
 	}
 
-	if !ctx.Testing() {
+	if ctx.Value("testing") != nil && !ctx.Value("testing").(bool) {
 		os.Exit(1)
 	}
 }

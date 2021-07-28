@@ -4,6 +4,8 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	"fmt"
+
 	files_sdk "github.com/Files-com/files-sdk-go"
 	"github.com/Files-com/files-sdk-go/webhooktest"
 )
@@ -16,7 +18,9 @@ func WebhookTestsInit() {
 	WebhookTests = &cobra.Command{
 		Use:  "webhook-tests [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command webhook-tests\n\t%v", args[0])
+		},
 	}
 	var fieldsCreate string
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
@@ -24,17 +28,18 @@ func WebhookTestsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := webhooktest.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := webhooktest.Client{Config: *config}
 
-			result, err := client.Create(paramsWebhookTestCreate)
+			result, err := client.Create(ctx, paramsWebhookTestCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

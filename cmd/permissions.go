@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/permission"
 )
@@ -18,7 +20,9 @@ func PermissionsInit() {
 	Permissions = &cobra.Command{
 		Use:  "permissions [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command permissions\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsPermissionList := files_sdk.PermissionListParams{}
@@ -31,21 +35,22 @@ func PermissionsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
 			if listIncludeGroups {
 				paramsPermissionList.IncludeGroups = flib.Bool(true)
 			}
 
-			client := permission.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := permission.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -66,8 +71,9 @@ func PermissionsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := permission.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := permission.Client{Config: *config}
 
 			if createRecursive {
 				paramsPermissionCreate.Recursive = flib.Bool(true)
@@ -77,14 +83,14 @@ func PermissionsInit() {
 				paramsPermissionCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsPermissionCreate)
+			result, err := client.Create(ctx, paramsPermissionCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -103,17 +109,18 @@ func PermissionsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := permission.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := permission.Client{Config: *config}
 
-			result, err := client.Delete(paramsPermissionDelete)
+			result, err := client.Delete(ctx, paramsPermissionDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

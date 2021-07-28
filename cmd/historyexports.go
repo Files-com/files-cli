@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	history_export "github.com/Files-com/files-sdk-go/historyexport"
 )
 
@@ -17,7 +19,9 @@ func HistoryExportsInit() {
 	HistoryExports = &cobra.Command{
 		Use:  "history-exports [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command history-exports\n\t%v", args[0])
+		},
 	}
 	var fieldsFind string
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
@@ -25,17 +29,18 @@ func HistoryExportsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history_export.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history_export.Client{Config: *config}
 
-			result, err := client.Find(paramsHistoryExportFind)
+			result, err := client.Find(ctx, paramsHistoryExportFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -49,17 +54,18 @@ func HistoryExportsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := history_export.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := history_export.Client{Config: *config}
 
-			result, err := client.Create(paramsHistoryExportCreate)
+			result, err := client.Create(ctx, paramsHistoryExportCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

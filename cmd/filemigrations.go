@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	file_migration "github.com/Files-com/files-sdk-go/filemigration"
 )
 
@@ -17,7 +19,9 @@ func FileMigrationsInit() {
 	FileMigrations = &cobra.Command{
 		Use:  "file-migrations [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command file-migrations\n\t%v", args[0])
+		},
 	}
 	var fieldsFind string
 	paramsFileMigrationFind := files_sdk.FileMigrationFindParams{}
@@ -25,17 +29,18 @@ func FileMigrationsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_migration.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_migration.Client{Config: *config}
 
-			result, err := client.Find(paramsFileMigrationFind)
+			result, err := client.Find(ctx, paramsFileMigrationFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

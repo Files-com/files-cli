@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	"github.com/Files-com/files-sdk-go/bundle"
 	flib "github.com/Files-com/files-sdk-go/lib"
 )
@@ -18,7 +20,9 @@ func BundlesInit() {
 	Bundles = &cobra.Command{
 		Use:  "bundles [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command bundles\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsBundleList := files_sdk.BundleListParams{}
@@ -30,18 +34,19 @@ func BundlesInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBundleList
 			params.MaxPages = MaxPagesList
 
-			client := bundle.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := bundle.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -58,17 +63,18 @@ func BundlesInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle.Client{Config: *config}
 
-			result, err := client.Find(paramsBundleFind)
+			result, err := client.Find(ctx, paramsBundleFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -85,8 +91,9 @@ func BundlesInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle.Client{Config: *config}
 
 			if createPreviewOnly {
 				paramsBundleCreate.PreviewOnly = flib.Bool(true)
@@ -98,14 +105,14 @@ func BundlesInit() {
 				paramsBundleCreate.RequireShareRecipient = flib.Bool(true)
 			}
 
-			result, err := client.Create(paramsBundleCreate)
+			result, err := client.Create(ctx, paramsBundleCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -131,17 +138,18 @@ func BundlesInit() {
 	cmdShare := &cobra.Command{
 		Use: "share",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle.Client{Config: *config}
 
-			result, err := client.Share(paramsBundleShare)
+			result, err := client.Share(ctx, paramsBundleShare)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsShare)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -159,8 +167,9 @@ func BundlesInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle.Client{Config: *config}
 
 			if updatePreviewOnly {
 				paramsBundleUpdate.PreviewOnly = flib.Bool(true)
@@ -172,14 +181,14 @@ func BundlesInit() {
 				paramsBundleUpdate.RequireShareRecipient = flib.Bool(true)
 			}
 
-			result, err := client.Update(paramsBundleUpdate)
+			result, err := client.Update(ctx, paramsBundleUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -205,17 +214,18 @@ func BundlesInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle.Client{Config: *config}
 
-			result, err := client.Delete(paramsBundleDelete)
+			result, err := client.Delete(ctx, paramsBundleDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

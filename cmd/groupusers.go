@@ -8,6 +8,8 @@ import (
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 
+	"fmt"
+
 	group_user "github.com/Files-com/files-sdk-go/groupuser"
 )
 
@@ -19,7 +21,9 @@ func GroupUsersInit() {
 	GroupUsers = &cobra.Command{
 		Use:  "group-users [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command group-users\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsGroupUserList := files_sdk.GroupUserListParams{}
@@ -31,18 +35,19 @@ func GroupUsersInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsGroupUserList
 			params.MaxPages = MaxPagesList
 
-			client := group_user.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := group_user.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -61,21 +66,22 @@ func GroupUsersInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := group_user.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := group_user.Client{Config: *config}
 
 			if createAdmin {
 				paramsGroupUserCreate.Admin = flib.Bool(true)
 			}
 
-			result, err := client.Create(paramsGroupUserCreate)
+			result, err := client.Create(ctx, paramsGroupUserCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -92,21 +98,22 @@ func GroupUsersInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := group_user.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := group_user.Client{Config: *config}
 
 			if updateAdmin {
 				paramsGroupUserUpdate.Admin = flib.Bool(true)
 			}
 
-			result, err := client.Update(paramsGroupUserUpdate)
+			result, err := client.Update(ctx, paramsGroupUserUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -123,17 +130,18 @@ func GroupUsersInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := group_user.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := group_user.Client{Config: *config}
 
-			result, err := client.Delete(paramsGroupUserDelete)
+			result, err := client.Delete(ctx, paramsGroupUserDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

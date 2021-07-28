@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/request"
 )
@@ -18,7 +20,9 @@ func RequestsInit() {
 	Requests = &cobra.Command{
 		Use:  "requests [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command requests\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsRequestList := files_sdk.RequestListParams{}
@@ -31,21 +35,22 @@ func RequestsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRequestList
 			params.MaxPages = MaxPagesList
 			if listMine {
 				paramsRequestList.Mine = flib.Bool(true)
 			}
 
-			client := request.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := request.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -64,8 +69,9 @@ func RequestsInit() {
 	cmdGetFolder := &cobra.Command{
 		Use: "get-folder [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := request.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := request.Client{Config: *config}
 
 			if getFolderMine {
 				paramsRequestGetFolder.Mine = flib.Bool(true)
@@ -75,14 +81,14 @@ func RequestsInit() {
 				paramsRequestGetFolder.Path = args[0]
 			}
 
-			result, err := client.GetFolder(paramsRequestGetFolder)
+			result, err := client.GetFolder(ctx, paramsRequestGetFolder)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGetFolder)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -99,21 +105,22 @@ func RequestsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := request.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := request.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsRequestCreate)
+			result, err := client.Create(ctx, paramsRequestCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -130,17 +137,18 @@ func RequestsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := request.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := request.Client{Config: *config}
 
-			result, err := client.Delete(paramsRequestDelete)
+			result, err := client.Delete(ctx, paramsRequestDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

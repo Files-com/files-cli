@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	ip_address "github.com/Files-com/files-sdk-go/ipaddress"
 )
 
@@ -17,7 +19,9 @@ func IpAddressesInit() {
 	IpAddresses = &cobra.Command{
 		Use:  "ip-addresses [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command ip-addresses\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsIpAddressList := files_sdk.IpAddressListParams{}
@@ -29,18 +33,19 @@ func IpAddressesInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsIpAddressList
 			params.MaxPages = MaxPagesList
 
-			client := ip_address.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := ip_address.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -56,17 +61,18 @@ func IpAddressesInit() {
 	cmdGetReserved := &cobra.Command{
 		Use: "get-reserved",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := ip_address.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := ip_address.Client{Config: *config}
 
-			result, err := client.GetReserved(paramsIpAddressGetReserved)
+			result, err := client.GetReserved(ctx, paramsIpAddressGetReserved)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsGetReserved)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

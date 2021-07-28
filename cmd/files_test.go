@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -9,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/Files-com/files-sdk-go/file/manager"
 
 	clib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go"
@@ -59,9 +62,9 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	folderClient := folder.Client{Config: *config}
 	fileClient := file.Client{Config: *config}
 
-	_, err = folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
+	_, err = folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	assert.NoError(err)
-	_, err = fileClient.Upload(strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, &file.UploadProgress{})
+	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
 	assert.NoError(err)
 	FilesInit()
 	str := clib.CaptureOutput(func() {
@@ -84,8 +87,8 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	folderClient := folder.Client{Config: *config}
 	fileClient := file.Client{Config: *config}
 
-	folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
-	_, err = fileClient.Upload(strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, &file.UploadProgress{})
+	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
+	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
 	assert.NoError(err)
 	FilesInit()
 
@@ -102,7 +105,8 @@ func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) (s
 	b := bytes.NewBufferString("")
 	command.SetOut(b)
 	command.SetArgs(args)
-	ctx := clib.Context{Config: config, Test: true}
+	ctx1 := context.WithValue(context.Background(), "config", config)
+	ctx := context.WithValue(ctx1, "testing", true)
 	command.ExecuteContext(ctx)
 	out, err := ioutil.ReadAll(b)
 	return string(out), err

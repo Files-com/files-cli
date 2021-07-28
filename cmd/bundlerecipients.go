@@ -8,6 +8,8 @@ import (
 
 	flib "github.com/Files-com/files-sdk-go/lib"
 
+	"fmt"
+
 	bundle_recipient "github.com/Files-com/files-sdk-go/bundlerecipient"
 )
 
@@ -19,7 +21,9 @@ func BundleRecipientsInit() {
 	BundleRecipients = &cobra.Command{
 		Use:  "bundle-recipients [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command bundle-recipients\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsBundleRecipientList := files_sdk.BundleRecipientListParams{}
@@ -31,18 +35,19 @@ func BundleRecipientsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBundleRecipientList
 			params.MaxPages = MaxPagesList
 
-			client := bundle_recipient.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := bundle_recipient.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -61,21 +66,22 @@ func BundleRecipientsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := bundle_recipient.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle_recipient.Client{Config: *config}
 
 			if createShareAfterCreate {
 				paramsBundleRecipientCreate.ShareAfterCreate = flib.Bool(true)
 			}
 
-			result, err := client.Create(paramsBundleRecipientCreate)
+			result, err := client.Create(ctx, paramsBundleRecipientCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

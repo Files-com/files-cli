@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	inbox_registration "github.com/Files-com/files-sdk-go/inboxregistration"
 )
 
@@ -17,7 +19,9 @@ func InboxRegistrationsInit() {
 	InboxRegistrations = &cobra.Command{
 		Use:  "inbox-registrations [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command inbox-registrations\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsInboxRegistrationList := files_sdk.InboxRegistrationListParams{}
@@ -29,18 +33,19 @@ func InboxRegistrationsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsInboxRegistrationList
 			params.MaxPages = MaxPagesList
 
-			client := inbox_registration.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := inbox_registration.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

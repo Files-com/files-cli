@@ -1,16 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go"
-
-	"fmt"
-
 	external_event "github.com/Files-com/files-sdk-go/externalevent"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -21,7 +18,9 @@ func ExternalEventsInit() {
 	ExternalEvents = &cobra.Command{
 		Use:  "external-events [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command external-events\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsExternalEventList := files_sdk.ExternalEventListParams{}
@@ -33,18 +32,19 @@ func ExternalEventsInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsExternalEventList
 			params.MaxPages = MaxPagesList
 
-			client := external_event.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := external_event.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -60,17 +60,18 @@ func ExternalEventsInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := external_event.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := external_event.Client{Config: *config}
 
-			result, err := client.Find(paramsExternalEventFind)
+			result, err := client.Find(ctx, paramsExternalEventFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -85,19 +86,20 @@ func ExternalEventsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := external_event.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := external_event.Client{Config: *config}
 
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
 
-			result, err := client.Create(paramsExternalEventCreate)
+			result, err := client.Create(ctx, paramsExternalEventCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

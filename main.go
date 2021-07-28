@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/Files-com/files-cli/cmd"
 	"github.com/Files-com/files-cli/lib"
 	files "github.com/Files-com/files-sdk-go"
@@ -10,7 +12,7 @@ import (
 	"os"
 )
 
-var VERSION = "1.0.1583"
+var VERSION = "1.1.1584"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -203,5 +205,5 @@ func main() {
 	cmd.WebhookTestsInit()
 	rootCmd.AddCommand(cmd.WebhookTests)
 
-	rootCmd.ExecuteContext(lib.Context{Config: &files.GlobalConfig})
+	rootCmd.ExecuteContext(context.WithValue(context.Background(), "config", &files.GlobalConfig))
 }

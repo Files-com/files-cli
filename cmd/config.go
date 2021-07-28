@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 var (
@@ -30,11 +31,20 @@ func ConfigInit() {
 
 	Config.AddCommand(subdomainCreate)
 	resetConfig := lib.ResetConfig{}
-	resetDelete := &cobra.Command{
+	var resetDelete *cobra.Command
+	resetDelete = &cobra.Command{
 		Use:     "reset",
 		Aliases: []string{"config-reset"},
-		Run: func(cmd *cobra.Command, args []string) {
-			configParams.ResetWith(resetConfig)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			anyFlagSet := false
+			resetDelete.Flags().Visit(func(flag *pflag.Flag) {
+				anyFlagSet = true
+			})
+			if anyFlagSet {
+				return configParams.ResetWith(resetConfig)
+			} else {
+				return configParams.Reset()
+			}
 		},
 	}
 	resetDelete.Flags().BoolVarP(&resetConfig.Subdomain, "subdomain", "d", false, "Subdomain of site")
@@ -45,13 +55,17 @@ func ConfigInit() {
 
 	Config.AddCommand(resetDelete)
 
-	resetShow := &cobra.Command{
+	configShow := &cobra.Command{
 		Use:     "show",
 		Aliases: []string{"config-show"},
 		Run: func(cmd *cobra.Command, args []string) {
-			lib.JsonMarshal(configParams, "")
+			fields := ""
+			if len(args) > 0 {
+				fields = args[0]
+			}
+			lib.JsonMarshal(configParams, fields)
 		},
 	}
 
-	Config.AddCommand(resetShow)
+	Config.AddCommand(configShow)
 }

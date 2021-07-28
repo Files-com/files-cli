@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go"
 
+	"fmt"
+
 	file_comment "github.com/Files-com/files-sdk-go/filecomment"
 )
 
@@ -17,7 +19,9 @@ func FileCommentsInit() {
 	FileComments = &cobra.Command{
 		Use:  "file-comments [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command file-comments\n\t%v", args[0])
+		},
 	}
 	var fieldsListFor string
 	paramsFileCommentListFor := files_sdk.FileCommentListForParams{}
@@ -29,21 +33,22 @@ func FileCommentsInit() {
 		Long:  `list-for`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFileCommentListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
 
-			client := file_comment.Client{Config: *ctx.GetConfig()}
-			it, err := client.ListFor(params)
+			client := file_comment.Client{Config: *config}
+			it, err := client.ListFor(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsListFor)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -60,21 +65,22 @@ func FileCommentsInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create [path]",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_comment.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_comment.Client{Config: *config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCommentCreate.Path = args[0]
 			}
 
-			result, err := client.Create(paramsFileCommentCreate)
+			result, err := client.Create(ctx, paramsFileCommentCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -89,17 +95,18 @@ func FileCommentsInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_comment.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_comment.Client{Config: *config}
 
-			result, err := client.Update(paramsFileCommentUpdate)
+			result, err := client.Update(ctx, paramsFileCommentUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -114,17 +121,18 @@ func FileCommentsInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := file_comment.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file_comment.Client{Config: *config}
 
-			result, err := client.Delete(paramsFileCommentDelete)
+			result, err := client.Delete(ctx, paramsFileCommentDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}

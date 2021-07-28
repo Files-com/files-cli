@@ -23,7 +23,9 @@ func RemoteServersInit() {
 	RemoteServers = &cobra.Command{
 		Use:  "remote-servers [command]",
 		Args: cobra.ExactArgs(1),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("invalid command remote-servers\n\t%v", args[0])
+		},
 	}
 	var fieldsList string
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
@@ -35,18 +37,19 @@ func RemoteServersInit() {
 		Long:  `list`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
 
-			client := remote_server.Client{Config: *ctx.GetConfig()}
-			it, err := client.List(params)
+			client := remote_server.Client{Config: *config}
+			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 			err = lib.JsonMarshalIter(it, fieldsList)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -62,17 +65,18 @@ func RemoteServersInit() {
 	cmdFind := &cobra.Command{
 		Use: "find",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := remote_server.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
 
-			result, err := client.Find(paramsRemoteServerFind)
+			result, err := client.Find(ctx, paramsRemoteServerFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsFind)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -82,6 +86,7 @@ func RemoteServersInit() {
 	RemoteServers.AddCommand(cmdFind)
 	var fieldsCreate string
 	createResetAuthentication := false
+	createEnableDedicatedIps := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateServerCertificate := ""
 	RemoteServerCreateServerType := ""
@@ -91,11 +96,15 @@ func RemoteServersInit() {
 	cmdCreate := &cobra.Command{
 		Use: "create",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := remote_server.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
 
 			if createResetAuthentication {
 				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(true)
+			}
+			if createEnableDedicatedIps {
+				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(true)
 			}
 
 			paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
@@ -103,14 +112,14 @@ func RemoteServersInit() {
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
 
-			result, err := client.Create(paramsRemoteServerCreate)
+			result, err := client.Create(ctx, paramsRemoteServerCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsCreate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -136,7 +145,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&RemoteServerCreateServerCertificate, "server-certificate", "f", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdCreate.Flags().StringVarP(&RemoteServerCreateServerType, "server-type", "", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
-	cmdCreate.Flags().StringVarP(&RemoteServerCreateSsl, "ssl", "l", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVarP(&RemoteServerCreateSsl, "ssl", "", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.Username, "username", "", "", "Remote server username.  Not needed for S3 buckets.")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "u", "", "Google Cloud Storage bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "d", "", "Google Cloud Project ID")
@@ -153,6 +162,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "", "S3-compatible Bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleRegion, "s3-compatible-region", "", "", "S3-compatible Bucket name")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "", "S3-compatible endpoint")
+	cmdCreate.Flags().BoolVarP(&createEnableDedicatedIps, "enable-dedicated-ips", "l", createEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "", "S3-compatible access key")
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "", "S3-compatible secret key")
 
@@ -160,6 +170,7 @@ func RemoteServersInit() {
 	RemoteServers.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	updateResetAuthentication := false
+	updateEnableDedicatedIps := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateServerCertificate := ""
 	RemoteServerUpdateServerType := ""
@@ -169,11 +180,15 @@ func RemoteServersInit() {
 	cmdUpdate := &cobra.Command{
 		Use: "update",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := remote_server.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
 
 			if updateResetAuthentication {
 				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(true)
+			}
+			if updateEnableDedicatedIps {
+				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(true)
 			}
 
 			paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
@@ -181,14 +196,14 @@ func RemoteServersInit() {
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
 
-			result, err := client.Update(paramsRemoteServerUpdate)
+			result, err := client.Update(ctx, paramsRemoteServerUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsUpdate)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
@@ -215,7 +230,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateServerCertificate, "server-certificate", "f", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateServerType, "server-type", "", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
-	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateSsl, "ssl", "l", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVarP(&RemoteServerUpdateSsl, "ssl", "", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.Username, "username", "", "", "Remote server username.  Not needed for S3 buckets.")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "u", "", "Google Cloud Storage bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "d", "", "Google Cloud Project ID")
@@ -232,6 +247,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "", "S3-compatible Bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleRegion, "s3-compatible-region", "", "", "S3-compatible Bucket name")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "", "S3-compatible endpoint")
+	cmdUpdate.Flags().BoolVarP(&updateEnableDedicatedIps, "enable-dedicated-ips", "l", updateEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "", "S3-compatible access key")
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "", "S3-compatible secret key")
 
@@ -243,17 +259,18 @@ func RemoteServersInit() {
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context().(lib.Context)
-			client := remote_server.Client{Config: *ctx.GetConfig()}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
 
-			result, err := client.Delete(paramsRemoteServerDelete)
+			result, err := client.Delete(ctx, paramsRemoteServerDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 
 			err = lib.JsonMarshal(result, fieldsDelete)
 			if err != nil {
-				lib.ClientError(err, &ctx)
+				lib.ClientError(ctx, err)
 			}
 		},
 	}
