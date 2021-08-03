@@ -47,6 +47,7 @@ func WebhookTestsInit() {
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Url, "url", "u", "", "URL for testing the webhook.")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Method, "method", "t", "", "HTTP method(GET or POST).")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Encoding, "encoding", "e", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
+	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.RawBody, "raw-body", "r", "", "raw body text")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Action, "action", "a", "", "action for test body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")

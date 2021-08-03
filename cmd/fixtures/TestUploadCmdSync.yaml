@@ -11,7 +11,7 @@ interactions:
     method: GET
   response:
     body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"ada39371-85ce-48a6-b4ff-17775ba53962","title":"Authentication
+      or invalid.","http-code":401,"instance":"5908bc6e-0415-4bdb-b392-4925eacb1ee6","title":"Authentication
       Required","type":"not-authenticated/authentication-required"}'
     headers:
       Cache-Control:
@@ -21,7 +21,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 03 Aug 2021 21:47:44 GMT
+      - Tue, 03 Aug 2021 23:15:01 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -29,7 +29,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - ada39371-85ce-48a6-b4ff-17775ba53962
+      - 5908bc6e-0415-4bdb-b392-4925eacb1ee6
     status: 401 Unauthorized
     code: 401
     duration: ""
@@ -45,7 +45,7 @@ interactions:
     method: POST
   response:
     body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"63c4e611-42da-4118-aae5-9f2e6fb2031f","title":"Authentication
+      or invalid.","http-code":401,"instance":"02563259-c8fc-4f83-a8dc-1ab11924a4ad","title":"Authentication
       Required","type":"not-authenticated/authentication-required"}'
     headers:
       Cache-Control:
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 03 Aug 2021 21:47:44 GMT
+      - Tue, 03 Aug 2021 23:15:01 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -63,7 +63,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 63c4e611-42da-4118-aae5-9f2e6fb2031f
+      - 02563259-c8fc-4f83-a8dc-1ab11924a4ad
     status: 401 Unauthorized
     code: 401
     duration: ""
