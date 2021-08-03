@@ -25,6 +25,7 @@ func LocksInit() {
 		},
 	}
 	var fieldsListFor string
+	var formatListFor string
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
 	listForIncludeChildren := false
@@ -51,7 +52,7 @@ func LocksInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -64,8 +65,10 @@ func LocksInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Locks.AddCommand(cmdListFor)
 	var fieldsCreate string
+	var formatCreate string
 	createAllowAccessByAnyUser := false
 	createExclusive := false
 	paramsLockCreate := files_sdk.LockCreateParams{}
@@ -93,7 +96,7 @@ func LocksInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -106,8 +109,10 @@ func LocksInit() {
 	cmdCreate.Flags().Int64VarP(&paramsLockCreate.Timeout, "timeout", "t", 0, "Lock timeout length")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Locks.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsLockDelete := files_sdk.LockDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -126,7 +131,7 @@ func LocksInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -136,5 +141,6 @@ func LocksInit() {
 	cmdDelete.Flags().StringVarP(&paramsLockDelete.Token, "token", "t", "", "Lock token")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Locks.AddCommand(cmdDelete)
 }

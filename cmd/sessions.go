@@ -23,6 +23,7 @@ func SessionsInit() {
 		},
 	}
 	var fieldsCreate string
+	var formatCreate string
 	paramsSessionCreate := files_sdk.SessionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -37,7 +38,7 @@ func SessionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -49,8 +50,10 @@ func SessionsInit() {
 	cmdCreate.Flags().StringVarP(&paramsSessionCreate.PartialSessionId, "partial-session-id", "p", "", "Identifier for a partially-completed login")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Sessions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	cmdDelete := &cobra.Command{
 		Use: "delete",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -63,7 +66,7 @@ func SessionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -71,5 +74,6 @@ func SessionsInit() {
 	}
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Sessions.AddCommand(cmdDelete)
 }

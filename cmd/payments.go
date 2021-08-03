@@ -23,6 +23,7 @@ func PaymentsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsPaymentList := files_sdk.PaymentListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func PaymentsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -53,8 +54,10 @@ func PaymentsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Payments.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsPaymentFind := files_sdk.PaymentFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -69,7 +72,7 @@ func PaymentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -78,5 +81,6 @@ func PaymentsInit() {
 	cmdFind.Flags().Int64VarP(&paramsPaymentFind.Id, "id", "i", 0, "Payment ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Payments.AddCommand(cmdFind)
 }

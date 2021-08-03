@@ -25,6 +25,7 @@ func BundlesInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsBundleList := files_sdk.BundleListParams{}
 	var MaxPagesList int64
 
@@ -44,7 +45,7 @@ func BundlesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -56,8 +57,10 @@ func BundlesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsBundleFind := files_sdk.BundleFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -72,7 +75,7 @@ func BundlesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -81,8 +84,10 @@ func BundlesInit() {
 	cmdFind.Flags().Int64VarP(&paramsBundleFind.Id, "id", "i", 0, "Bundle ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	createPreviewOnly := false
 	createRequireRegistration := false
 	createRequireShareRecipient := false
@@ -110,7 +115,7 @@ func BundlesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -131,8 +136,10 @@ func BundlesInit() {
 	cmdCreate.Flags().BoolVarP(&createRequireShareRecipient, "require-share-recipient", "", createRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdCreate)
 	var fieldsShare string
+	var formatShare string
 	paramsBundleShare := files_sdk.BundleShareParams{}
 
 	cmdShare := &cobra.Command{
@@ -147,7 +154,7 @@ func BundlesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsShare)
+			err = lib.Format(result, formatShare, fieldsShare)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -157,8 +164,10 @@ func BundlesInit() {
 	cmdShare.Flags().StringVarP(&paramsBundleShare.Note, "note", "n", "", "Note to include in email.")
 
 	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "", "", "comma separated list of field names")
+	cmdShare.Flags().StringVarP(&formatShare, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdShare)
 	var fieldsUpdate string
+	var formatUpdate string
 	updatePreviewOnly := false
 	updateRequireRegistration := false
 	updateRequireShareRecipient := false
@@ -186,7 +195,7 @@ func BundlesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -207,8 +216,10 @@ func BundlesInit() {
 	cmdUpdate.Flags().BoolVarP(&updateRequireShareRecipient, "require-share-recipient", "", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsBundleDelete := files_sdk.BundleDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -223,7 +234,7 @@ func BundlesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -232,5 +243,6 @@ func BundlesInit() {
 	cmdDelete.Flags().Int64VarP(&paramsBundleDelete.Id, "id", "i", 0, "Bundle ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Bundles.AddCommand(cmdDelete)
 }

@@ -24,6 +24,7 @@ func FileMigrationsInit() {
 		},
 	}
 	var fieldsFind string
+	var formatFind string
 	paramsFileMigrationFind := files_sdk.FileMigrationFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -38,7 +39,7 @@ func FileMigrationsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -47,5 +48,6 @@ func FileMigrationsInit() {
 	cmdFind.Flags().Int64VarP(&paramsFileMigrationFind.Id, "id", "i", 0, "File Migration ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileMigrations.AddCommand(cmdFind)
 }

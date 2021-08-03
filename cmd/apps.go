@@ -23,6 +23,7 @@ func AppsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsAppList := files_sdk.AppListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func AppsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -53,5 +54,6 @@ func AppsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Apps.AddCommand(cmdList)
 }

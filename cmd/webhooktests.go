@@ -23,6 +23,7 @@ func WebhookTestsInit() {
 		},
 	}
 	var fieldsCreate string
+	var formatCreate string
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -37,7 +38,7 @@ func WebhookTestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -49,5 +50,6 @@ func WebhookTestsInit() {
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Action, "action", "a", "", "action for test body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	WebhookTests.AddCommand(cmdCreate)
 }

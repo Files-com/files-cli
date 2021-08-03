@@ -24,6 +24,7 @@ func MessageCommentsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsMessageCommentList := files_sdk.MessageCommentListParams{}
 	var MaxPagesList int64
 
@@ -43,7 +44,7 @@ func MessageCommentsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -56,8 +57,10 @@ func MessageCommentsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageComments.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsMessageCommentFind := files_sdk.MessageCommentFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -72,7 +75,7 @@ func MessageCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -81,8 +84,10 @@ func MessageCommentsInit() {
 	cmdFind.Flags().Int64VarP(&paramsMessageCommentFind.Id, "id", "i", 0, "Message Comment ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageComments.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsMessageCommentCreate := files_sdk.MessageCommentCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -97,7 +102,7 @@ func MessageCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -107,8 +112,10 @@ func MessageCommentsInit() {
 	cmdCreate.Flags().StringVarP(&paramsMessageCommentCreate.Body, "body", "b", "", "Comment body.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageComments.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsMessageCommentUpdate := files_sdk.MessageCommentUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -123,7 +130,7 @@ func MessageCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -133,8 +140,10 @@ func MessageCommentsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsMessageCommentUpdate.Body, "body", "b", "", "Comment body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageComments.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsMessageCommentDelete := files_sdk.MessageCommentDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -149,7 +158,7 @@ func MessageCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -158,5 +167,6 @@ func MessageCommentsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsMessageCommentDelete.Id, "id", "i", 0, "Message Comment ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageComments.AddCommand(cmdDelete)
 }

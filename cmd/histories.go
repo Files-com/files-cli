@@ -23,6 +23,7 @@ func HistoriesInit() {
 		},
 	}
 	var fieldsListForFile string
+	var formatListForFile string
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
 
 	cmdListForFile := &cobra.Command{
@@ -41,7 +42,7 @@ func HistoriesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsListForFile)
+			err = lib.Format(result, formatListForFile, fieldsListForFile)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -55,8 +56,10 @@ func HistoriesInit() {
 	cmdListForFile.Flags().StringVarP(&paramsHistoryListForFile.Path, "path", "p", "", "Path to operate on.")
 
 	cmdListForFile.Flags().StringVarP(&fieldsListForFile, "fields", "", "", "comma separated list of field names")
+	cmdListForFile.Flags().StringVarP(&formatListForFile, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder string
+	var formatListForFolder string
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
 
 	cmdListForFolder := &cobra.Command{
@@ -75,7 +78,7 @@ func HistoriesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsListForFolder)
+			err = lib.Format(result, formatListForFolder, fieldsListForFolder)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -89,8 +92,10 @@ func HistoriesInit() {
 	cmdListForFolder.Flags().StringVarP(&paramsHistoryListForFolder.Path, "path", "p", "", "Path to operate on.")
 
 	cmdListForFolder.Flags().StringVarP(&fieldsListForFolder, "fields", "", "", "comma separated list of field names")
+	cmdListForFolder.Flags().StringVarP(&formatListForFolder, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser string
+	var formatListForUser string
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
 
 	cmdListForUser := &cobra.Command{
@@ -105,7 +110,7 @@ func HistoriesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsListForUser)
+			err = lib.Format(result, formatListForUser, fieldsListForUser)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -119,8 +124,10 @@ func HistoriesInit() {
 	cmdListForUser.Flags().Int64VarP(&paramsHistoryListForUser.UserId, "user-id", "u", 0, "User ID.")
 
 	cmdListForUser.Flags().StringVarP(&fieldsListForUser, "fields", "", "", "comma separated list of field names")
+	cmdListForUser.Flags().StringVarP(&formatListForUser, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins string
+	var formatListLogins string
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
 
 	cmdListLogins := &cobra.Command{
@@ -135,7 +142,7 @@ func HistoriesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsListLogins)
+			err = lib.Format(result, formatListLogins, fieldsListLogins)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -148,8 +155,10 @@ func HistoriesInit() {
 	cmdListLogins.Flags().Int64VarP(&paramsHistoryListLogins.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdListLogins.Flags().StringVarP(&fieldsListLogins, "fields", "", "", "comma separated list of field names")
+	cmdListLogins.Flags().StringVarP(&formatListLogins, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList string
+	var formatList string
 	paramsHistoryList := files_sdk.HistoryListParams{}
 	var MaxPagesList int64
 
@@ -169,7 +178,7 @@ func HistoriesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -183,5 +192,6 @@ func HistoriesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Histories.AddCommand(cmdList)
 }

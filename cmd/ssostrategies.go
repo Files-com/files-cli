@@ -24,6 +24,7 @@ func SsoStrategiesInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsSsoStrategyList := files_sdk.SsoStrategyListParams{}
 	var MaxPagesList int64
 
@@ -43,7 +44,7 @@ func SsoStrategiesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -54,8 +55,10 @@ func SsoStrategiesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	SsoStrategies.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsSsoStrategyFind := files_sdk.SsoStrategyFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -70,7 +73,7 @@ func SsoStrategiesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -79,5 +82,6 @@ func SsoStrategiesInit() {
 	cmdFind.Flags().Int64VarP(&paramsSsoStrategyFind.Id, "id", "i", 0, "Sso Strategy ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	SsoStrategies.AddCommand(cmdFind)
 }

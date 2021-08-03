@@ -24,6 +24,7 @@ func MessageCommentReactionsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsMessageCommentReactionList := files_sdk.MessageCommentReactionListParams{}
 	var MaxPagesList int64
 
@@ -43,7 +44,7 @@ func MessageCommentReactionsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -56,8 +57,10 @@ func MessageCommentReactionsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageCommentReactions.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsMessageCommentReactionFind := files_sdk.MessageCommentReactionFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -72,7 +75,7 @@ func MessageCommentReactionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -81,8 +84,10 @@ func MessageCommentReactionsInit() {
 	cmdFind.Flags().Int64VarP(&paramsMessageCommentReactionFind.Id, "id", "i", 0, "Message Comment Reaction ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageCommentReactions.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsMessageCommentReactionCreate := files_sdk.MessageCommentReactionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -97,7 +102,7 @@ func MessageCommentReactionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -107,8 +112,10 @@ func MessageCommentReactionsInit() {
 	cmdCreate.Flags().StringVarP(&paramsMessageCommentReactionCreate.Emoji, "emoji", "e", "", "Emoji to react with.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageCommentReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsMessageCommentReactionDelete := files_sdk.MessageCommentReactionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -123,7 +130,7 @@ func MessageCommentReactionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -132,5 +139,6 @@ func MessageCommentReactionsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsMessageCommentReactionDelete.Id, "id", "i", 0, "Message Comment Reaction ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	MessageCommentReactions.AddCommand(cmdDelete)
 }

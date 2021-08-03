@@ -25,6 +25,7 @@ func FoldersInit() {
 		},
 	}
 	var fieldsListFor string
+	var formatListFor string
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
 	listForSearchAll := false
@@ -59,7 +60,7 @@ func FoldersInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -77,8 +78,10 @@ func FoldersInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
+	var formatCreate string
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -97,7 +100,7 @@ func FoldersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -106,5 +109,6 @@ func FoldersInit() {
 	cmdCreate.Flags().StringVarP(&paramsFolderCreate.Path, "path", "p", "", "Path to operate on.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Folders.AddCommand(cmdCreate)
 }

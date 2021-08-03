@@ -28,6 +28,7 @@ func RemoteServersInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
 	var MaxPagesList int64
 
@@ -47,7 +48,7 @@ func RemoteServersInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -58,8 +59,10 @@ func RemoteServersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsRemoteServerFind := files_sdk.RemoteServerFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -74,7 +77,7 @@ func RemoteServersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -83,8 +86,10 @@ func RemoteServersInit() {
 	cmdFind.Flags().Int64VarP(&paramsRemoteServerFind.Id, "id", "i", 0, "Remote Server ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	RemoteServers.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	createResetAuthentication := false
 	createEnableDedicatedIps := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
@@ -117,7 +122,7 @@ func RemoteServersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -167,8 +172,10 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVarP(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "", "S3-compatible secret key")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	RemoteServers.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	updateResetAuthentication := false
 	updateEnableDedicatedIps := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
@@ -201,7 +208,7 @@ func RemoteServersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -252,8 +259,10 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "", "S3-compatible secret key")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	RemoteServers.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsRemoteServerDelete := files_sdk.RemoteServerDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -268,7 +277,7 @@ func RemoteServersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -277,5 +286,6 @@ func RemoteServersInit() {
 	cmdDelete.Flags().Int64VarP(&paramsRemoteServerDelete.Id, "id", "i", 0, "Remote Server ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	RemoteServers.AddCommand(cmdDelete)
 }

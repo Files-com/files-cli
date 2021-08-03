@@ -26,6 +26,7 @@ func FilesInit() {
 	}
 	Files.AddCommand(DownloadCmd())
 	var fieldsCreate string
+	var formatCreate string
 	createMkdirParents := false
 	createWithRename := false
 	paramsFileCreate := files_sdk.FileCreateParams{}
@@ -53,7 +54,7 @@ func FilesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -73,8 +74,10 @@ func FilesInit() {
 	cmdCreate.Flags().BoolVarP(&createWithRename, "with-rename", "w", createWithRename, "Allow file rename instead of overwrite?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Files.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -93,7 +96,7 @@ func FilesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -104,8 +107,10 @@ func FilesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsFileUpdate.PriorityColor, "priority-color", "r", "", "Priority/Bookmark color of file.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Files.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	deleteRecursive := false
 	paramsFileDelete := files_sdk.FileDeleteParams{}
 
@@ -129,7 +134,7 @@ func FilesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -139,5 +144,6 @@ func FilesInit() {
 	cmdDelete.Flags().BoolVarP(&deleteRecursive, "recursive", "r", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Files.AddCommand(cmdDelete)
 }

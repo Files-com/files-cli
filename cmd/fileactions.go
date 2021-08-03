@@ -26,6 +26,7 @@ func FileActionsInit() {
 		},
 	}
 	var fieldsCopy string
+	var formatCopy string
 	copyStructure := false
 	paramsFileActionCopy := files_sdk.FileActionCopyParams{}
 
@@ -49,7 +50,7 @@ func FileActionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCopy)
+			err = lib.Format(result, formatCopy, fieldsCopy)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -60,8 +61,10 @@ func FileActionsInit() {
 	cmdCopy.Flags().BoolVarP(&copyStructure, "structure", "s", copyStructure, "Copy structure only?")
 
 	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
+	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileActions.AddCommand(cmdCopy)
 	var fieldsMove string
+	var formatMove string
 	paramsFileActionMove := files_sdk.FileActionMoveParams{}
 
 	cmdMove := &cobra.Command{
@@ -80,7 +83,7 @@ func FileActionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsMove)
+			err = lib.Format(result, formatMove, fieldsMove)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -90,8 +93,10 @@ func FileActionsInit() {
 	cmdMove.Flags().StringVarP(&paramsFileActionMove.Destination, "destination", "d", "", "Move destination path.")
 
 	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
+	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileActions.AddCommand(cmdMove)
 	var fieldsBeginUpload string
+	var formatBeginUpload string
 	beginUploadMkdirParents := false
 	beginUploadWithRename := false
 	paramsFileActionBeginUpload := files_sdk.FileActionBeginUploadParams{}
@@ -119,7 +124,7 @@ func FileActionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsBeginUpload)
+			err = lib.Format(result, formatBeginUpload, fieldsBeginUpload)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -134,5 +139,6 @@ func FileActionsInit() {
 	cmdBeginUpload.Flags().BoolVarP(&beginUploadWithRename, "with-rename", "w", beginUploadWithRename, "Allow file rename instead of overwrite?")
 
 	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")
+	cmdBeginUpload.Flags().StringVarP(&formatBeginUpload, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileActions.AddCommand(cmdBeginUpload)
 }

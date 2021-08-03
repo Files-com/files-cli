@@ -23,6 +23,7 @@ func StylesInit() {
 		},
 	}
 	var fieldsFind string
+	var formatFind string
 	paramsStyleFind := files_sdk.StyleFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -41,7 +42,7 @@ func StylesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -50,8 +51,10 @@ func StylesInit() {
 	cmdFind.Flags().StringVarP(&paramsStyleFind.Path, "path", "p", "", "Style path.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Styles.AddCommand(cmdFind)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsStyleUpdate := files_sdk.StyleUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -70,7 +73,7 @@ func StylesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -79,8 +82,10 @@ func StylesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsStyleUpdate.Path, "path", "p", "", "Style path.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Styles.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsStyleDelete := files_sdk.StyleDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -99,7 +104,7 @@ func StylesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -108,5 +113,6 @@ func StylesInit() {
 	cmdDelete.Flags().StringVarP(&paramsStyleDelete.Path, "path", "p", "", "Style path.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Styles.AddCommand(cmdDelete)
 }

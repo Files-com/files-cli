@@ -26,6 +26,7 @@ func BundleRecipientsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsBundleRecipientList := files_sdk.BundleRecipientListParams{}
 	var MaxPagesList int64
 
@@ -45,7 +46,7 @@ func BundleRecipientsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -58,8 +59,10 @@ func BundleRecipientsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	BundleRecipients.AddCommand(cmdList)
 	var fieldsCreate string
+	var formatCreate string
 	createShareAfterCreate := false
 	paramsBundleRecipientCreate := files_sdk.BundleRecipientCreateParams{}
 
@@ -79,7 +82,7 @@ func BundleRecipientsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -94,5 +97,6 @@ func BundleRecipientsInit() {
 	cmdCreate.Flags().BoolVarP(&createShareAfterCreate, "share-after-create", "s", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	BundleRecipients.AddCommand(cmdCreate)
 }

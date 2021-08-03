@@ -24,6 +24,7 @@ func FileCommentReactionsInit() {
 		},
 	}
 	var fieldsCreate string
+	var formatCreate string
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -38,7 +39,7 @@ func FileCommentReactionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -49,8 +50,10 @@ func FileCommentReactionsInit() {
 	cmdCreate.Flags().StringVarP(&paramsFileCommentReactionCreate.Emoji, "emoji", "e", "", "Emoji to react with.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileCommentReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsFileCommentReactionDelete := files_sdk.FileCommentReactionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -65,7 +68,7 @@ func FileCommentReactionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -74,5 +77,6 @@ func FileCommentReactionsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsFileCommentReactionDelete.Id, "id", "i", 0, "File Comment Reaction ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileCommentReactions.AddCommand(cmdDelete)
 }

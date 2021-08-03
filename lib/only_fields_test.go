@@ -15,27 +15,27 @@ type testStruct struct {
 func TestOnlyFields(t *testing.T) {
 	assert := assert.New(t)
 	a := testStruct{A: "hello", B: "I'm B", C: "I'm C"}
-	result, _ := OnlyFields("", a)
+	result, _, _ := OnlyFields("", a)
 
 	assert.Equal("hello", result["a"])
 	assert.Equal("I'm B", result["b"])
 	assert.Equal("I'm C", result["c"])
 
-	result2, _ := OnlyFields("b,c", a)
+	result2, _, _ := OnlyFields("b,c", a)
 
 	assert.Equal(nil, result2["a"])
 	assert.Equal("I'm B", result2["b"])
 	assert.Equal("I'm C", result2["c"])
 
-	_, err := OnlyFields("d", a)
+	_, _, err1 := OnlyFields("d", a)
 
-	assert.EqualError(err, "field: `d` is not valid.")
+	assert.EqualError(err1, "field: `d` is not valid.")
 
 	b := testStruct{A: "hello", B: "I'm B"}
 
-	result3, err := OnlyFields("c", b)
+	result3, _, err3 := OnlyFields("c", b)
 
-	assert.NoError(err)
+	assert.NoError(err3)
 
 	assert.Equal(nil, result3["c"])
 	assert.Equal(nil, result3["a"])
@@ -47,10 +47,9 @@ func TestOnlyFields(t *testing.T) {
 	}
 
 	assert.Equal([]string{}, keys, "returns no keys")
+	result4, _, err4 := OnlyFields("a,c", b)
 
-	result4, err := OnlyFields("a,c", b)
-
-	assert.NoError(err)
+	assert.NoError(err4)
 
 	keys = make([]string, 0)
 	for key := range result4 {

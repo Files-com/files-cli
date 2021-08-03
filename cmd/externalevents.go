@@ -23,6 +23,7 @@ func ExternalEventsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsExternalEventList := files_sdk.ExternalEventListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func ExternalEventsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -53,8 +54,10 @@ func ExternalEventsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ExternalEvents.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsExternalEventFind := files_sdk.ExternalEventFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -69,7 +72,7 @@ func ExternalEventsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -78,8 +81,10 @@ func ExternalEventsInit() {
 	cmdFind.Flags().Int64VarP(&paramsExternalEventFind.Id, "id", "i", 0, "External Event ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ExternalEvents.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsExternalEventCreate := files_sdk.ExternalEventCreateParams{}
 	ExternalEventCreateStatus := ""
 
@@ -97,7 +102,7 @@ func ExternalEventsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -107,5 +112,6 @@ func ExternalEventsInit() {
 	cmdCreate.Flags().StringVarP(&paramsExternalEventCreate.Body, "body", "b", "", "Event body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ExternalEvents.AddCommand(cmdCreate)
 }

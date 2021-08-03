@@ -24,6 +24,7 @@ func ActionWebhookFailuresInit() {
 		},
 	}
 	var fieldsRetry string
+	var formatRetry string
 	paramsActionWebhookFailureRetry := files_sdk.ActionWebhookFailureRetryParams{}
 
 	cmdRetry := &cobra.Command{
@@ -38,7 +39,7 @@ func ActionWebhookFailuresInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsRetry)
+			err = lib.Format(result, formatRetry, fieldsRetry)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -47,5 +48,6 @@ func ActionWebhookFailuresInit() {
 	cmdRetry.Flags().Int64VarP(&paramsActionWebhookFailureRetry.Id, "id", "i", 0, "Action Webhook Failure ID.")
 
 	cmdRetry.Flags().StringVarP(&fieldsRetry, "fields", "", "", "comma separated list of field names")
+	cmdRetry.Flags().StringVarP(&formatRetry, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ActionWebhookFailures.AddCommand(cmdRetry)
 }

@@ -24,6 +24,7 @@ func FileCommentsInit() {
 		},
 	}
 	var fieldsListFor string
+	var formatListFor string
 	paramsFileCommentListFor := files_sdk.FileCommentListForParams{}
 	var MaxPagesListFor int64
 
@@ -46,7 +47,7 @@ func FileCommentsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -58,8 +59,10 @@ func FileCommentsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate string
+	var formatCreate string
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -78,7 +81,7 @@ func FileCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -88,8 +91,10 @@ func FileCommentsInit() {
 	cmdCreate.Flags().StringVarP(&paramsFileCommentCreate.Path, "path", "p", "", "File path.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileComments.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -104,7 +109,7 @@ func FileCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -114,8 +119,10 @@ func FileCommentsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsFileCommentUpdate.Body, "body", "b", "", "Comment body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileComments.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsFileCommentDelete := files_sdk.FileCommentDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -130,7 +137,7 @@ func FileCommentsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -139,5 +146,6 @@ func FileCommentsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsFileCommentDelete.Id, "id", "i", 0, "File Comment ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	FileComments.AddCommand(cmdDelete)
 }

@@ -26,6 +26,7 @@ func ActionNotificationExportsInit() {
 		},
 	}
 	var fieldsFind string
+	var formatFind string
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -40,7 +41,7 @@ func ActionNotificationExportsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -49,8 +50,10 @@ func ActionNotificationExportsInit() {
 	cmdFind.Flags().Int64VarP(&paramsActionNotificationExportFind.Id, "id", "i", 0, "Action Notification Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ActionNotificationExports.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	createQuerySuccess := false
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
 
@@ -70,7 +73,7 @@ func ActionNotificationExportsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -88,5 +91,6 @@ func ActionNotificationExportsInit() {
 	cmdCreate.Flags().StringVarP(&paramsActionNotificationExportCreate.QueryFolder, "query-folder", "f", "", "Return notifications that were triggered by actions in this folder.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ActionNotificationExports.AddCommand(cmdCreate)
 }

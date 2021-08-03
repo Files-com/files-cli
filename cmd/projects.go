@@ -23,6 +23,7 @@ func ProjectsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsProjectList := files_sdk.ProjectListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func ProjectsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -53,8 +54,10 @@ func ProjectsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Projects.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsProjectFind := files_sdk.ProjectFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -69,7 +72,7 @@ func ProjectsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -78,8 +81,10 @@ func ProjectsInit() {
 	cmdFind.Flags().Int64VarP(&paramsProjectFind.Id, "id", "i", 0, "Project ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Projects.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsProjectCreate := files_sdk.ProjectCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -94,7 +99,7 @@ func ProjectsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -103,8 +108,10 @@ func ProjectsInit() {
 	cmdCreate.Flags().StringVarP(&paramsProjectCreate.GlobalAccess, "global-access", "g", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Projects.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsProjectUpdate := files_sdk.ProjectUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -119,7 +126,7 @@ func ProjectsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -129,8 +136,10 @@ func ProjectsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsProjectUpdate.GlobalAccess, "global-access", "g", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Projects.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsProjectDelete := files_sdk.ProjectDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -145,7 +154,7 @@ func ProjectsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -154,5 +163,6 @@ func ProjectsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsProjectDelete.Id, "id", "i", 0, "Project ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Projects.AddCommand(cmdDelete)
 }

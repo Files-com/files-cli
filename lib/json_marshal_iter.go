@@ -14,7 +14,7 @@ type Iter interface {
 func JsonMarshalIter(it Iter, fields string) error {
 	firstObject := true
 	for it.Next() {
-		recordMap, err := OnlyFields(fields, it.Current())
+		recordMap, _, err := OnlyFields(fields, it.Current())
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ func JsonMarshalIter(it Iter, fields string) error {
 }
 
 func JsonMarshal(i interface{}, fields string) error {
-	recordMap, err := OnlyFields(fields, i)
+	recordMap, _, err := OnlyFields(fields, i)
 	if err != nil {
 		return err
 	}

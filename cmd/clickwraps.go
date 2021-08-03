@@ -25,6 +25,7 @@ func ClickwrapsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsClickwrapList := files_sdk.ClickwrapListParams{}
 	var MaxPagesList int64
 
@@ -44,7 +45,7 @@ func ClickwrapsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -55,8 +56,10 @@ func ClickwrapsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Clickwraps.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsClickwrapFind := files_sdk.ClickwrapFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -71,7 +74,7 @@ func ClickwrapsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -80,8 +83,10 @@ func ClickwrapsInit() {
 	cmdFind.Flags().Int64VarP(&paramsClickwrapFind.Id, "id", "i", 0, "Clickwrap ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Clickwraps.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsClickwrapCreate := files_sdk.ClickwrapCreateParams{}
 	ClickwrapCreateUseWithBundles := ""
 	ClickwrapCreateUseWithInboxes := ""
@@ -103,7 +108,7 @@ func ClickwrapsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -116,8 +121,10 @@ func ClickwrapsInit() {
 	cmdCreate.Flags().StringVarP(&ClickwrapCreateUseWithUsers, "use-with-users", "s", "", fmt.Sprintf("Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password. %v", reflect.ValueOf(paramsClickwrapCreate.UseWithUsers.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Clickwraps.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsClickwrapUpdate := files_sdk.ClickwrapUpdateParams{}
 	ClickwrapUpdateUseWithBundles := ""
 	ClickwrapUpdateUseWithInboxes := ""
@@ -139,7 +146,7 @@ func ClickwrapsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -153,8 +160,10 @@ func ClickwrapsInit() {
 	cmdUpdate.Flags().StringVarP(&ClickwrapUpdateUseWithUsers, "use-with-users", "s", "", fmt.Sprintf("Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password. %v", reflect.ValueOf(paramsClickwrapUpdate.UseWithUsers.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Clickwraps.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsClickwrapDelete := files_sdk.ClickwrapDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -169,7 +178,7 @@ func ClickwrapsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -178,5 +187,6 @@ func ClickwrapsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsClickwrapDelete.Id, "id", "i", 0, "Clickwrap ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Clickwraps.AddCommand(cmdDelete)
 }

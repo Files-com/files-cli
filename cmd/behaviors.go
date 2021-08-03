@@ -23,6 +23,7 @@ func BehaviorsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func BehaviorsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -54,8 +55,10 @@ func BehaviorsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -70,7 +73,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -79,8 +82,10 @@ func BehaviorsInit() {
 	cmdFind.Flags().Int64VarP(&paramsBehaviorFind.Id, "id", "i", 0, "Behavior ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdFind)
 	var fieldsListFor string
+	var formatListFor string
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
 
@@ -103,7 +108,7 @@ func BehaviorsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsListFor)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -117,8 +122,10 @@ func BehaviorsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
+	var formatCreate string
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -137,7 +144,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -148,8 +155,10 @@ func BehaviorsInit() {
 	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Behavior, "behavior", "b", "", "Behavior type.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdCreate)
 	var fieldsWebhookTest string
+	var formatWebhookTest string
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
 
 	cmdWebhookTest := &cobra.Command{
@@ -164,7 +173,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsWebhookTest)
+			err = lib.Format(result, formatWebhookTest, fieldsWebhookTest)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -176,8 +185,10 @@ func BehaviorsInit() {
 	cmdWebhookTest.Flags().StringVarP(&paramsBehaviorWebhookTest.Action, "action", "a", "", "action for test body")
 
 	cmdWebhookTest.Flags().StringVarP(&fieldsWebhookTest, "fields", "", "", "comma separated list of field names")
+	cmdWebhookTest.Flags().StringVarP(&formatWebhookTest, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdWebhookTest)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -196,7 +207,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -208,8 +219,10 @@ func BehaviorsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Folder behaviors path.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -224,7 +237,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -233,5 +246,6 @@ func BehaviorsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsBehaviorDelete.Id, "id", "i", 0, "Behavior ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Behaviors.AddCommand(cmdDelete)
 }

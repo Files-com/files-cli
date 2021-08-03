@@ -25,6 +25,7 @@ func PermissionsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
 	listIncludeGroups := false
@@ -48,7 +49,7 @@ func PermissionsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -63,8 +64,10 @@ func PermissionsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Permissions.AddCommand(cmdList)
 	var fieldsCreate string
+	var formatCreate string
 	createRecursive := false
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 
@@ -88,7 +91,7 @@ func PermissionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -102,8 +105,10 @@ func PermissionsInit() {
 	cmdCreate.Flags().StringVarP(&paramsPermissionCreate.Username, "username", "s", "", "User username.  Provide `username` or `user_id`")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Permissions.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsPermissionDelete := files_sdk.PermissionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -118,7 +123,7 @@ func PermissionsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -127,5 +132,6 @@ func PermissionsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsPermissionDelete.Id, "id", "i", 0, "Permission ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Permissions.AddCommand(cmdDelete)
 }

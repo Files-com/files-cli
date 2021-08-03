@@ -25,6 +25,7 @@ func AutomationsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsAutomationList := files_sdk.AutomationListParams{}
 	var MaxPagesList int64
 
@@ -44,7 +45,7 @@ func AutomationsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -56,8 +57,10 @@ func AutomationsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Automations.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsAutomationFind := files_sdk.AutomationFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -72,7 +75,7 @@ func AutomationsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -81,8 +84,10 @@ func AutomationsInit() {
 	cmdFind.Flags().Int64VarP(&paramsAutomationFind.Id, "id", "i", 0, "Automation ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Automations.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateAutomation := ""
 	AutomationCreateTrigger := ""
@@ -105,7 +110,7 @@ func AutomationsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -124,8 +129,10 @@ func AutomationsInit() {
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Automations.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateAutomation := ""
 	AutomationUpdateTrigger := ""
@@ -148,7 +155,7 @@ func AutomationsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -168,8 +175,10 @@ func AutomationsInit() {
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Automations.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsAutomationDelete := files_sdk.AutomationDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -184,7 +193,7 @@ func AutomationsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -193,5 +202,6 @@ func AutomationsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsAutomationDelete.Id, "id", "i", 0, "Automation ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Automations.AddCommand(cmdDelete)
 }

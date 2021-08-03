@@ -24,6 +24,7 @@ func IpAddressesInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsIpAddressList := files_sdk.IpAddressListParams{}
 	var MaxPagesList int64
 
@@ -43,7 +44,7 @@ func IpAddressesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -54,8 +55,10 @@ func IpAddressesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetReserved string
+	var formatGetReserved string
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
 
 	cmdGetReserved := &cobra.Command{
@@ -70,7 +73,7 @@ func IpAddressesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsGetReserved)
+			err = lib.Format(result, formatGetReserved, fieldsGetReserved)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -80,5 +83,6 @@ func IpAddressesInit() {
 	cmdGetReserved.Flags().Int64VarP(&paramsIpAddressGetReserved.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdGetReserved.Flags().StringVarP(&fieldsGetReserved, "fields", "", "", "comma separated list of field names")
+	cmdGetReserved.Flags().StringVarP(&formatGetReserved, "format", "", "table", "json, csv, table, table-dark, table-light")
 	IpAddresses.AddCommand(cmdGetReserved)
 }

@@ -23,6 +23,7 @@ func MessagesInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsMessageList := files_sdk.MessageListParams{}
 	var MaxPagesList int64
 
@@ -42,7 +43,7 @@ func MessagesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -55,8 +56,10 @@ func MessagesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Messages.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsMessageFind := files_sdk.MessageFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -71,7 +74,7 @@ func MessagesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -80,8 +83,10 @@ func MessagesInit() {
 	cmdFind.Flags().Int64VarP(&paramsMessageFind.Id, "id", "i", 0, "Message ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Messages.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsMessageCreate := files_sdk.MessageCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -96,7 +101,7 @@ func MessagesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -108,8 +113,10 @@ func MessagesInit() {
 	cmdCreate.Flags().StringVarP(&paramsMessageCreate.Body, "body", "b", "", "Message body.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Messages.AddCommand(cmdCreate)
 	var fieldsUpdate string
+	var formatUpdate string
 	paramsMessageUpdate := files_sdk.MessageUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -124,7 +131,7 @@ func MessagesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -136,8 +143,10 @@ func MessagesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsMessageUpdate.Body, "body", "b", "", "Message body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Messages.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsMessageDelete := files_sdk.MessageDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -152,7 +161,7 @@ func MessagesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -161,5 +170,6 @@ func MessagesInit() {
 	cmdDelete.Flags().Int64VarP(&paramsMessageDelete.Id, "id", "i", 0, "Message ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Messages.AddCommand(cmdDelete)
 }

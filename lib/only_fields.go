@@ -8,13 +8,15 @@ import (
 	"github.com/fatih/structs"
 )
 
-func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, error) {
+func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, []string, error) {
 	fields := strings.Split(commaFields, ",")
 	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")
 	intermediateMap := make(map[string]interface{})
 	returnMap := make(map[string]interface{})
 	json.Unmarshal(jsonStructure, &intermediateMap)
+	orderedKeys := jsonTags(structure)
 	if len(fields) > 0 && fields[0] != "" {
+		orderedKeys = fields
 		for _, key := range fields {
 			_, ok := intermediateMap[key]
 			if ok {
@@ -24,16 +26,24 @@ func OnlyFields(commaFields string, structure interface{}) (map[string]interface
 					continue
 				}
 
-				return returnMap, errors.New("field: `" + key + "` is not valid.")
+				return returnMap, orderedKeys, errors.New("field: `" + key + "` is not valid.")
 			}
 		}
 	} else {
-		for key, value := range intermediateMap {
-			returnMap[key] = value
+		for _, key := range orderedKeys {
+			returnMap[key] = intermediateMap[key]
 		}
 	}
 
-	return returnMap, nil
+	return returnMap, orderedKeys, nil
+}
+
+func jsonTags(structure interface{}) []string {
+	var tags []string
+	for _, field := range structs.New(structure).Fields() {
+		tags = append(tags, strings.Split(field.Tag("json"), ",")[0])
+	}
+	return tags
 }
 
 func hasField(structure interface{}, key string) bool {

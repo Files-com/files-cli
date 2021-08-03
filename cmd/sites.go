@@ -25,6 +25,7 @@ func SitesInit() {
 		},
 	}
 	var fieldsGet string
+	var formatGet string
 	cmdGet := &cobra.Command{
 		Use: "get",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -37,7 +38,7 @@ func SitesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsGet)
+			err = lib.Format(result, formatGet, fieldsGet)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -45,8 +46,10 @@ func SitesInit() {
 	}
 
 	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "", "", "comma separated list of field names")
+	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage string
+	var formatGetUsage string
 	cmdGetUsage := &cobra.Command{
 		Use: "get-usage",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -59,7 +62,7 @@ func SitesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsGetUsage)
+			err = lib.Format(result, formatGetUsage, fieldsGetUsage)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -67,8 +70,10 @@ func SitesInit() {
 	}
 
 	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "", "", "comma separated list of field names")
+	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate string
+	var formatUpdate string
 	updateAllowBundleNames := false
 	updateOverageNotify := false
 	updateWelcomeEmailEnabled := false
@@ -268,7 +273,7 @@ func SitesInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -376,5 +381,6 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "", "Password for SMTP server.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Sites.AddCommand(cmdUpdate)
 }

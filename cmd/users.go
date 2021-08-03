@@ -27,6 +27,7 @@ func UsersInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsUserList := files_sdk.UserListParams{}
 	var MaxPagesList int64
 
@@ -46,7 +47,7 @@ func UsersInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -59,8 +60,10 @@ func UsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsUserFind := files_sdk.UserFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -75,7 +78,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -84,8 +87,10 @@ func UsersInit() {
 	cmdFind.Flags().Int64VarP(&paramsUserFind.Id, "id", "i", 0, "User ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	createAvatarDelete := false
 	createAnnouncementsRead := false
 	createAttachmentsPermission := false
@@ -180,7 +185,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -230,8 +235,10 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.Username, "username", "", "", "User's username")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdCreate)
 	var fieldsUnlock string
+	var formatUnlock string
 	paramsUserUnlock := files_sdk.UserUnlockParams{}
 
 	cmdUnlock := &cobra.Command{
@@ -246,7 +253,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUnlock)
+			err = lib.Format(result, formatUnlock, fieldsUnlock)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -255,8 +262,10 @@ func UsersInit() {
 	cmdUnlock.Flags().Int64VarP(&paramsUserUnlock.Id, "id", "i", 0, "User ID.")
 
 	cmdUnlock.Flags().StringVarP(&fieldsUnlock, "fields", "", "", "comma separated list of field names")
+	cmdUnlock.Flags().StringVarP(&formatUnlock, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdUnlock)
 	var fieldsResendWelcomeEmail string
+	var formatResendWelcomeEmail string
 	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
 
 	cmdResendWelcomeEmail := &cobra.Command{
@@ -271,7 +280,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsResendWelcomeEmail)
+			err = lib.Format(result, formatResendWelcomeEmail, fieldsResendWelcomeEmail)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -280,8 +289,10 @@ func UsersInit() {
 	cmdResendWelcomeEmail.Flags().Int64VarP(&paramsUserResendWelcomeEmail.Id, "id", "i", 0, "User ID.")
 
 	cmdResendWelcomeEmail.Flags().StringVarP(&fieldsResendWelcomeEmail, "fields", "", "", "comma separated list of field names")
+	cmdResendWelcomeEmail.Flags().StringVarP(&formatResendWelcomeEmail, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset string
+	var formatUser2faReset string
 	paramsUserUser2faReset := files_sdk.UserUser2faResetParams{}
 
 	cmdUser2faReset := &cobra.Command{
@@ -296,7 +307,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUser2faReset)
+			err = lib.Format(result, formatUser2faReset, fieldsUser2faReset)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -305,8 +316,10 @@ func UsersInit() {
 	cmdUser2faReset.Flags().Int64VarP(&paramsUserUser2faReset.Id, "id", "i", 0, "User ID.")
 
 	cmdUser2faReset.Flags().StringVarP(&fieldsUser2faReset, "fields", "", "", "comma separated list of field names")
+	cmdUser2faReset.Flags().StringVarP(&formatUser2faReset, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdUser2faReset)
 	var fieldsUpdate string
+	var formatUpdate string
 	updateAvatarDelete := false
 	updateAnnouncementsRead := false
 	updateAttachmentsPermission := false
@@ -401,7 +414,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsUpdate)
+			err = lib.Format(result, formatUpdate, fieldsUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -452,8 +465,10 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Username, "username", "", "", "User's username")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdUpdate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsUserDelete := files_sdk.UserDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -468,7 +483,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -477,5 +492,6 @@ func UsersInit() {
 	cmdDelete.Flags().Int64VarP(&paramsUserDelete.Id, "id", "i", 0, "User ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Users.AddCommand(cmdDelete)
 }

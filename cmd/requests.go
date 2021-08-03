@@ -25,6 +25,7 @@ func RequestsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
 	listMine := false
@@ -48,7 +49,7 @@ func RequestsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -61,8 +62,10 @@ func RequestsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
+	var formatGetFolder string
 	getFolderMine := false
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
 
@@ -86,7 +89,7 @@ func RequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsGetFolder)
+			err = lib.Format(result, formatGetFolder, fieldsGetFolder)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -98,8 +101,10 @@ func RequestsInit() {
 	cmdGetFolder.Flags().StringVarP(&paramsRequestGetFolder.Path, "path", "p", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
 	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "", "", "comma separated list of field names")
+	cmdGetFolder.Flags().StringVarP(&formatGetFolder, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
+	var formatCreate string
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -118,7 +123,7 @@ func RequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -130,8 +135,10 @@ func RequestsInit() {
 	cmdCreate.Flags().StringVarP(&paramsRequestCreate.GroupIds, "group-ids", "g", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Requests.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsRequestDelete := files_sdk.RequestDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -146,7 +153,7 @@ func RequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -155,5 +162,6 @@ func RequestsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsRequestDelete.Id, "id", "i", 0, "Request ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Requests.AddCommand(cmdDelete)
 }

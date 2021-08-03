@@ -24,6 +24,7 @@ func UserRequestsInit() {
 		},
 	}
 	var fieldsList string
+	var formatList string
 	paramsUserRequestList := files_sdk.UserRequestListParams{}
 	var MaxPagesList int64
 
@@ -43,7 +44,7 @@ func UserRequestsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.JsonMarshalIter(it, fieldsList)
+			err = lib.FormatIter(it, formatList, fieldsList)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -54,8 +55,10 @@ func UserRequestsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	UserRequests.AddCommand(cmdList)
 	var fieldsFind string
+	var formatFind string
 	paramsUserRequestFind := files_sdk.UserRequestFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -70,7 +73,7 @@ func UserRequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsFind)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -79,8 +82,10 @@ func UserRequestsInit() {
 	cmdFind.Flags().Int64VarP(&paramsUserRequestFind.Id, "id", "i", 0, "User Request ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	UserRequests.AddCommand(cmdFind)
 	var fieldsCreate string
+	var formatCreate string
 	paramsUserRequestCreate := files_sdk.UserRequestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -95,7 +100,7 @@ func UserRequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsCreate)
+			err = lib.Format(result, formatCreate, fieldsCreate)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -106,8 +111,10 @@ func UserRequestsInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserRequestCreate.Details, "details", "d", "", "Details of the user request")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	UserRequests.AddCommand(cmdCreate)
 	var fieldsDelete string
+	var formatDelete string
 	paramsUserRequestDelete := files_sdk.UserRequestDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -122,7 +129,7 @@ func UserRequestsInit() {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.JsonMarshal(result, fieldsDelete)
+			err = lib.Format(result, formatDelete, fieldsDelete)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
@@ -131,5 +138,6 @@ func UserRequestsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsUserRequestDelete.Id, "id", "i", 0, "User Request ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	UserRequests.AddCommand(cmdDelete)
 }
