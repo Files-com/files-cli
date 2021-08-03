@@ -1,0 +1,37 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload_test.go
+    method: POST
+  response:
+    body: '{"error":"Unauthorized. The API key or Session token is either missing
+      or invalid.","http-code":401,"instance":"5966f664-6f20-4276-ba7a-b912598eef1d","title":"Authentication
+      Required","type":"not-authenticated/authentication-required"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "235"
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 20:38:05 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 5966f664-6f20-4276-ba7a-b912598eef1d
+    status: 401 Unauthorized
+    code: 401
+    duration: ""

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -27,7 +28,7 @@ func UploadCmd() *cobra.Command {
 			transfer.Init(cmd.Context())
 			transfer.startLog("upload")
 			client := file.Client{Config: *config}
-			job, err := client.UploadFolderOrFile(
+			job := client.UploadFolderOrFile(
 				ctx,
 				&file.UploadParams{
 					Source:      sourcePath,
@@ -38,7 +39,7 @@ func UploadCmd() *cobra.Command {
 				},
 			)
 
-			transfer.AfterJob(cmd.Context(), job, err, remotePath, *config)
+			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, remotePath, *config))
 		}}
 	Upload.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "Default is "+string(rune(transfer.ConcurrentFiles)))
 	Upload.Flags().BoolVarP(&transfer.syncFlag, "sync", "s", false, "Only upload files with a more recent modified date")

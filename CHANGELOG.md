@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.1.1588] - 2021/08/03
+### Fix
+- `upload`/`download` flag `send-logs-to-cloud` has now been fixed.
+
 ## [1.1.1585] - 2021/08/03
 ### Add
 - Flag `format` default: `table`, options: "json, csv, table, table-dark, table-light"
@@ -11,8 +15,7 @@ Auto generated releases contain additions and fixes to models and method argumen
 ### Change
 - Default output format was `json` now it's `table`
 
-## [1.1.1584] - 2021/07/28
-### Add
+## [1.1.1584] - 2021/07/28### Add
 - `upload` and `download`
     - Flag `sync` to only transfer files based on the modified date.
     - Flag `send-logs-to-cloud` to sends output as external log.

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go"
 	file "github.com/Files-com/files-sdk-go/file"
 	"github.com/spf13/cobra"
@@ -26,7 +27,7 @@ func DownloadCmd() *cobra.Command {
 			transfer.Init(cmd.Context())
 			transfer.startLog("download")
 			client := file.Client{Config: *config}
-			job, err := client.DownloadFolder(
+			job := client.DownloadFolder(
 				cmd.Context(),
 				file.DownloadFolderParams{
 					FolderListForParams: files_sdk.FolderListForParams{Path: remotePath},
@@ -37,7 +38,7 @@ func DownloadCmd() *cobra.Command {
 				},
 			)
 
-			transfer.AfterJob(cmd.Context(), job, err, localPath, *config)
+			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, remotePath, *config))
 		},
 	}
 

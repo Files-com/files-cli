@@ -22,7 +22,7 @@ type Transfers struct {
 	bars                  map[string]*mpb.Bar
 	eventBody             []string
 	eventErrors           []string
-	files                 map[string]status.Report
+	files                 map[string]status.File
 	lastId                int
 	ids                   map[int]string
 	pathPadding           int
@@ -43,7 +43,7 @@ func NewTransfer() *Transfers {
 		bars:                  map[string]*mpb.Bar{},
 		eventBody:             []string{},
 		eventErrors:           []string{},
-		files:                 map[string]status.Report{},
+		files:                 map[string]status.File{},
 		lastId:                0,
 		ids:                   map[int]string{},
 		pathPadding:           40,
@@ -77,13 +77,12 @@ func (t *Transfers) createProgress(ctx context.Context) {
 
 func (t *Transfers) startLog(transferType string) {
 	t.eventBody = append(t.eventBody, fmt.Sprintf("Starting at %v", time.Now()))
-	externalEvent := files_sdk.ExternalEventCreateParams{}
-	externalEvent.Status = externalEvent.Status.Enum()["success"]
+	t.externalEvent.Status = t.externalEvent.Status.Enum()["success"]
 	t.eventBody = append(t.eventBody, fmt.Sprintf("%v sync: %v", transferType, t.syncFlag))
 }
 
-func (t *Transfers) Reporter() func(status.Report, error) {
-	return func(status status.Report, err error) {
+func (t *Transfers) Reporter() func(status.File, error) {
+	return func(status status.File, err error) {
 		t.CreateOrGetMainTotal(status)
 		t.UpdateMainTotal(status)
 
@@ -109,34 +108,37 @@ func (t *Transfers) Reporter() func(status.Report, error) {
 	}
 }
 
-func (t *Transfers) AfterJob(ctx context.Context, job status.Job, err error, path string, config files_sdk.Config) error {
-	if err != nil {
-		t.LogJobError(err, path)
-		return err
+func (t *Transfers) AfterJob(ctx context.Context, job status.Job, path string, config files_sdk.Config) error {
+	if !t.disableProgressOutput {
+		t.Progress.Wait()
 	}
-
-	t.Progress.Wait()
 
 	t.FinishMainTotal(job)
 
-	err = t.SendLogs(ctx, config)
+	err := t.SendLogs(ctx, config)
 	t.EndingStatusErrors()
 
 	return err
 }
 
-func (t *Transfers) logOnEnd(status status.Report) {
-	event := fmt.Sprintf("%v %v size %v", status.File().Path, status.String(), lib.ByteCountSI(status.TransferBytes()))
+func (t *Transfers) logOnEnd(status status.File) {
+	var path string
+	if status.RemotePath != "" {
+		path = status.RemotePath
+	} else {
+		path = status.LocalPath
+	}
+	event := fmt.Sprintf("%v %v size %v", path, status.String(), lib.ByteCountSI(status.TransferBytes))
 	t.eventBody = append(t.eventBody, event)
 	if t.disableProgressOutput {
 		fmt.Println(event)
 	}
 }
 
-func (t *Transfers) UpdateMainTotal(status status.Report) {
-	if t.mainTotal != nil {
-		t.mainTotal.SetTotal(status.Job().TotalBytes(), status.Job().AllEnded())
-		t.mainTotal.SetCurrent(status.Job().TransferBytes())
+func (t *Transfers) UpdateMainTotal(status status.File) {
+	if t.mainTotal != nil && !t.disableProgressOutput {
+		t.mainTotal.SetTotal(status.Job.TotalBytes(), status.Job.AllEnded())
+		t.mainTotal.SetCurrent(status.Job.TransferBytes())
 	}
 }
 
@@ -144,8 +146,8 @@ func (t *Transfers) SendLogs(ctx context.Context, config files_sdk.Config) error
 	if t.sendLogsToCloud {
 		eventClient := external_event.Client{Config: config}
 		t.externalEvent.Body = strings.Join(t.eventBody, "\n")
-		_, err := eventClient.Create(ctx, t.externalEvent)
-
+		event, err := eventClient.Create(ctx, t.externalEvent)
+		fmt.Println("External Event Created:", event.CreatedAt)
 		return err
 	}
 	return nil
@@ -163,7 +165,7 @@ func (t *Transfers) EndingStatusErrors() {
 }
 
 func (t *Transfers) FinishMainTotal(job status.Job) {
-	if t.mainTotal != nil {
+	if t.mainTotal != nil && !t.disableProgressOutput {
 		// Ensure mainTotal updates and is completed to prevent app hanging.
 		t.mainTotal.SetTotal(job.TotalBytes(), true)
 		t.mainTotal.SetCurrent(job.TransferBytes())
@@ -171,14 +173,23 @@ func (t *Transfers) FinishMainTotal(job status.Job) {
 	t.eventBody = append(t.eventBody, fmt.Sprintf("total downloaded: %v", lib.ByteCountSI(job.TransferBytes())))
 }
 
-func (t *Transfers) UpdateBar(status status.Report, bar *mpb.Bar) {
-	bar.SetTotal(status.File().Size, status.Completed())
-	bar.SetCurrent(status.TransferBytes())
+func (t *Transfers) UpdateBar(status status.File, bar *mpb.Bar) {
+	if t.disableProgressOutput {
+		return
+	}
+	bar.SetTotal(status.File.Size, status.Completed())
+	bar.SetCurrent(status.TransferBytes)
 }
 
-func (t *Transfers) logError(err error, status status.Report) {
+func (t *Transfers) logError(err error, status status.File) {
 	t.externalEvent.Status = t.externalEvent.Status.Enum()["error"]
-	eventError := fmt.Sprintf("%v %v %v", status.File().Path, status.String(), err.Error())
+	var path string
+	if status.RemotePath != "" {
+		path = status.RemotePath
+	} else {
+		path = status.LocalPath
+	}
+	eventError := fmt.Sprintf("%v %v %v", path, status.String(), err.Error())
 	t.eventBody = append(t.eventBody, eventError)
 	t.eventErrors = append(t.eventErrors, eventError)
 	if t.disableProgressOutput {
@@ -186,29 +197,29 @@ func (t *Transfers) logError(err error, status status.Report) {
 	}
 }
 
-func (t *Transfers) initBar(status status.Report) *mpb.Bar {
+func (t *Transfers) initBar(status status.File) *mpb.Bar {
 	t.filesMutex.Lock()
-	t.files[status.File().Path] = status
+	t.files[status.File.Path] = status
 	t.filesMutex.Unlock()
 	t.barsMapMutex.Lock()
-	bar, ok := t.bars[status.File().Path]
+	bar, ok := t.bars[status.File.Path]
 	if !ok {
 		t.lastId += 1
-		t.ids[t.lastId] = status.File().Path
+		t.ids[t.lastId] = status.File.Path
 		bar = t.createBar(t.lastId, status)
-		t.bars[status.File().Path] = bar
+		t.bars[status.File.Path] = bar
 	}
 	t.barsMapMutex.Unlock()
 
 	return bar
 }
 
-func (t *Transfers) createBar(id int, status status.Report) *mpb.Bar {
-	return t.Progress.AddBar(status.File().Size,
+func (t *Transfers) createBar(id int, status status.File) *mpb.Bar {
+	return t.Progress.AddBar(status.File.Size,
 		mpb.BarID(id),
 		mpb.PrependDecorators(
 			// simple name decorator
-			decor.Name(status.File().Path, decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR}),
+			decor.Name(status.File.Path, decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR}),
 			// decor.DSyncWidth bit enables column width synchronization
 			decor.Counters(decor.UnitKB, " % .1f / % .1f", decor.WC{W: 0, C: decor.DSyncWidthR}),
 		),
@@ -233,10 +244,10 @@ func (t *Transfers) createBar(id int, status status.Report) *mpb.Bar {
 	)
 }
 
-func (t *Transfers) CreateOrGetMainTotal(status status.Report) {
+func (t *Transfers) CreateOrGetMainTotal(status status.File) {
 	t.mainTotalMutex.Lock()
 	if t.mainTotal == nil {
-		t.mainTotal = t.Progress.AddBar(status.Job().TotalBytes(),
+		t.mainTotal = t.Progress.AddBar(status.Job.TotalBytes(),
 			mpb.PrependDecorators(
 				decor.Name("Uploading Files", decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR}),
 				decor.Counters(decor.UnitKB, " % .1f / % .1f", decor.WC{W: 0, C: decor.DSyncWidthR}),
