@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go v1.2.1150
+	github.com/Files-com/files-sdk-go v1.2.1151
 	github.com/dnaeon/go-vcr v1.1.0
 	github.com/fatih/structs v1.1.0
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
