@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go v1.2.1162
+	github.com/Files-com/files-sdk-go v1.2.1163
 	github.com/dnaeon/go-vcr v1.1.0
 	github.com/fatih/structs v1.1.0
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
@@ -18,5 +18,3 @@ require (
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 )
-
-replace github.com/Files-com/files-sdk-go => ../go

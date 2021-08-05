@@ -1,0 +1,69 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/files/upload.go
+    method: GET
+  response:
+    body: '{"error":"Unauthorized. The API key or Session token is either missing
+      or invalid.","http-code":401,"instance":"88be622c-bfe8-403e-a904-355bf1500c42","title":"Authentication
+      Required","type":"not-authenticated/authentication-required"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "235"
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 Aug 2021 15:33:36 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 88be622c-bfe8-403e-a904-355bf1500c42
+    status: 401 Unauthorized
+    code: 401
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload.go
+    method: POST
+  response:
+    body: '{"error":"Unauthorized. The API key or Session token is either missing
+      or invalid.","http-code":401,"instance":"9744f208-2254-4c80-adad-68671faee164","title":"Authentication
+      Required","type":"not-authenticated/authentication-required"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "235"
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 Aug 2021 15:33:36 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 9744f208-2254-4c80-adad-68671faee164
+    status: 401 Unauthorized
+    code: 401
+    duration: ""
