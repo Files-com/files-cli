@@ -4,9 +4,11 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	files_sdk "github.com/Files-com/files-sdk-go"
+
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	flib "github.com/Files-com/files-sdk-go/lib"
 	"github.com/Files-com/files-sdk-go/webhooktest"
 )
 
@@ -24,6 +26,7 @@ func WebhookTestsInit() {
 	}
 	var fieldsCreate string
 	var formatCreate string
+	createFileAsBody := false
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -32,6 +35,10 @@ func WebhookTestsInit() {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := webhooktest.Client{Config: *config}
+
+			if createFileAsBody {
+				paramsWebhookTestCreate.FileAsBody = flib.Bool(true)
+			}
 
 			result, err := client.Create(ctx, paramsWebhookTestCreate)
 			if err != nil {
@@ -48,6 +55,8 @@ func WebhookTestsInit() {
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Method, "method", "t", "", "HTTP method(GET or POST).")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Encoding, "encoding", "e", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.RawBody, "raw-body", "r", "", "raw body text")
+	cmdCreate.Flags().BoolVarP(&createFileAsBody, "file-as-body", "o", createFileAsBody, "Send the file data as the request body?")
+	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.FileFormField, "file-form-field", "f", "", "Send the file data as a named parameter in the request POST body")
 	cmdCreate.Flags().StringVarP(&paramsWebhookTestCreate.Action, "action", "a", "", "action for test body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
