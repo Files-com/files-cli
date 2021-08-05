@@ -13,7 +13,7 @@ interactions:
     method: POST
   response:
     body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"a276e780-8bd1-4045-b2ec-e166b4328c29","title":"Authentication
+      or invalid.","http-code":401,"instance":"78aff71e-1bdd-4d8c-a791-c8263803d637","title":"Authentication
       Required","type":"not-authenticated/authentication-required"}'
     headers:
       Cache-Control:
@@ -23,7 +23,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 05 Aug 2021 13:45:07 GMT
+      - Thu, 05 Aug 2021 13:49:12 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -31,7 +31,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - a276e780-8bd1-4045-b2ec-e166b4328c29
+      - 78aff71e-1bdd-4d8c-a791-c8263803d637
     status: 401 Unauthorized
     code: 401
     duration: ""
