@@ -15,8 +15,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Files-com/files-sdk-go v1.1.1141 h1:H57IpVbXGOcpHH4+zi9OXmHMvVOwQUdq69xdyHq6kT8=
 github.com/Files-com/files-sdk-go v1.1.1141/go.mod h1:/qeqiWrGdmRwnHi3ySD9sQ9dgaxBCmvb68a9irT6568=
-github.com/Files-com/files-sdk-go v1.2.1179 h1:nXiMJQThD75gwTiUMbLvkWLq0OpkrH+cBV5t1Sp86Bc=
-github.com/Files-com/files-sdk-go v1.2.1179/go.mod h1:/qeqiWrGdmRwnHi3ySD9sQ9dgaxBCmvb68a9irT6568=
+github.com/Files-com/files-sdk-go v1.2.1180 h1:QogNgSe9gyE+ni30l4WUnaq+MeA9wUJnjdSHugFtRcQ=
+github.com/Files-com/files-sdk-go v1.2.1180/go.mod h1:/qeqiWrGdmRwnHi3ySD9sQ9dgaxBCmvb68a9irT6568=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/VividCortex/ewma v1.1.1 h1:MnEK4VOv6n0RSY4vtRe3h11qjxL3+t0B8yOL8iMXdcM=
 github.com/VividCortex/ewma v1.1.1/go.mod h1:2Tkkvm3sRDVXaiyucHiACn4cqf7DpdyLvmxzcbUokwA=
