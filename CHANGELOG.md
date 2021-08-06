@@ -15,7 +15,7 @@ Auto generated releases contain additions and fixes to models and method argumen
 ### Change
 - Default output format was `json` now it's `table`
 
-## [1.1.1584] - 2021/07/28### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add
+## [1.1.1584] - 2021/07/28### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add### Add
 - `upload` and `download`
     - Flag `sync` to only transfer files based on the modified date.
     - Flag `send-logs-to-cloud` to sends output as external log.
