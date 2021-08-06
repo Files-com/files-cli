@@ -82,6 +82,8 @@ func SitesInit() {
 	updateWindowsModeFtp := false
 	updateDesktopApp := false
 	updateDesktopAppSessionIpPinning := false
+	updateMobileApp := false
+	updateMobileAppSessionIpPinning := false
 	updateFolderPermissionsGroupsOnly := false
 	updateOfficeIntegrationAvailable := false
 	updateSslRequired := false
@@ -152,6 +154,12 @@ func SitesInit() {
 			}
 			if updateDesktopAppSessionIpPinning {
 				paramsSiteUpdate.DesktopAppSessionIpPinning = flib.Bool(true)
+			}
+			if updateMobileApp {
+				paramsSiteUpdate.MobileApp = flib.Bool(true)
+			}
+			if updateMobileAppSessionIpPinning {
+				paramsSiteUpdate.MobileAppSessionIpPinning = flib.Bool(true)
 			}
 			if updateFolderPermissionsGroupsOnly {
 				paramsSiteUpdate.FolderPermissionsGroupsOnly = flib.Bool(true)
@@ -298,6 +306,9 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVarP(&updateDesktopApp, "desktop-app", "", updateDesktopApp, "Is the desktop app enabled?")
 	cmdUpdate.Flags().BoolVarP(&updateDesktopAppSessionIpPinning, "desktop-app-session-ip-pinning", "g", updateDesktopAppSessionIpPinning, "Is desktop app session IP pinning enabled?")
 	cmdUpdate.Flags().Int64VarP(&paramsSiteUpdate.DesktopAppSessionLifetime, "desktop-app-session-lifetime", "", 0, "Desktop app session lifetime (in hours)")
+	cmdUpdate.Flags().BoolVarP(&updateMobileApp, "mobile-app", "", updateMobileApp, "Is the mobile app enabled?")
+	cmdUpdate.Flags().BoolVarP(&updateMobileAppSessionIpPinning, "mobile-app-session-ip-pinning", "", updateMobileAppSessionIpPinning, "Is mobile app session IP pinning enabled?")
+	cmdUpdate.Flags().Int64VarP(&paramsSiteUpdate.MobileAppSessionLifetime, "mobile-app-session-lifetime", "", 0, "Mobile app session lifetime (in hours)")
 	cmdUpdate.Flags().BoolVarP(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", "", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.")
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "", "Does the welcome screen appear?")
 	cmdUpdate.Flags().BoolVarP(&updateOfficeIntegrationAvailable, "office-integration-available", "v", updateOfficeIntegrationAvailable, "Allow users to use Office for the web?")
