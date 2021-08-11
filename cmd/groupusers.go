@@ -59,7 +59,7 @@ func GroupUsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	GroupUsers.AddCommand(cmdList)
 	var fieldsCreate string
 	var formatCreate string
@@ -93,7 +93,7 @@ func GroupUsersInit() {
 	cmdCreate.Flags().BoolVarP(&createAdmin, "admin", "a", createAdmin, "Is the user a group administrator?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	GroupUsers.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
@@ -128,7 +128,7 @@ func GroupUsersInit() {
 	cmdUpdate.Flags().BoolVarP(&updateAdmin, "admin", "a", updateAdmin, "Is the user a group administrator?")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	GroupUsers.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
@@ -157,6 +157,6 @@ func GroupUsersInit() {
 	cmdDelete.Flags().Int64VarP(&paramsGroupUserDelete.UserId, "user-id", "u", 0, "User ID to remove from group.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	GroupUsers.AddCommand(cmdDelete)
 }

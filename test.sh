@@ -11,4 +11,8 @@ go get golang.org/x/tools/cmd/goimports
 goimports -w .
 gofmt -s -w .
 go test ./... -race
+ERROR_CODE=$?
+
 go mod edit -dropreplace github.com/Files-com/files-sdk-go
+
+exit ${ERROR_CODE}

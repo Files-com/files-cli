@@ -12,18 +12,14 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload_test.go
     method: POST
   response:
-    body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"635336e2-6661-4630-8363-9fa5fba0f539","title":"Authentication
-      Required","type":"not-authenticated/authentication-required"}'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-08-03T16:59:26Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-4923434249","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/5795f06d-9a6b-4ec9-a984-d8c4c05ee655?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210803%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210803T164426Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=YVp0lZLnwNtnWsPJZ_z7M_uOYOvj9A71WwDrxqv3BPNOT7XIwGDhtvCYFwTvKiTjyRl6A_vBRLW8HQ5zClOyU6349YBXwn6tlUISkIAQlZRE4LpuBIUvlVpS_93mKUaF\u0026X-Amz-Signature=3077957e259fce27b498f772456571fd68ff2f38f1fcde2f9973ccd961b90b73"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "235"
       Content-Type:
       - application/json
       Date:
-      - Wed, 11 Aug 2021 17:59:28 GMT
+      - Tue, 03 Aug 2021 16:44:26 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -31,7 +27,108 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 635336e2-6661-4630-8363-9fa5fba0f539
-    status: 401 Unauthorized
-    code: 401
+      - 07ebd878-32a5-42f6-a316-fc1a6c4a9746
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: "package cmd\n\nimport (\n\tclib \"github.com/Files-com/files-cli/lib\"\n\t\"github.com/stretchr/testify/assert\"\n\t\"strings\"\n\t\"testing\"\n)\n\nfunc
+      TestUploadCmd(t *testing.T) {\n\tassert := assert.New(t)\n\tr, config, err :=
+      CreateConfig(\"TestUploadCmd\")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer
+      r.Stop()\n\n\tupload := UploadCmd()\n\tstr := clib.CaptureOutput(func() {\n\t\tout,
+      err := callCmd(upload, config, []string{\"upload_test.go\", \"-d\", \"-l\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\",
+      out)\n\t})\n\tassert.ElementsMatch([]string{\n\t\t\"config.go complete size
+      6.3 kB\",\n\t\t\"\",\n\t}, strings.Split(str, \"\\n\"))\n}\n"
+    form: {}
+    headers:
+      Content-Length:
+      - "582"
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/5795f06d-9a6b-4ec9-a984-d8c4c05ee655?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210803%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210803T164426Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=YVp0lZLnwNtnWsPJZ_z7M_uOYOvj9A71WwDrxqv3BPNOT7XIwGDhtvCYFwTvKiTjyRl6A_vBRLW8HQ5zClOyU6349YBXwn6tlUISkIAQlZRE4LpuBIUvlVpS_93mKUaF&X-Amz-Signature=3077957e259fce27b498f772456571fd68ff2f38f1fcde2f9973ccd961b90b73
+    method: PUT
+  response:
+    body: ""
+    headers:
+      Content-Length:
+      - "0"
+      Date:
+      - Tue, 03 Aug 2021 16:44:27 GMT
+      Etag:
+      - '"da5f9b02c2ee5de9a98ca87ddfbc46c6"'
+      Server:
+      - AmazonS3
+      X-Amz-Id-2:
+      - 0ozgekS141N6MXWE4ZGc2FbV5wivWkfzaWd+OEhxomehSQYYJ7750WPw24hMumZEs/BFq41rdgw=
+      X-Amz-Request-Id:
+      - 0QJA3FM0W4R287HQ
+      X-Amz-Server-Side-Encryption:
+      - AES256
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"action":"end","etags[0][etag]":"\"da5f9b02c2ee5de9a98ca87ddfbc46c6\"","etags[0][part]":"1","provided_mtime":"2021-08-03T09:44:26-07:00","ref":"put-4923434249","size":"582"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/files/upload_test.go
+    method: POST
+  response:
+    body: '{"path":"upload_test.go","display_name":"upload_test.go","type":"file","size":582,"mtime":"2021-08-03T16:44:27Z","provided_mtime":"2021-08-03T16:44:26Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "257"
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 16:44:27 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 4b29bcbc-7bc9-4b34-9ef6-7f45ef6088ca
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{"body":"Starting at 2021-08-03 09:44:25.833766 -0700 PDT m=+0.002707578\nupload
+      sync: false\nupload_test.go complete size 582 B\ntotal downloaded: 582 B","status":"success"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK
+    url: https://app.files.com/api/rest/v1/external_events
+    method: POST
+  response:
+    body: '{"id":17480010,"event_type":"client_log","status":"success","body":"Starting
+      at 2021-08-03 09:44:25.833766 -0700 PDT m=+0.002707578\nupload sync: false\nupload_test.go
+      complete size 582 B\ntotal downloaded: 582 B","created_at":"2021-08-03T12:44:27-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "377"
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 16:44:27 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 56962ce1-7758-4604-a73e-666034b5bd0e
+    status: 201 Created
+    code: 201
     duration: ""

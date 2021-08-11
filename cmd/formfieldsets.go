@@ -58,7 +58,7 @@ func FormFieldSetsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -85,7 +85,7 @@ func FormFieldSetsInit() {
 	cmdFind.Flags().Int64VarP(&paramsFormFieldSetFind.Id, "id", "i", 0, "Form Field Set ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
@@ -129,7 +129,7 @@ func FormFieldSetsInit() {
 	cmdCreate.Flags().BoolVarP(&createSkipCompany, "skip-company", "c", createSkipCompany, "Skip validating company")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
@@ -173,7 +173,7 @@ func FormFieldSetsInit() {
 	cmdUpdate.Flags().BoolVarP(&updateSkipCompany, "skip-company", "c", updateSkipCompany, "Skip validating company")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
@@ -200,6 +200,6 @@ func FormFieldSetsInit() {
 	cmdDelete.Flags().Int64VarP(&paramsFormFieldSetDelete.Id, "id", "i", 0, "Form Field Set ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdDelete)
 }

@@ -10,18 +10,14 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/upload.go
     method: GET
   response:
-    body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"5cea1643-57cb-4b21-83ab-afe429e57135","title":"Authentication
-      Required","type":"not-authenticated/authentication-required"}'
+    body: '{"path":"upload.go","display_name":"upload.go","type":"file","size":1706,"mtime":"2030-08-01T16:50:55Z","provided_mtime":"2021-08-03T16:50:55Z","crc32":"63335696","md5":"9dff94708bf660cafc651e3fedd618f7","mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd","download_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/387971f8-be13-45b1-b37b-3613c5e3f36a?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210803%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210803T165108Z\u0026X-Amz-Expires=60\u0026X-Amz-SignedHeaders=host\u0026response-cache-control=no-cache%2C%20no-store\u0026response-content-disposition=attachment%3B%20filename%3D%22upload.go%22\u0026response-content-type=application%2Foctet-stream\u0026X-Amz-Signature=77d3413397594fa14c8b87d87610ed07bcc74af78077b2fd818ecde39630ac8f"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "235"
       Content-Type:
       - application/json
       Date:
-      - Wed, 11 Aug 2021 17:59:35 GMT
+      - Tue, 03 Aug 2021 16:51:08 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -29,41 +25,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 5cea1643-57cb-4b21-83ab-afe429e57135
-    status: 401 Unauthorized
-    code: 401
-    duration: ""
-- request:
-    body: '{}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Files.com Go SDK
-    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload.go
-    method: POST
-  response:
-    body: '{"error":"Unauthorized. The API key or Session token is either missing
-      or invalid.","http-code":401,"instance":"2bbe8725-8010-4372-8f4a-62dfe3c1c543","title":"Authentication
-      Required","type":"not-authenticated/authentication-required"}'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "235"
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 11 Aug 2021 17:59:35 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - nginx
-      X-Request-Id:
-      - 2bbe8725-8010-4372-8f4a-62dfe3c1c543
-    status: 401 Unauthorized
-    code: 401
+      - 39599f09-934b-4006-8f4d-6c47c56d6738
+    status: 200 OK
+    code: 200
     duration: ""

@@ -48,6 +48,6 @@ func ActionWebhookFailuresInit() {
 	cmdRetry.Flags().Int64VarP(&paramsActionWebhookFailureRetry.Id, "id", "i", 0, "Action Webhook Failure ID.")
 
 	cmdRetry.Flags().StringVarP(&fieldsRetry, "fields", "", "", "comma separated list of field names")
-	cmdRetry.Flags().StringVarP(&formatRetry, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdRetry.Flags().StringVarP(&formatRetry, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	ActionWebhookFailures.AddCommand(cmdRetry)
 }

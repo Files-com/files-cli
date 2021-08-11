@@ -46,7 +46,7 @@ func SitesInit() {
 	}
 
 	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "", "", "comma separated list of field names")
-	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage string
 	var formatGetUsage string
@@ -70,7 +70,7 @@ func SitesInit() {
 	}
 
 	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "", "", "comma separated list of field names")
-	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate string
 	var formatUpdate string
@@ -392,6 +392,6 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "", "Password for SMTP server.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Sites.AddCommand(cmdUpdate)
 }

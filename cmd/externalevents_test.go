@@ -18,7 +18,7 @@ func TestExternalEventsCreateSuccess(t *testing.T) {
 
 	ExternalEventsInit()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "success", "--body", "this is a success test"})
+		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "success", "--body", "this is a success test", "--format", "json"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
@@ -39,7 +39,7 @@ func TestExternalEventsCreateError(t *testing.T) {
 
 	ExternalEventsInit()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "error", "--body", "this is a error test"})
+		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "error", "--body", "this is a error test", "--format", "json"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
@@ -61,7 +61,7 @@ func TestExternalEventsCreateNoStatus(t *testing.T) {
 
 	ExternalEventsInit()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "taco", "--body", "this is a error test"})
+		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "taco", "--body", "this is a error test", "--format", "json"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})

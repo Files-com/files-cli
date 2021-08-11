@@ -50,7 +50,7 @@ func ActionNotificationExportsInit() {
 	cmdFind.Flags().Int64VarP(&paramsActionNotificationExportFind.Id, "id", "i", 0, "Action Notification Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	ActionNotificationExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
@@ -91,6 +91,6 @@ func ActionNotificationExportsInit() {
 	cmdCreate.Flags().StringVarP(&paramsActionNotificationExportCreate.QueryFolder, "query-folder", "f", "", "Return notifications that were triggered by actions in this folder.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	ActionNotificationExports.AddCommand(cmdCreate)
 }

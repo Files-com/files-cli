@@ -48,7 +48,7 @@ func HistoryExportsInit() {
 	cmdFind.Flags().Int64VarP(&paramsHistoryExportFind.Id, "id", "i", 0, "History Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	HistoryExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
@@ -96,6 +96,6 @@ func HistoryExportsInit() {
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "", "If searching for Histories about API keys, this parameter restricts results to API keys with this permission set.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	HistoryExports.AddCommand(cmdCreate)
 }

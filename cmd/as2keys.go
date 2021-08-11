@@ -56,7 +56,7 @@ func As2KeysInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	As2Keys.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -83,7 +83,7 @@ func As2KeysInit() {
 	cmdFind.Flags().Int64VarP(&paramsAs2KeyFind.Id, "id", "i", 0, "As2 Key ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	As2Keys.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
@@ -112,7 +112,7 @@ func As2KeysInit() {
 	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.PublicKey, "public-key", "p", "", "Actual contents of Public key.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	As2Keys.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
@@ -140,7 +140,7 @@ func As2KeysInit() {
 	cmdUpdate.Flags().StringVarP(&paramsAs2KeyUpdate.As2PartnershipName, "as2-partnership-name", "a", "", "AS2 Partnership Name")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	As2Keys.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
@@ -167,6 +167,6 @@ func As2KeysInit() {
 	cmdDelete.Flags().Int64VarP(&paramsAs2KeyDelete.Id, "id", "i", 0, "As2 Key ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	As2Keys.AddCommand(cmdDelete)
 }

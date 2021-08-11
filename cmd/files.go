@@ -74,7 +74,7 @@ func FilesInit() {
 	cmdCreate.Flags().BoolVarP(&createWithRename, "with-rename", "w", createWithRename, "Allow file rename instead of overwrite?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
@@ -107,7 +107,7 @@ func FilesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsFileUpdate.PriorityColor, "priority-color", "r", "", "Priority/Bookmark color of file.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
@@ -144,7 +144,7 @@ func FilesInit() {
 	cmdDelete.Flags().BoolVarP(&deleteRecursive, "recursive", "r", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdDelete)
 	var fieldsMetadata string
 	var formatMetadata string
@@ -187,7 +187,7 @@ func FilesInit() {
 	cmdMetadata.Flags().BoolVarP(&metadataWithPriorityColor, "with-priority-color", "c", metadataWithPriorityColor, "Include file priority color information?")
 
 	cmdMetadata.Flags().StringVarP(&fieldsMetadata, "fields", "", "", "comma separated list of field names")
-	cmdMetadata.Flags().StringVarP(&formatMetadata, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdMetadata.Flags().StringVarP(&formatMetadata, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdMetadata)
 	var fieldsCopy string
 	var formatCopy string
@@ -225,7 +225,7 @@ func FilesInit() {
 	cmdCopy.Flags().BoolVarP(&copyStructure, "structure", "s", copyStructure, "Copy structure only?")
 
 	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
-	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdCopy)
 	var fieldsMove string
 	var formatMove string
@@ -257,7 +257,7 @@ func FilesInit() {
 	cmdMove.Flags().StringVarP(&paramsFileMove.Destination, "destination", "d", "", "Move destination path.")
 
 	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
-	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdMove)
 	var fieldsBeginUpload string
 	var formatBeginUpload string
@@ -303,6 +303,6 @@ func FilesInit() {
 	cmdBeginUpload.Flags().BoolVarP(&beginUploadWithRename, "with-rename", "w", beginUploadWithRename, "Allow file rename instead of overwrite?")
 
 	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")
-	cmdBeginUpload.Flags().StringVarP(&formatBeginUpload, "format", "", "table", "json, csv, table, table-dark, table-light")
+	cmdBeginUpload.Flags().StringVarP(&formatBeginUpload, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdBeginUpload)
 }

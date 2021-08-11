@@ -68,7 +68,7 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	assert.NoError(err)
 	FilesInit()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "-r"})
+		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "-r", "--format", "json", "--fields", "mtime,provided_mtime"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
