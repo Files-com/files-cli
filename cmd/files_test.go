@@ -64,11 +64,11 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 
 	_, err = folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	assert.NoError(err)
-	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
+	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
 	assert.NoError(err)
 	FilesInit()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "--fields", "mtime,provided_mtime", "-r", "--format", "json"})
+		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "-r"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
@@ -88,12 +88,12 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	fileClient := file.Client{Config: *config}
 
 	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
-	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileActionBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
+	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
 	assert.NoError(err)
 	FilesInit()
 
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete", "--format", "json"})
+		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})

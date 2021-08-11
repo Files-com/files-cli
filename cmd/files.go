@@ -146,4 +146,163 @@ func FilesInit() {
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	Files.AddCommand(cmdDelete)
+	var fieldsMetadata string
+	var formatMetadata string
+	metadataWithPreviews := false
+	metadataWithPriorityColor := false
+	paramsFileMetadata := files_sdk.FileMetadataParams{}
+
+	cmdMetadata := &cobra.Command{
+		Use: "metadata [path]",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file.Client{Config: *config}
+
+			if metadataWithPreviews {
+				paramsFileMetadata.WithPreviews = flib.Bool(true)
+			}
+			if metadataWithPriorityColor {
+				paramsFileMetadata.WithPriorityColor = flib.Bool(true)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileMetadata.Path = args[0]
+			}
+
+			result, err := client.Metadata(ctx, paramsFileMetadata)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatMetadata, fieldsMetadata)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+	cmdMetadata.Flags().StringVarP(&paramsFileMetadata.Path, "path", "p", "", "Path to operate on.")
+	cmdMetadata.Flags().StringVarP(&paramsFileMetadata.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
+	cmdMetadata.Flags().BoolVarP(&metadataWithPreviews, "with-previews", "e", metadataWithPreviews, "Include file preview information?")
+	cmdMetadata.Flags().BoolVarP(&metadataWithPriorityColor, "with-priority-color", "c", metadataWithPriorityColor, "Include file priority color information?")
+
+	cmdMetadata.Flags().StringVarP(&fieldsMetadata, "fields", "", "", "comma separated list of field names")
+	cmdMetadata.Flags().StringVarP(&formatMetadata, "format", "", "table", "json, csv, table, table-dark, table-light")
+	Files.AddCommand(cmdMetadata)
+	var fieldsCopy string
+	var formatCopy string
+	copyStructure := false
+	paramsFileCopy := files_sdk.FileCopyParams{}
+
+	cmdCopy := &cobra.Command{
+		Use: "copy [path]",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file.Client{Config: *config}
+
+			if copyStructure {
+				paramsFileCopy.Structure = flib.Bool(true)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileCopy.Path = args[0]
+			}
+
+			result, err := client.Copy(ctx, paramsFileCopy)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatCopy, fieldsCopy)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+	cmdCopy.Flags().StringVarP(&paramsFileCopy.Path, "path", "p", "", "Path to operate on.")
+	cmdCopy.Flags().StringVarP(&paramsFileCopy.Destination, "destination", "d", "", "Copy destination path.")
+	cmdCopy.Flags().BoolVarP(&copyStructure, "structure", "s", copyStructure, "Copy structure only?")
+
+	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
+	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-light")
+	Files.AddCommand(cmdCopy)
+	var fieldsMove string
+	var formatMove string
+	paramsFileMove := files_sdk.FileMoveParams{}
+
+	cmdMove := &cobra.Command{
+		Use: "move [path]",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file.Client{Config: *config}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileMove.Path = args[0]
+			}
+
+			result, err := client.Move(ctx, paramsFileMove)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatMove, fieldsMove)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+	cmdMove.Flags().StringVarP(&paramsFileMove.Path, "path", "p", "", "Path to operate on.")
+	cmdMove.Flags().StringVarP(&paramsFileMove.Destination, "destination", "d", "", "Move destination path.")
+
+	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
+	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-light")
+	Files.AddCommand(cmdMove)
+	var fieldsBeginUpload string
+	var formatBeginUpload string
+	beginUploadMkdirParents := false
+	beginUploadWithRename := false
+	paramsFileBeginUpload := files_sdk.FileBeginUploadParams{}
+
+	cmdBeginUpload := &cobra.Command{
+		Use: "begin-upload [path]",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := file.Client{Config: *config}
+
+			if beginUploadMkdirParents {
+				paramsFileBeginUpload.MkdirParents = flib.Bool(true)
+			}
+			if beginUploadWithRename {
+				paramsFileBeginUpload.WithRename = flib.Bool(true)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileBeginUpload.Path = args[0]
+			}
+
+			result, err := client.BeginUpload(ctx, paramsFileBeginUpload)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatBeginUpload, fieldsBeginUpload)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+	cmdBeginUpload.Flags().StringVarP(&paramsFileBeginUpload.Path, "path", "t", "", "Path to operate on.")
+	cmdBeginUpload.Flags().BoolVarP(&beginUploadMkdirParents, "mkdir-parents", "k", beginUploadMkdirParents, "Create parent directories if they do not exist?")
+	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Part, "part", "p", 0, "Part if uploading a part.")
+	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Parts, "parts", "a", 0, "How many parts to fetch?")
+	cmdBeginUpload.Flags().StringVarP(&paramsFileBeginUpload.Ref, "ref", "r", "", "")
+	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Restart, "restart", "e", 0, "File byte offset to restart from.")
+	cmdBeginUpload.Flags().BoolVarP(&beginUploadWithRename, "with-rename", "w", beginUploadWithRename, "Allow file rename instead of overwrite?")
+
+	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")
+	cmdBeginUpload.Flags().StringVarP(&formatBeginUpload, "format", "", "table", "json, csv, table, table-dark, table-light")
+	Files.AddCommand(cmdBeginUpload)
 }

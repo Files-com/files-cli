@@ -76,7 +76,7 @@ func HistoryExportsInit() {
 	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.StartAt, "start-at", "")
 	lib.TimeVarP(cmdCreate.Flags(), &paramsHistoryExportCreate.EndAt, "end-at", "e")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryAction, "query-action", "a", "", "Filter results by this this action type. Valid values: `create`, `read`, `update`, `destroy`, `move`, `login`, `failedlogin`, `copy`, `user_create`, `user_update`, `user_destroy`, `group_create`, `group_update`, `group_destroy`, `permission_create`, `permission_destroy`, `api_key_create`, `api_key_update`, `api_key_destroy`")
-	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryInterface, "query-interface", "n", "", "Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`")
+	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryInterface, "query-interface", "n", "", "Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`, `mobile`")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryUserId, "query-user-id", "", "", "Return results that are actions performed by the user indiciated by this User ID")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryFileId, "query-file-id", "i", "", "Return results that are file actions related to the file indicated by this File ID")
 	cmdCreate.Flags().StringVarP(&paramsHistoryExportCreate.QueryParentId, "query-parent-id", "", "", "Return results that are file actions inside the parent folder specified by this folder ID")

@@ -68,6 +68,7 @@ func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader
 func TableMarshalIter(style string, it Iter, fields string) error {
 	t := tableWriter(style)
 	defer t.Render()
+	defer t.Render()
 	writeHeader := true
 	for it.Next() {
 		tableMarshal(t, it.Current(), fields, writeHeader)
