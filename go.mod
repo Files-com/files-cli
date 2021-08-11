@@ -3,9 +3,10 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go v1.2.1208
+	github.com/Files-com/files-sdk-go v1.2.1209
 	github.com/dnaeon/go-vcr v1.1.0
 	github.com/fatih/structs v1.1.0
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
 	github.com/jedib0t/go-pretty/v6 v6.2.4
