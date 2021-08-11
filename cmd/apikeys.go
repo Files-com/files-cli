@@ -60,30 +60,6 @@ func ApiKeysInit() {
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ApiKeys.AddCommand(cmdList)
-	var fieldsFindCurrent string
-	var formatFindCurrent string
-	cmdFindCurrent := &cobra.Command{
-		Use: "find-current",
-		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
-
-			result, err := client.FindCurrent(ctx)
-			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatFindCurrent, fieldsFindCurrent)
-			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-		},
-	}
-
-	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "", "", "comma separated list of field names")
-	cmdFindCurrent.Flags().StringVarP(&formatFindCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
-	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsFind string
 	var formatFind string
 	paramsApiKeyFind := files_sdk.ApiKeyFindParams{}
@@ -111,6 +87,30 @@ func ApiKeysInit() {
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ApiKeys.AddCommand(cmdFind)
+	var fieldsFindCurrent string
+	var formatFindCurrent string
+	cmdFindCurrent := &cobra.Command{
+		Use: "find-current",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := api_key.Client{Config: *config}
+
+			result, err := client.FindCurrent(ctx)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatFindCurrent, fieldsFindCurrent)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+
+	cmdFindCurrent.Flags().StringVarP(&fieldsFindCurrent, "fields", "", "", "comma separated list of field names")
+	cmdFindCurrent.Flags().StringVarP(&formatFindCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
+	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsCreate string
 	var formatCreate string
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
@@ -148,38 +148,6 @@ func ApiKeysInit() {
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ApiKeys.AddCommand(cmdCreate)
-	var fieldsUpdateCurrent string
-	var formatUpdateCurrent string
-	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
-	ApiKeyUpdateCurrentPermissionSet := ""
-
-	cmdUpdateCurrent := &cobra.Command{
-		Use: "update-current",
-		Run: func(cmd *cobra.Command, args []string) {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
-
-			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
-
-			result, err := client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
-			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatUpdateCurrent, fieldsUpdateCurrent)
-			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-		},
-	}
-	lib.TimeVarP(cmdUpdateCurrent.Flags(), &paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e")
-	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
-	cmdUpdateCurrent.Flags().StringVarP(&ApiKeyUpdateCurrentPermissionSet, "permission-set", "p", "", fmt.Sprintf("Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyUpdateCurrent.PermissionSet.Enum()).MapKeys()))
-
-	cmdUpdateCurrent.Flags().StringVarP(&fieldsUpdateCurrent, "fields", "", "", "comma separated list of field names")
-	cmdUpdateCurrent.Flags().StringVarP(&formatUpdateCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
-	ApiKeys.AddCommand(cmdUpdateCurrent)
 	var fieldsUpdate string
 	var formatUpdate string
 	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
@@ -213,30 +181,38 @@ func ApiKeysInit() {
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ApiKeys.AddCommand(cmdUpdate)
-	var fieldsDeleteCurrent string
-	var formatDeleteCurrent string
-	cmdDeleteCurrent := &cobra.Command{
-		Use: "delete-current",
+	var fieldsUpdateCurrent string
+	var formatUpdateCurrent string
+	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
+	ApiKeyUpdateCurrentPermissionSet := ""
+
+	cmdUpdateCurrent := &cobra.Command{
+		Use: "update-current",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			result, err := client.DeleteCurrent(ctx)
+			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
+
+			result, err := client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.Format(result, formatDeleteCurrent, fieldsDeleteCurrent)
+			err = lib.Format(result, formatUpdateCurrent, fieldsUpdateCurrent)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+	lib.TimeVarP(cmdUpdateCurrent.Flags(), &paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "e")
+	cmdUpdateCurrent.Flags().StringVarP(&paramsApiKeyUpdateCurrent.Name, "name", "n", "", "Internal name for the API Key.  For your use.")
+	cmdUpdateCurrent.Flags().StringVarP(&ApiKeyUpdateCurrentPermissionSet, "permission-set", "p", "", fmt.Sprintf("Permissions for this API Key.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyUpdateCurrent.PermissionSet.Enum()).MapKeys()))
 
-	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "", "", "comma separated list of field names")
-	cmdDeleteCurrent.Flags().StringVarP(&formatDeleteCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
-	ApiKeys.AddCommand(cmdDeleteCurrent)
+	cmdUpdateCurrent.Flags().StringVarP(&fieldsUpdateCurrent, "fields", "", "", "comma separated list of field names")
+	cmdUpdateCurrent.Flags().StringVarP(&formatUpdateCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
+	ApiKeys.AddCommand(cmdUpdateCurrent)
 	var fieldsDelete string
 	var formatDelete string
 	paramsApiKeyDelete := files_sdk.ApiKeyDeleteParams{}
@@ -264,4 +240,28 @@ func ApiKeysInit() {
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-light")
 	ApiKeys.AddCommand(cmdDelete)
+	var fieldsDeleteCurrent string
+	var formatDeleteCurrent string
+	cmdDeleteCurrent := &cobra.Command{
+		Use: "delete-current",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := api_key.Client{Config: *config}
+
+			result, err := client.DeleteCurrent(ctx)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatDeleteCurrent, fieldsDeleteCurrent)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+
+	cmdDeleteCurrent.Flags().StringVarP(&fieldsDeleteCurrent, "fields", "", "", "comma separated list of field names")
+	cmdDeleteCurrent.Flags().StringVarP(&formatDeleteCurrent, "format", "", "table", "json, csv, table, table-dark, table-light")
+	ApiKeys.AddCommand(cmdDeleteCurrent)
 }
