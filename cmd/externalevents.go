@@ -1,13 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
 	external_event "github.com/Files-com/files-sdk-go/externalevent"
 	"github.com/spf13/cobra"
+
+	"fmt"
+
+	files_sdk "github.com/Files-com/files-sdk-go"
 )
 
 var (
