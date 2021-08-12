@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go v1.2.1209
+	github.com/Files-com/files-sdk-go v1.2.1210
 	github.com/dnaeon/go-vcr v1.1.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
