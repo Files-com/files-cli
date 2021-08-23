@@ -2,22 +2,25 @@ package main
 
 import (
 	"context"
+	"strings"
 
 	"github.com/Files-com/files-cli/cmd"
 	"github.com/Files-com/files-cli/lib"
 	files "github.com/Files-com/files-sdk-go"
 	"github.com/spf13/cobra"
 
+	_ "embed"
 	"fmt"
 	"os"
 )
 
-var VERSION = "1.1.1664"
+//go:embed _VERSION
+var VERSION string
 
 func main() {
 	var rootCmd = &cobra.Command{
 		Use:     "files-cli [resource]",
-		Version: VERSION,
+		Version: strings.TrimSuffix(VERSION, "\n"),
 		PersistentPreRun: func(x *cobra.Command, args []string) {
 			if len(x.Aliases) != 0 && (x.Aliases[0] == "config-set" || x.Aliases[0] == "config-reset") {
 				return
