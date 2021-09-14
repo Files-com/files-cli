@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.1.1666] - 2021/09/14
+### Change
+- `upload`/`download` better handles transfers with many files.
+  - Improved performance with a new scanning state while the total number of files is not known.
+  - No longer displays a progress bar for each file, but shows a single overall progress bar with a status line below.
+
+### Add
+- `upload`/`download`
+  - `ignore` flag ignore individual files or match by patterns. See https://git-scm.com/docs/gitignore#_pattern_format
+- When listing results and using default `--format table` results paginated, similar to `less`. To advance hit enter/return.
+
+### Fix q
+- `fields` flag
+  - fields are now case-insensitive.
+  - Invalid fields names return an error
+- Errors now are sent to stderr rather than stdout.
+- `format` flag with `table` returns file size in a human readable format.
+
 ## [1.1.1645] - 2021/08/11
 ### Fix
 - Rendering output in the default table format was printed twice.

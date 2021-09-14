@@ -4,11 +4,11 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
 	"fmt"
 
-	message_reaction "github.com/Files-com/files-sdk-go/messagereaction"
+	message_reaction "github.com/Files-com/files-sdk-go/v2/messagereaction"
 )
 
 var (

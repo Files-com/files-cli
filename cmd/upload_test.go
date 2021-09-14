@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
-	"os"
 	"strings"
 	"testing"
 
@@ -86,12 +84,10 @@ func TestUploadCmdBadPath(t *testing.T) {
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
-	path, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 	}
 	assert.ElementsMatch([]string{
-		fmt.Sprintf("bad-path errored stat %v/bad-path: no such file or directory", path),
 		"bad-path errored size 0 B",
 		"",
 	}, strings.Split(str, "\n"))

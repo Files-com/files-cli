@@ -4,11 +4,11 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
 	"fmt"
 
-	action_webhook_failure "github.com/Files-com/files-sdk-go/actionwebhookfailure"
+	action_webhook_failure "github.com/Files-com/files-sdk-go/v2/actionwebhookfailure"
 )
 
 var (

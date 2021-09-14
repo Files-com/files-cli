@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	u2f "github.com/marshallbrekka/go-u2fhost"
 )
 

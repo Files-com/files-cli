@@ -6,8 +6,8 @@ import (
 
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/style"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/style"
 )
 
 var (

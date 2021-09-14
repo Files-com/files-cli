@@ -8,8 +8,8 @@ import (
 
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/clickwrap"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/clickwrap"
 )
 
 var (

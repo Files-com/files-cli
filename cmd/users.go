@@ -6,12 +6,12 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
 	"fmt"
 
-	flib "github.com/Files-com/files-sdk-go/lib"
-	"github.com/Files-com/files-sdk-go/user"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/Files-com/files-sdk-go/v2/user"
 )
 
 var (
@@ -198,7 +198,8 @@ func UsersInit() {
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GrantPermission, "grant-permission", "g", "", "Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, or `history`.")
 	cmdCreate.Flags().Int64VarP(&paramsUserCreate.GroupId, "group-id", "", 0, "Group ID to associate this user with.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.GroupIds, "group-ids", "", "", "A list of group ids to associate this user with.  Comma delimited.")
-	cmdCreate.Flags().StringVarP(&paramsUserCreate.Password, "password", "w", "", "User password.")
+	cmdCreate.Flags().StringVarP(&paramsUserCreate.ImportedPasswordHash, "imported-password-hash", "w", "", "Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash menthods are MD5, SHA1, and SHA256.")
+	cmdCreate.Flags().StringVarP(&paramsUserCreate.Password, "password", "", "", "User password.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.PasswordConfirmation, "password-confirmation", "", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdCreate.Flags().BoolVarP(&createAnnouncementsRead, "announcements-read", "n", createAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdCreate.Flags().StringVarP(&paramsUserCreate.AllowedIps, "allowed-ips", "a", "", "A list of allowed IPs if applicable.  Newline delimited")
@@ -428,7 +429,8 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GrantPermission, "grant-permission", "g", "", "Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, or `history`.")
 	cmdUpdate.Flags().Int64VarP(&paramsUserUpdate.GroupId, "group-id", "", 0, "Group ID to associate this user with.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.GroupIds, "group-ids", "", "", "A list of group ids to associate this user with.  Comma delimited.")
-	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Password, "password", "w", "", "User password.")
+	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.ImportedPasswordHash, "imported-password-hash", "w", "", "Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash menthods are MD5, SHA1, and SHA256.")
+	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.Password, "password", "", "", "User password.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.PasswordConfirmation, "password-confirmation", "", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdUpdate.Flags().BoolVarP(&updateAnnouncementsRead, "announcements-read", "n", updateAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdUpdate.Flags().StringVarP(&paramsUserUpdate.AllowedIps, "allowed-ips", "a", "", "A list of allowed IPs if applicable.  Newline delimited")

@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	file "github.com/Files-com/files-sdk-go/file"
+	"github.com/Files-com/files-cli/transfers"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	file "github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/spf13/cobra"
 )
 
 func DownloadCmd() *cobra.Command {
-	transfer := NewTransfer()
+	transfer := transfers.New()
 	Download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
@@ -24,28 +25,30 @@ func DownloadCmd() *cobra.Command {
 			if len(args) > 1 && args[1] != "" {
 				localPath = args[1]
 			}
+
 			transfer.Init(cmd.Context())
-			transfer.startLog("download")
+			transfer.StartLog("download")
 			client := file.Client{Config: *config}
-			job := client.DownloadFolder(
+			job := client.Downloader(
 				cmd.Context(),
 				file.DownloadFolderParams{
-					FolderListForParams: files_sdk.FolderListForParams{Path: remotePath},
-					Sync:                transfer.syncFlag,
-					RootDestination:     localPath,
-					Manager:             transfer.Manager,
-					Reporter:            transfer.Reporter(),
+					RemotePath:     remotePath,
+					LocalPath:      localPath,
+					Sync:           transfer.SyncFlag,
+					Manager:        transfer.Manager,
+					EventsReporter: transfer.Reporter(),
+					RetryPolicy:    file.RetryErroredIfSomeCompleted,
 				},
 			)
 
-			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, remotePath, *config))
+			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, *config))
 		},
 	}
 
 	Download.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-downloads", "c", transfer.ConcurrentFiles, "Default is "+string(rune(transfer.ConcurrentFiles)))
-	Download.Flags().BoolVarP(&transfer.syncFlag, "sync", "s", false, "Only download files with a more recent modified date")
-	Download.Flags().BoolVarP(&transfer.sendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
-	Download.Flags().BoolVarP(&transfer.disableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
+	Download.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only download files with a more recent modified date")
+	Download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
+	Download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 
 	return Download
 }

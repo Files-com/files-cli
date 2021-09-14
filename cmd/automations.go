@@ -8,8 +8,8 @@ import (
 
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/automation"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/automation"
 )
 
 var (
@@ -118,13 +118,15 @@ func AutomationsInit() {
 	}
 	cmdCreate.Flags().StringVarP(&AutomationCreateAutomation, "automation", "a", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Source, "source", "o", "", "Source Path")
-	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "d", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Destination, "destination", "e", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Interval, "interval", "i", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Description, "description", "d", "", "Description for the this Automation.")
+	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.Name, "name", "n", "", "Name for this automation.")
 	cmdCreate.Flags().StringVarP(&AutomationCreateTrigger, "trigger", "r", "", fmt.Sprintf("How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVarP(&paramsAutomationCreate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 
@@ -164,13 +166,15 @@ func AutomationsInit() {
 	cmdUpdate.Flags().Int64VarP(&paramsAutomationUpdate.Id, "id", "i", 0, "Automation ID.")
 	cmdUpdate.Flags().StringVarP(&AutomationUpdateAutomation, "automation", "a", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Source, "source", "o", "", "Source Path")
-	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "d", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Destination, "destination", "e", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "f", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "t", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Interval, "interval", "n", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Path, "path", "p", "", "Path on which this Automation runs.  Supports globs.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.UserIds, "user-ids", "u", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.GroupIds, "group-ids", "g", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Description, "description", "d", "", "Description for the this Automation.")
+	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.Name, "name", "", "", "Name for this automation.")
 	cmdUpdate.Flags().StringVarP(&AutomationUpdateTrigger, "trigger", "r", "", fmt.Sprintf("How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVarP(&paramsAutomationUpdate.TriggerActionPath, "trigger-action-path", "", "", "If trigger is `action`, this is the path to watch for the specified trigger actions.")
 

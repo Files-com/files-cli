@@ -4,12 +4,12 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
 	"fmt"
 
-	flib "github.com/Files-com/files-sdk-go/lib"
-	"github.com/Files-com/files-sdk-go/site"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/Files-com/files-sdk-go/v2/site"
 )
 
 var (
@@ -109,6 +109,8 @@ func SitesInit() {
 	updateNonSsoUsersAllowed := false
 	updateSharingEnabled := false
 	updateUserRequestsEnabled := false
+	updateFtpEnabled := false
+	updateSftpEnabled := false
 	updateAllowed2faMethodSms := false
 	updateAllowed2faMethodU2f := false
 	updateAllowed2faMethodTotp := false
@@ -236,6 +238,12 @@ func SitesInit() {
 			if updateUserRequestsEnabled {
 				paramsSiteUpdate.UserRequestsEnabled = flib.Bool(true)
 			}
+			if updateFtpEnabled {
+				paramsSiteUpdate.FtpEnabled = flib.Bool(true)
+			}
+			if updateSftpEnabled {
+				paramsSiteUpdate.SftpEnabled = flib.Bool(true)
+			}
 			if updateAllowed2faMethodSms {
 				paramsSiteUpdate.Allowed2faMethodSms = flib.Bool(true)
 			}
@@ -333,7 +341,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVarP(&updatePasswordRequireUnbreached, "password-require-unbreached", "", updatePasswordRequireUnbreached, "Require passwords that have not been previously breached? (see https://haveibeenpwned.com/)")
 	cmdUpdate.Flags().BoolVarP(&updateSftpUserRootEnabled, "sftp-user-root-enabled", "", updateSftpUserRootEnabled, "Use user FTP roots also for SFTP?")
 	cmdUpdate.Flags().BoolVarP(&updateDisablePasswordReset, "disable-password-reset", "", updateDisablePasswordReset, "Is password reset disabled?")
-	cmdUpdate.Flags().BoolVarP(&updateImmutableFiles, "immutable-files", "b", updateImmutableFiles, "Are files protected from modification?")
+	cmdUpdate.Flags().BoolVarP(&updateImmutableFiles, "immutable-files", "", updateImmutableFiles, "Are files protected from modification?")
 	cmdUpdate.Flags().BoolVarP(&updateSessionPinnedByIp, "session-pinned-by-ip", "", updateSessionPinnedByIp, "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)")
 	cmdUpdate.Flags().BoolVarP(&updateBundlePasswordRequired, "bundle-password-required", "r", updateBundlePasswordRequired, "Do Bundles require password protection?")
 	cmdUpdate.Flags().BoolVarP(&updateBundleRequireShareRecipient, "bundle-require-share-recipient", "p", updateBundleRequireShareRecipient, "Do Bundles require recipients for sharing?")
@@ -346,6 +354,8 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVarP(&updateNonSsoUsersAllowed, "non-sso-users-allowed", "", updateNonSsoUsersAllowed, "If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVarP(&updateSharingEnabled, "sharing-enabled", "", updateSharingEnabled, "Allow bundle creation")
 	cmdUpdate.Flags().BoolVarP(&updateUserRequestsEnabled, "user-requests-enabled", "", updateUserRequestsEnabled, "Enable User Requests feature")
+	cmdUpdate.Flags().BoolVarP(&updateFtpEnabled, "ftp-enabled", "b", updateFtpEnabled, "Is FTP enabled?")
+	cmdUpdate.Flags().BoolVarP(&updateSftpEnabled, "sftp-enabled", "", updateSftpEnabled, "Is SFTP enabled?")
 	cmdUpdate.Flags().BoolVarP(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", "s", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVarP(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", "u", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVarP(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", "t", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")

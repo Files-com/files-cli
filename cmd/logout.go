@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/Files-com/files-cli/lib"
-	"github.com/Files-com/files-sdk-go/session"
+	"github.com/Files-com/files-sdk-go/v2/session"
 	"github.com/spf13/cobra"
 
 	"fmt"

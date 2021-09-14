@@ -6,8 +6,8 @@ import (
 
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/behavior"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/behavior"
 )
 
 var (
@@ -151,6 +151,8 @@ func BehaviorsInit() {
 		},
 	}
 	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Name, "name", "n", "", "Name for this behavior.")
+	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Description, "description", "d", "", "Description for this behavior.")
 	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Path, "path", "p", "", "Folder behaviors path.")
 	cmdCreate.Flags().StringVarP(&paramsBehaviorCreate.Behavior, "behavior", "b", "", "Behavior type.")
 
@@ -215,6 +217,8 @@ func BehaviorsInit() {
 	}
 	cmdUpdate.Flags().Int64VarP(&paramsBehaviorUpdate.Id, "id", "i", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Value, "value", "v", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Name, "name", "n", "", "Name for this behavior.")
+	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Description, "description", "d", "", "Description for this behavior.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Behavior, "behavior", "b", "", "Behavior type.")
 	cmdUpdate.Flags().StringVarP(&paramsBehaviorUpdate.Path, "path", "p", "", "Folder behaviors path.")
 

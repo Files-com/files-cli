@@ -3,7 +3,7 @@ package auth
 import (
 	"syscall"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"fmt"

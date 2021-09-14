@@ -13,9 +13,9 @@ fi
 go mod tidy
 
 if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
-  go mod edit -replace github.com/Files-com/files-sdk-go=../go
+  go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go
 else
-  go get -u github.com/Files-com/files-sdk-go
+  go get -u github.com/Files-com/files-sdk-go/v2
 fi
 
 version=$(ruby "../../next_version.rb" cli true)
@@ -30,7 +30,10 @@ if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
     ./bin/goreleaser build --rm-dist --snapshot || exit 1
   fi
 fi
+ERROR_CODE=$?
 
 if [ -n "${SNAPSHOT}" ]; then
-    go mod edit -dropreplace github.com/Files-com/files-sdk-go
+    go mod edit -dropreplace github.com/Files-com/files-sdk-go/v2
 fi
+
+exit ${ERROR_CODE}

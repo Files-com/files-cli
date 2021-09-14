@@ -11,13 +11,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Files-com/files-sdk-go/file/manager"
+	"github.com/Files-com/files-sdk-go/v2/file/manager"
 
 	clib "github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
-	"github.com/Files-com/files-sdk-go/file"
-	"github.com/Files-com/files-sdk-go/folder"
-	"github.com/Files-com/files-sdk-go/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/file"
+	"github.com/Files-com/files-sdk-go/v2/folder"
+	"github.com/Files-com/files-sdk-go/v2/lib"
 	"github.com/dnaeon/go-vcr/cassette"
 	recorder "github.com/dnaeon/go-vcr/recorder"
 	"github.com/spf13/cobra"
@@ -93,12 +93,12 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	FilesInit()
 
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete"})
+		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
 
-	assert.Contains(str, "Folder test-dir-files-delete not empty - http-code: 422")
+	assert.Contains(str, "Folder Not Empty - `Folder test-dir-files-delete not empty`")
 }
 
 func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) (string, error) {

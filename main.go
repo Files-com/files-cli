@@ -6,7 +6,7 @@ import (
 
 	"github.com/Files-com/files-cli/cmd"
 	"github.com/Files-com/files-cli/lib"
-	files "github.com/Files-com/files-sdk-go"
+	files "github.com/Files-com/files-sdk-go/v2"
 	"github.com/spf13/cobra"
 
 	_ "embed"

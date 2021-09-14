@@ -9,6 +9,7 @@ type Iter interface {
 	Next() bool
 	Current() interface{}
 	Err() error
+	EOFPage() bool
 }
 
 func JsonMarshalIter(it Iter, fields string) error {

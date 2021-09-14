@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 )
 
 func ClientError(ctx context.Context, err error) {
@@ -17,19 +17,19 @@ func ClientError(ctx context.Context, err error) {
 	config.Load()
 
 	if ok && responseError.Type == "not-authorized/authentication-required" && config.ValidSession() {
-		fmt.Println("Your session is invalid. Please login with:")
-		fmt.Println("\tfiles-cli login")
+		fmt.Fprintf(os.Stderr, "Your session is invalid. Please login with:\n")
+		fmt.Fprintf(os.Stderr, "\tfiles-cli login\n")
 	}
 
 	if ok && responseError.Type == "not-authorized/authentication-required" && files_sdk.GlobalConfig.GetAPIKey() != "" {
-		fmt.Println("Set the correct api-key with: ")
-		fmt.Println("\tfiles-cli config set --api-key=")
+		fmt.Fprintf(os.Stderr, "Set the correct api-key with:\n")
+		fmt.Fprintf(os.Stderr, "\tfiles-cli config set --api-key=\n")
 	}
 
 	if ok {
-		fmt.Println(responseError)
+		fmt.Fprintf(os.Stderr, "%v\n", responseError)
 	} else {
-		fmt.Println(err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 	}
 
 	if ctx.Value("testing") != nil && !ctx.Value("testing").(bool) {

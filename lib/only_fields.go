@@ -9,12 +9,17 @@ import (
 )
 
 func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, []string, error) {
-	fields := strings.Split(commaFields, ",")
+	unparsedFields := strings.Split(commaFields, ",")
 	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")
 	intermediateMap := make(map[string]interface{})
 	returnMap := make(map[string]interface{})
 	json.Unmarshal(jsonStructure, &intermediateMap)
 	orderedKeys := jsonTags(structure)
+	var fields []string
+	for _, key := range unparsedFields {
+		fields = append(fields, strings.ToLower(key))
+	}
+
 	if len(fields) > 0 && fields[0] != "" {
 		orderedKeys = fields
 		for _, key := range fields {

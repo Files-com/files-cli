@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"os"
 )
 
 func Format(result interface{}, format string, fields string) error {
@@ -28,11 +29,11 @@ func FormatIter(it Iter, format string, fields string) error {
 	case "csv":
 		return CSVMarshalIter(it, fields)
 	case "table":
-		return TableMarshalIter("", it, fields)
+		return TableMarshalIter("", it, fields, os.Stdout, os.Stdin)
 	case "table-dark":
-		return TableMarshalIter("dark", it, fields)
+		return TableMarshalIter("dark", it, fields, os.Stdout, os.Stdin)
 	case "table-bright":
-		return TableMarshalIter("bright", it, fields)
+		return TableMarshalIter("bright", it, fields, os.Stdout, os.Stdin)
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}

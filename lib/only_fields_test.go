@@ -21,7 +21,7 @@ func TestOnlyFields(t *testing.T) {
 	assert.Equal("I'm B", result["b"])
 	assert.Equal("I'm C", result["c"])
 
-	result2, _, _ := OnlyFields("b,c", a)
+	result2, _, _ := OnlyFields("b,C", a)
 
 	assert.Equal(nil, result2["a"])
 	assert.Equal("I'm B", result2["b"])

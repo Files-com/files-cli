@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	clib "github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/stretchr/testify/assert"
 )
 

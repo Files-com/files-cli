@@ -4,12 +4,13 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	external_event "github.com/Files-com/files-sdk-go/externalevent"
 	"github.com/spf13/cobra"
+
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	external_event "github.com/Files-com/files-sdk-go/v2/externalevent"
 )
 
 var (

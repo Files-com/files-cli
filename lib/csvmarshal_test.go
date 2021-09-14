@@ -56,8 +56,9 @@ Dustin,Zeisler
 }
 
 type MockIter struct {
-	People []Person
-	index  int
+	People  []Person
+	index   int
+	eofPage bool
 }
 
 func (m *MockIter) Next() bool {
@@ -75,6 +76,10 @@ func (m MockIter) Current() interface{} {
 
 func (m MockIter) Err() error {
 	return nil
+}
+
+func (m MockIter) EOFPage() bool {
+	return m.eofPage
 }
 
 func TestCSVMarshalIter(t *testing.T) {

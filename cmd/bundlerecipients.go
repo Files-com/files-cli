@@ -4,13 +4,13 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
-	flib "github.com/Files-com/files-sdk-go/lib"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
 
 	"fmt"
 
-	bundle_recipient "github.com/Files-com/files-sdk-go/bundlerecipient"
+	bundle_recipient "github.com/Files-com/files-sdk-go/v2/bundlerecipient"
 )
 
 var (
