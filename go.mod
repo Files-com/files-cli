@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/Files-com/files-sdk-go v1.2.1218 // indirect
-	github.com/Files-com/files-sdk-go/v2 v2.0.0-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.1-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/dnaeon/go-vcr v1.1.0
@@ -19,6 +19,5 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/vbauerster/mpb/v7 v7.1.5
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
-	golang.org/x/tools v0.1.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 )

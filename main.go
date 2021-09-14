@@ -171,6 +171,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Permissions)
 	cmd.PreviewsInit()
 	rootCmd.AddCommand(cmd.Previews)
+	cmd.PrioritiesInit()
+	rootCmd.AddCommand(cmd.Priorities)
 	cmd.ProjectsInit()
 	rootCmd.AddCommand(cmd.Projects)
 	cmd.PublicIpAddressesInit()
