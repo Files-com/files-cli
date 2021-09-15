@@ -45,7 +45,7 @@ func DownloadCmd() *cobra.Command {
 		},
 	}
 
-	Download.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-downloads", "c", transfer.ConcurrentFiles, "Default is "+string(rune(transfer.ConcurrentFiles)))
+	Download.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-downloads", "c", transfer.ConcurrentFiles, "")
 	Download.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only download files with a more recent modified date")
 	Download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	Download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
