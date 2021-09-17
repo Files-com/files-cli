@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/Files-com/files-sdk-go v1.2.1218 // indirect
-	github.com/Files-com/files-sdk-go/v2 v2.0.1-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.2-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/dnaeon/go-vcr v1.1.0
