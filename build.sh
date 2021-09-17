@@ -15,7 +15,7 @@ go mod tidy
 if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
   go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go
 else
-  go get -u github.com/Files-com/files-sdk-go/v2
+  go get -u github.com/Files-com/files-sdk-go/v2@latest
 fi
 
 version=$(ruby "../../next_version.rb" cli true)
