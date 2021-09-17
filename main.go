@@ -89,6 +89,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Autos)
 	cmd.AutomationsInit()
 	rootCmd.AddCommand(cmd.Automations)
+	cmd.AutomationRunsInit()
+	rootCmd.AddCommand(cmd.AutomationRuns)
 	cmd.BandwidthSnapshotsInit()
 	rootCmd.AddCommand(cmd.BandwidthSnapshots)
 	cmd.BehaviorsInit()
