@@ -7,22 +7,20 @@ interactions:
     headers:
       Content-Type:
       - application/json
-      User-Agent:
-      - Files.com Go SDK
     url: https://app.files.com/api/rest/v1/external_events
     method: POST
   response:
-    body: '{"id":9836578,"event_type":"client_log","status":"success","body":"this
-      is a success test","created_at":"2021-06-25T11:23:05-04:00","body_url":null}'
+    body: '{"id":28105598,"event_type":"client_log","status":"success","body":"this
+      is a success test","created_at":"2021-09-20T18:55:55-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "148"
+      - "255"
       Content-Type:
       - application/json
       Date:
-      - Fri, 25 Jun 2021 15:23:05 GMT
+      - Mon, 20 Sep 2021 22:55:55 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -30,7 +28,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - c36f32df-b5c8-41b4-a6b8-50994736c0be
+      - 8d37d532-8fc9-4150-b2af-5a7118c45704
     status: 201 Created
     code: 201
     duration: ""

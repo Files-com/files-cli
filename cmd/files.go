@@ -146,49 +146,49 @@ func FilesInit() {
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Files.AddCommand(cmdDelete)
-	var fieldsMetadata string
-	var formatMetadata string
-	metadataWithPreviews := false
-	metadataWithPriorityColor := false
-	paramsFileMetadata := files_sdk.FileMetadataParams{}
+	var fieldsFind string
+	var formatFind string
+	findWithPreviews := false
+	findWithPriorityColor := false
+	paramsFileFind := files_sdk.FileFindParams{}
 
-	cmdMetadata := &cobra.Command{
-		Use: "metadata [path]",
+	cmdFind := &cobra.Command{
+		Use: "find [path]",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if metadataWithPreviews {
-				paramsFileMetadata.WithPreviews = flib.Bool(true)
+			if findWithPreviews {
+				paramsFileFind.WithPreviews = flib.Bool(true)
 			}
-			if metadataWithPriorityColor {
-				paramsFileMetadata.WithPriorityColor = flib.Bool(true)
+			if findWithPriorityColor {
+				paramsFileFind.WithPriorityColor = flib.Bool(true)
 			}
 
 			if len(args) > 0 && args[0] != "" {
-				paramsFileMetadata.Path = args[0]
+				paramsFileFind.Path = args[0]
 			}
 
-			result, err := client.Metadata(ctx, paramsFileMetadata)
+			result, err := client.Find(ctx, paramsFileFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 
-			err = lib.Format(result, formatMetadata, fieldsMetadata)
+			err = lib.Format(result, formatFind, fieldsFind)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
-	cmdMetadata.Flags().StringVarP(&paramsFileMetadata.Path, "path", "p", "", "Path to operate on.")
-	cmdMetadata.Flags().StringVarP(&paramsFileMetadata.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
-	cmdMetadata.Flags().BoolVarP(&metadataWithPreviews, "with-previews", "e", metadataWithPreviews, "Include file preview information?")
-	cmdMetadata.Flags().BoolVarP(&metadataWithPriorityColor, "with-priority-color", "c", metadataWithPriorityColor, "Include file priority color information?")
+	cmdFind.Flags().StringVarP(&paramsFileFind.Path, "path", "p", "", "Path to operate on.")
+	cmdFind.Flags().StringVarP(&paramsFileFind.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
+	cmdFind.Flags().BoolVarP(&findWithPreviews, "with-previews", "e", findWithPreviews, "Include file preview information?")
+	cmdFind.Flags().BoolVarP(&findWithPriorityColor, "with-priority-color", "c", findWithPriorityColor, "Include file priority color information?")
 
-	cmdMetadata.Flags().StringVarP(&fieldsMetadata, "fields", "", "", "comma separated list of field names")
-	cmdMetadata.Flags().StringVarP(&formatMetadata, "format", "", "table", "json, csv, table, table-dark, table-bright")
-	Files.AddCommand(cmdMetadata)
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	Files.AddCommand(cmdFind)
 	var fieldsCopy string
 	var formatCopy string
 	copyStructure := false

@@ -7,8 +7,6 @@ interactions:
     headers:
       Content-Type:
       - application/json
-      User-Agent:
-      - Files.com Go SDK
     url: https://app.files.com/api/rest/v1/folders/test-dir-files-delete-r
     method: POST
   response:
@@ -21,7 +19,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 30 Mar 2021 22:34:06 GMT
+      - Mon, 20 Sep 2021 22:55:55 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -29,29 +27,27 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - d665dd94-6986-4ba3-9f78-641a4eb13f95
+      - 7db617df-3ce5-4f00-92dd-a9afd0ed1d64
     status: 201 Created
     code: 201
     duration: ""
 - request:
-    body: '{"part":"1"}'
+    body: '{}'
     form: {}
     headers:
       Content-Type:
       - application/json
-      User-Agent:
-      - Files.com Go SDK
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/test-dir-files-delete-r/1.text
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-03-30T22:49:06Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-4073411289","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/1d00844b-786c-4797-ae49-563afb476c80?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210330%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210330T223406Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=tV3PEb2QVPwSGGqz5qsDttpAMkzX6x44EUfsQfgMU8kRFfI23t_8lEBz2MoyC7ToZ1TKr9kwbQPDrQw9Fotb.4hdaQmpe_ZN2yUgIRuTl13czjWU9ibPL68sLNKRA5NC\u0026X-Amz-Signature=3879f30a0e33167a3bf817469c348fe03fb67dc8aca513fa761e15f549489dd7"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-09-20T23:10:55Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-52610578","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/3cdb977a-d26d-42fe-8aa8-5d63bb648113?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210920%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210920T225555Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=JRwVOMzOM5KLTEft3Rc0b0pzVuSnONc83JofAj6wEXC1p10DsA4zF47vXe5YybwY1Lnp2cNWCWc4iv753c9PZAd4JaSD8EpJzZ2BiGtARcr72eHhhxyNw_975Waieq0.\u0026X-Amz-Signature=fb8245796f7905eca69740c8b048a0dd22b6ceb21ea058f74a1dfdeee702f466"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json
       Date:
-      - Tue, 30 Mar 2021 22:34:06 GMT
+      - Mon, 20 Sep 2021 22:55:55 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -59,7 +55,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 7bbbb6fb-d3be-4012-925e-2154dcf28647
+      - a6a28040-a999-474b-886b-d834f13208b7
     status: 200 OK
     code: 200
     duration: ""
@@ -69,7 +65,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/1d00844b-786c-4797-ae49-563afb476c80?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210330%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210330T223406Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=tV3PEb2QVPwSGGqz5qsDttpAMkzX6x44EUfsQfgMU8kRFfI23t_8lEBz2MoyC7ToZ1TKr9kwbQPDrQw9Fotb.4hdaQmpe_ZN2yUgIRuTl13czjWU9ibPL68sLNKRA5NC&X-Amz-Signature=3879f30a0e33167a3bf817469c348fe03fb67dc8aca513fa761e15f549489dd7
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/3cdb977a-d26d-42fe-8aa8-5d63bb648113?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210920%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210920T225555Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=JRwVOMzOM5KLTEft3Rc0b0pzVuSnONc83JofAj6wEXC1p10DsA4zF47vXe5YybwY1Lnp2cNWCWc4iv753c9PZAd4JaSD8EpJzZ2BiGtARcr72eHhhxyNw_975Waieq0.&X-Amz-Signature=fb8245796f7905eca69740c8b048a0dd22b6ceb21ea058f74a1dfdeee702f466
     method: PUT
   response:
     body: ""
@@ -77,62 +73,30 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Tue, 30 Mar 2021 22:34:07 GMT
+      - Mon, 20 Sep 2021 22:55:57 GMT
       Etag:
       - '"ab6e3983b98e417df77242b035504638"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - H+UZQzIbvfaYrkm2aa8A+Fm6f/Nhn2EniDBzqmMchmQonjT7FedRnvsvE/nQKDOyBAoF5EVw1k8=
+      - Tep9oRzQ/Qpzr5Zq7Ywyw4krbhSqTi7+Xd5Zj6csorWydx2pjZUVgdP9/3jO6Z2k2XYZ2XioZ4s=
       X-Amz-Request-Id:
-      - H6AFS6DK83A33K82
+      - AJS2TVR764KFGCFF
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"part":"2","ref":"put-4073411289"}'
+    body: '{"action":"end","etags[0][etag]":"\"ab6e3983b98e417df77242b035504638\"","etags[0][part]":"1","provided_mtime":"2021-09-20T15:55:56-07:00","ref":"put-52610578","size":"9"}'
     form: {}
     headers:
       Content-Type:
       - application/json
-      User-Agent:
-      - Files.com Go SDK
-    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/test-dir-files-delete-r/1.text
-    method: POST
-  response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-03-30T22:49:06Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":2,"partsize":6291456,"ref":"put-4073411289","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/1d00844b-786c-4797-ae49-563afb476c80?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210330%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210330T223406Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=2\u0026response-content-type=application%2Foctet-stream\u0026uploadId=tV3PEb2QVPwSGGqz5qsDttpAMkzX6x44EUfsQfgMU8kRFfI23t_8lEBz2MoyC7ToZ1TKr9kwbQPDrQw9Fotb.4hdaQmpe_ZN2yUgIRuTl13czjWU9ibPL68sLNKRA5NC\u0026X-Amz-Signature=a52f024e86db49ebfa7d3bcdca0d8eb86d8b7af4a4d8347270043b4cd797fa45"}]'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 30 Mar 2021 22:34:06 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - nginx
-      X-Request-Id:
-      - 342edaac-4fa3-4167-a3b7-998bacce8838
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"action":"end","etags[0][etag]":"\"ab6e3983b98e417df77242b035504638\"","etags[0][part]":"1","provided_mtime":"2021-03-30T15:34:06-07:00","ref":"put-4073411289","size":"9"}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Files.com Go SDK
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete-r/1.text
     method: POST
   response:
-    body: '{"path":"test-dir-files-delete-r/1.text","display_name":"1.text","type":"file","size":9,"mtime":"2021-03-30T22:34:07Z","provided_mtime":"2021-03-30T22:34:06Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd"}'
+    body: '{"path":"test-dir-files-delete-r/1.text","display_name":"1.text","type":"file","size":9,"mtime":"2021-09-20T22:55:56Z","provided_mtime":"2021-09-20T22:55:56Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -141,7 +105,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 30 Mar 2021 22:34:07 GMT
+      - Mon, 20 Sep 2021 22:55:56 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -149,16 +113,14 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 31155ad8-5ee1-4748-b716-b60e2827ec16
+      - 1b1529af-826c-40d2-bbb5-2e43c8fb0b05
     status: 201 Created
     code: 201
     duration: ""
 - request:
     body: ""
     form: {}
-    headers:
-      User-Agent:
-      - Files.com Go SDK
+    headers: {}
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete-r?recursive=true
     method: DELETE
   response:
@@ -167,7 +129,7 @@ interactions:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Date:
-      - Tue, 30 Mar 2021 22:34:07 GMT
+      - Mon, 20 Sep 2021 22:55:56 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -175,7 +137,7 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 25c8ab6b-8222-425f-b99d-1ab665229114
+      - af294fc3-485a-4281-9f67-115fdb4f5c06
     status: 204 No Content
     code: 204
     duration: ""

@@ -88,6 +88,7 @@ func SitesInit() {
 	updateOfficeIntegrationAvailable := false
 	updateSslRequired := false
 	updateTlsDisabled := false
+	updateSftpInsecureCiphers := false
 	updateUserLockout := false
 	updateIncludePasswordInWelcomeEmail := false
 	updatePasswordRequireLetter := false
@@ -174,6 +175,9 @@ func SitesInit() {
 			}
 			if updateTlsDisabled {
 				paramsSiteUpdate.TlsDisabled = flib.Bool(true)
+			}
+			if updateSftpInsecureCiphers {
+				paramsSiteUpdate.SftpInsecureCiphers = flib.Bool(true)
 			}
 			if updateUserLockout {
 				paramsSiteUpdate.UserLockout = flib.Bool(true)
@@ -321,7 +325,8 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVarP(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "", "Does the welcome screen appear?")
 	cmdUpdate.Flags().BoolVarP(&updateOfficeIntegrationAvailable, "office-integration-available", "v", updateOfficeIntegrationAvailable, "Allow users to use Office for the web?")
 	cmdUpdate.Flags().BoolVarP(&updateSslRequired, "ssl-required", "", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
-	cmdUpdate.Flags().BoolVarP(&updateTlsDisabled, "tls-disabled", "", updateTlsDisabled, "Is TLS disabled(site setting)?")
+	cmdUpdate.Flags().BoolVarP(&updateTlsDisabled, "tls-disabled", "", updateTlsDisabled, "Are Insecure TLS and SFTP Ciphers allowed?  Enabling this is insecure.")
+	cmdUpdate.Flags().BoolVarP(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", "", updateSftpInsecureCiphers, "Are Insecure Ciphers allowed for SFTP?  Note:  Settting TLS Disabled -> True will always allow insecure ciphers for SFTP as well.  Enabling this is insecure.")
 	cmdUpdate.Flags().BoolVarP(&updateUserLockout, "user-lockout", "", updateUserLockout, "Will users be locked out after incorrect login attempts?")
 	cmdUpdate.Flags().Int64VarP(&paramsSiteUpdate.UserLockoutTries, "user-lockout-tries", "", 0, "Number of login tries within `user_lockout_within` hours before users are locked out")
 	cmdUpdate.Flags().Int64VarP(&paramsSiteUpdate.UserLockoutWithin, "user-lockout-within", "", 0, "Number of hours for user lockout window")
