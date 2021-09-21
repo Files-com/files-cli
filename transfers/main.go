@@ -278,7 +278,7 @@ func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 				if value.String() == "0s" && !job.Sub(status.Valid...).All(status.Ended...) {
 					return " ETA ~"
 				}
-				if !job.EndTime.IsZero() {
+				if job.Finished() {
 					return fmt.Sprintf(" Elapsed %v", job.ElapsedTime().Round(time.Second).String())
 				}
 

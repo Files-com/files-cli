@@ -3,13 +3,12 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.6-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.7-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
-	github.com/dnaeon/go-vcr v1.1.0
+	github.com/dnaeon/go-vcr v1.2.0
 	github.com/fatih/structs v1.1.0
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/marshallbrekka/go-u2fhost v0.0.0-20210111072507-3ccdec8c8105
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
