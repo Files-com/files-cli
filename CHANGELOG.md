@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.1.1677] - 2021/09/22
+### Change
+- Remove all single letter flags for generated commands
+
+### Fix
+- Missing flag for `bundles create` `--paths`
+
 ## [1.1.1666] - 2021/09/14
 ### Change
 - `upload`/`download` better handles transfers with many files.

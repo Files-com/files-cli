@@ -52,10 +52,10 @@ func InboxRecipientsInit() {
 			}
 		},
 	}
-	cmdList.Flags().Int64VarP(&paramsInboxRecipientList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdList.Flags().StringVarP(&paramsInboxRecipientList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().Int64VarP(&paramsInboxRecipientList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().Int64VarP(&paramsInboxRecipientList.InboxId, "inbox-id", "i", 0, "List recipients for the inbox with this ID.")
+	cmdList.Flags().Int64Var(&paramsInboxRecipientList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdList.Flags().StringVar(&paramsInboxRecipientList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64Var(&paramsInboxRecipientList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsInboxRecipientList.InboxId, "inbox-id", 0, "List recipients for the inbox with this ID.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
@@ -88,13 +88,13 @@ func InboxRecipientsInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().Int64VarP(&paramsInboxRecipientCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdCreate.Flags().Int64VarP(&paramsInboxRecipientCreate.InboxId, "inbox-id", "i", 0, "Inbox to share.")
-	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Recipient, "recipient", "r", "", "Email address to share this inbox with.")
-	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Name, "name", "n", "", "Name of recipient.")
-	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Company, "company", "c", "", "Company of recipient.")
-	cmdCreate.Flags().StringVarP(&paramsInboxRecipientCreate.Note, "note", "o", "", "Note to include in email.")
-	cmdCreate.Flags().BoolVarP(&createShareAfterCreate, "share-after-create", "s", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
+	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.InboxId, "inbox-id", 0, "Inbox to share.")
+	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Recipient, "recipient", "", "Email address to share this inbox with.")
+	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Name, "name", "", "Name of recipient.")
+	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Company, "company", "", "Company of recipient.")
+	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Note, "note", "", "Note to include in email.")
+	cmdCreate.Flags().BoolVar(&createShareAfterCreate, "share-after-create", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")

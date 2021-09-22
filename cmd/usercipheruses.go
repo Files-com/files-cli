@@ -50,9 +50,9 @@ func UserCipherUsesInit() {
 			}
 		},
 	}
-	cmdList.Flags().Int64VarP(&paramsUserCipherUseList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdList.Flags().StringVarP(&paramsUserCipherUseList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().Int64VarP(&paramsUserCipherUseList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsUserCipherUseList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdList.Flags().StringVar(&paramsUserCipherUseList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64Var(&paramsUserCipherUseList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")

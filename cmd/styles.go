@@ -48,7 +48,7 @@ func StylesInit() {
 			}
 		},
 	}
-	cmdFind.Flags().StringVarP(&paramsStyleFind.Path, "path", "p", "", "Style path.")
+	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -79,7 +79,7 @@ func StylesInit() {
 			}
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsStyleUpdate.Path, "path", "p", "", "Style path.")
+	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -110,7 +110,7 @@ func StylesInit() {
 			}
 		},
 	}
-	cmdDelete.Flags().StringVarP(&paramsStyleDelete.Path, "path", "p", "", "Style path.")
+	cmdDelete.Flags().StringVar(&paramsStyleDelete.Path, "path", "", "Style path.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")

@@ -60,18 +60,18 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsFileCreate.Path, "path", "", "", "Path to operate on.")
-	cmdCreate.Flags().StringVarP(&paramsFileCreate.Action, "action", "a", "", "The action to perform.  Can be `append`, `attachment`, `end`, `upload`, `put`, or may not exist")
-	cmdCreate.Flags().Int64VarP(&paramsFileCreate.Length, "length", "l", 0, "Length of file.")
-	cmdCreate.Flags().BoolVarP(&createMkdirParents, "mkdir-parents", "k", createMkdirParents, "Create parent directories if they do not exist?")
-	cmdCreate.Flags().Int64VarP(&paramsFileCreate.Part, "part", "p", 0, "Part if uploading a part.")
-	cmdCreate.Flags().Int64VarP(&paramsFileCreate.Parts, "parts", "r", 0, "How many parts to fetch?")
-	lib.TimeVarP(cmdCreate.Flags(), &paramsFileCreate.ProvidedMtime, "provided-mtime", "o")
-	cmdCreate.Flags().StringVarP(&paramsFileCreate.Ref, "ref", "f", "", "")
-	cmdCreate.Flags().Int64VarP(&paramsFileCreate.Restart, "restart", "s", 0, "File byte offset to restart from.")
-	cmdCreate.Flags().Int64VarP(&paramsFileCreate.Size, "size", "i", 0, "Size of file.")
-	cmdCreate.Flags().StringVarP(&paramsFileCreate.Structure, "structure", "u", "", "If copying folder, copy just the structure?")
-	cmdCreate.Flags().BoolVarP(&createWithRename, "with-rename", "w", createWithRename, "Allow file rename instead of overwrite?")
+	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
+	cmdCreate.Flags().StringVar(&paramsFileCreate.Action, "action", "", "The action to perform.  Can be `append`, `attachment`, `end`, `upload`, `put`, or may not exist")
+	cmdCreate.Flags().Int64Var(&paramsFileCreate.Length, "length", 0, "Length of file.")
+	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
+	cmdCreate.Flags().Int64Var(&paramsFileCreate.Part, "part", 0, "Part if uploading a part.")
+	cmdCreate.Flags().Int64Var(&paramsFileCreate.Parts, "parts", 0, "How many parts to fetch?")
+	lib.TimeVar(cmdCreate.Flags(), &paramsFileCreate.ProvidedMtime, "provided-mtime")
+	cmdCreate.Flags().StringVar(&paramsFileCreate.Ref, "ref", "", "")
+	cmdCreate.Flags().Int64Var(&paramsFileCreate.Restart, "restart", 0, "File byte offset to restart from.")
+	cmdCreate.Flags().Int64Var(&paramsFileCreate.Size, "size", 0, "Size of file.")
+	cmdCreate.Flags().StringVar(&paramsFileCreate.Structure, "structure", "", "If copying folder, copy just the structure?")
+	cmdCreate.Flags().BoolVar(&createWithRename, "with-rename", createWithRename, "Allow file rename instead of overwrite?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -102,9 +102,9 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdUpdate.Flags().StringVarP(&paramsFileUpdate.Path, "path", "p", "", "Path to operate on.")
-	lib.TimeVarP(cmdUpdate.Flags(), &paramsFileUpdate.ProvidedMtime, "provided-mtime", "o")
-	cmdUpdate.Flags().StringVarP(&paramsFileUpdate.PriorityColor, "priority-color", "r", "", "Priority/Bookmark color of file.")
+	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
+	lib.TimeVar(cmdUpdate.Flags(), &paramsFileUpdate.ProvidedMtime, "provided-mtime")
+	cmdUpdate.Flags().StringVar(&paramsFileUpdate.PriorityColor, "priority-color", "", "Priority/Bookmark color of file.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -140,8 +140,8 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdDelete.Flags().StringVarP(&paramsFileDelete.Path, "path", "p", "", "Path to operate on.")
-	cmdDelete.Flags().BoolVarP(&deleteRecursive, "recursive", "r", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
+	cmdDelete.Flags().StringVar(&paramsFileDelete.Path, "path", "", "Path to operate on.")
+	cmdDelete.Flags().BoolVar(&deleteRecursive, "recursive", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -181,10 +181,10 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdFind.Flags().StringVarP(&paramsFileFind.Path, "path", "p", "", "Path to operate on.")
-	cmdFind.Flags().StringVarP(&paramsFileFind.PreviewSize, "preview-size", "r", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
-	cmdFind.Flags().BoolVarP(&findWithPreviews, "with-previews", "e", findWithPreviews, "Include file preview information?")
-	cmdFind.Flags().BoolVarP(&findWithPriorityColor, "with-priority-color", "c", findWithPriorityColor, "Include file priority color information?")
+	cmdFind.Flags().StringVar(&paramsFileFind.Path, "path", "", "Path to operate on.")
+	cmdFind.Flags().StringVar(&paramsFileFind.PreviewSize, "preview-size", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
+	cmdFind.Flags().BoolVar(&findWithPreviews, "with-previews", findWithPreviews, "Include file preview information?")
+	cmdFind.Flags().BoolVar(&findWithPriorityColor, "with-priority-color", findWithPriorityColor, "Include file priority color information?")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -220,9 +220,9 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdCopy.Flags().StringVarP(&paramsFileCopy.Path, "path", "p", "", "Path to operate on.")
-	cmdCopy.Flags().StringVarP(&paramsFileCopy.Destination, "destination", "d", "", "Copy destination path.")
-	cmdCopy.Flags().BoolVarP(&copyStructure, "structure", "s", copyStructure, "Copy structure only?")
+	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
+	cmdCopy.Flags().StringVar(&paramsFileCopy.Destination, "destination", "", "Copy destination path.")
+	cmdCopy.Flags().BoolVar(&copyStructure, "structure", copyStructure, "Copy structure only?")
 
 	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
 	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -253,8 +253,8 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdMove.Flags().StringVarP(&paramsFileMove.Path, "path", "p", "", "Path to operate on.")
-	cmdMove.Flags().StringVarP(&paramsFileMove.Destination, "destination", "d", "", "Move destination path.")
+	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
+	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
 
 	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
 	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -294,13 +294,13 @@ func FilesInit() {
 			}
 		},
 	}
-	cmdBeginUpload.Flags().StringVarP(&paramsFileBeginUpload.Path, "path", "t", "", "Path to operate on.")
-	cmdBeginUpload.Flags().BoolVarP(&beginUploadMkdirParents, "mkdir-parents", "k", beginUploadMkdirParents, "Create parent directories if they do not exist?")
-	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Part, "part", "p", 0, "Part if uploading a part.")
-	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Parts, "parts", "a", 0, "How many parts to fetch?")
-	cmdBeginUpload.Flags().StringVarP(&paramsFileBeginUpload.Ref, "ref", "r", "", "")
-	cmdBeginUpload.Flags().Int64VarP(&paramsFileBeginUpload.Restart, "restart", "e", 0, "File byte offset to restart from.")
-	cmdBeginUpload.Flags().BoolVarP(&beginUploadWithRename, "with-rename", "w", beginUploadWithRename, "Allow file rename instead of overwrite?")
+	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Path, "path", "", "Path to operate on.")
+	cmdBeginUpload.Flags().BoolVar(&beginUploadMkdirParents, "mkdir-parents", beginUploadMkdirParents, "Create parent directories if they do not exist?")
+	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Part, "part", 0, "Part if uploading a part.")
+	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Parts, "parts", 0, "How many parts to fetch?")
+	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Ref, "ref", "", "")
+	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Restart, "restart", 0, "File byte offset to restart from.")
+	cmdBeginUpload.Flags().BoolVar(&beginUploadWithRename, "with-rename", beginUploadWithRename, "Allow file rename instead of overwrite?")
 
 	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")
 	cmdBeginUpload.Flags().StringVarP(&formatBeginUpload, "format", "", "table", "json, csv, table, table-dark, table-bright")

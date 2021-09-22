@@ -52,10 +52,10 @@ func BundleRecipientsInit() {
 			}
 		},
 	}
-	cmdList.Flags().Int64VarP(&paramsBundleRecipientList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdList.Flags().StringVarP(&paramsBundleRecipientList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().Int64VarP(&paramsBundleRecipientList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().Int64VarP(&paramsBundleRecipientList.BundleId, "bundle-id", "b", 0, "List recipients for the bundle with this ID.")
+	cmdList.Flags().Int64Var(&paramsBundleRecipientList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdList.Flags().StringVar(&paramsBundleRecipientList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64Var(&paramsBundleRecipientList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsBundleRecipientList.BundleId, "bundle-id", 0, "List recipients for the bundle with this ID.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
@@ -88,13 +88,13 @@ func BundleRecipientsInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().Int64VarP(&paramsBundleRecipientCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdCreate.Flags().Int64VarP(&paramsBundleRecipientCreate.BundleId, "bundle-id", "b", 0, "Bundle to share.")
-	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Recipient, "recipient", "r", "", "Email addresses to share this bundle with.")
-	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Name, "name", "n", "", "Name of recipient.")
-	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Company, "company", "c", "", "Company of recipient.")
-	cmdCreate.Flags().StringVarP(&paramsBundleRecipientCreate.Note, "note", "o", "", "Note to include in email.")
-	cmdCreate.Flags().BoolVarP(&createShareAfterCreate, "share-after-create", "s", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
+	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.BundleId, "bundle-id", 0, "Bundle to share.")
+	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Recipient, "recipient", "", "Email addresses to share this bundle with.")
+	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Name, "name", "", "Name of recipient.")
+	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Company, "company", "", "Company of recipient.")
+	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Note, "note", "", "Note to include in email.")
+	cmdCreate.Flags().BoolVar(&createShareAfterCreate, "share-after-create", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")

@@ -30,6 +30,6 @@ func (s *timeValue) String() string {
 	return time.Time(*s).Format(time.RFC3339)
 }
 
-func TimeVarP(f *pflag.FlagSet, p *time.Time, name, shorthand string) {
-	f.VarP(newTimeValue(p), name, shorthand, "2012-11-01T22:08:41+00:00")
+func TimeVar(f *pflag.FlagSet, p *time.Time, name string) {
+	f.Var(newTimeValue(p), name, "2012-11-01T22:08:41+00:00")
 }

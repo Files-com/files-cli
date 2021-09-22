@@ -58,10 +58,10 @@ func LocksInit() {
 			}
 		},
 	}
-	cmdListFor.Flags().StringVarP(&paramsLockListFor.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdListFor.Flags().Int64VarP(&paramsLockListFor.PerPage, "per-page", "e", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListFor.Flags().StringVarP(&paramsLockListFor.Path, "path", "p", "", "Path to operate on.")
-	cmdListFor.Flags().BoolVarP(&listForIncludeChildren, "include-children", "i", listForIncludeChildren, "Include locks from children objects?")
+	cmdListFor.Flags().StringVar(&paramsLockListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListFor.Flags().Int64Var(&paramsLockListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVar(&paramsLockListFor.Path, "path", "", "Path to operate on.")
+	cmdListFor.Flags().BoolVar(&listForIncludeChildren, "include-children", listForIncludeChildren, "Include locks from children objects?")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
@@ -102,11 +102,11 @@ func LocksInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().StringVarP(&paramsLockCreate.Path, "path", "p", "", "Path")
-	cmdCreate.Flags().BoolVarP(&createAllowAccessByAnyUser, "allow-access-by-any-user", "a", createAllowAccessByAnyUser, "Allow lock to be updated by any user?")
-	cmdCreate.Flags().BoolVarP(&createExclusive, "exclusive", "e", createExclusive, "Is lock exclusive?")
-	cmdCreate.Flags().StringVarP(&paramsLockCreate.Recursive, "recursive", "r", "", "Does lock apply to subfolders?")
-	cmdCreate.Flags().Int64VarP(&paramsLockCreate.Timeout, "timeout", "t", 0, "Lock timeout length")
+	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
+	cmdCreate.Flags().BoolVar(&createAllowAccessByAnyUser, "allow-access-by-any-user", createAllowAccessByAnyUser, "Allow lock to be updated by any user?")
+	cmdCreate.Flags().BoolVar(&createExclusive, "exclusive", createExclusive, "Is lock exclusive?")
+	cmdCreate.Flags().StringVar(&paramsLockCreate.Recursive, "recursive", "", "Does lock apply to subfolders?")
+	cmdCreate.Flags().Int64Var(&paramsLockCreate.Timeout, "timeout", 0, "Lock timeout length")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -137,8 +137,8 @@ func LocksInit() {
 			}
 		},
 	}
-	cmdDelete.Flags().StringVarP(&paramsLockDelete.Path, "path", "p", "", "Path")
-	cmdDelete.Flags().StringVarP(&paramsLockDelete.Token, "token", "t", "", "Lock token")
+	cmdDelete.Flags().StringVar(&paramsLockDelete.Path, "path", "", "Path")
+	cmdDelete.Flags().StringVar(&paramsLockDelete.Token, "token", "", "Lock token")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")

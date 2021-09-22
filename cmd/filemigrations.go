@@ -45,7 +45,7 @@ func FileMigrationsInit() {
 			}
 		},
 	}
-	cmdFind.Flags().Int64VarP(&paramsFileMigrationFind.Id, "id", "i", 0, "File Migration ID.")
+	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")

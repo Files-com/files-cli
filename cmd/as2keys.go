@@ -50,9 +50,9 @@ func As2KeysInit() {
 			}
 		},
 	}
-	cmdList.Flags().Int64VarP(&paramsAs2KeyList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdList.Flags().StringVarP(&paramsAs2KeyList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().Int64VarP(&paramsAs2KeyList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsAs2KeyList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdList.Flags().StringVar(&paramsAs2KeyList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64Var(&paramsAs2KeyList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
@@ -80,7 +80,7 @@ func As2KeysInit() {
 			}
 		},
 	}
-	cmdFind.Flags().Int64VarP(&paramsAs2KeyFind.Id, "id", "i", 0, "As2 Key ID.")
+	cmdFind.Flags().Int64Var(&paramsAs2KeyFind.Id, "id", 0, "As2 Key ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -107,9 +107,9 @@ func As2KeysInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().Int64VarP(&paramsAs2KeyCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.As2PartnershipName, "as2-partnership-name", "a", "", "AS2 Partnership Name")
-	cmdCreate.Flags().StringVarP(&paramsAs2KeyCreate.PublicKey, "public-key", "p", "", "Actual contents of Public key.")
+	cmdCreate.Flags().Int64Var(&paramsAs2KeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().StringVar(&paramsAs2KeyCreate.As2PartnershipName, "as2-partnership-name", "", "AS2 Partnership Name")
+	cmdCreate.Flags().StringVar(&paramsAs2KeyCreate.PublicKey, "public-key", "", "Actual contents of Public key.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -136,8 +136,8 @@ func As2KeysInit() {
 			}
 		},
 	}
-	cmdUpdate.Flags().Int64VarP(&paramsAs2KeyUpdate.Id, "id", "i", 0, "As2 Key ID.")
-	cmdUpdate.Flags().StringVarP(&paramsAs2KeyUpdate.As2PartnershipName, "as2-partnership-name", "a", "", "AS2 Partnership Name")
+	cmdUpdate.Flags().Int64Var(&paramsAs2KeyUpdate.Id, "id", 0, "As2 Key ID.")
+	cmdUpdate.Flags().StringVar(&paramsAs2KeyUpdate.As2PartnershipName, "as2-partnership-name", "", "AS2 Partnership Name")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -164,7 +164,7 @@ func As2KeysInit() {
 			}
 		},
 	}
-	cmdDelete.Flags().Int64VarP(&paramsAs2KeyDelete.Id, "id", "i", 0, "As2 Key ID.")
+	cmdDelete.Flags().Int64Var(&paramsAs2KeyDelete.Id, "id", 0, "As2 Key ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")

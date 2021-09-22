@@ -52,9 +52,9 @@ func FormFieldSetsInit() {
 			}
 		},
 	}
-	cmdList.Flags().Int64VarP(&paramsFormFieldSetList.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdList.Flags().StringVarP(&paramsFormFieldSetList.Cursor, "cursor", "c", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
-	cmdList.Flags().Int64VarP(&paramsFormFieldSetList.PerPage, "per-page", "p", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsFormFieldSetList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdList.Flags().StringVar(&paramsFormFieldSetList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().Int64Var(&paramsFormFieldSetList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
@@ -82,7 +82,7 @@ func FormFieldSetsInit() {
 			}
 		},
 	}
-	cmdFind.Flags().Int64VarP(&paramsFormFieldSetFind.Id, "id", "i", 0, "Form Field Set ID.")
+	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -122,11 +122,12 @@ func FormFieldSetsInit() {
 			}
 		},
 	}
-	cmdCreate.Flags().Int64VarP(&paramsFormFieldSetCreate.UserId, "user-id", "u", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdCreate.Flags().StringVarP(&paramsFormFieldSetCreate.Title, "title", "t", "", "Title to be displayed")
-	cmdCreate.Flags().BoolVarP(&createSkipEmail, "skip-email", "e", createSkipEmail, "Skip validating form email")
-	cmdCreate.Flags().BoolVarP(&createSkipName, "skip-name", "n", createSkipName, "Skip validating form name")
-	cmdCreate.Flags().BoolVarP(&createSkipCompany, "skip-company", "c", createSkipCompany, "Skip validating company")
+	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().StringVar(&paramsFormFieldSetCreate.Title, "title", "", "Title to be displayed")
+	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "Skip validating form email")
+	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "Skip validating form name")
+	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "Skip validating company")
+	cmdCreate.Flags().StringSliceVar(&paramsFormFieldSetCreate.FormFields, "form-fields", []string{}, "")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -166,11 +167,12 @@ func FormFieldSetsInit() {
 			}
 		},
 	}
-	cmdUpdate.Flags().Int64VarP(&paramsFormFieldSetUpdate.Id, "id", "i", 0, "Form Field Set ID.")
-	cmdUpdate.Flags().StringVarP(&paramsFormFieldSetUpdate.Title, "title", "t", "", "Title to be displayed")
-	cmdUpdate.Flags().BoolVarP(&updateSkipEmail, "skip-email", "e", updateSkipEmail, "Skip validating form email")
-	cmdUpdate.Flags().BoolVarP(&updateSkipName, "skip-name", "n", updateSkipName, "Skip validating form name")
-	cmdUpdate.Flags().BoolVarP(&updateSkipCompany, "skip-company", "c", updateSkipCompany, "Skip validating company")
+	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
+	cmdUpdate.Flags().StringVar(&paramsFormFieldSetUpdate.Title, "title", "", "Title to be displayed")
+	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "Skip validating form email")
+	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "Skip validating form name")
+	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "Skip validating company")
+	cmdUpdate.Flags().StringSliceVar(&paramsFormFieldSetUpdate.FormFields, "form-fields", []string{}, "")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -197,7 +199,7 @@ func FormFieldSetsInit() {
 			}
 		},
 	}
-	cmdDelete.Flags().Int64VarP(&paramsFormFieldSetDelete.Id, "id", "i", 0, "Form Field Set ID.")
+	cmdDelete.Flags().Int64Var(&paramsFormFieldSetDelete.Id, "id", 0, "Form Field Set ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
 	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
