@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "${DIR}" || exit 1
+
+if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
+  echo "go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go"
+  go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go
+else
+  echo "go get -u github.com/Files-com/files-sdk-go/v2@latest"
+  go get -u github.com/Files-com/files-sdk-go/v2@latest
+fi
+
 go mod tidy > /dev/null 2>&1
 if [ -n "${DEVELOPMENT_BUILD}" ]
 then
@@ -12,18 +21,12 @@ fi
 
 go mod tidy
 
-if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
-  go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go
-else
-  go get -u github.com/Files-com/files-sdk-go/v2@latest
-fi
-
 version=$(ruby "../../next_version.rb" cli true)
 version=$(echo "$version" | sed '/^[[:space:]]*$/d')
 echo "$version" > "_VERSION"
 
 if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
-  if goreleaser build --rm-dist --snapshot ; then
+  if goreleaser build --rm-dist --snapshot; then
     true
   else
     curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.1.1679] - 2021/09/23
+### Fix
+- Address `upload` & `download` commands not displaying progress.
+
 ## [1.1.1677] - 2021/09/22
 ### Change
 - Remove all single letter flags for generated commands
@@ -22,7 +26,7 @@ Auto generated releases contain additions and fixes to models and method argumen
   - `ignore` flag ignore individual files or match by patterns. See https://git-scm.com/docs/gitignore#_pattern_format
 - When listing results and using default `--format table` results paginated, similar to `less`. To advance hit enter/return.
 
-### Fix q
+### Fix
 - `fields` flag
   - fields are now case-insensitive.
   - Invalid fields names return an error

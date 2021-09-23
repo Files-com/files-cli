@@ -100,11 +100,7 @@ func (t *Transfers) Reporter() status.EventsReporter {
 	events := make(status.EventsReporter)
 
 	events[status.Queued] = func(file status.File) {
-		t.CreateOrGetMainTotal(file.Job)
-	}
-
-	events[status.Errored] = func(file status.File) {
-		t.logError(file.Err, file)
+		t.UpdateMainTotal(file.Job)
 	}
 
 	for _, s := range status.Running {
@@ -114,10 +110,9 @@ func (t *Transfers) Reporter() status.EventsReporter {
 	}
 	for _, s := range append(status.Ended, status.Excluded...) {
 		events[s] = func(file status.File) {
-			t.CreateOrGetMainTotal(file.Job)
-			t.UpdateMainTotal(file.Job)
 			t.lastEndedFile = file
 			t.logOnEnd(file)
+			t.UpdateMainTotal(file.Job)
 		}
 	}
 
@@ -125,10 +120,9 @@ func (t *Transfers) Reporter() status.EventsReporter {
 }
 
 func (t *Transfers) AfterJob(ctx context.Context, job *status.Job, config files_sdk.Config) error {
+	t.SetupSignals(job)
 	job.Start()
 	job.Wait()
-
-	t.FinishMainTotal(job)
 
 	if !t.DisableProgressOutput {
 		t.Progress.Wait()
@@ -138,6 +132,36 @@ func (t *Transfers) AfterJob(ctx context.Context, job *status.Job, config files_
 	t.EndingStatusErrors()
 
 	return err
+}
+
+func (t *Transfers) SetupSignals(job *status.Job) {
+	if t.DisableProgressOutput {
+		return
+	}
+	subscriptions := job.SubscribeAll()
+	go func() {
+		t.rateUpdaterMutex.Do(func() {
+			t.createRateUpdaters(job)
+		})
+		for {
+			select {
+			case <-subscriptions.Started:
+				t.buildStatusTransfer(job)
+			case <-subscriptions.Scanning:
+				t.buildMainTotalScanning(job)
+			case <-subscriptions.EndScanning:
+				t.scanningBar.Abort(true)
+				t.buildMainTotalTransfer(job)
+			case <-subscriptions.Canceled:
+				t.FinishMainTotal(job)
+				break
+			case <-subscriptions.Finished:
+				t.UpdateMainTotal(job)
+				t.FinishMainTotal(job)
+				break
+			}
+		}
+	}()
 }
 
 func (t *Transfers) logOnEnd(status status.File) {
@@ -226,36 +250,6 @@ func (t *Transfers) logError(err error, status status.File) {
 
 var SpinnerStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"}
 
-func (t *Transfers) CreateOrGetMainTotal(job *status.Job) {
-	if t.DisableProgressOutput {
-		return
-	}
-
-	t.rateUpdaterMutex.Do(func() {
-		t.createRateUpdaters(job)
-	})
-
-	if job.Scanning {
-		t.scanningBarInitOnce.Do(func() {
-			t.buildMainTotalScanning(job)
-		})
-	}
-
-	if t.scanningBar != nil && !job.Scanning {
-		t.scanningBar.Abort(true)
-	}
-
-	if !job.Scanning {
-		t.mainBarInitOnce.Do(func() {
-			t.buildMainTotalTransfer(job)
-		})
-	}
-
-	t.fileStatusBarInitOnce.Do(func() {
-		t.buildStatusTransfer(job)
-	})
-}
-
 func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 	t.mainBar = t.Progress.AddBar(job.TotalBytes(),
 		mpb.PrependDecorators(
@@ -278,7 +272,7 @@ func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 				if value.String() == "0s" && !job.Sub(status.Valid...).All(status.Ended...) {
 					return " ETA ~"
 				}
-				if job.Finished() {
+				if job.Finished.Called {
 					return fmt.Sprintf(" Elapsed %v", job.ElapsedTime().Round(time.Second).String())
 				}
 
@@ -299,7 +293,7 @@ func (t *Transfers) buildMainTotalScanning(job *status.Job) {
 		mpb.NewBarFiller(mpb.SpinnerStyle(SpinnerStyle...)),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf("%v (Scanning)", directionFmt(job.Direction, t.SyncFlag))
+				return fmt.Sprintf("%v", directionFmt(job.Direction, t.SyncFlag))
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
@@ -312,7 +306,7 @@ func (t *Transfers) buildMainTotalScanning(job *status.Job) {
 		),
 		mpb.AppendDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				if job.Scanning {
+				if !job.EndScanning.Called {
 					return " ~ % ETA ~"
 				}
 				return decor.Percentage(decor.WCSyncSpace).Decor(d)
@@ -329,10 +323,6 @@ func (t *Transfers) buildStatusTransfer(job *status.Job) {
 		int64(job.Count()),
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, reqWidth int, st decor.Statistics) {
-				if t.mainBar != nil && t.mainBar.Completed() {
-					io.WriteString(w, "")
-					return
-				}
 				file := t.lastEndedFile
 				if file.Status.Is(status.Complete, status.Queued) {
 					io.WriteString(w, fmt.Sprintf("%v", file.DisplayName))
