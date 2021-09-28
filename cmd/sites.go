@@ -74,6 +74,7 @@ func SitesInit() {
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate string
 	var formatUpdate string
+	updateDomainHstsHeader := false
 	updateAllowBundleNames := false
 	updateOverageNotify := false
 	updateWelcomeEmailEnabled := false
@@ -124,6 +125,7 @@ func SitesInit() {
 	updateIcon48Delete := false
 	updateIcon128Delete := false
 	updateLogoDelete := false
+	updateBundleWatermarkAttachmentDelete := false
 	updateDisable2faWithDelay := false
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
@@ -134,6 +136,9 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
+			if updateDomainHstsHeader {
+				paramsSiteUpdate.DomainHstsHeader = flib.Bool(true)
+			}
 			if updateAllowBundleNames {
 				paramsSiteUpdate.AllowBundleNames = flib.Bool(true)
 			}
@@ -284,6 +289,9 @@ func SitesInit() {
 			if updateLogoDelete {
 				paramsSiteUpdate.LogoDelete = flib.Bool(true)
 			}
+			if updateBundleWatermarkAttachmentDelete {
+				paramsSiteUpdate.BundleWatermarkAttachmentDelete = flib.Bool(true)
+			}
 			if updateDisable2faWithDelay {
 				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(true)
 			}
@@ -302,6 +310,7 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Subdomain, "subdomain", "", "Site subdomain")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Domain, "domain", "", "Custom domain")
+	cmdUpdate.Flags().BoolVar(&updateDomainHstsHeader, "domain-hsts-header", updateDomainHstsHeader, "Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Email, "email", "", "Main email for this site")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.ReplyToEmail, "reply-to-email", "", "Reply-to email for this site")
 	cmdUpdate.Flags().BoolVar(&updateAllowBundleNames, "allow-bundle-names", updateAllowBundleNames, "Are manual Bundle names allowed?")
@@ -401,6 +410,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateIcon48Delete, "icon48-delete", updateIcon48Delete, "If true, will delete the file stored in icon48")
 	cmdUpdate.Flags().BoolVar(&updateIcon128Delete, "icon128-delete", updateIcon128Delete, "If true, will delete the file stored in icon128")
 	cmdUpdate.Flags().BoolVar(&updateLogoDelete, "logo-delete", updateLogoDelete, "If true, will delete the file stored in logo")
+	cmdUpdate.Flags().BoolVar(&updateBundleWatermarkAttachmentDelete, "bundle-watermark-attachment-delete", updateBundleWatermarkAttachmentDelete, "If true, will delete the file stored in bundle_watermark_attachment")
 	cmdUpdate.Flags().BoolVar(&updateDisable2faWithDelay, "disable-2fa-with-delay", updateDisable2faWithDelay, "If set to true, we will begin the process of disabling 2FA on this site.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
