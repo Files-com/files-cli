@@ -311,6 +311,7 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Subdomain, "subdomain", "", "Site subdomain")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Domain, "domain", "", "Custom domain")
 	cmdUpdate.Flags().BoolVar(&updateDomainHstsHeader, "domain-hsts-header", updateDomainHstsHeader, "Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DomainLetsencryptChain, "domain-letsencrypt-chain", "", "Letsencrypt chain to use when registering SSL Certificate for domain.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Email, "email", "", "Main email for this site")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.ReplyToEmail, "reply-to-email", "", "Reply-to email for this site")
 	cmdUpdate.Flags().BoolVar(&updateAllowBundleNames, "allow-bundle-names", updateAllowBundleNames, "Are manual Bundle names allowed?")
