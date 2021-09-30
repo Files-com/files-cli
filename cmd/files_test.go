@@ -11,8 +11,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Files-com/files-sdk-go/v2/file/manager"
-
 	clib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/file"
@@ -64,7 +62,12 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 
 	_, err = folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	assert.NoError(err)
-	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileBeginUploadParams{Path: filepath.Join("test-dir-files-delete-r", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
+	params := file.UploadIOParams{
+		Reader: strings.NewReader("testing 1"),
+		Size:   int64(9),
+		Path:   filepath.Join("test-dir-files-delete-r", "1.text"),
+	}
+	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 	FilesInit()
 	str := clib.CaptureOutput(func() {
@@ -88,7 +91,12 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	fileClient := file.Client{Config: *config}
 
 	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
-	_, err = fileClient.Upload(context.Background(), strings.NewReader("testing 1"), int64(9), files_sdk.FileBeginUploadParams{Path: filepath.Join("test-dir-files-delete", "1.text")}, func(i int64) {}, manager.Default().FilesManager)
+	params := file.UploadIOParams{
+		Reader: strings.NewReader("testing 1"),
+		Size:   int64(9),
+		Path:   filepath.Join("test-dir-files-delete", "1.text"),
+	}
+	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 	FilesInit()
 
