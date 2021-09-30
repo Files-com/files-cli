@@ -38,7 +38,7 @@ func UploadCmd() *cobra.Command {
 					Manager:        transfer.Manager,
 					Ignore:         *transfer.Ignore,
 					EventsReporter: transfer.Reporter(),
-					RetryPolicy:    file.RetryErroredIfSomeCompleted,
+					RetryPolicy:    file.RetryUnfinished,
 				},
 			)
 

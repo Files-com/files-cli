@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.1.1691] - 2021/09/30
+### Add
+- An upload that fails in the middle will be retried at the point it failed. If there are multiple files the failed upload will be retried after all other files have finished.
+
 ## [1.1.1679] - 2021/09/23
 ### Fix
 - Address `upload` & `download` commands not displaying progress.
