@@ -7,7 +7,7 @@ if [ -n "${DEVELOPMENT_BUILD}" ] || [ -n "${SNAPSHOT}" ]; then
   go mod edit -replace github.com/Files-com/files-sdk-go/v2=../go
 else
   echo "go get -u github.com/Files-com/files-sdk-go/v2@master"
-  go get -u github.com/Files-com/files-sdk-go/v2@master
+  GONOPROXY=github.com/Files-com go get -u github.com/Files-com/files-sdk-go/v2@master
 fi
 
 go mod tidy > /dev/null 2>&1
