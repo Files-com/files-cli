@@ -59,4 +59,31 @@ func AutomationRunsInit() {
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	AutomationRuns.AddCommand(cmdList)
+	var fieldsFind string
+	var formatFind string
+	paramsAutomationRunFind := files_sdk.AutomationRunFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use: "find",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := automation_run.Client{Config: *config}
+
+			result, err := client.Find(ctx, paramsAutomationRunFind)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+
+			err = lib.Format(result, formatFind, fieldsFind)
+			if err != nil {
+				lib.ClientError(ctx, err)
+			}
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")
+
+	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	AutomationRuns.AddCommand(cmdFind)
 }
