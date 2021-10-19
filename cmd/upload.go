@@ -31,18 +31,17 @@ func UploadCmd() *cobra.Command {
 			client := file.Client{Config: *config}
 			job := client.Uploader(
 				ctx,
-				file.UploadParams{
-					LocalPath:      sourcePath,
-					RemotePath:     remotePath,
-					Sync:           transfer.SyncFlag,
-					Manager:        transfer.Manager,
-					Ignore:         *transfer.Ignore,
-					EventsReporter: transfer.Reporter(),
-					RetryPolicy:    file.RetryUnfinished,
+				file.UploaderParams{
+					LocalPath:   sourcePath,
+					RemotePath:  remotePath,
+					Sync:        transfer.SyncFlag,
+					Manager:     transfer.Manager,
+					Ignore:      *transfer.Ignore,
+					RetryPolicy: file.RetryUnfinished,
 				},
 			)
 
-			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, *config))
+			lib.ClientError(cmd.Context(), transfer.ProcessJob(cmd.Context(), job, *config))
 		}}
 	Upload.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
 	Upload.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only upload files with a more recent modified date")

@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -24,9 +27,9 @@ func TestUploadCmd(t *testing.T) {
 		assert.Equal("", out)
 	})
 	assert.ElementsMatch([]string{
-		"upload_test.go complete size 0 B",
-		"",
-	}, strings.Split(str, "\n"))
+		"upload sync: false",
+		"upload_test.go complete size 1.9 kB",
+	}, strings.Split(str, "\n")[1:3])
 }
 
 func TestUploadCmdCloudLog(t *testing.T) {
@@ -37,17 +40,26 @@ func TestUploadCmdCloudLog(t *testing.T) {
 	}
 	defer r.Stop()
 
+	tmpDir, err := ioutil.TempDir(os.TempDir(), "upload_test")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(tmpDir)
+	file, err := os.Create(filepath.Join(tmpDir, "upload_test.text"))
+	assert.NoError(err)
+	file.Write([]byte("hello how are you doing?"))
+	file.Close()
 	upload := UploadCmd()
 	str := clib.CaptureOutput(func() {
-		out, err := callCmd(upload, config, []string{"upload_test.go", "-d", "-l"})
+		out, err := callCmd(upload, config, []string{file.Name(), "-d", "-l"})
 		assert.NoError(err)
 		assert.Equal("", out)
 	})
 	assert.ElementsMatch([]string{
-		"upload_test.go complete size 0 B",
-		"External Event Created: 2021-09-20 18:55:58 -0400 -0400",
-		"",
-	}, strings.Split(str, "\n"))
+		"upload sync: false",
+		"upload_test.text complete size 24 B",
+		"total downloaded: 24 B",
+	}, strings.Split(str, "\n")[1:4])
 }
 
 func TestUploadCmdBadPath(t *testing.T) {
@@ -67,8 +79,5 @@ func TestUploadCmdBadPath(t *testing.T) {
 	if err != nil {
 		log.Println(err)
 	}
-	assert.ElementsMatch([]string{
-		"bad-path errored size 0 B",
-		"",
-	}, strings.Split(str, "\n"))
+	assert.Contains(strings.Split(str, "\n")[2], "bad-path errored size 0 B")
 }

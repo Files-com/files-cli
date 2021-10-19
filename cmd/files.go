@@ -300,6 +300,7 @@ func FilesInit() {
 	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Parts, "parts", 0, "How many parts to fetch?")
 	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Ref, "ref", "", "")
 	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Restart, "restart", 0, "File byte offset to restart from.")
+	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Size, "size", 0, "Total bytes of file being uploaded (include bytes being retained if appending/restarting).")
 	cmdBeginUpload.Flags().BoolVar(&beginUploadWithRename, "with-rename", beginUploadWithRename, "Allow file rename instead of overwrite?")
 
 	cmdBeginUpload.Flags().StringVarP(&fieldsBeginUpload, "fields", "", "", "comma separated list of field names")

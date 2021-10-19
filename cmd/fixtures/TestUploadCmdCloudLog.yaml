@@ -5,19 +5,23 @@ interactions:
     body: '{"mkdir_parents":"true"}'
     form: {}
     headers:
+      Connection:
+      - close
       Content-Type:
       - application/json
-    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload_test.go
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/upload_test.text
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-09-20T23:10:58Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-52610685","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/aae9cc9d-e18e-46a6-9417-3be6d5f40b6e?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210920%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20210920T225558Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=SJbeifyTO_yVlpRm4dZuP.MyMdEQJBy6oU9mcCHdVMlKu7lwIvr5M0ziFb.HqjfvGB70jISF9apK6lfr8FK5off1CsaBa5jomVxuWFYfGIYE2VEbLGPZQmnB_Abto7S_\u0026X-Amz-Signature=543666d732a6f43321958e5370e325774156e69d8c9a7857c18927cda9c2ea4e"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2021-10-18T17:40:14Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-238390752","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/3c636a97-dd87-4ed3-8e8b-42817f3e6951?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20211018%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20211018T172514Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=MLnHSiLivJmqqDIkFfHg1QKnzaQZyOuXVtTrylvNUBcTP.busdSSN3XIkJxsIRppGuOCLWJ2tNBCl1IhX2h8LUkecKo8jPtqpmMCSlYZKnnSNKvD_sddQPKyHmSDaful\u0026X-Amz-Signature=83349b419b4330e1046c66ec50f154cedacd7f96ac4068cb6b7e97c5d893b793"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
       - application/json
       Date:
-      - Mon, 20 Sep 2021 22:55:58 GMT
+      - Mon, 18 Oct 2021 17:25:14 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -25,43 +29,19 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 4b396ff3-91df-4522-ba64-a48cf99c8aa9
+      - 28c19d77-3b23-4ed8-af50-8455653499e6
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: "package cmd\n\nimport (\n\t\"log\"\n\t\"strings\"\n\t\"testing\"\n\n\tclib
-      \"github.com/Files-com/files-cli/lib\"\n\t\"github.com/stretchr/testify/assert\"\n)\n\nfunc
-      TestUploadCmd(t *testing.T) {\n\tassert := assert.New(t)\n\tr, config, err :=
-      CreateConfig(\"TestUploadCmd\")\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer
-      r.Stop()\n\n\tupload := UploadCmd()\n\tstr := clib.CaptureOutput(func() {\n\t\tout,
-      err := callCmd(upload, config, []string{\"upload_test.go\", \"-d\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\",
-      out)\n\t})\n\tassert.ElementsMatch([]string{\n\t\t\"upload_test.go complete
-      size 0 B\",\n\t\t\"\",\n\t}, strings.Split(str, \"\\n\"))\n}\n\nfunc TestUploadCmdCloudLog(t
-      *testing.T) {\n\tassert := assert.New(t)\n\tr, config, err := CreateConfig(\"TestUploadCmdCloudLog\")\n\tif
-      err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer r.Stop()\n\n\tupload := UploadCmd()\n\tstr
-      := clib.CaptureOutput(func() {\n\t\tout, err := callCmd(upload, config, []string{\"upload_test.go\",
-      \"-d\", \"-l\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\", out)\n\t})\n\tassert.ElementsMatch([]string{\n\t\t\"upload_test.go
-      complete size 0 B\",\n\t\t\"External Event Created: 2021-09-20 18:25:58 -0400
-      -0400\",\n\t\t\"\",\n\t}, strings.Split(str, \"\\n\"))\n}\n\nfunc TestUploadCmdSync(t
-      *testing.T) {\n\tassert := assert.New(t)\n\tr, config, err := CreateConfig(\"TestUploadCmdSync\")\n\tif
-      err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer r.Stop()\n\n\tupload := UploadCmd()\n\tclib.CaptureOutput(func()
-      {\n\t\tout, err := callCmd(upload, config, []string{\"upload.go\", \"-d\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\",
-      out)\n\t})\n\tstr := clib.CaptureOutput(func() {\n\t\tout, err := callCmd(upload,
-      config, []string{\"upload.go\", \"-d\", \"-s\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\",
-      out)\n\t})\n\tassert.ElementsMatch([]string{\n\t\t\"upload.go skipped size 0
-      B\",\n\t\t\"\",\n\t}, strings.Split(str, \"\\n\"))\n}\n\nfunc TestUploadCmdBadPath(t
-      *testing.T) {\n\tassert := assert.New(t)\n\tr, config, err := CreateConfig(\"TestUploadCmdBadPath\")\n\tif
-      err != nil {\n\t\tt.Fatal(err)\n\t}\n\tdefer r.Stop()\n\n\tupload := UploadCmd()\n\tstr
-      := clib.CaptureOutput(func() {\n\t\tout, err := callCmd(upload, config, []string{\"bad-path\",
-      \"-d\"})\n\t\tassert.NoError(err)\n\t\tassert.Equal(\"\", out)\n\t})\n\tif err
-      != nil {\n\t\tlog.Println(err)\n\t}\n\tassert.ElementsMatch([]string{\n\t\t\"bad-path
-      errored size 0 B\",\n\t\t\"\",\n\t}, strings.Split(str, \"\\n\"))\n}\n"
+    body: hello how are you doing?
     form: {}
     headers:
+      Connection:
+      - close
       Content-Length:
-      - "2211"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/aae9cc9d-e18e-46a6-9417-3be6d5f40b6e?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20210920%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210920T225558Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=SJbeifyTO_yVlpRm4dZuP.MyMdEQJBy6oU9mcCHdVMlKu7lwIvr5M0ziFb.HqjfvGB70jISF9apK6lfr8FK5off1CsaBa5jomVxuWFYfGIYE2VEbLGPZQmnB_Abto7S_&X-Amz-Signature=543666d732a6f43321958e5370e325774156e69d8c9a7857c18927cda9c2ea4e
+      - "24"
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/3c636a97-dd87-4ed3-8e8b-42817f3e6951?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20211018%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20211018T172514Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=MLnHSiLivJmqqDIkFfHg1QKnzaQZyOuXVtTrylvNUBcTP.busdSSN3XIkJxsIRppGuOCLWJ2tNBCl1IhX2h8LUkecKo8jPtqpmMCSlYZKnnSNKvD_sddQPKyHmSDaful&X-Amz-Signature=83349b419b4330e1046c66ec50f154cedacd7f96ac4068cb6b7e97c5d893b793
     method: PUT
   response:
     body: ""
@@ -69,70 +49,43 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Mon, 20 Sep 2021 22:55:59 GMT
+      - Mon, 18 Oct 2021 17:25:15 GMT
       Etag:
-      - '"21c1d8a89e939f12bea9a97a31537cbb"'
+      - '"5045cf51883b32c692d1b38d57993daf"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - bBm1Hu6QyeqSoG4qinmiewmTjPO1FYNS1DYIc0/Kkmw+Y14sV64BNTsSCf2Wzc+sR6ffdhrIFkA=
+      - 3dtJOvUhNcEMabjP5p8h7xJeGZUB2KCs8d5HezIg3MSuDvzcuKHP9Va79gBGExFWqfNqQ4Pn/+M=
       X-Amz-Request-Id:
-      - CJDV4B79F5Q68Y3E
+      - AMDD671DJEPR2BWB
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags[0][etag]":"\"21c1d8a89e939f12bea9a97a31537cbb\"","etags[0][part]":"1","provided_mtime":"2021-09-20T15:55:58-07:00","ref":"put-52610685","size":"2211"}'
+    body: '{"action":"end","etags[0][etag]":"5045cf51883b32c692d1b38d57993daf","etags[0][part]":"1","provided_mtime":"2021-10-18T10:25:14-07:00","ref":"put-238390752","size":"24"}'
     form: {}
     headers:
+      Connection:
+      - close
       Content-Type:
       - application/json
-    url: https://app.files.com/api/rest/v1/files/upload_test.go
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/files/upload_test.text
     method: POST
   response:
-    body: '{"path":"upload_test.go","display_name":"upload_test.go","type":"file","size":2211,"mtime":"2021-09-20T22:55:58Z","provided_mtime":"2021-09-20T22:55:58Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd"}'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 20 Sep 2021 22:55:58 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - nginx
-      X-Request-Id:
-      - bdcb820d-5604-45db-b2b9-7eeaa6dcad83
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"body":"Starting at 2021-09-20 15:55:58.228836 -0700 PDT m=+3.393488968\nupload
-      sync: false\nupload_test.go complete size 2.2 kB","status":"success"}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://app.files.com/api/rest/v1/external_events
-    method: POST
-  response:
-    body: '{"id":28105600,"event_type":"client_log","status":"success","body":"Starting
-      at 2021-09-20 15:55:58.228836 -0700 PDT m=+3.393488968\nupload sync: false\nupload_test.go
-      complete size 2.2 kB","created_at":"2021-09-20T18:55:58-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
+    body: '{"path":"upload_test.text","display_name":"upload_test.text","type":"file","size":24,"mtime":"2021-10-18T17:25:15Z","provided_mtime":"2021-10-18T17:25:14Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"rwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "353"
+      - "260"
       Content-Type:
       - application/json
       Date:
-      - Mon, 20 Sep 2021 22:55:58 GMT
+      - Mon, 18 Oct 2021 17:25:15 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
@@ -140,7 +93,46 @@ interactions:
       Server:
       - nginx
       X-Request-Id:
-      - 23a17e5e-e692-4462-a66c-808c01f06b4c
+      - 08157ea4-e621-486a-9668-67209dd9bc85
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{"body":"Starting at 2021-10-18 10:25:13.525016 -0700 PDT m=+0.003448335\nupload
+      sync: false\nupload_test.text complete size 24 B\ntotal downloaded: 24 B\nFinished
+      at 2021-10-18 10:25:15.174916 -0700 PDT m=+1.653345505","status":"success"}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/external_events
+    method: POST
+  response:
+    body: '{"id":34360965,"event_type":"client_log","status":"success","body":"Starting
+      at 2021-10-18 10:25:13.525016 -0700 PDT m=+0.003448335\nupload sync: false\nupload_test.text
+      complete size 24 B\ntotal downloaded: 24 B\nFinished at 2021-10-18 10:25:15.174916
+      -0700 PDT m=+1.653345505","created_at":"2021-10-18T13:25:15-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "442"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 18 Oct 2021 17:25:15 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 6cb37d75-670d-400c-8091-cf3ef79d9403
     status: 201 Created
     code: 201
     duration: ""

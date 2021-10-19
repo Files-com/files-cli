@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.2.0] - 2021/10/19
+### Add
+- `sync { push | pull } [flags]`
+  - Post sync actions:
+    - `--local-path`, `--remote-path`
+    - `--move-source {path}`
+    - `--delete-source`
+
+### Fix
+- `sync` compares file size instead of modified time to match the server sync.
+- Fixes uploading errors to some remote servers for files over 1GB.
+
 ## [1.1.1691] - 2021/09/30
 ### Add
 - An upload that fails in the middle will be retried at the point it failed. If there are multiple files the failed upload will be retried after all other files have finished.

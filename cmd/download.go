@@ -31,17 +31,16 @@ func DownloadCmd() *cobra.Command {
 			client := file.Client{Config: *config}
 			job := client.Downloader(
 				cmd.Context(),
-				file.DownloadFolderParams{
-					RemotePath:     remotePath,
-					LocalPath:      localPath,
-					Sync:           transfer.SyncFlag,
-					Manager:        transfer.Manager,
-					EventsReporter: transfer.Reporter(),
-					RetryPolicy:    file.RetryErroredIfSomeCompleted,
+				file.DownloaderParams{
+					RemotePath:  remotePath,
+					LocalPath:   localPath,
+					Sync:        transfer.SyncFlag,
+					Manager:     transfer.Manager,
+					RetryPolicy: file.RetryErroredIfSomeCompleted,
 				},
 			)
 
-			lib.ClientError(cmd.Context(), transfer.AfterJob(cmd.Context(), job, *config))
+			lib.ClientError(cmd.Context(), transfer.ProcessJob(cmd.Context(), job, *config))
 		},
 	}
 

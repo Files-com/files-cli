@@ -10,7 +10,7 @@ go get -d -v
 go get golang.org/x/tools/cmd/goimports
 goimports -w .
 gofmt -s -w .
-go test ./... -race
+go test ./...
 ERROR_CODE=$?
 
 go mod edit -dropreplace github.com/Files-com/files-sdk-go/v2
