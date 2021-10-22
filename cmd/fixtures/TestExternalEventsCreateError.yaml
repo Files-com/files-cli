@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"body":"this is a error test","status":"error"}'
+    body: '{"body":"this is a error test","status":"failure"}'
     form: {}
     headers:
       Content-Type:
@@ -10,7 +10,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/external_events
     method: POST
   response:
-    body: '{"id":28105599,"event_type":"client_log","status":"error","body":"this
+    body: '{"id":28105599,"event_type":"client_log","status":"failure","body":"this
       is a error test","created_at":"2021-09-20T18:55:55-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
     headers:
       Cache-Control:
