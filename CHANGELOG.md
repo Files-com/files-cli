@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.2.3] - 2021/10/25
+### Fix
+- `upload` or `sync push` could cause a panic error when uploading to a remote server.
+
 ## [1.2.2] - 2021/10/22
 ### Improvement
 - 3x performance when uploading to remote mounts.
