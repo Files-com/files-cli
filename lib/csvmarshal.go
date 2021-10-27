@@ -45,10 +45,13 @@ func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bo
 	return nil
 }
 
-func CSVMarshalIter(it Iter, fields string) error {
+func CSVMarshalIter(it Iter, fields string, skip FilterIter) error {
 	w := csv.NewWriter(os.Stdout)
 	writeHeader := true
 	for it.Next() {
+		if skip != nil && !skip(it.Current()) {
+			continue
+		}
 		csvMarshal(w, it.Current(), fields, writeHeader)
 		writeHeader = false
 	}

@@ -178,12 +178,14 @@ func HistoriesInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatList, fieldsList)
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(it, formatList, fieldsList, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
 	lib.TimeVar(cmdList.Flags(), &paramsHistoryList.StartAt, "start-at")
 	lib.TimeVar(cmdList.Flags(), &paramsHistoryList.EndAt, "end-at")
 	cmdList.Flags().StringVar(&paramsHistoryList.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")

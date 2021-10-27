@@ -88,11 +88,26 @@ func TestCSVMarshalIter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := MockIter{People: []Person{p1, p2}}
 	output := CaptureOutput(func() {
-		CSVMarshalIter(&it, "")
+		CSVMarshalIter(&it, "", nil)
 	})
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
 Tom,Smith,99
+`, output)
+}
+func TestCSVMarshalIter_FilterIter(t *testing.T) {
+	a := assert.New(t)
+	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
+	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
+	it := MockIter{People: []Person{p1, p2}}
+	output := CaptureOutput(func() {
+		CSVMarshalIter(&it, "", func(i interface{}) bool {
+			return i.(Person).FirstName == "Dustin"
+		})
+	})
+
+	a.Equal(`first_name,last_name,age
+Dustin,Zeisler,100
 `, output)
 }

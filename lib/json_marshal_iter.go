@@ -5,16 +5,12 @@ import (
 	"fmt"
 )
 
-type Iter interface {
-	Next() bool
-	Current() interface{}
-	Err() error
-	EOFPage() bool
-}
-
-func JsonMarshalIter(it Iter, fields string) error {
+func JsonMarshalIter(it Iter, fields string, filter FilterIter) error {
 	firstObject := true
 	for it.Next() {
+		if filter != nil && !filter(it.Current()) {
+			continue
+		}
 		recordMap, _, err := OnlyFields(fields, it.Current())
 		if err != nil {
 			return err

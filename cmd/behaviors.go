@@ -43,12 +43,14 @@ func BehaviorsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatList, fieldsList)
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(it, formatList, fieldsList, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
 	cmdList.Flags().StringVar(&paramsBehaviorList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64Var(&paramsBehaviorList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsBehaviorList.Behavior, "behavior", "", "If set, only shows folder behaviors matching this behavior type.")
@@ -108,12 +110,14 @@ func BehaviorsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatListFor, fieldsListFor)
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Path, "path", "", "Path to operate on.")

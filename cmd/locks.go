@@ -52,12 +52,14 @@ func LocksInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatListFor, fieldsListFor)
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
 	cmdListFor.Flags().StringVar(&paramsLockListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdListFor.Flags().Int64Var(&paramsLockListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsLockListFor.Path, "path", "", "Path to operate on.")

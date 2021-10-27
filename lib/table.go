@@ -61,29 +61,34 @@ func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader
 	return nil
 }
 
-func TableMarshalIter(style string, it Iter, fields string, out io.Writer, in io.Reader) error {
+func TableMarshalIter(style string, it Iter, fields string, out io.Writer, in io.Reader, filter FilterIter) error {
 	t := tableWriter(style, out)
 	writeHeader := true
 	onPageCount := 0
 	for it.Next() {
-		onPageCount += 1
-		err := tableMarshal(t, it.Current(), fields, writeHeader)
-		if err != nil {
-			return err
+		if filter == nil || filter(it.Current()) {
+			err := tableMarshal(t, it.Current(), fields, writeHeader)
+			if err != nil {
+				return err
+			}
+			onPageCount += 1
 		}
 		writeHeader = false
 		if it.EOFPage() {
 			t.Render()
 			t = tableWriter(style, out)
 			writeHeader = true
-			onPageCount = 0
-			fmt.Fprintf(out, ":")
-			input := ""
-			fmt.Fscanln(in, &input)
-			switch input {
-			case "q":
-				return nil
+			if onPageCount > 0 {
+				fmt.Fprintf(out, ":")
+				input := ""
+				fmt.Fscanln(in, &input)
+				switch input {
+				case "q":
+					return nil
+				}
 			}
+
+			onPageCount = 0
 		}
 	}
 	if it.Err() != nil {

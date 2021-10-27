@@ -32,6 +32,8 @@ func FoldersInit() {
 	listForWithPreviews := false
 	listForWithPriorityColor := false
 
+	var listOnlyFolders bool
+
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
 		Short: "list-for",
@@ -60,12 +62,25 @@ func FoldersInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatListFor, fieldsListFor)
+			var listFilter lib.FilterIter
+			if listOnlyFolders {
+				listFilter = func(i interface{}) bool {
+					f, ok := i.(files_sdk.Folder)
+					if ok && f.Type == "directory" {
+						return true
+					}
+					return false
+				}
+			}
+			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
+	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
+
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor header.")
 	cmdListFor.Flags().Int64Var(&paramsFolderListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Path, "path", "", "Path to operate on.")

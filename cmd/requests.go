@@ -49,12 +49,14 @@ func RequestsInit() {
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
-			err = lib.FormatIter(it, formatList, fieldsList)
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(it, formatList, fieldsList, listFilter)
 			if err != nil {
 				lib.ClientError(ctx, err)
 			}
 		},
 	}
+
 	cmdList.Flags().StringVar(&paramsRequestList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
 	cmdList.Flags().Int64Var(&paramsRequestList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().BoolVar(&listMine, "mine", listMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
