@@ -176,6 +176,7 @@ func BundlesInit() {
 	updatePreviewOnly := false
 	updateRequireRegistration := false
 	updateRequireShareRecipient := false
+	updateWatermarkAttachmentDelete := false
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -193,6 +194,9 @@ func BundlesInit() {
 			}
 			if updateRequireShareRecipient {
 				paramsBundleUpdate.RequireShareRecipient = flib.Bool(true)
+			}
+			if updateWatermarkAttachmentDelete {
+				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(true)
 			}
 
 			result, err := client.Update(ctx, paramsBundleUpdate)
@@ -220,6 +224,7 @@ func BundlesInit() {
 	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "Restrict users to previewing files only?")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
+	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")

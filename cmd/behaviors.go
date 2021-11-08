@@ -4,10 +4,12 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/behavior"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 var (
@@ -195,6 +197,7 @@ func BehaviorsInit() {
 	Behaviors.AddCommand(cmdWebhookTest)
 	var fieldsUpdate string
 	var formatUpdate string
+	updateAttachmentDelete := false
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -203,6 +206,10 @@ func BehaviorsInit() {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
+
+			if updateAttachmentDelete {
+				paramsBehaviorUpdate.AttachmentDelete = flib.Bool(true)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorUpdate.Path = args[0]
@@ -225,6 +232,7 @@ func BehaviorsInit() {
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Behavior, "behavior", "", "Behavior type.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Path, "path", "", "Folder behaviors path.")
+	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
