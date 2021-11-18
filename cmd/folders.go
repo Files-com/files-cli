@@ -81,7 +81,7 @@ func FoldersInit() {
 
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
 
-	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor header.")
+	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsFolderListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Path, "path", "", "Path to operate on.")
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Filter, "filter", "", "If specified, will filter folders/files list by this string.  Wildcards of `*` and `?` are acceptable here.")

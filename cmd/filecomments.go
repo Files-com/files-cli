@@ -55,7 +55,7 @@ func FileCommentsInit() {
 		},
 	}
 
-	cmdListFor.Flags().StringVar(&paramsFileCommentListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdListFor.Flags().StringVar(&paramsFileCommentListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsFileCommentListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsFileCommentListFor.Path, "path", "", "Path to operate on.")
 

@@ -57,7 +57,7 @@ func RequestsInit() {
 		},
 	}
 
-	cmdList.Flags().StringVar(&paramsRequestList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVar(&paramsRequestList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdList.Flags().Int64Var(&paramsRequestList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().BoolVar(&listMine, "mine", listMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
 	cmdList.Flags().StringVar(&paramsRequestList.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
@@ -97,7 +97,7 @@ func RequestsInit() {
 			}
 		},
 	}
-	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetFolder.Flags().Int64Var(&paramsRequestGetFolder.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdGetFolder.Flags().BoolVar(&getFolderMine, "mine", getFolderMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")

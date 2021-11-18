@@ -58,7 +58,7 @@ func NotificationsInit() {
 	}
 
 	cmdList.Flags().Int64Var(&paramsNotificationList.UserId, "user-id", 0, "DEPRECATED: Show notifications for this User ID. Use `filter[user_id]` instead.")
-	cmdList.Flags().StringVar(&paramsNotificationList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVar(&paramsNotificationList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdList.Flags().Int64Var(&paramsNotificationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsNotificationList.GroupId, "group-id", 0, "DEPRECATED: Show notifications for this Group ID. Use `filter[group_id]` instead.")
 	cmdList.Flags().StringVar(&paramsNotificationList.Path, "path", "", "Show notifications for this Path.")

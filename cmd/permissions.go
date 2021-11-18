@@ -57,7 +57,7 @@ func PermissionsInit() {
 		},
 	}
 
-	cmdList.Flags().StringVar(&paramsPermissionList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header.")
+	cmdList.Flags().StringVar(&paramsPermissionList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdList.Flags().Int64Var(&paramsPermissionList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsPermissionList.Path, "path", "", "DEPRECATED: Permission path.  If provided, will scope permissions to this path. Use `filter[path]` instead.")
 	cmdList.Flags().StringVar(&paramsPermissionList.GroupId, "group-id", "", "DEPRECATED: Group ID.  If provided, will scope permissions to this group. Use `filter[group_id]` instead.`")
