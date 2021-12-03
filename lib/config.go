@@ -14,6 +14,7 @@ import (
 	"github.com/Files-com/files-cli/lib/auth"
 
 	"fmt"
+	"io"
 	"os"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -168,7 +169,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error) (files_sdk.SessionCreateParams, error) {
+func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, out io.Writer) (files_sdk.SessionCreateParams, error) {
 	responseError, ok := err.(files_sdk.ResponseError)
 	if !ok {
 		return paramsSessionCreate, err
@@ -179,22 +180,22 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	case "bad-request/invalid-username-or-password":
 		return paramsSessionCreate, err
 	case "not-authenticated/two-factor-authentication-error":
-		fmt.Println(responseError.ErrorMessage)
+		fmt.Fprintf(out, "%v\n", responseError.ErrorMessage)
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "u2f") {
-			return auth.U2fResponse(paramsSessionCreate, responseError)
+			return auth.U2fResponse(paramsSessionCreate, responseError, out)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "yubi") {
-			return auth.YubiResponse(paramsSessionCreate, responseError)
+			return auth.YubiResponse(paramsSessionCreate, responseError, out)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "totp") {
-			return auth.TotpResponse(paramsSessionCreate)
+			return auth.TotpResponse(paramsSessionCreate, out)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "sms") {
-			return auth.SmsResponse(paramsSessionCreate)
+			return auth.SmsResponse(paramsSessionCreate, out)
 		}
 
 		return paramsSessionCreate, fmt.Errorf("%v is unsupported as login method", responseError.Data.TwoFactorAuthenticationMethod)
@@ -203,8 +204,8 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	return paramsSessionCreate, err
 }
 
-func stringInput(reader *bufio.Reader, label string) string {
-	fmt.Printf("%v: ", label)
+func stringInput(reader *bufio.Reader, out io.Writer, label string) string {
+	fmt.Fprintf(out, "%v: ", label)
 	text, _ := reader.ReadString('\n')
 	return parseTermInput(text)
 }
@@ -215,17 +216,17 @@ func parseTermInput(text string) string {
 	return text
 }
 
-func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Config) error {
+func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Config, out io.Writer) error {
 	reader := bufio.NewReader(os.Stdin)
 
 	if config.Subdomain == "" {
-		config.Subdomain = stringInput(reader, "Subdomain")
+		config.Subdomain = stringInput(reader, out, "Subdomain")
 	} else {
-		fmt.Printf("Subdomain: %v\n", config.Subdomain)
+		fmt.Fprintf(out, "Subdomain: %v\n", config.Subdomain)
 	}
 
 	if paramsSessionCreate.Username == "" && config.Username == "" {
-		paramsSessionCreate.Username = stringInput(reader, "Username")
+		paramsSessionCreate.Username = stringInput(reader, out, "Username")
 		config.Username = paramsSessionCreate.Username
 	} else {
 		if paramsSessionCreate.Username != "" {
@@ -233,18 +234,18 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Con
 		} else {
 			paramsSessionCreate.Username = config.Username
 		}
-		fmt.Printf("Username: %v\n", paramsSessionCreate.Username)
+		fmt.Fprintf(out, "Username: %v\n", paramsSessionCreate.Username)
 	}
 
 	if paramsSessionCreate.Password == "" {
-		fmt.Print("Password: ")
+		fmt.Fprintf(out, "Password: ")
 		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
 			return err
 		}
 
 		paramsSessionCreate.Password = parseTermInput(string(bytePassword))
-		fmt.Println("")
+		fmt.Fprintf(out, "\n")
 	}
 
 	config.SetGlobal()
@@ -254,7 +255,7 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Con
 	result, err := client.Create(context.TODO(), paramsSessionCreate)
 
 	if err != nil {
-		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err)
+		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, out)
 		if err == nil {
 			result, err = client.Create(context.TODO(), otpSessionCreate)
 		}

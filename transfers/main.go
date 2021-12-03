@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -53,6 +52,8 @@ type Transfers struct {
 	Ignore                *[]string
 	waitForEndingMessage  chan bool
 	*manager.Manager
+	Stdout io.Writer
+	Stderr io.Writer
 }
 
 func New() *Transfers {
@@ -109,7 +110,7 @@ func (t *Transfers) StartLog(transferType string) {
 func (t *Transfers) Log(str string, err error) {
 	if err != nil {
 		if t.DisableProgressOutput {
-			fmt.Fprintf(os.Stderr, str+"\n")
+			fmt.Fprintf(t.Stderr, "%v\n", str)
 		}
 		t.eventErrorsMutex.Lock()
 		t.eventErrors = append(t.eventErrors, str)
@@ -122,7 +123,7 @@ func (t *Transfers) Log(str string, err error) {
 		t.externalEvent.Status = t.externalEvent.Status.Enum()["partial_failure"]
 	} else {
 		if t.DisableProgressOutput {
-			fmt.Println(str)
+			fmt.Fprintf(t.Stdout, "%v\n", str)
 		}
 		t.eventBodyMutex.Lock()
 		t.eventBody = append(t.eventBody, str)
@@ -268,7 +269,7 @@ func (t *Transfers) SendLogs(ctx context.Context, config files_sdk.Config) error
 		t.externalEvent.Body = strings.Join(t.eventBody, "\n")
 		t.eventBodyMutex.RUnlock()
 		event, err := eventClient.Create(ctx, t.externalEvent)
-		fmt.Println("External Event Created:", event.CreatedAt)
+		fmt.Fprintf(t.Stdout, "External Event Created: %v\n", event.CreatedAt)
 		return err
 	}
 	return nil
@@ -284,7 +285,7 @@ func (t *Transfers) LogJobError(err error, path string) {
 
 func (t *Transfers) EndingStatusErrors() {
 	if len(t.eventErrors) > 0 && !t.DisableProgressOutput {
-		fmt.Fprintf(os.Stderr, strings.Join(t.eventErrors, "\n")+"\n") // show errors
+		fmt.Fprintf(t.Stderr, "%v\n", strings.Join(t.eventErrors, "\n")) // show errors
 	}
 }
 

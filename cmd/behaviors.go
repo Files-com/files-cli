@@ -43,12 +43,12 @@ func BehaviorsInit() {
 			client := behavior.Client{Config: *config}
 			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter)
+			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -59,7 +59,7 @@ func BehaviorsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -74,12 +74,12 @@ func BehaviorsInit() {
 
 			result, err := client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatFind, fieldsFind)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -110,12 +110,12 @@ func BehaviorsInit() {
 			client := behavior.Client{Config: *config}
 			it, err := client.ListFor(ctx, params)
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -128,7 +128,7 @@ func BehaviorsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
@@ -147,12 +147,12 @@ func BehaviorsInit() {
 
 			result, err := client.Create(ctx, paramsBehaviorCreate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatCreate, fieldsCreate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -178,12 +178,12 @@ func BehaviorsInit() {
 
 			result, err := client.WebhookTest(ctx, paramsBehaviorWebhookTest)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatWebhookTest, fieldsWebhookTest)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatWebhookTest, fieldsWebhookTest, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -217,12 +217,12 @@ func BehaviorsInit() {
 
 			result, err := client.Update(ctx, paramsBehaviorUpdate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatUpdate, fieldsUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -250,12 +250,12 @@ func BehaviorsInit() {
 
 			result, err := client.Delete(ctx, paramsBehaviorDelete)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatDelete, fieldsDelete)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

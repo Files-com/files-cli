@@ -42,12 +42,12 @@ func WebhookTestsInit() {
 
 			result, err := client.Create(ctx, paramsWebhookTestCreate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatCreate, fieldsCreate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

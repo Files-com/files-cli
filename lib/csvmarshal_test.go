@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,13 +16,13 @@ type Person struct {
 func TestCSVMarshal(t *testing.T) {
 	a := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
-	output := CaptureOutput(func() {
-		CSVMarshal(p1, "")
-	})
+	buf := bytes.NewBufferString("")
+
+	CSVMarshal(p1, "", buf)
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
-`, output)
+`, buf.String())
 }
 
 type PersonNil struct {
@@ -34,25 +35,25 @@ type PersonNil struct {
 func TestCSVMarshalNil(t *testing.T) {
 	a := assert.New(t)
 	p1 := PersonNil{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
-	output := CaptureOutput(func() {
-		CSVMarshal(p1, "")
-	})
+	buf := bytes.NewBufferString("")
+
+	CSVMarshal(p1, "", buf)
 
 	a.Equal(`first_name,last_name,age,dont-show-nil
 Dustin,Zeisler,100,
-`, output)
+`, buf.String())
 }
 
 func TestCSVMarshal_Fields(t *testing.T) {
 	a := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
-	output := CaptureOutput(func() {
-		CSVMarshal(p1, "first_name,last_name")
-	})
+	buf := bytes.NewBufferString("")
+
+	CSVMarshal(p1, "first_name,last_name", buf)
 
 	a.Equal(`first_name,last_name
 Dustin,Zeisler
-`, output)
+`, buf.String())
 }
 
 type MockIter struct {
@@ -87,27 +88,27 @@ func TestCSVMarshalIter(t *testing.T) {
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := MockIter{People: []Person{p1, p2}}
-	output := CaptureOutput(func() {
-		CSVMarshalIter(&it, "", nil)
-	})
+	buf := bytes.NewBufferString("")
+
+	CSVMarshalIter(&it, "", nil, buf)
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
 Tom,Smith,99
-`, output)
+`, buf.String())
 }
 func TestCSVMarshalIter_FilterIter(t *testing.T) {
 	a := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := MockIter{People: []Person{p1, p2}}
-	output := CaptureOutput(func() {
-		CSVMarshalIter(&it, "", func(i interface{}) bool {
-			return i.(Person).FirstName == "Dustin"
-		})
-	})
+	buf := bytes.NewBufferString("")
+
+	CSVMarshalIter(&it, "", func(i interface{}) bool {
+		return i.(Person).FirstName == "Dustin"
+	}, buf)
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
-`, output)
+`, buf.String())
 }

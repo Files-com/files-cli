@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.3.8] - 2021/12/03
+### Add
+- `folders list-for` new flag `recursive` (list folders/files recursively)
+- `folders`
+
 ## [1.3.0] - 2021/10/27
 ### Add
 - `folders list-for` new flag `only-folders`

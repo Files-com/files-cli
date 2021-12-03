@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -87,13 +88,12 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	file, config := createTempConfig()
 	defer os.Remove(file.Name())
 	var err error
-	re := CaptureOutput(func() {
-		pipeInput("testdomain\ntestuser\n", func() {
-			err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config)
-		})
+	stdOut := bytes.NewBufferString("")
+	pipeInput("testdomain\ntestuser\n", func() {
+		err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config, stdOut)
 	})
 
-	assert.Equal("Subdomain: Username: ", re)
+	assert.Equal("Subdomain: Username: ", stdOut.String())
 	assert.Equal("Invalid username or password", err.(files_sdk.ResponseError).ErrorMessage)
 }
 
@@ -105,13 +105,12 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	file, config := createTempConfig()
 	defer os.Remove(file.Name())
 	var err error
-	re := CaptureOutput(func() {
-		pipeInput("testdomain\ntestuser\n", func() {
-			err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
-		})
+	stdOut := bytes.NewBufferString("")
+	pipeInput("testdomain\ntestuser\n", func() {
+		err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config, stdOut)
 	})
 
-	assert.Equal("Subdomain: Username: ", re)
+	assert.Equal("Subdomain: Username: ", stdOut.String())
 	assert.Equal(nil, err)
 }
 
@@ -126,26 +125,26 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 	var params files_sdk.SessionCreateParams
 	var err error
 
-	re := CaptureOutput(func() {
-		params, err = SessionUnauthorizedError(
-			files_sdk.SessionCreateParams{Password: "password"},
-			files_sdk.ResponseError{
-				Type: "not-authenticated/two-factor-authentication-error",
-				Data: files_sdk.Data{
-					TwoFactorAuthenticationMethod: []string{"u2f"},
-					U2fSIgnRequests:               []files_sdk.U2fSignRequests{signRequest},
-					PartialSessionId:              "123456",
-				},
+	stdOut := bytes.NewBufferString("")
+	params, err = SessionUnauthorizedError(
+		files_sdk.SessionCreateParams{Password: "password"},
+		files_sdk.ResponseError{
+			Type: "not-authenticated/two-factor-authentication-error",
+			Data: files_sdk.Data{
+				TwoFactorAuthenticationMethod: []string{"u2f"},
+				U2fSIgnRequests:               []files_sdk.U2fSignRequests{signRequest},
+				PartialSessionId:              "123456",
 			},
-		)
-	})
+		},
+		stdOut,
+	)
 
 	if err.Error() == "failed to find any devices" {
 		assert.EqualError(err, "failed to find any devices")
-		assert.Equal("\n", re)
+		assert.Equal("\n", stdOut.String())
 	} else {
 		assert.EqualError(err, "failed to get authentication response after 25 seconds", "Unplug u2f device")
-		assert.Contains(re, "Device version: U2F_V2")
+		assert.Contains(stdOut.String(), "Device version: U2F_V2")
 	}
 
 	assert.Equal("", params.Password, "clears password")
@@ -159,22 +158,22 @@ func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
 	var params files_sdk.SessionCreateParams
 	var err error
 
-	re := CaptureOutput(func() {
-		pipeInput("123456\n", func() {
-			params, err = SessionUnauthorizedError(
-				files_sdk.SessionCreateParams{Password: "password"},
-				files_sdk.ResponseError{
-					Type: "not-authenticated/two-factor-authentication-error",
-					Data: files_sdk.Data{
-						TwoFactorAuthenticationMethod: []string{"totp"},
-					},
+	stdOut := bytes.NewBufferString("")
+	pipeInput("123456\n", func() {
+		params, err = SessionUnauthorizedError(
+			files_sdk.SessionCreateParams{Password: "password"},
+			files_sdk.ResponseError{
+				Type: "not-authenticated/two-factor-authentication-error",
+				Data: files_sdk.Data{
+					TwoFactorAuthenticationMethod: []string{"totp"},
 				},
-			)
-		})
+			},
+			stdOut,
+		)
 	})
 
 	assert.Nil(err, "has no error")
-	assert.Equal("\ntotp: ", re, "displays prompt")
+	assert.Equal("\ntotp: ", stdOut.String(), "displays prompt")
 
 	assert.Equal("password", params.Password, "retains password")
 	assert.Equal("123456", params.Otp, "populates one-time password")

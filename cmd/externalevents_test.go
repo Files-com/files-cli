@@ -3,7 +3,6 @@ package cmd
 import (
 	"testing"
 
-	clib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,13 +16,10 @@ func TestExternalEventsCreateSuccess(t *testing.T) {
 	defer r.Stop()
 
 	ExternalEventsInit()
-	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "success", "--body", "this is a success test", "--format", "json"})
-		assert.NoError(err)
-		assert.Equal("", out)
-	})
+	out, stdErr := callCmd(ExternalEvents, config, []string{"create", "--status", "success", "--body", "this is a success test", "--format", "json"})
+	assert.Equal("", string(stdErr))
 	event := files_sdk.ExternalEvent{}
-	event.UnmarshalJSON([]byte(str))
+	event.UnmarshalJSON(out)
 	assert.Equal("this is a success test", event.Body)
 	assert.Equal("client_log", event.EventType)
 	assert.Equal("success", event.Status)
@@ -38,13 +34,10 @@ func TestExternalEventsCreateError(t *testing.T) {
 	defer r.Stop()
 
 	ExternalEventsInit()
-	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "failure", "--body", "this is a error test", "--format", "json"})
-		assert.NoError(err)
-		assert.Equal("", out)
-	})
+	out, stderr := callCmd(ExternalEvents, config, []string{"create", "--status", "failure", "--body", "this is a error test", "--format", "json"})
+	assert.Equal("", string(stderr))
 	event := files_sdk.ExternalEvent{}
-	err = event.UnmarshalJSON([]byte(str))
+	err = event.UnmarshalJSON(out)
 	assert.NoError(err)
 	assert.Equal("this is a error test", event.Body)
 	assert.Equal("client_log", event.EventType)
@@ -60,13 +53,10 @@ func TestExternalEventsCreateNoStatus(t *testing.T) {
 	defer r.Stop()
 
 	ExternalEventsInit()
-	str := clib.CaptureOutput(func() {
-		out, err := callCmd(ExternalEvents, config, []string{"create", "--status", "taco", "--body", "this is a error test", "--format", "json"})
-		assert.NoError(err)
-		assert.Equal("", out)
-	})
+	stdOut, errOut := callCmd(ExternalEvents, config, []string{"create", "--status", "taco", "--body", "this is a error test", "--format", "json"})
 	event := files_sdk.ExternalEvent{}
-	err = event.UnmarshalJSON([]byte(str))
+	err = event.UnmarshalJSON(stdOut)
 	assert.Error(err)
-	assert.Contains(str, "missing required field: ExternalEventCreateParams{}.Status")
+	assert.Equal("missing required field: ExternalEventCreateParams{}.Status\n", string(errOut))
+	assert.Equal("", string(stdOut))
 }

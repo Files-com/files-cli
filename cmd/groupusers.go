@@ -44,12 +44,12 @@ func GroupUsersInit() {
 			client := group_user.Client{Config: *config}
 			it, err := client.List(ctx, params)
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter)
+			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -61,7 +61,7 @@ func GroupUsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
 	GroupUsers.AddCommand(cmdList)
 	var fieldsCreate string
 	var formatCreate string
@@ -81,12 +81,12 @@ func GroupUsersInit() {
 
 			result, err := client.Create(ctx, paramsGroupUserCreate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatCreate, fieldsCreate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -115,12 +115,12 @@ func GroupUsersInit() {
 
 			result, err := client.Update(ctx, paramsGroupUserUpdate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatUpdate, fieldsUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -145,12 +145,12 @@ func GroupUsersInit() {
 
 			result, err := client.Delete(ctx, paramsGroupUserDelete)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatDelete, fieldsDelete)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

@@ -35,12 +35,12 @@ func SessionsInit() {
 
 			result, err := client.Create(ctx, paramsSessionCreate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatCreate, fieldsCreate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}
@@ -63,12 +63,12 @@ func SessionsInit() {
 
 			result, err := client.Delete(ctx)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatDelete, fieldsDelete)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

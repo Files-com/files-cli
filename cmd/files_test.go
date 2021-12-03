@@ -4,14 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	clib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/Files-com/files-sdk-go/v2/folder"
@@ -70,13 +68,10 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 	FilesInit()
-	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
-		assert.NoError(err)
-		assert.Equal("", out)
-	})
+	out, stdErr := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
+	assert.Equal("", string(stdErr))
 
-	assert.Contains(str, "{\n    \"mtime\": \"0001-01-01T00:00:00Z\",\n    \"provided_mtime\": \"0001-01-01T00:00:00Z\"\n}\n")
+	assert.Contains(string(out), "{\n    \"mtime\": \"0001-01-01T00:00:00Z\",\n    \"provided_mtime\": \"0001-01-01T00:00:00Z\"\n}\n")
 }
 
 func TestFiles_Delete_Missing_Recursive(t *testing.T) {
@@ -100,22 +95,20 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	assert.NoError(err)
 	FilesInit()
 
-	str := clib.CaptureOutput(func() {
-		out, err := callCmd(Files, config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
-		assert.NoError(err)
-		assert.Equal("", out)
-	})
+	out, stderr := callCmd(Files, config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
+	assert.Equal("", string(out))
 
-	assert.Contains(str, "Folder Not Empty - `Folder test-dir-files-delete not empty`")
+	assert.Contains(string(stderr), "Folder Not Empty - `Folder test-dir-files-delete not empty`")
 }
 
-func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) (string, error) {
-	b := bytes.NewBufferString("")
-	command.SetOut(b)
+func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([]byte, []byte) {
+	errOut := bytes.NewBufferString("")
+	stdOut := bytes.NewBufferString("")
 	command.SetArgs(args)
 	ctx1 := context.WithValue(context.Background(), "config", config)
 	ctx := context.WithValue(ctx1, "testing", true)
+	command.SetOut(stdOut)
+	command.SetErr(errOut)
 	command.ExecuteContext(ctx)
-	out, err := ioutil.ReadAll(b)
-	return string(out), err
+	return stdOut.Bytes(), errOut.Bytes()
 }

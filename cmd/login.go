@@ -19,7 +19,7 @@ var Login = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		err = lib.CreateSession(files.SessionCreateParams{}, *config)
+		err = lib.CreateSession(files.SessionCreateParams{}, *config, cmd.OutOrStdout())
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

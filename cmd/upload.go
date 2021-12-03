@@ -26,6 +26,8 @@ func UploadCmd() *cobra.Command {
 			if len(args) > 1 && args[1] != "" {
 				remotePath = args[1]
 			}
+			transfer.Stderr = cmd.ErrOrStderr()
+			transfer.Stdout = cmd.OutOrStdout()
 			transfer.Init(cmd.Context())
 			transfer.StartLog("upload")
 			client := file.Client{Config: *config}

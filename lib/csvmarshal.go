@@ -3,11 +3,11 @@ package lib
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
+	"io"
 )
 
-func CSVMarshal(result interface{}, fields string) error {
-	w := csv.NewWriter(os.Stdout)
+func CSVMarshal(result interface{}, fields string, out io.Writer) error {
+	w := csv.NewWriter(out)
 	return csvMarshal(w, result, fields, true)
 }
 
@@ -45,8 +45,8 @@ func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bo
 	return nil
 }
 
-func CSVMarshalIter(it Iter, fields string, skip FilterIter) error {
-	w := csv.NewWriter(os.Stdout)
+func CSVMarshalIter(it Iter, fields string, skip FilterIter, out io.Writer) error {
+	w := csv.NewWriter(out)
 	writeHeader := true
 	for it.Next() {
 		if skip != nil && !skip(it.Current()) {

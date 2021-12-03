@@ -1,15 +1,19 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+
 	"fmt"
 
+	file "github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/Files-com/files-sdk-go/v2/folder"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 var (
@@ -33,6 +37,7 @@ func FoldersInit() {
 	listForWithPriorityColor := false
 
 	var listOnlyFolders bool
+	var listRecursively bool
 
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
@@ -57,10 +62,19 @@ func FoldersInit() {
 				paramsFolderListFor.WithPriorityColor = flib.Bool(true)
 			}
 
-			client := folder.Client{Config: *config}
-			it, err := client.ListFor(ctx, params)
+			var it lib.Iter
+			var err error
+			fileClient := file.Client{Config: *config}
+			if listRecursively {
+				if strings.Contains(formatListFor, "table") {
+					formatListFor = "csv"
+				}
+				it, err = fileClient.ListForRecursive(ctx, params)
+			} else {
+				it, err = fileClient.ListFor(ctx, params)
+			}
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if listOnlyFolders {
@@ -72,14 +86,15 @@ func FoldersInit() {
 					return false
 				}
 			}
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter)
+			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 		},
 	}
 
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
+	cmdListFor.Flags().BoolVar(&listRecursively, "recursive", listOnlyFolders, "list folders/files recursively")
 
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsFolderListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -93,7 +108,7 @@ func FoldersInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
@@ -112,12 +127,12 @@ func FoldersInit() {
 
 			result, err := client.Create(ctx, paramsFolderCreate)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatCreate, fieldsCreate)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

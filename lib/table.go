@@ -3,7 +3,6 @@ package lib
 import (
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"golang.org/x/crypto/ssh/terminal"
@@ -28,8 +27,8 @@ func tableWriter(style string, out io.Writer) table.Writer {
 	return t
 }
 
-func TableMarshal(style string, result interface{}, fields string) error {
-	t := tableWriter(style, os.Stdout)
+func TableMarshal(style string, result interface{}, fields string, out io.Writer) error {
+	t := tableWriter(style, out)
 	defer t.Render()
 	return tableMarshal(t, result, fields, true)
 }

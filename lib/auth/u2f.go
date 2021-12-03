@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"time"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	u2f "github.com/marshallbrekka/go-u2fhost"
 )
 
-func U2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseError files_sdk.ResponseError) (files_sdk.SessionCreateParams, error) {
+func U2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseError files_sdk.ResponseError, out io.Writer) (files_sdk.SessionCreateParams, error) {
 	u2fSIgnRequests := responseError.Data.U2fSIgnRequests
 	request := &u2f.AuthenticateRequest{
 		Challenge: u2fSIgnRequests[0].Challenge,
@@ -18,7 +19,7 @@ func U2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseErro
 		Facet:     u2fSIgnRequests[0].AppId,
 		KeyHandle: u2fSIgnRequests[0].SignRequest.KeyHandle,
 	}
-	response, err := u2fDeviceInput(request, u2f.Devices())
+	response, err := u2fDeviceInput(request, u2f.Devices(), out)
 	responseJson, _ := json.Marshal(response)
 	paramsSessionCreate.Otp = string(responseJson)
 	paramsSessionCreate.PartialSessionId = responseError.Data.PartialSessionId
@@ -27,7 +28,7 @@ func U2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseErro
 	return paramsSessionCreate, err
 }
 
-func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2f.AuthenticateResponse, error) {
+func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice, out io.Writer) (*u2f.AuthenticateResponse, error) {
 	var openDevices []u2f.Device
 	for i, device := range devices {
 		err := device.Open()
@@ -38,9 +39,9 @@ func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2
 			}(i)
 			version, err := device.Version()
 			if err != nil {
-				fmt.Printf("Device version error: %s", err.Error())
+				fmt.Fprintf(out, "Device version error: %s", err.Error())
 			} else {
-				fmt.Printf("Device version: %s", version)
+				fmt.Fprintf(out, "Device version: %s", version)
 			}
 		}
 	}
@@ -61,10 +62,10 @@ func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2
 				if err == nil {
 					return response, nil
 				} else if err.Error() == "Device is requesting test of use presence to fulfill the request." && !prompted {
-					fmt.Println("\nTouch the flashing U2F device to authenticate")
+					fmt.Fprintf(out, "\nTouch the flashing U2F device to authenticate\n")
 					prompted = true
 				} else {
-					fmt.Printf(".")
+					fmt.Fprintf(out, ".")
 				}
 			}
 		}

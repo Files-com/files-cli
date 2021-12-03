@@ -36,12 +36,12 @@ func ActionWebhookFailuresInit() {
 
 			result, err := client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
-				lib.ClientError(ctx, err)
-			}
-
-			err = lib.Format(result, formatRetry, fieldsRetry)
-			if err != nil {
-				lib.ClientError(ctx, err)
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatRetry, fieldsRetry, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
 			}
 		},
 	}

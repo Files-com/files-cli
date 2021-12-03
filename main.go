@@ -16,6 +16,7 @@ import (
 
 //go:embed _VERSION
 var VERSION string
+var OutputPath string
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -27,8 +28,17 @@ func main() {
 			}
 			config := &lib.Config{}
 			err := config.Load()
+
+			if OutputPath != "" {
+				output, err := os.Create(OutputPath)
+				if err != nil {
+					lib.ClientError(x.Context(), err, x.ErrOrStderr())
+				}
+				x.SetOut(output)
+			}
+
 			if err != nil {
-				fmt.Println(err)
+				fmt.Fprintf(x.ErrOrStderr(), "%v\n", err)
 				os.Exit(1)
 			}
 
@@ -41,26 +51,27 @@ func main() {
 			}
 
 			if config.SessionExpired() {
-				fmt.Println("The session has expired, you must log in again.")
-				err = lib.CreateSession(files.SessionCreateParams{}, *config)
+				fmt.Fprintf(x.ErrOrStderr(), "The session has expired, you must log in again.")
+				err = lib.CreateSession(files.SessionCreateParams{}, *config, x.OutOrStdout())
 				if err != nil {
-					fmt.Println(err)
+					fmt.Fprintf(x.ErrOrStderr(), "%v\n", err)
 					os.Exit(1)
 				}
 				return
 			}
 
 			if files.GlobalConfig.GetAPIKey() == "" {
-				fmt.Println("No API Key found. Using session login.")
-				err = lib.CreateSession(files.SessionCreateParams{}, *config)
+				fmt.Fprintf(x.ErrOrStderr(), "No API Key found. Using session login.")
+				err = lib.CreateSession(files.SessionCreateParams{}, *config, x.OutOrStdout())
 				if err != nil {
-					fmt.Println(err)
+					fmt.Fprintf(x.ErrOrStderr(), "%v\n", err)
 					os.Exit(1)
 				}
 			}
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&files.APIKey, "api-key", "", "API Key")
+	rootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	rootCmd.SuggestionsMinimumDistance = 1
 	cmd.ConfigInit()
 	rootCmd.AddCommand(cmd.Config)

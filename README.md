@@ -4,11 +4,11 @@ The Files.com CLI App provides convenient access to the Files.com API.
 
 ## Installation
 
-Download latest release for Windows, MacOS, or Linux [here](https://github.com/Files-com/files-cli/releases)
+Download the latest release for Windows, macOS, or Linux [here](https://github.com/Files-com/files-cli/releases)
 
 ### Homebrew 
 
-```sh
+```shell
 brew tap Files-com/homebrew-tap
 brew install files-cli
 ```
@@ -19,13 +19,13 @@ brew install files-cli
 
 #### Setting by ENV 
 
-``` sh
+``` shell
 export FILES_API_KEY="XXXX-XXXX..."
 ```
 
 #### Set Via a Flag
 
-```sh 
+```shell 
 files-cli folders list-for --api-key "XXXX-XXXX..."
 ```
 
@@ -33,7 +33,7 @@ files-cli folders list-for --api-key "XXXX-XXXX..."
 
 *Return root folder listing*
 
-```sh 
+```shell 
 files-cli folders list-for --fields path,type
 
 [{
@@ -48,25 +48,25 @@ files-cli folders list-for --fields path,type
 
 *List a Folder*
 
-```sh 
+```shell 
 files-cli folders list-for other
 ```
 
 ### Download a File/Folder
 
-```sh
+```shell
 files-cli download [remote-path] [local-path]
 ```
 
 ### Upload a File/Folder
 
-```sh
+```shell
 files-cli upload [source-path] [remote-path]
 ```
 
 ### Command Help
 
-```sh
+```shell
 files-cli [command] --help
 ```
 
@@ -74,8 +74,29 @@ files-cli [command] --help
 
 To build for testing it assumes the go package is in parallel directory. 
 
-```sh
+```shell
 DEVELOPMENT_BUILD ./build.sh
 ```
 
 This will build both the compressed release version and an uncompressed executable for the 3 platforms.
+
+### Docker
+
+```shell
+docker build . --tag files-cli:latest
+docker run --workdir /app --volume ${PWD}:/app -it files-cli 
+```
+
+#### Run CLI
+
+```shell
+ docker run --workdir /app --volume ${PWD}:/app -it files-cli bash -c "go run main.go"
+```
+
+#### Link local Go SDK
+
+```shell
+go mod edit -replace github.com/Files-com/files-sdk-go/v2=../files-sdk-go
+docker run --workdir /app --volume ${PWD}:/app --volume ${HOME}/go/src/github.com/Files-com/files-sdk-go:/files-sdk-go -it files-cli 
+```
+
