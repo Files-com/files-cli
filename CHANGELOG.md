@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.3.10] - 2021/12/16
+### Add
+- `files` async commands `copy` and `move` 
+  - flag `block`. This returns a progress bar of known status. To skip progress bars use flag `no-progress`. If task fails it will return a non-zero exit code.
+  - flag `event-log`. After the operation is complete this returns a log line for each file. This can be formatted with the standard `format` flag.
+  
 ## [1.3.8] - 2021/12/03
 ### Add
 - `folders list-for` new flag `recursive` (list folders/files recursively)

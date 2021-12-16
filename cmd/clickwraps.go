@@ -58,7 +58,7 @@ func ClickwrapsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Clickwraps.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -71,7 +71,9 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsClickwrapFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsClickwrapFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -101,11 +103,12 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
+			var result interface{}
+			var err error
 			paramsClickwrapCreate.UseWithBundles = paramsClickwrapCreate.UseWithBundles.Enum()[ClickwrapCreateUseWithBundles]
 			paramsClickwrapCreate.UseWithInboxes = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
 			paramsClickwrapCreate.UseWithUsers = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
-
-			result, err := client.Create(ctx, paramsClickwrapCreate)
+			result, err = client.Create(ctx, paramsClickwrapCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -139,11 +142,12 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
+			var result interface{}
+			var err error
 			paramsClickwrapUpdate.UseWithBundles = paramsClickwrapUpdate.UseWithBundles.Enum()[ClickwrapUpdateUseWithBundles]
 			paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
 			paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
-
-			result, err := client.Update(ctx, paramsClickwrapUpdate)
+			result, err = client.Update(ctx, paramsClickwrapUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -175,7 +179,9 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsClickwrapDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsClickwrapDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

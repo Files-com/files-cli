@@ -59,7 +59,7 @@ func ExternalEventsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	ExternalEvents.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -72,7 +72,9 @@ func ExternalEventsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsExternalEventFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsExternalEventFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -100,9 +102,10 @@ func ExternalEventsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
+			var result interface{}
+			var err error
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
-
-			result, err := client.Create(ctx, paramsExternalEventCreate)
+			result, err = client.Create(ctx, paramsExternalEventCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

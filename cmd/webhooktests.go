@@ -40,7 +40,9 @@ func WebhookTestsInit() {
 				paramsWebhookTestCreate.FileAsBody = flib.Bool(true)
 			}
 
-			result, err := client.Create(ctx, paramsWebhookTestCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsWebhookTestCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

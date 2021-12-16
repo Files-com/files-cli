@@ -34,7 +34,9 @@ func HistoryExportsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history_export.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsHistoryExportFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsHistoryExportFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -61,7 +63,9 @@ func HistoryExportsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history_export.Client{Config: *config}
 
-			result, err := client.Create(ctx, paramsHistoryExportCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsHistoryExportCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

@@ -59,7 +59,7 @@ func AutomationRunsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	AutomationRuns.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -72,7 +72,9 @@ func AutomationRunsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation_run.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsAutomationRunFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsAutomationRunFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

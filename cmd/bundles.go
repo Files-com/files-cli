@@ -59,7 +59,7 @@ func BundlesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Bundles.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -72,7 +72,9 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsBundleFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsBundleFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -112,7 +114,9 @@ func BundlesInit() {
 				paramsBundleCreate.RequireShareRecipient = flib.Bool(true)
 			}
 
-			result, err := client.Create(ctx, paramsBundleCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsBundleCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -152,7 +156,9 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			result, err := client.Share(ctx, paramsBundleShare)
+			var result interface{}
+			var err error
+			result, err = client.Share(ctx, paramsBundleShare)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -199,7 +205,9 @@ func BundlesInit() {
 				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(true)
 			}
 
-			result, err := client.Update(ctx, paramsBundleUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsBundleUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -240,7 +248,9 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsBundleDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsBundleDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

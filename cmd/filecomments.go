@@ -61,7 +61,7 @@ func FileCommentsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
@@ -77,8 +77,9 @@ func FileCommentsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCommentCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsFileCommentCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsFileCommentCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -106,7 +107,9 @@ func FileCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
 
-			result, err := client.Update(ctx, paramsFileCommentUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsFileCommentUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -134,7 +137,9 @@ func FileCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsFileCommentDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsFileCommentDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

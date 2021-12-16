@@ -66,7 +66,7 @@ func NotificationsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Notifications.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -79,7 +79,9 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsNotificationFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsNotificationFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -122,8 +124,9 @@ func NotificationsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsNotificationCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsNotificationCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsNotificationCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -170,7 +173,9 @@ func NotificationsInit() {
 				paramsNotificationUpdate.Recursive = flib.Bool(true)
 			}
 
-			result, err := client.Update(ctx, paramsNotificationUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsNotificationUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -201,7 +206,9 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsNotificationDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsNotificationDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

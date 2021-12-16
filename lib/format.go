@@ -10,6 +10,10 @@ type Iter interface {
 	Next() bool
 	Current() interface{}
 	Err() error
+}
+
+type IterPaging interface {
+	Iter
 	EOFPage() bool
 }
 

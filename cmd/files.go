@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-
+	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/spf13/cobra"
 
 	"fmt"
 
@@ -48,8 +48,9 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsFileCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsFileCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -90,8 +91,9 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileUpdate.Path = args[0]
 			}
-
-			result, err := client.Update(ctx, paramsFileUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsFileUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -128,8 +130,9 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileDelete.Path = args[0]
 			}
-
-			result, err := client.Delete(ctx, paramsFileDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsFileDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -169,8 +172,9 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileFind.Path = args[0]
 			}
-
-			result, err := client.Find(ctx, paramsFileFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsFileFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -191,6 +195,9 @@ func FilesInit() {
 	Files.AddCommand(cmdFind)
 	var fieldsCopy string
 	var formatCopy string
+	var blockCopy bool
+	var noProgressCopy bool
+	var eventLogCopy bool
 	copyStructure := false
 	paramsFileCopy := files_sdk.FileCopyParams{}
 
@@ -208,11 +215,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCopy.Path = args[0]
 			}
-
-			result, err := client.Copy(ctx, paramsFileCopy)
+			var result interface{}
+			var err error
+			result, err = client.Copy(ctx, paramsFileCopy)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
+				result, err = transfers.WaitFileMigration(ctx, *config, result, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
 				err = lib.Format(result, formatCopy, fieldsCopy, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
@@ -226,9 +235,15 @@ func FilesInit() {
 
 	cmdCopy.Flags().StringVarP(&fieldsCopy, "fields", "", "", "comma separated list of field names")
 	cmdCopy.Flags().StringVarP(&formatCopy, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCopy.Flags().BoolVarP(&blockCopy, "block", "b", blockCopy, "Wait on response for async copy with final status")
+	cmdCopy.Flags().BoolVar(&noProgressCopy, "no-progress", noProgressCopy, "Don't display progress bars when using block flag")
+	cmdCopy.Flags().BoolVar(&eventLogCopy, "event-log", eventLogCopy, "Output full event log for copy when used with block flag")
 	Files.AddCommand(cmdCopy)
 	var fieldsMove string
 	var formatMove string
+	var blockMove bool
+	var noProgressMove bool
+	var eventLogMove bool
 	paramsFileMove := files_sdk.FileMoveParams{}
 
 	cmdMove := &cobra.Command{
@@ -241,11 +256,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileMove.Path = args[0]
 			}
-
-			result, err := client.Move(ctx, paramsFileMove)
+			var result interface{}
+			var err error
+			result, err = client.Move(ctx, paramsFileMove)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
+				result, err = transfers.WaitFileMigration(ctx, *config, result, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
 				err = lib.Format(result, formatMove, fieldsMove, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
@@ -258,6 +275,9 @@ func FilesInit() {
 
 	cmdMove.Flags().StringVarP(&fieldsMove, "fields", "", "", "comma separated list of field names")
 	cmdMove.Flags().StringVarP(&formatMove, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
+	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
+	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
 	Files.AddCommand(cmdMove)
 	var fieldsBeginUpload string
 	var formatBeginUpload string
@@ -282,8 +302,9 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileBeginUpload.Path = args[0]
 			}
-
-			result, err := client.BeginUpload(ctx, paramsFileBeginUpload)
+			var result interface{}
+			var err error
+			result, err = client.BeginUpload(ctx, paramsFileBeginUpload)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

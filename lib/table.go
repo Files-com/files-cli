@@ -64,6 +64,9 @@ func TableMarshalIter(style string, it Iter, fields string, out io.Writer, in io
 	t := tableWriter(style, out)
 	writeHeader := true
 	onPageCount := 0
+
+	itPaging, paging := it.(IterPaging)
+
 	for it.Next() {
 		if filter == nil || filter(it.Current()) {
 			err := tableMarshal(t, it.Current(), fields, writeHeader)
@@ -73,7 +76,7 @@ func TableMarshalIter(style string, it Iter, fields string, out io.Writer, in io
 			onPageCount += 1
 		}
 		writeHeader = false
-		if it.EOFPage() {
+		if paging && itPaging.EOFPage() {
 			t.Render()
 			t = tableWriter(style, out)
 			writeHeader = true
@@ -89,6 +92,10 @@ func TableMarshalIter(style string, it Iter, fields string, out io.Writer, in io
 
 			onPageCount = 0
 		}
+	}
+	if !paging {
+		t.Render()
+		t = tableWriter(style, out)
 	}
 	if it.Err() != nil {
 		return it.Err()

@@ -36,8 +36,9 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleFind.Path = args[0]
 			}
-
-			result, err := client.Find(ctx, paramsStyleFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsStyleFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -67,8 +68,9 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleUpdate.Path = args[0]
 			}
-
-			result, err := client.Update(ctx, paramsStyleUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsStyleUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -98,8 +100,9 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleDelete.Path = args[0]
 			}
-
-			result, err := client.Delete(ctx, paramsStyleDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsStyleDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

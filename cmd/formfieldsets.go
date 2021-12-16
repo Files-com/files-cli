@@ -60,7 +60,7 @@ func FormFieldSetsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	FormFieldSets.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -73,7 +73,9 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsFormFieldSetFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsFormFieldSetFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -113,7 +115,9 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetCreate.SkipCompany = flib.Bool(true)
 			}
 
-			result, err := client.Create(ctx, paramsFormFieldSetCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsFormFieldSetCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -158,7 +162,9 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(true)
 			}
 
-			result, err := client.Update(ctx, paramsFormFieldSetUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsFormFieldSetUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -190,7 +196,9 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsFormFieldSetDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsFormFieldSetDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

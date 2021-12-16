@@ -61,7 +61,7 @@ func RemoteServersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -74,7 +74,9 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsRemoteServerFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsRemoteServerFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -114,12 +116,13 @@ func RemoteServersInit() {
 				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(true)
 			}
 
+			var result interface{}
+			var err error
 			paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
 			paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
-
-			result, err := client.Create(ctx, paramsRemoteServerCreate)
+			result, err = client.Create(ctx, paramsRemoteServerCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -199,12 +202,13 @@ func RemoteServersInit() {
 				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(true)
 			}
 
+			var result interface{}
+			var err error
 			paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
 			paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
-
-			result, err := client.Update(ctx, paramsRemoteServerUpdate)
+			result, err = client.Update(ctx, paramsRemoteServerUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -272,7 +276,9 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsRemoteServerDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsRemoteServerDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

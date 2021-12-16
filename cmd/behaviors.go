@@ -59,7 +59,7 @@ func BehaviorsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -72,7 +72,9 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsBehaviorFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -128,7 +130,7 @@ func BehaviorsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
@@ -144,8 +146,9 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsBehaviorCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsBehaviorCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -176,7 +179,9 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			result, err := client.WebhookTest(ctx, paramsBehaviorWebhookTest)
+			var result interface{}
+			var err error
+			result, err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -214,8 +219,9 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorUpdate.Path = args[0]
 			}
-
-			result, err := client.Update(ctx, paramsBehaviorUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsBehaviorUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -248,7 +254,9 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsBehaviorDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsBehaviorDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

@@ -34,7 +34,9 @@ func ActionWebhookFailuresInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_webhook_failure.Client{Config: *config}
 
-			result, err := client.Retry(ctx, paramsActionWebhookFailureRetry)
+			var result interface{}
+			var err error
+			result, err = client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

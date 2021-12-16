@@ -64,7 +64,7 @@ func RequestsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
 	var formatGetFolder string
@@ -85,8 +85,9 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestGetFolder.Path = args[0]
 			}
-
-			result, err := client.GetFolder(ctx, paramsRequestGetFolder)
+			var result interface{}
+			var err error
+			result, err = client.GetFolder(ctx, paramsRequestGetFolder)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -119,8 +120,9 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsRequestCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsRequestCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -150,7 +152,9 @@ func RequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsRequestDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsRequestDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

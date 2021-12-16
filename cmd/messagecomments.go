@@ -59,7 +59,7 @@ func MessageCommentsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	MessageComments.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -72,7 +72,9 @@ func MessageCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsMessageCommentFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsMessageCommentFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -99,7 +101,9 @@ func MessageCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
 
-			result, err := client.Create(ctx, paramsMessageCommentCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsMessageCommentCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -127,7 +131,9 @@ func MessageCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
 
-			result, err := client.Update(ctx, paramsMessageCommentUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsMessageCommentUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -155,7 +161,9 @@ func MessageCommentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsMessageCommentDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsMessageCommentDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

@@ -33,7 +33,9 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
-			result, err := client.Get(ctx)
+			var result interface{}
+			var err error
+			result, err = client.Get(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -57,7 +59,9 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
-			result, err := client.GetUsage(ctx)
+			var result interface{}
+			var err error
+			result, err = client.GetUsage(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -296,7 +300,9 @@ func SitesInit() {
 				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(true)
 			}
 
-			result, err := client.Update(ctx, paramsSiteUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsSiteUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

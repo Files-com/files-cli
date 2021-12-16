@@ -36,7 +36,9 @@ func ActionNotificationExportsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_notification_export.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsActionNotificationExportFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsActionNotificationExportFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -68,7 +70,9 @@ func ActionNotificationExportsInit() {
 				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(true)
 			}
 
-			result, err := client.Create(ctx, paramsActionNotificationExportCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsActionNotificationExportCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

@@ -58,7 +58,7 @@ func MessagesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Messages.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -71,7 +71,9 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsMessageFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsMessageFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -98,7 +100,9 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			result, err := client.Create(ctx, paramsMessageCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsMessageCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -128,7 +132,9 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			result, err := client.Update(ctx, paramsMessageUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsMessageUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -158,7 +164,9 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsMessageDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsMessageDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

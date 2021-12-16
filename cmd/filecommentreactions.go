@@ -34,7 +34,9 @@ func FileCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment_reaction.Client{Config: *config}
 
-			result, err := client.Create(ctx, paramsFileCommentReactionCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsFileCommentReactionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -63,7 +65,9 @@ func FileCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment_reaction.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsFileCommentReactionDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsFileCommentReactionDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

@@ -57,7 +57,7 @@ func IpAddressesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetReserved string
 	var formatGetReserved string
@@ -70,7 +70,9 @@ func IpAddressesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := ip_address.Client{Config: *config}
 
-			result, err := client.GetReserved(ctx, paramsIpAddressGetReserved)
+			var result interface{}
+			var err error
+			result, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

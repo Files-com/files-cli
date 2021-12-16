@@ -61,7 +61,7 @@ func InboxRecipientsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	InboxRecipients.AddCommand(cmdList)
 	var fieldsCreate string
 	var formatCreate string
@@ -79,7 +79,9 @@ func InboxRecipientsInit() {
 				paramsInboxRecipientCreate.ShareAfterCreate = flib.Bool(true)
 			}
 
-			result, err := client.Create(ctx, paramsInboxRecipientCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsInboxRecipientCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

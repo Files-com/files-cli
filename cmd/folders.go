@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
@@ -66,9 +64,6 @@ func FoldersInit() {
 			var err error
 			fileClient := file.Client{Config: *config}
 			if listRecursively {
-				if strings.Contains(formatListFor, "table") {
-					formatListFor = "csv"
-				}
 				it, err = fileClient.ListForRecursive(ctx, params)
 			} else {
 				it, err = fileClient.ListFor(ctx, params)
@@ -108,7 +103,7 @@ func FoldersInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
@@ -124,8 +119,9 @@ func FoldersInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
 			}
-
-			result, err := client.Create(ctx, paramsFolderCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsFolderCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

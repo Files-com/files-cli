@@ -62,7 +62,7 @@ func UsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Users.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -75,7 +75,9 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsUserFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsUserFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -178,11 +180,12 @@ func UsersInit() {
 				paramsUserCreate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
+			var result interface{}
+			var err error
 			paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
-
-			result, err := client.Create(ctx, paramsUserCreate)
+			result, err = client.Create(ctx, paramsUserCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -251,7 +254,9 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			result, err := client.Unlock(ctx, paramsUserUnlock)
+			var result interface{}
+			var err error
+			result, err = client.Unlock(ctx, paramsUserUnlock)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -278,7 +283,9 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			result, err := client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
+			var result interface{}
+			var err error
+			result, err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -305,7 +312,9 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			result, err := client.User2faReset(ctx, paramsUserUser2faReset)
+			var result interface{}
+			var err error
+			result, err = client.User2faReset(ctx, paramsUserUser2faReset)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -408,11 +417,12 @@ func UsersInit() {
 				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
+			var result interface{}
+			var err error
 			paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
-
-			result, err := client.Update(ctx, paramsUserUpdate)
+			result, err = client.Update(ctx, paramsUserUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -482,7 +492,9 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsUserDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsUserDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {

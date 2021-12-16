@@ -56,7 +56,7 @@ func ProjectsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright - (tables not supported for `list-for --recursive`)")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	Projects.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
@@ -69,7 +69,9 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			result, err := client.Find(ctx, paramsProjectFind)
+			var result interface{}
+			var err error
+			result, err = client.Find(ctx, paramsProjectFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -96,7 +98,9 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			result, err := client.Create(ctx, paramsProjectCreate)
+			var result interface{}
+			var err error
+			result, err = client.Create(ctx, paramsProjectCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -123,7 +127,9 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			result, err := client.Update(ctx, paramsProjectUpdate)
+			var result interface{}
+			var err error
+			result, err = client.Update(ctx, paramsProjectUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
@@ -151,7 +157,9 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			result, err := client.Delete(ctx, paramsProjectDelete)
+			var result interface{}
+			var err error
+			result, err = client.Delete(ctx, paramsProjectDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
