@@ -29,8 +29,8 @@ if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
   if goreleaser build --rm-dist --snapshot; then
     true
   else
-    curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-    ./bin/goreleaser build --rm-dist --snapshot || exit 1
+    go install github.com/goreleaser/goreleaser@latest
+    $(go env GOPATH)/bin/goreleaser build --rm-dist --snapshot || exit 1
   fi
 fi
 ERROR_CODE=$?
