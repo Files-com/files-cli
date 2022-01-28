@@ -215,8 +215,6 @@ func main() {
 	rootCmd.AddCommand(cmd.Statuses)
 	cmd.StylesInit()
 	rootCmd.AddCommand(cmd.Styles)
-	cmd.SyncJobsInit()
-	rootCmd.AddCommand(cmd.SyncJobs)
 	cmd.UsageDailySnapshotsInit()
 	rootCmd.AddCommand(cmd.UsageDailySnapshots)
 	cmd.UsageSnapshotsInit()
