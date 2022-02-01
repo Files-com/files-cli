@@ -120,6 +120,7 @@ func SitesInit() {
 	updateAllowed2faMethodSms := false
 	updateAllowed2faMethodU2f := false
 	updateAllowed2faMethodTotp := false
+	updateAllowed2faMethodWebauthn := false
 	updateAllowed2faMethodYubi := false
 	updateRequire2fa := false
 	updateLdapEnabled := false
@@ -266,6 +267,9 @@ func SitesInit() {
 			if updateAllowed2faMethodTotp {
 				paramsSiteUpdate.Allowed2faMethodTotp = flib.Bool(true)
 			}
+			if updateAllowed2faMethodWebauthn {
+				paramsSiteUpdate.Allowed2faMethodWebauthn = flib.Bool(true)
+			}
 			if updateAllowed2faMethodYubi {
 				paramsSiteUpdate.Allowed2faMethodYubi = flib.Bool(true)
 			}
@@ -380,6 +384,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
+	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodWebauthn, "allowed-2fa-method-webauthn", updateAllowed2faMethodWebauthn, "Is WebAuthn two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodYubi, "allowed-2fa-method-yubi", updateAllowed2faMethodYubi, "Is yubikey two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateRequire2fa, "require-2fa", updateRequire2fa, "Require two-factor authentication for all users?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Require2faUserType, "require-2fa-user-type", "", "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?")
