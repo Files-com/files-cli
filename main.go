@@ -199,6 +199,8 @@ func main() {
 	rootCmd.AddCommand(cmd.PublicIpAddresses)
 	cmd.PublicKeysInit()
 	rootCmd.AddCommand(cmd.PublicKeys)
+	cmd.RemoteBandwidthSnapshotsInit()
+	rootCmd.AddCommand(cmd.RemoteBandwidthSnapshots)
 	cmd.RemoteServersInit()
 	rootCmd.AddCommand(cmd.RemoteServers)
 	cmd.RequestsInit()
