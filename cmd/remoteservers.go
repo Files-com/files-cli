@@ -172,7 +172,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible endpoint")
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible access key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
@@ -259,7 +259,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible endpoint")
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible access key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
