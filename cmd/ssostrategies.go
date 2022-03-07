@@ -88,4 +88,33 @@ func SsoStrategiesInit() {
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
 	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
 	SsoStrategies.AddCommand(cmdFind)
+	var fieldsSync string
+	var formatSync string
+	paramsSsoStrategySync := files_sdk.SsoStrategySyncParams{}
+
+	cmdSync := &cobra.Command{
+		Use: "sync",
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := sso_strategy.Client{Config: *config}
+
+			var result interface{}
+			var err error
+			result, err = client.Sync(ctx, paramsSsoStrategySync)
+			if err != nil {
+				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+			} else {
+				err = lib.Format(result, formatSync, fieldsSync, cmd.OutOrStdout())
+				if err != nil {
+					lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				}
+			}
+		},
+	}
+	cmdSync.Flags().Int64Var(&paramsSsoStrategySync.Id, "id", 0, "Sso Strategy ID.")
+
+	cmdSync.Flags().StringVarP(&fieldsSync, "fields", "", "", "comma separated list of field names")
+	cmdSync.Flags().StringVarP(&formatSync, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	SsoStrategies.AddCommand(cmdSync)
 }
