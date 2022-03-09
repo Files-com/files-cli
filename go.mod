@@ -3,8 +3,9 @@ module github.com/Files-com/files-cli
 go 1.16
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.52-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.53-beta
 	github.com/VividCortex/ewma v1.2.0
+	github.com/appscode/go-querystring v0.0.0-20170504095604-0126cfb3f1dc // indirect
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.10.3
 	github.com/charmbracelet/bubbletea v0.20.0
