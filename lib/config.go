@@ -11,8 +11,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Files-com/files-cli/lib/auth"
-
 	"fmt"
 	"io"
 	"os"
@@ -22,7 +20,19 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+type Overrides struct {
+	Out     io.Writer
+	In      io.Reader
+	Timeout time.Duration
+}
+
+func (o Overrides) Init() Overrides {
+	o.Timeout = time.Second * 25
+	return o
+}
+
 type Config struct {
+	Overrides          `json:"-"`
 	SessionId          string    `json:"session_id"`
 	SessionExpiry      time.Time `json:"session_expiry"`
 	Subdomain          string    `json:"subdomain"`
@@ -169,7 +179,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, out io.Writer) (files_sdk.SessionCreateParams, error) {
+func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, config Config) (files_sdk.SessionCreateParams, error) {
 	responseError, ok := err.(files_sdk.ResponseError)
 	if !ok {
 		return paramsSessionCreate, err
@@ -180,22 +190,22 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	case "bad-request/invalid-username-or-password":
 		return paramsSessionCreate, err
 	case "not-authenticated/two-factor-authentication-error":
-		fmt.Fprintf(out, "%v\n", responseError.ErrorMessage)
+		fmt.Fprintf(config.Out, "%v\n", responseError.ErrorMessage)
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "u2f") {
-			return auth.U2fResponse(paramsSessionCreate, responseError, out)
+			return U2fResponse(paramsSessionCreate, responseError, config)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "yubi") {
-			return auth.YubiResponse(paramsSessionCreate, responseError, out)
+			return YubiResponse(paramsSessionCreate, responseError, config.Out)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "totp") {
-			return auth.TotpResponse(paramsSessionCreate, out)
+			return TotpResponse(paramsSessionCreate, config.Out)
 		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "sms") {
-			return auth.SmsResponse(paramsSessionCreate, out)
+			return SmsResponse(paramsSessionCreate, config.Out)
 		}
 
 		return paramsSessionCreate, fmt.Errorf("%v is unsupported as login method", responseError.Data.TwoFactorAuthenticationMethod)
@@ -216,36 +226,30 @@ func parseTermInput(text string) string {
 	return text
 }
 
-func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Config, out io.Writer) error {
-	reader := bufio.NewReader(os.Stdin)
-
-	if config.Subdomain == "" {
-		config.Subdomain = stringInput(reader, out, "Subdomain")
-	} else {
-		fmt.Fprintf(out, "Subdomain: %v\n", config.Subdomain)
+func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config *Config) error {
+	var err error
+	config.Subdomain, err = PromptUserWithPretext("Subdomain: %s", config.Subdomain, *config)
+	if err != nil {
+		return err
 	}
 
-	if paramsSessionCreate.Username == "" && config.Username == "" {
-		paramsSessionCreate.Username = stringInput(reader, out, "Username")
-		config.Username = paramsSessionCreate.Username
+	userNameDisplay := "Username: %s"
+	if paramsSessionCreate.Username != "" {
+		config.Username, err = PromptUserWithPretext(userNameDisplay, paramsSessionCreate.Username, *config)
 	} else {
-		if paramsSessionCreate.Username != "" {
-			config.Username = paramsSessionCreate.Username
-		} else {
-			paramsSessionCreate.Username = config.Username
-		}
-		fmt.Fprintf(out, "Username: %v\n", paramsSessionCreate.Username)
+		config.Username, err = PromptUserWithPretext(userNameDisplay, config.Username, *config)
 	}
+	paramsSessionCreate.Username = config.Username
 
 	if paramsSessionCreate.Password == "" {
-		fmt.Fprintf(out, "Password: ")
+		fmt.Fprintf(config.Out, "Password: ")
 		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
 			return err
 		}
 
 		paramsSessionCreate.Password = parseTermInput(string(bytePassword))
-		fmt.Fprintf(out, "\n")
+		fmt.Fprintf(config.Out, "\n")
 	}
 
 	config.SetGlobal()
@@ -255,7 +259,7 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config Con
 	result, err := client.Create(context.TODO(), paramsSessionCreate)
 
 	if err != nil {
-		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, out)
+		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, *config)
 		if err == nil {
 			result, err = client.Create(context.TODO(), otpSessionCreate)
 		}

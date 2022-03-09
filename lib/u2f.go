@@ -10,7 +10,7 @@ import (
 	u2f "github.com/marshallbrekka/go-u2fhost"
 )
 
-func u2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseError files_sdk.ResponseError) (files_sdk.SessionCreateParams, error) {
+func U2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseError files_sdk.ResponseError, config Config) (files_sdk.SessionCreateParams, error) {
 	u2fSIgnRequests := responseError.Data.U2fSIgnRequests
 	request := &u2f.AuthenticateRequest{
 		Challenge: u2fSIgnRequests[0].Challenge,
@@ -18,7 +18,7 @@ func u2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseErro
 		Facet:     u2fSIgnRequests[0].AppId,
 		KeyHandle: u2fSIgnRequests[0].SignRequest.KeyHandle,
 	}
-	response, err := u2fDeviceInput(request, u2f.Devices())
+	response, err := u2fDeviceInput(request, u2f.Devices(), config)
 	responseJson, _ := json.Marshal(response)
 	paramsSessionCreate.Otp = string(responseJson)
 	paramsSessionCreate.PartialSessionId = responseError.Data.PartialSessionId
@@ -27,7 +27,7 @@ func u2fResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseErro
 	return paramsSessionCreate, err
 }
 
-func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2f.AuthenticateResponse, error) {
+func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice, config Config) (*u2f.AuthenticateResponse, error) {
 	var openDevices []u2f.Device
 	for i, device := range devices {
 		err := device.Open()
@@ -38,9 +38,9 @@ func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2
 			}(i)
 			version, err := device.Version()
 			if err != nil {
-				fmt.Printf("Device version error: %s", err.Error())
+				fmt.Fprintf(config.Out, "Device version error: %s", err.Error())
 			} else {
-				fmt.Printf("Device version: %s", version)
+				fmt.Fprintf(config.Out, "Device version: %s", version)
 			}
 		}
 	}
@@ -48,7 +48,7 @@ func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2
 		return nil, errors.New("failed to find any devices")
 	}
 	prompted := false
-	timeout := time.After(time.Second * 25)
+	timeout := time.After(config.Timeout)
 	interval := time.NewTicker(time.Millisecond * 250)
 	defer interval.Stop()
 	for {
@@ -61,10 +61,10 @@ func u2fDeviceInput(req *u2f.AuthenticateRequest, devices []*u2f.HidDevice) (*u2
 				if err == nil {
 					return response, nil
 				} else if err.Error() == "Device is requesting test of use presence to fulfill the request." && !prompted {
-					fmt.Println("\nTouch the flashing U2F device to authenticate")
+					fmt.Fprintf(config.Out, "\nTouch the flashing U2F device to authenticate\n")
 					prompted = true
 				} else {
-					fmt.Printf(".")
+					fmt.Fprintf(config.Out, ".")
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-package auth
+package lib
 
 import (
 	"bufio"
@@ -11,9 +11,9 @@ import (
 	"strings"
 )
 
-func TotpResponse(paramsSessionCreate files_sdk.SessionCreateParams, out io.Writer) (files_sdk.SessionCreateParams, error) {
+func SmsResponse(paramsSessionCreate files_sdk.SessionCreateParams, out io.Writer) (files_sdk.SessionCreateParams, error) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Fprintf(out, "totp: ")
+	fmt.Fprintf(out, "sms: ")
 	text, _ := reader.ReadString('\n')
 	paramsSessionCreate.Otp = strings.Replace(text, "\n", "", -1)
 	return paramsSessionCreate, nil

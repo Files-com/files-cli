@@ -3,12 +3,14 @@ package lib
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/Files-com/files-sdk-go/v2/lib"
 
@@ -40,7 +42,7 @@ func pipeInput(input string, f func()) {
 	f()
 }
 
-func createTempConfig() (*os.File, Config) {
+func createTempConfig() (*os.File, *Config) {
 	_, err := os.Stat("tmp")
 	if os.IsNotExist(err) {
 		os.MkdirAll("tmp", 0755)
@@ -50,7 +52,7 @@ func createTempConfig() (*os.File, Config) {
 		log.Fatal(err)
 	}
 
-	config := Config{}
+	config := &Config{}
 	config.configPathOverride = file.Name()
 	return file, config
 }
@@ -80,6 +82,23 @@ func createRecorder(fixture string) *recorder.Recorder {
 	return r
 }
 
+type StubInput struct {
+	index  int
+	inputs []string
+}
+
+func (s *StubInput) Read(b []byte) (int, error) {
+	if s.index+1 > len(s.inputs) {
+		return 0, nil
+	}
+	defer func() { s.index = s.index + 1 }()
+	value := s.inputs[s.index]
+	if value == "" {
+		return 0, io.EOF
+	}
+	return bytes.NewBufferString(s.inputs[s.index]).Read(b)
+}
+
 func TestCreateSession_InvalidPassword(t *testing.T) {
 	assert := assert.New(t)
 
@@ -89,11 +108,12 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	defer os.Remove(file.Name())
 	var err error
 	stdOut := bytes.NewBufferString("")
-	pipeInput("testdomain\ntestuser\n", func() {
-		err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config, stdOut)
-	})
+	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
+	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
+	err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config)
 
-	assert.Equal("Subdomain: Username: ", stdOut.String())
+	assert.Equal("testdomain", config.Subdomain)
+	assert.Equal("testuser", config.Username)
 	assert.Equal("Invalid username or password", err.(files_sdk.ResponseError).ErrorMessage)
 }
 
@@ -106,12 +126,12 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	defer os.Remove(file.Name())
 	var err error
 	stdOut := bytes.NewBufferString("")
-	pipeInput("testdomain\ntestuser\n", func() {
-		err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config, stdOut)
-	})
-
-	assert.Equal("Subdomain: Username: ", stdOut.String())
-	assert.Equal(nil, err)
+	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
+	config.Overrides = Overrides{Out: stdOut, In: stdIn}
+	err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
+	assert.NoError(err)
+	assert.Equal("testdomain", config.Subdomain)
+	assert.Equal("testuser", config.Username)
 }
 
 func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
@@ -136,7 +156,7 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 				PartialSessionId:              "123456",
 			},
 		},
-		stdOut,
+		Config{Overrides: Overrides{Out: stdOut, Timeout: time.Second * 5}},
 	)
 
 	if err.Error() == "failed to find any devices" {
@@ -168,7 +188,7 @@ func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
 					TwoFactorAuthenticationMethod: []string{"totp"},
 				},
 			},
-			stdOut,
+			Config{Overrides: Overrides{Out: stdOut, Timeout: time.Second * 5}},
 		)
 	})
 

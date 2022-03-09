@@ -23,6 +23,9 @@ func main() {
 		Use:     "files-cli [resource]",
 		Version: strings.TrimSuffix(VERSION, "\n"),
 		PersistentPreRun: func(x *cobra.Command, args []string) {
+			if x.Use == "login" || x.Use == "logout" {
+				return
+			}
 			if len(x.Aliases) != 0 && (x.Aliases[0] == "config-set" || x.Aliases[0] == "config-reset") {
 				return
 			}
@@ -49,10 +52,10 @@ func main() {
 			if config.ValidSession() {
 				return
 			}
-
+			config.Overrides = lib.Overrides{In: x.InOrStdin(), Out: x.OutOrStdout()}
 			if config.SessionExpired() {
-				fmt.Fprintf(x.ErrOrStderr(), "The session has expired, you must log in again.")
-				err = lib.CreateSession(files.SessionCreateParams{}, *config, x.OutOrStdout())
+				fmt.Fprintf(x.ErrOrStderr(), "The session has expired, you must log in again.\n")
+				err = lib.CreateSession(files.SessionCreateParams{}, config)
 				if err != nil {
 					fmt.Fprintf(x.ErrOrStderr(), "%v\n", err)
 					os.Exit(1)
@@ -61,8 +64,8 @@ func main() {
 			}
 
 			if files.GlobalConfig.GetAPIKey() == "" {
-				fmt.Fprintf(x.ErrOrStderr(), "No API Key found. Using session login.")
-				err = lib.CreateSession(files.SessionCreateParams{}, *config, x.OutOrStdout())
+				fmt.Fprintf(x.ErrOrStderr(), "No API Key found. Using session login.\n")
+				err = lib.CreateSession(files.SessionCreateParams{}, config)
 				if err != nil {
 					fmt.Fprintf(x.ErrOrStderr(), "%v\n", err)
 					os.Exit(1)
