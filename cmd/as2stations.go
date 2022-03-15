@@ -113,8 +113,6 @@ func As2StationsInit() {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "AS2 Name")
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Domain, "domain", "", "AS2 Domain")
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Uri, "uri", "", "URL base for AS2 responses")
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PublicCertificate, "public-certificate", "", "")
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKey, "private-key", "", "")
 
@@ -147,8 +145,6 @@ func As2StationsInit() {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Name, "name", "", "AS2 Name")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Domain, "domain", "", "AS2 Domain")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Uri, "uri", "", "URL base for AS2 responses")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PublicCertificate, "public-certificate", "", "")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKey, "private-key", "", "")
 
