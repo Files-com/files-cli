@@ -19,6 +19,7 @@ var VERSION string
 var OutputPath string
 
 func main() {
+	files.GlobalConfig.UserAgent = "Files.com CLI" + " " + strings.TrimSpace(VERSION)
 	var rootCmd = &cobra.Command{
 		Use:     "files-cli [resource]",
 		Version: strings.TrimSuffix(VERSION, "\n"),
