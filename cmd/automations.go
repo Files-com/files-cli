@@ -6,10 +6,12 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
+
 	"fmt"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/automation"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 var (
@@ -92,6 +94,7 @@ func AutomationsInit() {
 	Automations.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	createDisabled := false
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateAutomation := ""
 	AutomationCreateTrigger := ""
@@ -102,6 +105,10 @@ func AutomationsInit() {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
+
+			if createDisabled {
+				paramsAutomationCreate.Disabled = flib.Bool(true)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsAutomationCreate.Path = args[0]
@@ -132,6 +139,7 @@ func AutomationsInit() {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
+	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
@@ -141,6 +149,7 @@ func AutomationsInit() {
 	Automations.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	updateDisabled := false
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateAutomation := ""
 	AutomationUpdateTrigger := ""
@@ -151,6 +160,10 @@ func AutomationsInit() {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
+
+			if updateDisabled {
+				paramsAutomationUpdate.Disabled = flib.Bool(true)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsAutomationUpdate.Path = args[0]
@@ -182,6 +195,7 @@ func AutomationsInit() {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
+	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. One of: `realtime`, `daily`, `custom_schedule`, `webhook`, `email`, or `action`. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
