@@ -331,6 +331,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateAskAboutOverwrites, "ask-about-overwrites", updateAskAboutOverwrites, "If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.")
 	cmdUpdate.Flags().BoolVar(&updateShowRequestAccessLink, "show-request-access-link", updateShowRequestAccessLink, "Show request access link for users without access?  Currently unused.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeEmailCc, "welcome-email-cc", "", "Include this email in welcome emails if enabled")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeEmailSubject, "welcome-email-subject", "", "Include this email subject in welcome emails if enabled")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeCustomText, "welcome-custom-text", "", "Custom text send in user welcome email")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Language, "language", "", "Site default language")
 	cmdUpdate.Flags().BoolVar(&updateWindowsModeFtp, "windows-mode-ftp", updateWindowsModeFtp, "Does FTP user Windows emulation mode?")
