@@ -107,6 +107,7 @@ func FoldersInit() {
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
+	createMkdirParents := false
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -115,6 +116,10 @@ func FoldersInit() {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := folder.Client{Config: *config}
+
+			if createMkdirParents {
+				paramsFolderCreate.MkdirParents = flib.Bool(true)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
@@ -133,6 +138,7 @@ func FoldersInit() {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")
+	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
