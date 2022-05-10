@@ -142,6 +142,7 @@ func NotificationsInit() {
 	cmdCreate.Flags().BoolVar(&createNotifyUserActions, "notify-user-actions", createNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.GroupId, "group-id", 0, "The ID of the group to notify.  Provide `user_id`, `username` or `group_id`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Path, "path", "", "Path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Username, "username", "", "The username of the user to notify.  Provide `user_id`, `username` or `group_id`.")
@@ -191,6 +192,7 @@ func NotificationsInit() {
 	cmdUpdate.Flags().BoolVar(&updateNotifyUserActions, "notify-user-actions", updateNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.Message, "message", "", "Custom message to include in notification emails.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
