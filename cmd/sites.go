@@ -122,6 +122,7 @@ func SitesInit() {
 	updateAllowed2faMethodTotp := false
 	updateAllowed2faMethodWebauthn := false
 	updateAllowed2faMethodYubi := false
+	updateAllowed2faMethodBypassForFtpSftpDav := false
 	updateRequire2fa := false
 	updateLdapEnabled := false
 	updateLdapSecure := false
@@ -273,6 +274,9 @@ func SitesInit() {
 			if updateAllowed2faMethodYubi {
 				paramsSiteUpdate.Allowed2faMethodYubi = flib.Bool(true)
 			}
+			if updateAllowed2faMethodBypassForFtpSftpDav {
+				paramsSiteUpdate.Allowed2faMethodBypassForFtpSftpDav = flib.Bool(true)
+			}
 			if updateRequire2fa {
 				paramsSiteUpdate.Require2fa = flib.Bool(true)
 			}
@@ -387,6 +391,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodWebauthn, "allowed-2fa-method-webauthn", updateAllowed2faMethodWebauthn, "Is WebAuthn two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodYubi, "allowed-2fa-method-yubi", updateAllowed2faMethodYubi, "Is yubikey two factor authentication allowed?")
+	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodBypassForFtpSftpDav, "allowed-2fa-method-bypass-for-ftp-sftp-dav", updateAllowed2faMethodBypassForFtpSftpDav, "Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateRequire2fa, "require-2fa", updateRequire2fa, "Require two-factor authentication for all users?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Require2faUserType, "require-2fa-user-type", "", "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2Top, "color2-top", "", "Top bar background color")
