@@ -97,7 +97,7 @@ func FoldersInit() {
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Filter, "filter", "", "If specified, will filter folders/files list by this string.  Wildcards of `*` and `?` are acceptable here.")
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.PreviewSize, "preview-size", "", "Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`.")
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Search, "search", "", "If `search_all` is `true`, provide the search string here.  Otherwise, this parameter acts like an alias of `filter`.")
-	cmdListFor.Flags().BoolVar(&listForSearchAll, "search-all", listForSearchAll, "Search entire site?")
+	cmdListFor.Flags().BoolVar(&listForSearchAll, "search-all", listForSearchAll, "Search entire site?  If set, we will ignore the folder path provided and search the entire site.  This is the same API used by the search bar in the UI.  Search results are a best effort, not real time, and not guaranteed to match every file.  This field should only be used for ad-hoc (human) searching, and not as part of an automated process.")
 	cmdListFor.Flags().BoolVar(&listForWithPreviews, "with-previews", listForWithPreviews, "Include file previews?")
 	cmdListFor.Flags().BoolVar(&listForWithPriorityColor, "with-priority-color", listForWithPriorityColor, "Include file priority color information?")
 

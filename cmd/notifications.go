@@ -100,8 +100,13 @@ func NotificationsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	createNotifyOnCopy := false
+	createNotifyOnDelete := false
+	createNotifyOnDownload := false
+	createNotifyOnMove := false
+	createNotifyOnUpload := false
 	createNotifyUserActions := false
 	createRecursive := false
+	createTriggerByShareRecipients := false
 	paramsNotificationCreate := files_sdk.NotificationCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -114,11 +119,26 @@ func NotificationsInit() {
 			if createNotifyOnCopy {
 				paramsNotificationCreate.NotifyOnCopy = flib.Bool(true)
 			}
+			if createNotifyOnDelete {
+				paramsNotificationCreate.NotifyOnDelete = flib.Bool(true)
+			}
+			if createNotifyOnDownload {
+				paramsNotificationCreate.NotifyOnDownload = flib.Bool(true)
+			}
+			if createNotifyOnMove {
+				paramsNotificationCreate.NotifyOnMove = flib.Bool(true)
+			}
+			if createNotifyOnUpload {
+				paramsNotificationCreate.NotifyOnUpload = flib.Bool(true)
+			}
 			if createNotifyUserActions {
 				paramsNotificationCreate.NotifyUserActions = flib.Bool(true)
 			}
 			if createRecursive {
 				paramsNotificationCreate.Recursive = flib.Bool(true)
+			}
+			if createTriggerByShareRecipients {
+				paramsNotificationCreate.TriggerByShareRecipients = flib.Bool(true)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -139,10 +159,16 @@ func NotificationsInit() {
 	}
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.UserId, "user-id", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
 	cmdCreate.Flags().BoolVar(&createNotifyOnCopy, "notify-on-copy", createNotifyOnCopy, "If `true`, copying or moving resources into this path will trigger a notification, in addition to just uploads.")
+	cmdCreate.Flags().BoolVar(&createNotifyOnDelete, "notify-on-delete", createNotifyOnDelete, "Triggers notification when deleting files from this path")
+	cmdCreate.Flags().BoolVar(&createNotifyOnDownload, "notify-on-download", createNotifyOnDownload, "Triggers notification when downloading files from this path")
+	cmdCreate.Flags().BoolVar(&createNotifyOnMove, "notify-on-move", createNotifyOnMove, "Triggers notification when moving files to this path")
+	cmdCreate.Flags().BoolVar(&createNotifyOnUpload, "notify-on-upload", createNotifyOnUpload, "Triggers notification when uploading new files to this path")
 	cmdCreate.Flags().BoolVar(&createNotifyUserActions, "notify-user-actions", createNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Message, "message", "", "Custom message to include in notification emails.")
+	cmdCreate.Flags().StringSliceVar(&paramsNotificationCreate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to match for action path")
+	cmdCreate.Flags().BoolVar(&createTriggerByShareRecipients, "trigger-by-share-recipients", createTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.GroupId, "group-id", 0, "The ID of the group to notify.  Provide `user_id`, `username` or `group_id`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Path, "path", "", "Path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Username, "username", "", "The username of the user to notify.  Provide `user_id`, `username` or `group_id`.")
@@ -153,8 +179,13 @@ func NotificationsInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	updateNotifyOnCopy := false
+	updateNotifyOnDelete := false
+	updateNotifyOnDownload := false
+	updateNotifyOnMove := false
+	updateNotifyOnUpload := false
 	updateNotifyUserActions := false
 	updateRecursive := false
+	updateTriggerByShareRecipients := false
 	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -167,11 +198,26 @@ func NotificationsInit() {
 			if updateNotifyOnCopy {
 				paramsNotificationUpdate.NotifyOnCopy = flib.Bool(true)
 			}
+			if updateNotifyOnDelete {
+				paramsNotificationUpdate.NotifyOnDelete = flib.Bool(true)
+			}
+			if updateNotifyOnDownload {
+				paramsNotificationUpdate.NotifyOnDownload = flib.Bool(true)
+			}
+			if updateNotifyOnMove {
+				paramsNotificationUpdate.NotifyOnMove = flib.Bool(true)
+			}
+			if updateNotifyOnUpload {
+				paramsNotificationUpdate.NotifyOnUpload = flib.Bool(true)
+			}
 			if updateNotifyUserActions {
 				paramsNotificationUpdate.NotifyUserActions = flib.Bool(true)
 			}
 			if updateRecursive {
 				paramsNotificationUpdate.Recursive = flib.Bool(true)
+			}
+			if updateTriggerByShareRecipients {
+				paramsNotificationUpdate.TriggerByShareRecipients = flib.Bool(true)
 			}
 
 			var result interface{}
@@ -189,10 +235,16 @@ func NotificationsInit() {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.Id, "id", 0, "Notification ID.")
 	cmdUpdate.Flags().BoolVar(&updateNotifyOnCopy, "notify-on-copy", updateNotifyOnCopy, "If `true`, copying or moving resources into this path will trigger a notification, in addition to just uploads.")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnDelete, "notify-on-delete", updateNotifyOnDelete, "Triggers notification when deleting files from this path")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnDownload, "notify-on-download", updateNotifyOnDownload, "Triggers notification when downloading files from this path")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnMove, "notify-on-move", updateNotifyOnMove, "Triggers notification when moving files to this path")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnUpload, "notify-on-upload", updateNotifyOnUpload, "Triggers notification when uploading new files to this path")
 	cmdUpdate.Flags().BoolVar(&updateNotifyUserActions, "notify-user-actions", updateNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.Message, "message", "", "Custom message to include in notification emails.")
+	cmdUpdate.Flags().StringSliceVar(&paramsNotificationUpdate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to match for action path")
+	cmdUpdate.Flags().BoolVar(&updateTriggerByShareRecipients, "trigger-by-share-recipients", updateTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
