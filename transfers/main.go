@@ -82,10 +82,12 @@ func newTransferRate() ewma.MovingAverage {
 	return ewma.NewMovingAverage(30)
 }
 
-func (t *Transfers) Init(ctx context.Context) *Transfers {
+func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer) *Transfers {
 	t.createManager()
 	t.createProgress(ctx)
 	t.start = time.Now()
+	t.Stderr = stderr
+	t.Stdout = stdout
 	return t
 }
 

@@ -25,9 +25,7 @@ func DownloadCmd() *cobra.Command {
 			if len(args) > 1 && args[1] != "" {
 				localPath = args[1]
 			}
-			transfer.Stderr = cmd.ErrOrStderr()
-			transfer.Stdout = cmd.OutOrStdout()
-			transfer.Init(cmd.Context())
+			transfer.Init(cmd.Context(), cmd.OutOrStdout(), cmd.ErrOrStderr())
 			transfer.StartLog("download")
 			client := file.Client{Config: *config}
 			job := client.Downloader(

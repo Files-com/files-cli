@@ -27,7 +27,7 @@ func SyncInit() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			transfer.Init(ctx)
+			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
 			var job *status.Job
 			transfer.StartLog("upload")
 			client := file.Client{Config: *config}
@@ -51,7 +51,7 @@ func SyncInit() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			transfer.Init(ctx)
+			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
 			var job *status.Job
 			transfer.StartLog("download")
 			client := file.Client{Config: *config}
