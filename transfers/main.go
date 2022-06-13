@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -387,17 +388,20 @@ func (t *Transfers) buildStatusTransfer(job *status.Job) {
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, reqWidth int, st decor.Statistics) {
 				endedFile := t.lastEndedFile
+				width, _, terminalWidthErr := terminal.GetSize(0)
+				nonFilePathLen := len(fileCounts(job)) + len(statusWithColor(endedFile.Status))
+				remainingWidth := width - nonFilePathLen
 				if endedFile.Status.Is(status.Complete, status.Queued) {
-					io.WriteString(w, fmt.Sprintf("%v", endedFile.DisplayName))
+					io.WriteString(w, fmt.Sprintf("%v", displayName(endedFile.Path, remainingWidth)))
 				} else if endedFile.Has(status.Errored) {
 					tw := 50
-					width, _, err := terminal.GetSize(0)
-					if err == nil {
-						tw = width - len(fmt.Sprint(fileCounts(job), endedFile.DisplayName, "-", statusWithColor(endedFile.Status)))
+
+					if terminalWidthErr == nil {
+						tw = width - len(fmt.Sprint(fileCounts(job), displayName(endedFile.Path, remainingWidth), "-", statusWithColor(endedFile.Status)))
 					}
-					io.WriteString(w, fmt.Sprintf("%v %v - %v", endedFile.DisplayName, statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
+					io.WriteString(w, fmt.Sprintf("%v %v - %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
 				} else {
-					io.WriteString(w, fmt.Sprintf("%v %v", endedFile.DisplayName, statusWithColor(endedFile.Status)))
+					io.WriteString(w, fmt.Sprintf("%v %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status)))
 				}
 			})
 		}),
@@ -411,6 +415,15 @@ func (t *Transfers) buildStatusTransfer(job *status.Job) {
 	)
 
 	t.fileStatusBar.SetPriority(3)
+}
+
+func displayName(path string, terminalWidth int) string {
+	if len(path) > (terminalWidth - 20) {
+		_, file := filepath.Split(path)
+		return file
+	}
+
+	return path
 }
 
 func fileCounts(job *status.Job) string {

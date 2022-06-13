@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.3.59] - 2022/06/13
+### Fix
+- `upload`/`download`/`sync`
+  - when using progress bars now shows full path of file if there is enough width in the terminal.
+  - Could delay files from transferring until scanning phase was complete.
+
 ## [1.3.58] - 2022/06/07
 ### Fix
 - `sync` command could panic at the end of an operation.
