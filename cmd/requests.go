@@ -85,13 +85,13 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestGetFolder.Path = args[0]
 			}
-			var result interface{}
+			var requestCollection interface{}
 			var err error
-			result, err = client.GetFolder(ctx, paramsRequestGetFolder)
+			requestCollection, err = client.GetFolder(ctx, paramsRequestGetFolder)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatGetFolder, fieldsGetFolder, cmd.OutOrStdout())
+				err = lib.Format(requestCollection, formatGetFolder, fieldsGetFolder, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -120,13 +120,13 @@ func RequestsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsRequestCreate.Path = args[0]
 			}
-			var result interface{}
+			var request interface{}
 			var err error
-			result, err = client.Create(ctx, paramsRequestCreate)
+			request, err = client.Create(ctx, paramsRequestCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(request, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -152,16 +152,10 @@ func RequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsRequestDelete)
+			err = client.Delete(ctx, paramsRequestDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

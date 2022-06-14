@@ -72,13 +72,13 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			var result interface{}
+			var behavior interface{}
 			var err error
-			result, err = client.Find(ctx, paramsBehaviorFind)
+			behavior, err = client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(behavior, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -146,13 +146,13 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
 			}
-			var result interface{}
+			var behavior interface{}
 			var err error
-			result, err = client.Create(ctx, paramsBehaviorCreate)
+			behavior, err = client.Create(ctx, paramsBehaviorCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(behavior, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -179,13 +179,13 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			var result interface{}
+			var behavior interface{}
 			var err error
-			result, err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
+			behavior, err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatWebhookTest, fieldsWebhookTest, cmd.OutOrStdout())
+				err = lib.Format(behavior, formatWebhookTest, fieldsWebhookTest, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -219,13 +219,13 @@ func BehaviorsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorUpdate.Path = args[0]
 			}
-			var result interface{}
+			var behavior interface{}
 			var err error
-			result, err = client.Update(ctx, paramsBehaviorUpdate)
+			behavior, err = client.Update(ctx, paramsBehaviorUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(behavior, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -254,16 +254,10 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsBehaviorDelete)
+			err = client.Delete(ctx, paramsBehaviorDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

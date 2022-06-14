@@ -36,13 +36,13 @@ func ActionNotificationExportsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_notification_export.Client{Config: *config}
 
-			var result interface{}
+			var actionNotificationExport interface{}
 			var err error
-			result, err = client.Find(ctx, paramsActionNotificationExportFind)
+			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(actionNotificationExport, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -70,13 +70,13 @@ func ActionNotificationExportsInit() {
 				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(true)
 			}
 
-			var result interface{}
+			var actionNotificationExport interface{}
 			var err error
-			result, err = client.Create(ctx, paramsActionNotificationExportCreate)
+			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(actionNotificationExport, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

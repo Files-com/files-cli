@@ -70,13 +70,13 @@ func UserRequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
 
-			var result interface{}
+			var userRequest interface{}
 			var err error
-			result, err = client.Find(ctx, paramsUserRequestFind)
+			userRequest, err = client.Find(ctx, paramsUserRequestFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(userRequest, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func UserRequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
 
-			var result interface{}
+			var userRequest interface{}
 			var err error
-			result, err = client.Create(ctx, paramsUserRequestCreate)
+			userRequest, err = client.Create(ctx, paramsUserRequestCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(userRequest, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -130,16 +130,10 @@ func UserRequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsUserRequestDelete)
+			err = client.Delete(ctx, paramsUserRequestDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

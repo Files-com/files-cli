@@ -70,13 +70,13 @@ func SsoStrategiesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sso_strategy.Client{Config: *config}
 
-			var result interface{}
+			var ssoStrategy interface{}
 			var err error
-			result, err = client.Find(ctx, paramsSsoStrategyFind)
+			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(ssoStrategy, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func SsoStrategiesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sso_strategy.Client{Config: *config}
 
-			var result interface{}
+			var ssoStrategy interface{}
 			var err error
-			result, err = client.Sync(ctx, paramsSsoStrategySync)
+			ssoStrategy, err = client.Sync(ctx, paramsSsoStrategySync)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatSync, fieldsSync, cmd.OutOrStdout())
+				err = lib.Format(ssoStrategy, formatSync, fieldsSync, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

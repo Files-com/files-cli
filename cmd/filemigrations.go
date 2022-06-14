@@ -34,13 +34,13 @@ func FileMigrationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_migration.Client{Config: *config}
 
-			var result interface{}
+			var fileMigration interface{}
 			var err error
-			result, err = client.Find(ctx, paramsFileMigrationFind)
+			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(fileMigration, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

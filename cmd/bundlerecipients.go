@@ -79,13 +79,13 @@ func BundleRecipientsInit() {
 				paramsBundleRecipientCreate.ShareAfterCreate = flib.Bool(true)
 			}
 
-			var result interface{}
+			var bundleRecipient interface{}
 			var err error
-			result, err = client.Create(ctx, paramsBundleRecipientCreate)
+			bundleRecipient, err = client.Create(ctx, paramsBundleRecipientCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(bundleRecipient, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

@@ -70,13 +70,13 @@ func GroupsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
 
-			var result interface{}
+			var group interface{}
 			var err error
-			result, err = client.Find(ctx, paramsGroupFind)
+			group, err = client.Find(ctx, paramsGroupFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(group, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func GroupsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
 
-			var result interface{}
+			var group interface{}
 			var err error
-			result, err = client.Create(ctx, paramsGroupCreate)
+			group, err = client.Create(ctx, paramsGroupCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(group, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -131,13 +131,13 @@ func GroupsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
 
-			var result interface{}
+			var group interface{}
 			var err error
-			result, err = client.Update(ctx, paramsGroupUpdate)
+			group, err = client.Update(ctx, paramsGroupUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(group, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -164,16 +164,10 @@ func GroupsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsGroupDelete)
+			err = client.Delete(ctx, paramsGroupDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

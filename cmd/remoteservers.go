@@ -74,13 +74,13 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			var result interface{}
+			var remoteServer interface{}
 			var err error
-			result, err = client.Find(ctx, paramsRemoteServerFind)
+			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(remoteServer, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -116,17 +116,17 @@ func RemoteServersInit() {
 				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(true)
 			}
 
-			var result interface{}
+			var remoteServer interface{}
 			var err error
 			paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
 			paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
-			result, err = client.Create(ctx, paramsRemoteServerCreate)
+			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(remoteServer, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -208,17 +208,17 @@ func RemoteServersInit() {
 				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(true)
 			}
 
-			var result interface{}
+			var remoteServer interface{}
 			var err error
 			paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
 			paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
-			result, err = client.Update(ctx, paramsRemoteServerUpdate)
+			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(remoteServer, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -288,16 +288,10 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsRemoteServerDelete)
+			err = client.Delete(ctx, paramsRemoteServerDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

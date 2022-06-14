@@ -72,13 +72,13 @@ func MessageCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment_reaction.Client{Config: *config}
 
-			var result interface{}
+			var messageCommentReaction interface{}
 			var err error
-			result, err = client.Find(ctx, paramsMessageCommentReactionFind)
+			messageCommentReaction, err = client.Find(ctx, paramsMessageCommentReactionFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(messageCommentReaction, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -101,13 +101,13 @@ func MessageCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment_reaction.Client{Config: *config}
 
-			var result interface{}
+			var messageCommentReaction interface{}
 			var err error
-			result, err = client.Create(ctx, paramsMessageCommentReactionCreate)
+			messageCommentReaction, err = client.Create(ctx, paramsMessageCommentReactionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(messageCommentReaction, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -131,16 +131,10 @@ func MessageCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment_reaction.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsMessageCommentReactionDelete)
+			err = client.Delete(ctx, paramsMessageCommentReactionDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

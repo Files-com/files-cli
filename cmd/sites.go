@@ -33,13 +33,13 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
-			var result interface{}
+			var site interface{}
 			var err error
-			result, err = client.Get(ctx)
+			site, err = client.Get(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatGet, fieldsGet, cmd.OutOrStdout())
+				err = lib.Format(site, formatGet, fieldsGet, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -59,13 +59,13 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
-			var result interface{}
+			var usageSnapshot interface{}
 			var err error
-			result, err = client.GetUsage(ctx)
+			usageSnapshot, err = client.GetUsage(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatGetUsage, fieldsGetUsage, cmd.OutOrStdout())
+				err = lib.Format(usageSnapshot, formatGetUsage, fieldsGetUsage, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -308,13 +308,13 @@ func SitesInit() {
 				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(true)
 			}
 
-			var result interface{}
+			var site interface{}
 			var err error
-			result, err = client.Update(ctx, paramsSiteUpdate)
+			site, err = client.Update(ctx, paramsSiteUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(site, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

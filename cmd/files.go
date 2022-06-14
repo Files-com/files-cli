@@ -48,13 +48,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCreate.Path = args[0]
 			}
-			var result interface{}
+			var file interface{}
 			var err error
-			result, err = client.Create(ctx, paramsFileCreate)
+			file, err = client.Create(ctx, paramsFileCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(file, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -91,13 +91,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileUpdate.Path = args[0]
 			}
-			var result interface{}
+			var file interface{}
 			var err error
-			result, err = client.Update(ctx, paramsFileUpdate)
+			file, err = client.Update(ctx, paramsFileUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(file, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -130,16 +130,10 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileDelete.Path = args[0]
 			}
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsFileDelete)
+			err = client.Delete(ctx, paramsFileDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}
@@ -172,13 +166,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileFind.Path = args[0]
 			}
-			var result interface{}
+			var file interface{}
 			var err error
-			result, err = client.Find(ctx, paramsFileFind)
+			file, err = client.Find(ctx, paramsFileFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(file, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -215,14 +209,14 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCopy.Path = args[0]
 			}
-			var result interface{}
+			var fileAction interface{}
 			var err error
-			result, err = client.Copy(ctx, paramsFileCopy)
+			fileAction, err = client.Copy(ctx, paramsFileCopy)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				result, err = transfers.WaitFileMigration(ctx, *config, result, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
-				err = lib.Format(result, formatCopy, fieldsCopy, cmd.OutOrStdout())
+				fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
+				err = lib.Format(fileAction, formatCopy, fieldsCopy, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -256,14 +250,14 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileMove.Path = args[0]
 			}
-			var result interface{}
+			var fileAction interface{}
 			var err error
-			result, err = client.Move(ctx, paramsFileMove)
+			fileAction, err = client.Move(ctx, paramsFileMove)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				result, err = transfers.WaitFileMigration(ctx, *config, result, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
-				err = lib.Format(result, formatMove, fieldsMove, cmd.OutOrStdout())
+				fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
+				err = lib.Format(fileAction, formatMove, fieldsMove, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -302,13 +296,13 @@ func FilesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFileBeginUpload.Path = args[0]
 			}
-			var result interface{}
+			var fileUploadPartCollection interface{}
 			var err error
-			result, err = client.BeginUpload(ctx, paramsFileBeginUpload)
+			fileUploadPartCollection, err = client.BeginUpload(ctx, paramsFileBeginUpload)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatBeginUpload, fieldsBeginUpload, cmd.OutOrStdout())
+				err = lib.Format(fileUploadPartCollection, formatBeginUpload, fieldsBeginUpload, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

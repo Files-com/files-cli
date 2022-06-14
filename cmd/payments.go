@@ -69,13 +69,13 @@ func PaymentsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := payment.Client{Config: *config}
 
-			var result interface{}
+			var accountLineItem interface{}
 			var err error
-			result, err = client.Find(ctx, paramsPaymentFind)
+			accountLineItem, err = client.Find(ctx, paramsPaymentFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(accountLineItem, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

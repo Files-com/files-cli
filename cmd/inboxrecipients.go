@@ -79,13 +79,13 @@ func InboxRecipientsInit() {
 				paramsInboxRecipientCreate.ShareAfterCreate = flib.Bool(true)
 			}
 
-			var result interface{}
+			var inboxRecipient interface{}
 			var err error
-			result, err = client.Create(ctx, paramsInboxRecipientCreate)
+			inboxRecipient, err = client.Create(ctx, paramsInboxRecipientCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(inboxRecipient, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

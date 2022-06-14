@@ -16,7 +16,7 @@ var LogOut = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 		client := session.Client{Config: *ctx.Value("config").(*files_sdk.Config)}
-		_, err := client.Delete(cmd.Context())
+		err := client.Delete(cmd.Context())
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

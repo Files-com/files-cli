@@ -92,13 +92,13 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsLockCreate.Path = args[0]
 			}
-			var result interface{}
+			var lock interface{}
 			var err error
-			result, err = client.Create(ctx, paramsLockCreate)
+			lock, err = client.Create(ctx, paramsLockCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(lock, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -128,16 +128,10 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsLockDelete.Path = args[0]
 			}
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsLockDelete)
+			err = client.Delete(ctx, paramsLockDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

@@ -70,13 +70,13 @@ func As2StationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
 
-			var result interface{}
+			var as2Station interface{}
 			var err error
-			result, err = client.Find(ctx, paramsAs2StationFind)
+			as2Station, err = client.Find(ctx, paramsAs2StationFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(as2Station, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func As2StationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
 
-			var result interface{}
+			var as2Station interface{}
 			var err error
-			result, err = client.Create(ctx, paramsAs2StationCreate)
+			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(as2Station, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -131,13 +131,13 @@ func As2StationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
 
-			var result interface{}
+			var as2Station interface{}
 			var err error
-			result, err = client.Update(ctx, paramsAs2StationUpdate)
+			as2Station, err = client.Update(ctx, paramsAs2StationUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(as2Station, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -164,16 +164,10 @@ func As2StationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsAs2StationDelete)
+			err = client.Delete(ctx, paramsAs2StationDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

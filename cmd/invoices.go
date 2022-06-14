@@ -69,13 +69,13 @@ func InvoicesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := invoice.Client{Config: *config}
 
-			var result interface{}
+			var accountLineItem interface{}
 			var err error
-			result, err = client.Find(ctx, paramsInvoiceFind)
+			accountLineItem, err = client.Find(ctx, paramsInvoiceFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(accountLineItem, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

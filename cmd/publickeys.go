@@ -71,13 +71,13 @@ func PublicKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
 
-			var result interface{}
+			var publicKey interface{}
 			var err error
-			result, err = client.Find(ctx, paramsPublicKeyFind)
+			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(publicKey, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -100,13 +100,13 @@ func PublicKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
 
-			var result interface{}
+			var publicKey interface{}
 			var err error
-			result, err = client.Create(ctx, paramsPublicKeyCreate)
+			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(publicKey, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -131,13 +131,13 @@ func PublicKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
 
-			var result interface{}
+			var publicKey interface{}
 			var err error
-			result, err = client.Update(ctx, paramsPublicKeyUpdate)
+			publicKey, err = client.Update(ctx, paramsPublicKeyUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(publicKey, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -161,16 +161,10 @@ func PublicKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsPublicKeyDelete)
+			err = client.Delete(ctx, paramsPublicKeyDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

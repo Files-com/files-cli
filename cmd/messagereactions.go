@@ -72,13 +72,13 @@ func MessageReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
 
-			var result interface{}
+			var messageReaction interface{}
 			var err error
-			result, err = client.Find(ctx, paramsMessageReactionFind)
+			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(messageReaction, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -101,13 +101,13 @@ func MessageReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
 
-			var result interface{}
+			var messageReaction interface{}
 			var err error
-			result, err = client.Create(ctx, paramsMessageReactionCreate)
+			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(messageReaction, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -131,16 +131,10 @@ func MessageReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsMessageReactionDelete)
+			err = client.Delete(ctx, paramsMessageReactionDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

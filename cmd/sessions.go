@@ -33,13 +33,13 @@ func SessionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := session.Client{Config: *config}
 
-			var result interface{}
+			var session interface{}
 			var err error
-			result, err = client.Create(ctx, paramsSessionCreate)
+			session, err = client.Create(ctx, paramsSessionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(session, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -63,16 +63,10 @@ func SessionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := session.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx)
+			err = client.Delete(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

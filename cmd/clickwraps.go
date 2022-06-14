@@ -71,13 +71,13 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var result interface{}
+			var clickwrap interface{}
 			var err error
-			result, err = client.Find(ctx, paramsClickwrapFind)
+			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(clickwrap, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -103,16 +103,16 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var result interface{}
+			var clickwrap interface{}
 			var err error
 			paramsClickwrapCreate.UseWithBundles = paramsClickwrapCreate.UseWithBundles.Enum()[ClickwrapCreateUseWithBundles]
 			paramsClickwrapCreate.UseWithInboxes = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
 			paramsClickwrapCreate.UseWithUsers = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
-			result, err = client.Create(ctx, paramsClickwrapCreate)
+			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(clickwrap, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -142,16 +142,16 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var result interface{}
+			var clickwrap interface{}
 			var err error
 			paramsClickwrapUpdate.UseWithBundles = paramsClickwrapUpdate.UseWithBundles.Enum()[ClickwrapUpdateUseWithBundles]
 			paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
 			paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
-			result, err = client.Update(ctx, paramsClickwrapUpdate)
+			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(clickwrap, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -179,16 +179,10 @@ func ClickwrapsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsClickwrapDelete)
+			err = client.Delete(ctx, paramsClickwrapDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

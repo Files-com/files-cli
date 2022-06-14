@@ -79,13 +79,13 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			var result interface{}
+			var notification interface{}
 			var err error
-			result, err = client.Find(ctx, paramsNotificationFind)
+			notification, err = client.Find(ctx, paramsNotificationFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(notification, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -144,13 +144,13 @@ func NotificationsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsNotificationCreate.Path = args[0]
 			}
-			var result interface{}
+			var notification interface{}
 			var err error
-			result, err = client.Create(ctx, paramsNotificationCreate)
+			notification, err = client.Create(ctx, paramsNotificationCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(notification, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -220,13 +220,13 @@ func NotificationsInit() {
 				paramsNotificationUpdate.TriggerByShareRecipients = flib.Bool(true)
 			}
 
-			var result interface{}
+			var notification interface{}
 			var err error
-			result, err = client.Update(ctx, paramsNotificationUpdate)
+			notification, err = client.Update(ctx, paramsNotificationUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(notification, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -260,16 +260,10 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsNotificationDelete)
+			err = client.Delete(ctx, paramsNotificationDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

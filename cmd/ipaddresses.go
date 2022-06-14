@@ -70,13 +70,13 @@ func IpAddressesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := ip_address.Client{Config: *config}
 
-			var result interface{}
+			var publicIpAddressCollection interface{}
 			var err error
-			result, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
+			publicIpAddressCollection, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatGetReserved, fieldsGetReserved, cmd.OutOrStdout())
+				err = lib.Format(publicIpAddressCollection, formatGetReserved, fieldsGetReserved, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

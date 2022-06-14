@@ -79,13 +79,13 @@ func GroupUsersInit() {
 				paramsGroupUserCreate.Admin = flib.Bool(true)
 			}
 
-			var result interface{}
+			var groupUser interface{}
 			var err error
-			result, err = client.Create(ctx, paramsGroupUserCreate)
+			groupUser, err = client.Create(ctx, paramsGroupUserCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(groupUser, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -115,13 +115,13 @@ func GroupUsersInit() {
 				paramsGroupUserUpdate.Admin = flib.Bool(true)
 			}
 
-			var result interface{}
+			var groupUser interface{}
 			var err error
-			result, err = client.Update(ctx, paramsGroupUserUpdate)
+			groupUser, err = client.Update(ctx, paramsGroupUserUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(groupUser, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -147,16 +147,10 @@ func GroupUsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsGroupUserDelete)
+			err = client.Delete(ctx, paramsGroupUserDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

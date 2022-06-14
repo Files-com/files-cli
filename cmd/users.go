@@ -75,13 +75,13 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var result interface{}
+			var user interface{}
 			var err error
-			result, err = client.Find(ctx, paramsUserFind)
+			user, err = client.Find(ctx, paramsUserFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(user, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -180,16 +180,16 @@ func UsersInit() {
 				paramsUserCreate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
-			var result interface{}
+			var user interface{}
 			var err error
 			paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
-			result, err = client.Create(ctx, paramsUserCreate)
+			user, err = client.Create(ctx, paramsUserCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(user, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -254,13 +254,13 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var result interface{}
+			var user interface{}
 			var err error
-			result, err = client.Unlock(ctx, paramsUserUnlock)
+			user, err = client.Unlock(ctx, paramsUserUnlock)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUnlock, fieldsUnlock, cmd.OutOrStdout())
+				err = lib.Format(user, formatUnlock, fieldsUnlock, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -283,13 +283,13 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var result interface{}
+			var user interface{}
 			var err error
-			result, err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
+			user, err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatResendWelcomeEmail, fieldsResendWelcomeEmail, cmd.OutOrStdout())
+				err = lib.Format(user, formatResendWelcomeEmail, fieldsResendWelcomeEmail, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -312,13 +312,13 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var result interface{}
+			var user interface{}
 			var err error
-			result, err = client.User2faReset(ctx, paramsUserUser2faReset)
+			user, err = client.User2faReset(ctx, paramsUserUser2faReset)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUser2faReset, fieldsUser2faReset, cmd.OutOrStdout())
+				err = lib.Format(user, formatUser2faReset, fieldsUser2faReset, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -417,16 +417,16 @@ func UsersInit() {
 				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(true)
 			}
 
-			var result interface{}
+			var user interface{}
 			var err error
 			paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
-			result, err = client.Update(ctx, paramsUserUpdate)
+			user, err = client.Update(ctx, paramsUserUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(user, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -492,16 +492,10 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsUserDelete)
+			err = client.Delete(ctx, paramsUserDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

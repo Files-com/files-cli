@@ -36,13 +36,13 @@ func HistoriesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFile.Path = args[0]
 			}
-			var result interface{}
+			var actionCollection interface{}
 			var err error
-			result, err = client.ListForFile(ctx, paramsHistoryListForFile)
+			actionCollection, err = client.ListForFile(ctx, paramsHistoryListForFile)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatListForFile, fieldsListForFile, cmd.OutOrStdout())
+				err = lib.Format(actionCollection, formatListForFile, fieldsListForFile, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -73,13 +73,13 @@ func HistoriesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsHistoryListForFolder.Path = args[0]
 			}
-			var result interface{}
+			var actionCollection interface{}
 			var err error
-			result, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
+			actionCollection, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatListForFolder, fieldsListForFolder, cmd.OutOrStdout())
+				err = lib.Format(actionCollection, formatListForFolder, fieldsListForFolder, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -107,13 +107,13 @@ func HistoriesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
 
-			var result interface{}
+			var actionCollection interface{}
 			var err error
-			result, err = client.ListForUser(ctx, paramsHistoryListForUser)
+			actionCollection, err = client.ListForUser(ctx, paramsHistoryListForUser)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatListForUser, fieldsListForUser, cmd.OutOrStdout())
+				err = lib.Format(actionCollection, formatListForUser, fieldsListForUser, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -141,13 +141,13 @@ func HistoriesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
 
-			var result interface{}
+			var actionCollection interface{}
 			var err error
-			result, err = client.ListLogins(ctx, paramsHistoryListLogins)
+			actionCollection, err = client.ListLogins(ctx, paramsHistoryListLogins)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatListLogins, fieldsListLogins, cmd.OutOrStdout())
+				err = lib.Format(actionCollection, formatListLogins, fieldsListLogins, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

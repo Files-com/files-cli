@@ -72,13 +72,13 @@ func ExternalEventsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
-			var result interface{}
+			var externalEvent interface{}
 			var err error
-			result, err = client.Find(ctx, paramsExternalEventFind)
+			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(externalEvent, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -102,14 +102,14 @@ func ExternalEventsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
-			var result interface{}
+			var externalEvent interface{}
 			var err error
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
-			result, err = client.Create(ctx, paramsExternalEventCreate)
+			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(externalEvent, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

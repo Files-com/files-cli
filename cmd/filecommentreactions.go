@@ -34,13 +34,13 @@ func FileCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment_reaction.Client{Config: *config}
 
-			var result interface{}
+			var fileCommentReaction interface{}
 			var err error
-			result, err = client.Create(ctx, paramsFileCommentReactionCreate)
+			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(fileCommentReaction, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -65,16 +65,10 @@ func FileCommentReactionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment_reaction.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsFileCommentReactionDelete)
+			err = client.Delete(ctx, paramsFileCommentReactionDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

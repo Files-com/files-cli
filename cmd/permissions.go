@@ -87,13 +87,13 @@ func PermissionsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsPermissionCreate.Path = args[0]
 			}
-			var result interface{}
+			var permission interface{}
 			var err error
-			result, err = client.Create(ctx, paramsPermissionCreate)
+			permission, err = client.Create(ctx, paramsPermissionCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(permission, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -121,16 +121,10 @@ func PermissionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := permission.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsPermissionDelete)
+			err = client.Delete(ctx, paramsPermissionDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

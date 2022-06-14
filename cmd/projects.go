@@ -69,13 +69,13 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			var result interface{}
+			var project interface{}
 			var err error
-			result, err = client.Find(ctx, paramsProjectFind)
+			project, err = client.Find(ctx, paramsProjectFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(project, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -98,13 +98,13 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			var result interface{}
+			var project interface{}
 			var err error
-			result, err = client.Create(ctx, paramsProjectCreate)
+			project, err = client.Create(ctx, paramsProjectCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(project, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -127,13 +127,13 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			var result interface{}
+			var project interface{}
 			var err error
-			result, err = client.Update(ctx, paramsProjectUpdate)
+			project, err = client.Update(ctx, paramsProjectUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(project, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -157,16 +157,10 @@ func ProjectsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsProjectDelete)
+			err = client.Delete(ctx, paramsProjectDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

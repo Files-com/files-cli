@@ -72,13 +72,13 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			var result interface{}
+			var bundle interface{}
 			var err error
-			result, err = client.Find(ctx, paramsBundleFind)
+			bundle, err = client.Find(ctx, paramsBundleFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(bundle, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -126,13 +126,13 @@ func BundlesInit() {
 				paramsBundleCreate.SkipCompany = flib.Bool(true)
 			}
 
-			var result interface{}
+			var bundle interface{}
 			var err error
-			result, err = client.Create(ctx, paramsBundleCreate)
+			bundle, err = client.Create(ctx, paramsBundleCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(bundle, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -171,13 +171,13 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			var result interface{}
+			var bundle interface{}
 			var err error
-			result, err = client.Share(ctx, paramsBundleShare)
+			bundle, err = client.Share(ctx, paramsBundleShare)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatShare, fieldsShare, cmd.OutOrStdout())
+				err = lib.Format(bundle, formatShare, fieldsShare, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -232,13 +232,13 @@ func BundlesInit() {
 				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(true)
 			}
 
-			var result interface{}
+			var bundle interface{}
 			var err error
-			result, err = client.Update(ctx, paramsBundleUpdate)
+			bundle, err = client.Update(ctx, paramsBundleUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(bundle, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -278,16 +278,10 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsBundleDelete)
+			err = client.Delete(ctx, paramsBundleDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

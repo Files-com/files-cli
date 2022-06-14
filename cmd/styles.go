@@ -36,13 +36,13 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleFind.Path = args[0]
 			}
-			var result interface{}
+			var style interface{}
 			var err error
-			result, err = client.Find(ctx, paramsStyleFind)
+			style, err = client.Find(ctx, paramsStyleFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(style, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -68,13 +68,13 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleUpdate.Path = args[0]
 			}
-			var result interface{}
+			var style interface{}
 			var err error
-			result, err = client.Update(ctx, paramsStyleUpdate)
+			style, err = client.Update(ctx, paramsStyleUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(style, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -100,16 +100,10 @@ func StylesInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleDelete.Path = args[0]
 			}
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsStyleDelete)
+			err = client.Delete(ctx, paramsStyleDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

@@ -70,13 +70,13 @@ func As2PartnersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
 
-			var result interface{}
+			var as2Partner interface{}
 			var err error
-			result, err = client.Find(ctx, paramsAs2PartnerFind)
+			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(as2Partner, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func As2PartnersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
 
-			var result interface{}
+			var as2Partner interface{}
 			var err error
-			result, err = client.Create(ctx, paramsAs2PartnerCreate)
+			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(as2Partner, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -132,13 +132,13 @@ func As2PartnersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
 
-			var result interface{}
+			var as2Partner interface{}
 			var err error
-			result, err = client.Update(ctx, paramsAs2PartnerUpdate)
+			as2Partner, err = client.Update(ctx, paramsAs2PartnerUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(as2Partner, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -165,16 +165,10 @@ func As2PartnersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsAs2PartnerDelete)
+			err = client.Delete(ctx, paramsAs2PartnerDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

@@ -71,13 +71,13 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
+			var apiKey interface{}
 			var err error
-			result, err = client.FindCurrent(ctx)
+			apiKey, err = client.FindCurrent(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFindCurrent, fieldsFindCurrent, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatFindCurrent, fieldsFindCurrent, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -99,13 +99,13 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
+			var apiKey interface{}
 			var err error
-			result, err = client.Find(ctx, paramsApiKeyFind)
+			apiKey, err = client.Find(ctx, paramsApiKeyFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -132,14 +132,14 @@ func ApiKeysInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsApiKeyCreate.Path = args[0]
 			}
-			var result interface{}
+			var apiKey interface{}
 			var err error
 			paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
-			result, err = client.Create(ctx, paramsApiKeyCreate)
+			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -167,14 +167,14 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
+			var apiKey interface{}
 			var err error
 			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
-			result, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
+			apiKey, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdateCurrent, fieldsUpdateCurrent, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatUpdateCurrent, fieldsUpdateCurrent, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -200,14 +200,14 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
+			var apiKey interface{}
 			var err error
 			paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
-			result, err = client.Update(ctx, paramsApiKeyUpdate)
+			apiKey, err = client.Update(ctx, paramsApiKeyUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -231,13 +231,13 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
+			var apiKey interface{}
 			var err error
-			result, err = client.DeleteCurrent(ctx)
+			apiKey, err = client.DeleteCurrent(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatDeleteCurrent, fieldsDeleteCurrent, cmd.OutOrStdout())
+				err = lib.Format(apiKey, formatDeleteCurrent, fieldsDeleteCurrent, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -259,16 +259,10 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsApiKeyDelete)
+			err = client.Delete(ctx, paramsApiKeyDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

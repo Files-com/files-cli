@@ -73,13 +73,13 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			var result interface{}
+			var formFieldSet interface{}
 			var err error
-			result, err = client.Find(ctx, paramsFormFieldSetFind)
+			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(formFieldSet, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -115,13 +115,13 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetCreate.SkipCompany = flib.Bool(true)
 			}
 
-			var result interface{}
+			var formFieldSet interface{}
 			var err error
-			result, err = client.Create(ctx, paramsFormFieldSetCreate)
+			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(formFieldSet, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -162,13 +162,13 @@ func FormFieldSetsInit() {
 				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(true)
 			}
 
-			var result interface{}
+			var formFieldSet interface{}
 			var err error
-			result, err = client.Update(ctx, paramsFormFieldSetUpdate)
+			formFieldSet, err = client.Update(ctx, paramsFormFieldSetUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(formFieldSet, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -196,16 +196,10 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsFormFieldSetDelete)
+			err = client.Delete(ctx, paramsFormFieldSetDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

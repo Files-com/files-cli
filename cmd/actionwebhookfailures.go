@@ -34,13 +34,13 @@ func ActionWebhookFailuresInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_webhook_failure.Client{Config: *config}
 
-			var result interface{}
+			var actionWebhookFailure interface{}
 			var err error
-			result, err = client.Retry(ctx, paramsActionWebhookFailureRetry)
+			actionWebhookFailure, err = client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatRetry, fieldsRetry, cmd.OutOrStdout())
+				err = lib.Format(actionWebhookFailure, formatRetry, fieldsRetry, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}

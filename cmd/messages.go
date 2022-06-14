@@ -71,13 +71,13 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			var result interface{}
+			var message interface{}
 			var err error
-			result, err = client.Find(ctx, paramsMessageFind)
+			message, err = client.Find(ctx, paramsMessageFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(message, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -100,13 +100,13 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			var result interface{}
+			var message interface{}
 			var err error
-			result, err = client.Create(ctx, paramsMessageCreate)
+			message, err = client.Create(ctx, paramsMessageCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(message, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -132,13 +132,13 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			var result interface{}
+			var message interface{}
 			var err error
-			result, err = client.Update(ctx, paramsMessageUpdate)
+			message, err = client.Update(ctx, paramsMessageUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(message, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -164,16 +164,10 @@ func MessagesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsMessageDelete)
+			err = client.Delete(ctx, paramsMessageDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

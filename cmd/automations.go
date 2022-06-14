@@ -79,13 +79,13 @@ func AutomationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			var result interface{}
+			var automation interface{}
 			var err error
-			result, err = client.Find(ctx, paramsAutomationFind)
+			automation, err = client.Find(ctx, paramsAutomationFind)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatFind, fieldsFind, cmd.OutOrStdout())
+				err = lib.Format(automation, formatFind, fieldsFind, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -118,15 +118,15 @@ func AutomationsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsAutomationCreate.Path = args[0]
 			}
-			var result interface{}
+			var automation interface{}
 			var err error
 			paramsAutomationCreate.Trigger = paramsAutomationCreate.Trigger.Enum()[AutomationCreateTrigger]
 			paramsAutomationCreate.Automation = paramsAutomationCreate.Automation.Enum()[AutomationCreateAutomation]
-			result, err = client.Create(ctx, paramsAutomationCreate)
+			automation, err = client.Create(ctx, paramsAutomationCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(automation, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -174,15 +174,15 @@ func AutomationsInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsAutomationUpdate.Path = args[0]
 			}
-			var result interface{}
+			var automation interface{}
 			var err error
 			paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[AutomationUpdateTrigger]
 			paramsAutomationUpdate.Automation = paramsAutomationUpdate.Automation.Enum()[AutomationUpdateAutomation]
-			result, err = client.Update(ctx, paramsAutomationUpdate)
+			automation, err = client.Update(ctx, paramsAutomationUpdate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
+				err = lib.Format(automation, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
@@ -220,16 +220,10 @@ func AutomationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			var result interface{}
 			var err error
-			result, err = client.Delete(ctx, paramsAutomationDelete)
+			err = client.Delete(ctx, paramsAutomationDelete)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(result, formatDelete, fieldsDelete, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

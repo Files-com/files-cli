@@ -124,13 +124,13 @@ func FoldersInit() {
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
 			}
-			var result interface{}
+			var file interface{}
 			var err error
-			result, err = client.Create(ctx, paramsFolderCreate)
+			file, err = client.Create(ctx, paramsFolderCreate)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			} else {
-				err = lib.Format(result, formatCreate, fieldsCreate, cmd.OutOrStdout())
+				err = lib.Format(file, formatCreate, fieldsCreate, cmd.OutOrStdout())
 				if err != nil {
 					lib.ClientError(ctx, err, cmd.ErrOrStderr())
 				}
