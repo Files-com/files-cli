@@ -171,16 +171,10 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			var bundle interface{}
 			var err error
-			bundle, err = client.Share(ctx, paramsBundleShare)
+			err = client.Share(ctx, paramsBundleShare)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(bundle, formatShare, fieldsShare, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

@@ -231,16 +231,10 @@ func ApiKeysInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var apiKey interface{}
 			var err error
-			apiKey, err = client.DeleteCurrent(ctx)
+			err = client.DeleteCurrent(ctx)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatDeleteCurrent, fieldsDeleteCurrent, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

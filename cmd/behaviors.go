@@ -179,16 +179,10 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			var behavior interface{}
 			var err error
-			behavior, err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
+			err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(behavior, formatWebhookTest, fieldsWebhookTest, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

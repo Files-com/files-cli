@@ -99,16 +99,10 @@ func SsoStrategiesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sso_strategy.Client{Config: *config}
 
-			var ssoStrategy interface{}
 			var err error
-			ssoStrategy, err = client.Sync(ctx, paramsSsoStrategySync)
+			err = client.Sync(ctx, paramsSsoStrategySync)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(ssoStrategy, formatSync, fieldsSync, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}

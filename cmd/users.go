@@ -254,16 +254,10 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var user interface{}
 			var err error
-			user, err = client.Unlock(ctx, paramsUserUnlock)
+			err = client.Unlock(ctx, paramsUserUnlock)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatUnlock, fieldsUnlock, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}
@@ -283,16 +277,10 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var user interface{}
 			var err error
-			user, err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
+			err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatResendWelcomeEmail, fieldsResendWelcomeEmail, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}
@@ -312,16 +300,10 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			var user interface{}
 			var err error
-			user, err = client.User2faReset(ctx, paramsUserUser2faReset)
+			err = client.User2faReset(ctx, paramsUserUser2faReset)
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatUser2faReset, fieldsUser2faReset, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
 			}
 		},
 	}
