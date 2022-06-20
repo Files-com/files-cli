@@ -24,10 +24,11 @@ func main() {
 		Use:     "files-cli [resource]",
 		Version: strings.TrimSuffix(VERSION, "\n"),
 		PersistentPreRun: func(x *cobra.Command, args []string) {
-			if x.Use == "login" || x.Use == "logout" {
+			if lib.Includes(x.Use, []string{"login", "logout"}) {
 				return
 			}
-			if len(x.Aliases) != 0 && (x.Aliases[0] == "config-set" || x.Aliases[0] == "config-reset") {
+
+			if len(x.Aliases) != 0 && lib.Includes(x.Aliases[0], []string{"config-set", "config-reset", "config-show"}) {
 				return
 			}
 			config := &lib.Config{}
