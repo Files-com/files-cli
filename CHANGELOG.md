@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.3.65] - 2022/06/23
+### Fix
+- Upload to remote mounts could fail with an etag error.
+
 ## [1.3.61] - 2022/06/15
 ### Fix
 - `* delete` would return blank attributes for an entity. It now should return nothing unless there is an error.
