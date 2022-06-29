@@ -27,6 +27,9 @@ func (s *timeValue) Type() string {
 }
 
 func (s *timeValue) String() string {
+	if s == nil {
+		return ""
+	}
 	return time.Time(*s).Format(time.RFC3339)
 }
 

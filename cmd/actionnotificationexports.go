@@ -84,8 +84,8 @@ func ActionNotificationExportsInit() {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	lib.TimeVar(cmdCreate.Flags(), &paramsActionNotificationExportCreate.StartAt, "start-at")
-	lib.TimeVar(cmdCreate.Flags(), &paramsActionNotificationExportCreate.EndAt, "end-at")
+	lib.TimeVar(cmdCreate.Flags(), paramsActionNotificationExportCreate.StartAt, "start-at")
+	lib.TimeVar(cmdCreate.Flags(), paramsActionNotificationExportCreate.EndAt, "end-at")
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryMessage, "query-message", "", "Error message associated with the request, if any.")
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryRequestMethod, "query-request-method", "", "The HTTP request method used by the webhook.")
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryRequestUrl, "query-request-url", "", "The target webhook URL.")
