@@ -31,11 +31,12 @@ func DownloadCmd() *cobra.Command {
 			job := client.Downloader(
 				cmd.Context(),
 				file.DownloaderParams{
-					RemotePath:  remotePath,
-					LocalPath:   localPath,
-					Sync:        transfer.SyncFlag,
-					Manager:     transfer.Manager,
-					RetryPolicy: file.RetryErroredIfSomeCompleted,
+					RemotePath:    remotePath,
+					LocalPath:     localPath,
+					Sync:          transfer.SyncFlag,
+					Manager:       transfer.Manager,
+					RetryPolicy:   file.RetryErroredIfSomeCompleted,
+					PreserveTimes: transfer.PreserveTimes,
 				},
 			)
 
@@ -47,6 +48,7 @@ func DownloadCmd() *cobra.Command {
 	Download.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only download files with a more recent modified date")
 	Download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	Download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
+	Download.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "preserve modification times")
 
 	return Download
 }

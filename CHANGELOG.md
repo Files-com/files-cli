@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.3.69] - 2022/07/01
+### Add
+- `upload`/`download`/sync` new flag `--times` preserve modification times. Defaults to false.
+
+
 ## [1.3.68] - 2022/06/29
 ### Fix
 - `upload`/`sync` when on an unstable connection was failing with `Your socket connection to the server was not read from or written to within the timeout period. Idle connections will be closed.`. This was fixed by property rewinding the file part before trying again.

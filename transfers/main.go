@@ -42,6 +42,7 @@ type Transfers struct {
 	SyncFlag              bool
 	SendLogsToCloud       bool
 	DisableProgressOutput bool
+	PreserveTimes         bool
 	ConcurrentFiles       int
 	AfterMove             string
 	AfterDelete           bool
