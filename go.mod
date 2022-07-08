@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.18
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.89-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.90-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
@@ -23,7 +23,7 @@ require (
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
 	github.com/appscode/go-querystring v0.0.0-20170504095604-0126cfb3f1dc // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
-	github.com/bearsh/hid v1.3.0 // indirect
+	github.com/bearsh/hid v1.4.0 // indirect
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 // indirect
 	github.com/charmbracelet/lipgloss v0.5.0 // indirect
 	github.com/chilts/sid v0.0.0-20190607042430-660e94789ec9 // indirect

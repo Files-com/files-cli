@@ -11,7 +11,7 @@ func TestTableMarshalIter_q(t *testing.T) {
 	assert := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
-	it := &MockIter{eofPage: true, People: []Person{p1, p2}}
+	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}, eofPage: true}
 	out := strings.Builder{}
 	in := strings.NewReader("q")
 	TableMarshalIter("", it, "", &out, in, nil)
@@ -30,7 +30,7 @@ func TestTableMarshalIter_newline(t *testing.T) {
 	assert := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
-	it := &MockIter{eofPage: true, People: []Person{p1, p2}}
+	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}, eofPage: true}
 	out := strings.Builder{}
 	in := strings.NewReader(" \n")
 	TableMarshalIter("", it, "", &out, in, nil)
@@ -53,7 +53,7 @@ func TestTableMarshalIter_FilterIter(t *testing.T) {
 	assert := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
-	it := &MockIter{eofPage: true, People: []Person{p1, p2}}
+	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}, eofPage: true}
 	out := strings.Builder{}
 	in := strings.NewReader(" \n")
 	TableMarshalIter("", it, "", &out, in, func(i interface{}) bool {
