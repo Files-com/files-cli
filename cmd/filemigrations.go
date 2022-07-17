@@ -28,7 +28,9 @@ func FileMigrationsInit() {
 	paramsFileMigrationFind := files_sdk.FileMigrationFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show File Migration`,
+		Long:  `Show File Migration`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -37,14 +39,7 @@ func FileMigrationsInit() {
 			var fileMigration interface{}
 			var err error
 			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(fileMigration, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, fileMigration, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")

@@ -30,8 +30,8 @@ func As2PartnersInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List As2 Partners",
+		Long:  `List As2 Partners`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -41,6 +41,15 @@ func As2PartnersInit() {
 
 			client := as2_partner.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -64,7 +73,9 @@ func As2PartnersInit() {
 	paramsAs2PartnerFind := files_sdk.As2PartnerFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show As2 Partner`,
+		Long:  `Show As2 Partner`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -73,14 +84,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(as2Partner, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, as2Partner, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
@@ -93,7 +97,9 @@ func As2PartnersInit() {
 	paramsAs2PartnerCreate := files_sdk.As2PartnerCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create As2 Partner`,
+		Long:  `Create As2 Partner`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -102,14 +108,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(as2Partner, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, as2Partner, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "AS2 Name")
@@ -126,7 +125,9 @@ func As2PartnersInit() {
 	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update As2 Partner`,
+		Long:  `Update As2 Partner`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -135,14 +136,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Update(ctx, paramsAs2PartnerUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(as2Partner, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, as2Partner, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
@@ -159,7 +153,9 @@ func As2PartnersInit() {
 	paramsAs2PartnerDelete := files_sdk.As2PartnerDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete As2 Partner`,
+		Long:  `Delete As2 Partner`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

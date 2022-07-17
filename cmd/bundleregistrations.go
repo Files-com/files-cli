@@ -30,8 +30,8 @@ func BundleRegistrationsInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Bundle Registrations",
+		Long:  `List Bundle Registrations`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -41,6 +41,15 @@ func BundleRegistrationsInit() {
 
 			client := bundle_registration.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}

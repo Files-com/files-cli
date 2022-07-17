@@ -31,8 +31,8 @@ func BehaviorsInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Behaviors",
+		Long:  `List Behaviors`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -42,6 +42,15 @@ func BehaviorsInit() {
 
 			client := behavior.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -66,7 +75,9 @@ func BehaviorsInit() {
 	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Behavior`,
+		Long:  `Show Behavior`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -75,14 +86,7 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Find(ctx, paramsBehaviorFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(behavior, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, behavior, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
@@ -97,8 +101,8 @@ func BehaviorsInit() {
 
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
-		Short: "list-for",
-		Long:  `list-for`,
+		Short: "List Behaviors by path",
+		Long:  `List Behaviors by path`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -111,6 +115,15 @@ func BehaviorsInit() {
 
 			client := behavior.Client{Config: *config}
 			it, err := client.ListFor(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatListFor, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -137,7 +150,9 @@ func BehaviorsInit() {
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create Behavior`,
+		Long:  `Create Behavior`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -149,14 +164,7 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Create(ctx, paramsBehaviorCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(behavior, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, behavior, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
@@ -173,7 +181,9 @@ func BehaviorsInit() {
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
 
 	cmdWebhookTest := &cobra.Command{
-		Use: "webhook-test",
+		Use:   "webhook-test",
+		Short: `Test webhook`,
+		Long:  `Test webhook`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -200,7 +210,9 @@ func BehaviorsInit() {
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update [path]",
+		Use:   "update [path]",
+		Short: `Update Behavior`,
+		Long:  `Update Behavior`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -216,14 +228,7 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Update(ctx, paramsBehaviorUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(behavior, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, behavior, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
@@ -242,7 +247,9 @@ func BehaviorsInit() {
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Behavior`,
+		Long:  `Delete Behavior`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

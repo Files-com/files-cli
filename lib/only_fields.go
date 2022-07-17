@@ -3,12 +3,16 @@ package lib
 import (
 	"encoding/json"
 	"errors"
+	"reflect"
 	"strings"
 
 	"github.com/fatih/structs"
 )
 
 func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, []string, error) {
+	if reflect.ValueOf(structure).Kind() == reflect.Map {
+		return structure.(map[string]interface{}), []string{}, nil
+	}
 	unparsedFields := strings.Split(commaFields, ",")
 	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")
 	intermediateMap := make(map[string]interface{})

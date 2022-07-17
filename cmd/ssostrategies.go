@@ -30,8 +30,8 @@ func SsoStrategiesInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Sso Strategies",
+		Long:  `List Sso Strategies`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -41,6 +41,15 @@ func SsoStrategiesInit() {
 
 			client := sso_strategy.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -64,7 +73,9 @@ func SsoStrategiesInit() {
 	paramsSsoStrategyFind := files_sdk.SsoStrategyFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Sso Strategy`,
+		Long:  `Show Sso Strategy`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -73,14 +84,7 @@ func SsoStrategiesInit() {
 			var ssoStrategy interface{}
 			var err error
 			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(ssoStrategy, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, ssoStrategy, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
@@ -93,7 +97,9 @@ func SsoStrategiesInit() {
 	paramsSsoStrategySync := files_sdk.SsoStrategySyncParams{}
 
 	cmdSync := &cobra.Command{
-		Use: "sync",
+		Use:   "sync",
+		Short: `Synchronize provisioning data with the SSO remote server`,
+		Long:  `Synchronize provisioning data with the SSO remote server`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

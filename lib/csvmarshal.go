@@ -33,7 +33,7 @@ func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bo
 		if value == nil {
 			value = ""
 		}
-		values = append(values, fmt.Sprintf("%v", value))
+		values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
 	}
 
 	err = w.Write(values)

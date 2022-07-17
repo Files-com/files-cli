@@ -1,11 +1,23 @@
 package lib
 
-import "strconv"
+import (
+	"encoding/json"
+	"reflect"
+	"strconv"
+)
 
 func formatValues(key string, value interface{}) interface{} {
 	if value == nil {
 		value = ""
 	}
+
+	if reflect.ValueOf(value).Kind() == reflect.Map {
+		jsonBytes, err := json.Marshal(value)
+		if err == nil {
+			return string(jsonBytes)
+		}
+	}
+
 	switch key {
 	case "size":
 		value = formatSize(value)

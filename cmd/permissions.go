@@ -32,8 +32,8 @@ func PermissionsInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Permissions",
+		Long:  `List Permissions`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -46,6 +46,15 @@ func PermissionsInit() {
 
 			client := permission.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -74,7 +83,9 @@ func PermissionsInit() {
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create Permission`,
+		Long:  `Create Permission`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -90,14 +101,7 @@ func PermissionsInit() {
 			var permission interface{}
 			var err error
 			permission, err = client.Create(ctx, paramsPermissionCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(permission, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, permission, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
@@ -115,7 +119,9 @@ func PermissionsInit() {
 	paramsPermissionDelete := files_sdk.PermissionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Permission`,
+		Long:  `Delete Permission`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

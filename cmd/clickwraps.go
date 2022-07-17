@@ -31,8 +31,8 @@ func ClickwrapsInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Clickwraps",
+		Long:  `List Clickwraps`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -42,6 +42,15 @@ func ClickwrapsInit() {
 
 			client := clickwrap.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -65,7 +74,9 @@ func ClickwrapsInit() {
 	paramsClickwrapFind := files_sdk.ClickwrapFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Clickwrap`,
+		Long:  `Show Clickwrap`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -74,14 +85,7 @@ func ClickwrapsInit() {
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(clickwrap, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, clickwrap, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsClickwrapFind.Id, "id", 0, "Clickwrap ID.")
@@ -97,7 +101,9 @@ func ClickwrapsInit() {
 	ClickwrapCreateUseWithUsers := ""
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create Clickwrap`,
+		Long:  `Create Clickwrap`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -109,14 +115,7 @@ func ClickwrapsInit() {
 			paramsClickwrapCreate.UseWithInboxes = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
 			paramsClickwrapCreate.UseWithUsers = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(clickwrap, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, clickwrap, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsClickwrapCreate.Name, "name", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -136,7 +135,9 @@ func ClickwrapsInit() {
 	ClickwrapUpdateUseWithUsers := ""
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update Clickwrap`,
+		Long:  `Update Clickwrap`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -148,14 +149,7 @@ func ClickwrapsInit() {
 			paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
 			paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
 			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(clickwrap, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, clickwrap, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsClickwrapUpdate.Id, "id", 0, "Clickwrap ID.")
@@ -173,7 +167,9 @@ func ClickwrapsInit() {
 	paramsClickwrapDelete := files_sdk.ClickwrapDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Clickwrap`,
+		Long:  `Delete Clickwrap`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

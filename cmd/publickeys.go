@@ -30,8 +30,8 @@ func PublicKeysInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Public Keys",
+		Long:  `List Public Keys`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -41,6 +41,15 @@ func PublicKeysInit() {
 
 			client := public_key.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -65,7 +74,9 @@ func PublicKeysInit() {
 	paramsPublicKeyFind := files_sdk.PublicKeyFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Public Key`,
+		Long:  `Show Public Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -74,14 +85,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(publicKey, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, publicKey, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
@@ -94,7 +98,9 @@ func PublicKeysInit() {
 	paramsPublicKeyCreate := files_sdk.PublicKeyCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create Public Key`,
+		Long:  `Create Public Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -103,14 +109,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(publicKey, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, publicKey, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -125,7 +124,9 @@ func PublicKeysInit() {
 	paramsPublicKeyUpdate := files_sdk.PublicKeyUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update Public Key`,
+		Long:  `Update Public Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -134,14 +135,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Update(ctx, paramsPublicKeyUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(publicKey, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, publicKey, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")
@@ -155,7 +149,9 @@ func PublicKeysInit() {
 	paramsPublicKeyDelete := files_sdk.PublicKeyDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Public Key`,
+		Long:  `Delete Public Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

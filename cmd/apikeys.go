@@ -32,8 +32,8 @@ func ApiKeysInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Api Keys",
+		Long:  `List Api Keys`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -43,6 +43,15 @@ func ApiKeysInit() {
 
 			client := api_key.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -65,7 +74,9 @@ func ApiKeysInit() {
 	var fieldsFindCurrent string
 	var formatFindCurrent string
 	cmdFindCurrent := &cobra.Command{
-		Use: "find-current",
+		Use:   "find-current",
+		Short: `Show information about current API key.  (Requires current API connection to be using an API key.)`,
+		Long:  `Show information about current API key.  (Requires current API connection to be using an API key.)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -74,14 +85,7 @@ func ApiKeysInit() {
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.FindCurrent(ctx)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatFindCurrent, fieldsFindCurrent, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, apiKey, err, formatFindCurrent, fieldsFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -93,7 +97,9 @@ func ApiKeysInit() {
 	paramsApiKeyFind := files_sdk.ApiKeyFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Api Key`,
+		Long:  `Show Api Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -102,14 +108,7 @@ func ApiKeysInit() {
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Find(ctx, paramsApiKeyFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, apiKey, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsApiKeyFind.Id, "id", 0, "Api Key ID.")
@@ -123,7 +122,9 @@ func ApiKeysInit() {
 	ApiKeyCreatePermissionSet := ""
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create Api Key`,
+		Long:  `Create Api Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -136,14 +137,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
 			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, apiKey, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsApiKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -161,7 +155,9 @@ func ApiKeysInit() {
 	ApiKeyUpdateCurrentPermissionSet := ""
 
 	cmdUpdateCurrent := &cobra.Command{
-		Use: "update-current",
+		Use:   "update-current",
+		Short: `Update current API key.  (Requires current API connection to be using an API key.)`,
+		Long:  `Update current API key.  (Requires current API connection to be using an API key.)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -171,14 +167,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
 			apiKey, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatUpdateCurrent, fieldsUpdateCurrent, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdUpdateCurrent.Flags(), paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at")
@@ -194,7 +183,9 @@ func ApiKeysInit() {
 	ApiKeyUpdatePermissionSet := ""
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update Api Key`,
+		Long:  `Update Api Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -204,14 +195,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
 			apiKey, err = client.Update(ctx, paramsApiKeyUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(apiKey, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, apiKey, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsApiKeyUpdate.Id, "id", 0, "Api Key ID.")
@@ -225,7 +209,9 @@ func ApiKeysInit() {
 	var fieldsDeleteCurrent string
 	var formatDeleteCurrent string
 	cmdDeleteCurrent := &cobra.Command{
-		Use: "delete-current",
+		Use:   "delete-current",
+		Short: `Delete current API key.  (Requires current API connection to be using an API key.)`,
+		Long:  `Delete current API key.  (Requires current API connection to be using an API key.)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -247,7 +233,9 @@ func ApiKeysInit() {
 	paramsApiKeyDelete := files_sdk.ApiKeyDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Api Key`,
+		Long:  `Delete Api Key`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

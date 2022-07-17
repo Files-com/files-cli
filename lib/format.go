@@ -16,6 +16,8 @@ type Iter interface {
 type IterPaging interface {
 	Iter
 	EOFPage() bool
+	NextPage() bool
+	GetPage() bool
 }
 
 type FilterIter func(interface{}) bool

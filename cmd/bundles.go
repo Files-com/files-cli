@@ -31,8 +31,8 @@ func BundlesInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Bundles",
+		Long:  `List Bundles`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -42,6 +42,15 @@ func BundlesInit() {
 
 			client := bundle.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -66,7 +75,9 @@ func BundlesInit() {
 	paramsBundleFind := files_sdk.BundleFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Bundle`,
+		Long:  `Show Bundle`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -75,14 +86,7 @@ func BundlesInit() {
 			var bundle interface{}
 			var err error
 			bundle, err = client.Find(ctx, paramsBundleFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(bundle, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, bundle, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
@@ -101,7 +105,9 @@ func BundlesInit() {
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create Bundle`,
+		Long:  `Create Bundle`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -129,14 +135,7 @@ func BundlesInit() {
 			var bundle interface{}
 			var err error
 			bundle, err = client.Create(ctx, paramsBundleCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(bundle, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, bundle, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -165,7 +164,9 @@ func BundlesInit() {
 	paramsBundleShare := files_sdk.BundleShareParams{}
 
 	cmdShare := &cobra.Command{
-		Use: "share",
+		Use:   "share",
+		Short: `Send email(s) with a link to bundle`,
+		Long:  `Send email(s) with a link to bundle`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -181,7 +182,6 @@ func BundlesInit() {
 	cmdShare.Flags().Int64Var(&paramsBundleShare.Id, "id", 0, "Bundle ID.")
 	cmdShare.Flags().StringSliceVar(&paramsBundleShare.To, "to", []string{}, "A list of email addresses to share this bundle with. Required unless `recipients` is used.")
 	cmdShare.Flags().StringVar(&paramsBundleShare.Note, "note", "", "Note to include in email.")
-	cmdShare.Flags().StringSliceVar(&paramsBundleShare.Recipients, "recipients", []string{}, "A list of recipients to share this bundle with. Required unless `to` is used.")
 
 	cmdShare.Flags().StringVarP(&fieldsShare, "fields", "", "", "comma separated list of field names")
 	cmdShare.Flags().StringVarP(&formatShare, "format", "", "table", "json, csv, table, table-dark, table-bright")
@@ -198,7 +198,9 @@ func BundlesInit() {
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update Bundle`,
+		Long:  `Update Bundle`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -229,14 +231,7 @@ func BundlesInit() {
 			var bundle interface{}
 			var err error
 			bundle, err = client.Update(ctx, paramsBundleUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(bundle, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, bundle, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
@@ -266,7 +261,9 @@ func BundlesInit() {
 	paramsBundleDelete := files_sdk.BundleDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete Bundle`,
+		Long:  `Delete Bundle`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -58,11 +58,23 @@ Dustin,Zeisler
 
 type MockIter struct {
 	SliceIter
-	eofPage bool
+	eofPage func(*MockIter) bool
 }
 
-func (m MockIter) EOFPage() bool {
-	return m.eofPage
+func (m *MockIter) EOFPage() bool {
+	if m.eofPage == nil {
+		return m.lastItem()
+	} else {
+		return m.eofPage(m)
+	}
+}
+
+func (m *MockIter) NextPage() bool {
+	return true
+}
+
+func (m *MockIter) GetPage() bool {
+	return true
 }
 
 func TestCSVMarshalIter(t *testing.T) {

@@ -30,7 +30,9 @@ func ActionNotificationExportsInit() {
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show Action Notification Export`,
+		Long:  `Show Action Notification Export`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -39,14 +41,7 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(actionNotificationExport, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, actionNotificationExport, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
@@ -60,7 +55,9 @@ func ActionNotificationExportsInit() {
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create Action Notification Export`,
+		Long:  `Create Action Notification Export`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -73,14 +70,7 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(actionNotificationExport, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, actionNotificationExport, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

@@ -32,8 +32,8 @@ func LocksInit() {
 
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
-		Short: "list-for",
-		Long:  `list-for`,
+		Short: "List Locks by path",
+		Long:  `List Locks by path`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -49,6 +49,15 @@ func LocksInit() {
 
 			client := lock.Client{Config: *config}
 			it, err := client.ListFor(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatListFor, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -76,7 +85,9 @@ func LocksInit() {
 	paramsLockCreate := files_sdk.LockCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create Lock`,
+		Long:  `Create Lock`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -95,14 +106,7 @@ func LocksInit() {
 			var lock interface{}
 			var err error
 			lock, err = client.Create(ctx, paramsLockCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(lock, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, lock, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
@@ -119,7 +123,9 @@ func LocksInit() {
 	paramsLockDelete := files_sdk.LockDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete [path]",
+		Use:   "delete [path]",
+		Short: `Delete Lock`,
+		Long:  `Delete Lock`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

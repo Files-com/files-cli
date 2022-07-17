@@ -28,7 +28,9 @@ func HistoryExportsInit() {
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show History Export`,
+		Long:  `Show History Export`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -37,14 +39,7 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(historyExport, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, historyExport, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
@@ -57,7 +52,9 @@ func HistoryExportsInit() {
 	paramsHistoryExportCreate := files_sdk.HistoryExportCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create History Export`,
+		Long:  `Create History Export`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -66,14 +63,7 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(historyExport, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, historyExport, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

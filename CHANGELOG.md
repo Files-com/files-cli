@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.4.0] - 2022/07/17
+### Add
+- Commands `list` and `list-*` with the default format of `table`
+  - Prefetches the next page making it faster to display when next page is requested.
+  - Shows loading indicator when pages on slow page loads.
+- `folders list-for` now as alias `folders ls`
+- Commands now show a descriptions when listing sub commands.
+
+### Fix
+- Resources with parse errors can now recover and display results when using format `json`.
+- Better parsing of server response errors.
+- Address resources where id is inserted into path.
+- Listing resources with nested values now defaults to JSON instead of internal Map value.
+- Resources that returned non paginated collection results no longer return parse error.
+- `upload`/`download`/sync` flag `--times` preserve modification times now falls back to mtime if no provided_time.
+
 ## [1.3.71] - 2022/07/08
 ### Fix
 - Address an issue formatting non paginated result sets.

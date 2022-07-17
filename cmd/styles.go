@@ -27,7 +27,9 @@ func StylesInit() {
 	paramsStyleFind := files_sdk.StyleFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find [path]",
+		Use:   "find [path]",
+		Short: `Show Style`,
+		Long:  `Show Style`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -39,14 +41,7 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Find(ctx, paramsStyleFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(style, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, style, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
@@ -59,7 +54,9 @@ func StylesInit() {
 	paramsStyleUpdate := files_sdk.StyleUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update [path]",
+		Use:   "update [path]",
+		Short: `Update Style`,
+		Long:  `Update Style`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -71,14 +68,7 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Update(ctx, paramsStyleUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(style, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, style, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
@@ -91,7 +81,9 @@ func StylesInit() {
 	paramsStyleDelete := files_sdk.StyleDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete [path]",
+		Use:   "delete [path]",
+		Short: `Delete Style`,
+		Long:  `Delete Style`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

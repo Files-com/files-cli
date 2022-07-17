@@ -30,8 +30,8 @@ func FileCommentsInit() {
 
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
-		Short: "list-for",
-		Long:  `list-for`,
+		Short: "List File Comments by path",
+		Long:  `List File Comments by path`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -44,6 +44,15 @@ func FileCommentsInit() {
 
 			client := file_comment.Client{Config: *config}
 			it, err := client.ListFor(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatListFor, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -68,7 +77,9 @@ func FileCommentsInit() {
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create File Comment`,
+		Long:  `Create File Comment`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -80,14 +91,7 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Create(ctx, paramsFileCommentCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(fileComment, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, fileComment, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
@@ -101,7 +105,9 @@ func FileCommentsInit() {
 	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update File Comment`,
+		Long:  `Update File Comment`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -110,14 +116,7 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Update(ctx, paramsFileCommentUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(fileComment, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, fileComment, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
@@ -131,7 +130,9 @@ func FileCommentsInit() {
 	paramsFileCommentDelete := files_sdk.FileCommentDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete File Comment`,
+		Long:  `Delete File Comment`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

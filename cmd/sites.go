@@ -27,7 +27,9 @@ func SitesInit() {
 	var fieldsGet string
 	var formatGet string
 	cmdGet := &cobra.Command{
-		Use: "get",
+		Use:   "get",
+		Short: `Show site settings`,
+		Long:  `Show site settings`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -36,14 +38,7 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Get(ctx)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(site, formatGet, fieldsGet, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, site, err, formatGet, fieldsGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -53,7 +48,9 @@ func SitesInit() {
 	var fieldsGetUsage string
 	var formatGetUsage string
 	cmdGetUsage := &cobra.Command{
-		Use: "get-usage",
+		Use:   "get-usage",
+		Short: `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
+		Long:  `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -62,14 +59,7 @@ func SitesInit() {
 			var usageSnapshot interface{}
 			var err error
 			usageSnapshot, err = client.GetUsage(ctx)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(usageSnapshot, formatGetUsage, fieldsGetUsage, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, usageSnapshot, err, formatGetUsage, fieldsGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -136,7 +126,9 @@ func SitesInit() {
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update site settings`,
+		Long:  `Update site settings`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -311,14 +303,7 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Update(ctx, paramsSiteUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(site, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, site, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")

@@ -28,7 +28,9 @@ func ActionWebhookFailuresInit() {
 	paramsActionWebhookFailureRetry := files_sdk.ActionWebhookFailureRetryParams{}
 
 	cmdRetry := &cobra.Command{
-		Use: "retry",
+		Use:   "retry",
+		Short: `retry Action Webhook Failure`,
+		Long:  `retry Action Webhook Failure`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

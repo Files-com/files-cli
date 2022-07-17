@@ -38,10 +38,11 @@ func FoldersInit() {
 	var listRecursively bool
 
 	cmdListFor := &cobra.Command{
-		Use:   "list-for [path]",
-		Short: "list-for",
-		Long:  `list-for`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list-for [path]",
+		Short:   "List Folders by path",
+		Long:    `List Folders by path`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -111,7 +112,9 @@ func FoldersInit() {
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create [path]",
+		Use:   "create [path]",
+		Short: `Create folder`,
+		Long:  `Create folder`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -127,14 +130,7 @@ func FoldersInit() {
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFolderCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(file, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, file, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")

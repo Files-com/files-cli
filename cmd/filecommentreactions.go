@@ -28,7 +28,9 @@ func FileCommentReactionsInit() {
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create File Comment Reaction`,
+		Long:  `Create File Comment Reaction`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -37,14 +39,7 @@ func FileCommentReactionsInit() {
 			var fileCommentReaction interface{}
 			var err error
 			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(fileCommentReaction, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, fileCommentReaction, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -59,7 +54,9 @@ func FileCommentReactionsInit() {
 	paramsFileCommentReactionDelete := files_sdk.FileCommentReactionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete File Comment Reaction`,
+		Long:  `Delete File Comment Reaction`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

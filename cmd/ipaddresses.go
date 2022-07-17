@@ -30,8 +30,8 @@ func IpAddressesInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List IP Addresses associated with the current site",
+		Long:  `List IP Addresses associated with the current site`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -41,6 +41,15 @@ func IpAddressesInit() {
 
 			client := ip_address.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -64,7 +73,9 @@ func IpAddressesInit() {
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
 
 	cmdGetReserved := &cobra.Command{
-		Use: "get-reserved",
+		Use:   "get-reserved",
+		Short: `List all possible public IP addresses`,
+		Long:  `List all possible public IP addresses`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -73,14 +84,7 @@ func IpAddressesInit() {
 			var publicIpAddressCollection interface{}
 			var err error
 			publicIpAddressCollection, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(publicIpAddressCollection, formatGetReserved, fieldsGetReserved, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, publicIpAddressCollection, err, formatGetReserved, fieldsGetReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")

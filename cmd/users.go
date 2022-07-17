@@ -33,8 +33,8 @@ func UsersInit() {
 
 	cmdList := &cobra.Command{
 		Use:   "list",
-		Short: "list",
-		Long:  `list`,
+		Short: "List Users",
+		Long:  `List Users`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
@@ -44,6 +44,15 @@ func UsersInit() {
 
 			client := user.Client{Config: *config}
 			it, err := client.List(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -69,7 +78,9 @@ func UsersInit() {
 	paramsUserFind := files_sdk.UserFindParams{}
 
 	cmdFind := &cobra.Command{
-		Use: "find",
+		Use:   "find",
+		Short: `Show User`,
+		Long:  `Show User`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -78,14 +89,7 @@ func UsersInit() {
 			var user interface{}
 			var err error
 			user, err = client.Find(ctx, paramsUserFind)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatFind, fieldsFind, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, user, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
@@ -119,7 +123,9 @@ func UsersInit() {
 	UserCreateRequire2fa := ""
 
 	cmdCreate := &cobra.Command{
-		Use: "create",
+		Use:   "create",
+		Short: `Create User`,
+		Long:  `Create User`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -186,14 +192,7 @@ func UsersInit() {
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
 			user, err = client.Create(ctx, paramsUserCreate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatCreate, fieldsCreate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, user, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -248,7 +247,9 @@ func UsersInit() {
 	paramsUserUnlock := files_sdk.UserUnlockParams{}
 
 	cmdUnlock := &cobra.Command{
-		Use: "unlock",
+		Use:   "unlock",
+		Short: `Unlock user who has been locked out due to failed logins`,
+		Long:  `Unlock user who has been locked out due to failed logins`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -271,7 +272,9 @@ func UsersInit() {
 	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
 
 	cmdResendWelcomeEmail := &cobra.Command{
-		Use: "resend-welcome-email",
+		Use:   "resend-welcome-email",
+		Short: `Resend user welcome email`,
+		Long:  `Resend user welcome email`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -294,7 +297,9 @@ func UsersInit() {
 	paramsUserUser2faReset := files_sdk.UserUser2faResetParams{}
 
 	cmdUser2faReset := &cobra.Command{
-		Use: "user-2fa-reset",
+		Use:   "user-2fa-reset",
+		Short: `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
+		Long:  `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -338,7 +343,9 @@ func UsersInit() {
 	UserUpdateRequire2fa := ""
 
 	cmdUpdate := &cobra.Command{
-		Use: "update",
+		Use:   "update",
+		Short: `Update User`,
+		Long:  `Update User`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -405,14 +412,7 @@ func UsersInit() {
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
 			user, err = client.Update(ctx, paramsUserUpdate)
-			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
-			} else {
-				err = lib.Format(user, formatUpdate, fieldsUpdate, cmd.OutOrStdout())
-				if err != nil {
-					lib.ClientError(ctx, err, cmd.ErrOrStderr())
-				}
-			}
+			lib.HandleResponse(ctx, user, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
@@ -468,7 +468,9 @@ func UsersInit() {
 	paramsUserDelete := files_sdk.UserDeleteParams{}
 
 	cmdDelete := &cobra.Command{
-		Use: "delete",
+		Use:   "delete",
+		Short: `Delete User`,
+		Long:  `Delete User`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
