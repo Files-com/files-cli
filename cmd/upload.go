@@ -32,13 +32,12 @@ func UploadCmd() *cobra.Command {
 			job := client.Uploader(
 				ctx,
 				file.UploaderParams{
-					LocalPath:     sourcePath,
-					RemotePath:    remotePath,
-					Sync:          transfer.SyncFlag,
-					Manager:       transfer.Manager,
-					Ignore:        *transfer.Ignore,
-					RetryPolicy:   file.RetryUnfinished,
-					PreserveTimes: transfer.PreserveTimes,
+					LocalPath:   sourcePath,
+					RemotePath:  remotePath,
+					Sync:        transfer.SyncFlag,
+					Manager:     transfer.Manager,
+					Ignore:      *transfer.Ignore,
+					RetryPolicy: file.RetryUnfinished,
 				},
 			)
 
@@ -49,7 +48,6 @@ func UploadCmd() *cobra.Command {
 	Upload.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	Upload.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 	Upload.Flags().StringSliceVarP(transfer.Ignore, "ignore", "i", *transfer.Ignore, "ignore files. See https://git-scm.com/docs/gitignore#_pattern_format")
-	Upload.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "preserve modification times")
 
 	return Upload
 }

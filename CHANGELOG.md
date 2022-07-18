@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.4.1] - 2022/07/18
+### Improvement
+- Removes flag `--times` for `upload`/`sync push` this is now done by default.
+
 ## [1.4.0] - 2022/07/17
 ### Add
 - Commands `list` and `list-*` with the default format of `table`
@@ -18,72 +22,72 @@ Auto generated releases contain additions and fixes to models and method argumen
 - Address resources where id is inserted into path.
 - Listing resources with nested values now defaults to JSON instead of internal Map value.
 - Resources that returned non paginated collection results no longer return parse error.
-- `upload`/`download`/sync` flag `--times` preserve modification times now falls back to mtime if no provided_time.
+- `upload`/`download`/`sync` flag `--times` preserve modification times now falls back to mtime if no provided_time.
 
-## [1.3.71] - 2022/07/08
+## [1.3.70] - 2022/07/08
 ### Fix
 - Address an issue formatting non paginated result sets.
 
-## [1.3.70] - 2022/07/08
-### Add
-- `upload`/`download`/sync` new flag `--times` preserve modification times. Defaults to false.
-
-## [1.3.69] - 2022/07/01
-### Fix
-- `upload`/`sync` when on an unstable connection was failing with `Your socket connection to the server was not read from or written to within the timeout period. Idle connections will be closed.`. This was fixed by property rewinding the file part before trying again.
-
 ## [1.3.67] - 2022/06/29
-### Fix
-- `users update --id XXX` would return `Datetime Parse - 'authenticate_until must contain valid date and time'`
+### Add
+- `upload`/`download`/`sync` new flag `--times` preserve modification times. Defaults to false.
 
 ## [1.3.65] - 2022/06/23
 ### Fix
-- Upload to remote mounts could fail with an etag error.
+- `upload`/`sync` when on an unstable connection was failing with `Your socket connection to the server was not read from or written to within the timeout period. Idle connections will be closed.`. This was fixed by property rewinding the file part before trying again.
 
 ## [1.3.61] - 2022/06/15
 ### Fix
-- `* delete` would return blank attributes for an entity. It now should return nothing unless there is an error.
+- `users update --id XXX` would return `Datetime Parse - 'authenticate_until must contain valid date and time'`
 
 ## [1.3.60] - 2022/06/14
+### Fix
+- Upload to remote mounts could fail with an etag error.
+
+## [1.3.58] - 2022/06/07
+### Fix
+- `* delete` would return blank attributes for an entity. It now should return nothing unless there is an error.
+
+## [1.3.10] - 2021/12/16
 ### Fix
 - `upload`/`download`/`sync`
   - when using progress bars now shows full path of file if there is enough width in the terminal.
   - Could delay files from transferring until scanning phase was complete.
 
-## [1.3.58] - 2022/06/07
+## [1.3.8] - 2021/12/03
 ### Fix
 - `sync` command could panic at the end of an operation.
 
-## [1.3.10] - 2021/12/16
+## [1.3.0] - 2021/10/27
 ### Add
 - `files` async commands `copy` and `move` 
   - flag `block`. This returns a progress bar of known status. To skip progress bars use flag `no-progress`. If task fails it will return a non-zero exit code.
   - flag `event-log`. After the operation is complete this returns a log line for each file. This can be formatted with the standard `format` flag.
   
-## [1.3.8] - 2021/12/03
+## [1.2.3] - 2021/10/25
 ### Add
 - `folders list-for` new flag `recursive` (list folders/files recursively)
 - `folders`
 
-## [1.3.0] - 2021/10/27
+## [1.2.2] - 2021/10/22
 ### Add
 - `folders list-for` new flag `only-folders`
 
-## [1.2.3] - 2021/10/25
+## [1.2.1] - 2021/10/19
 ### Fix
 - `upload` or `sync push` could cause a panic error when uploading to a remote server.
 
-## [1.2.2] - 2021/10/22
+## [1.2.0] - 2021/10/19
 ### Improvement
 - 3x performance when uploading to remote mounts.
 - Less jittery transfer rate and ETA indicators when uploading to slower remote mounts.
 
-## [1.2.1] - 2021/10/19
+## [1.1.1691] - 2021/09/30
 ### Fix
 - Improved error handling for unexpected HTML errors.
 - When uploading to a remote server files would incorrectly report 0 bytes transferred after completion.
 
-## [1.2.0] - 2021/10/19
+## [1.1.1679] - 2021/09/23
 ### Add
 - `sync { push | pull } [flags]`
   - Post sync actions:
@@ -95,22 +99,22 @@ Auto generated releases contain additions and fixes to models and method argumen
 - `sync` compares file size instead of modified time to match the server sync.
 - Fixes uploading errors to some remote servers for files over 1GB.
 
-## [1.1.1691] - 2021/09/30
+## [1.1.1677] - 2021/09/22
 ### Add
 - An upload that fails in the middle will be retried at the point it failed. If there are multiple files the failed upload will be retried after all other files have finished.
 
-## [1.1.1679] - 2021/09/23
+## [1.1.1666] - 2021/09/14
 ### Fix
 - Address `upload` & `download` commands not displaying progress.
 
-## [1.1.1677] - 2021/09/22
+## [1.1.1645] - 2021/08/11
 ### Change
 - Remove all single letter flags for generated commands
 
 ### Fix
 - Missing flag for `bundles create` `--paths`
 
-## [1.1.1666] - 2021/09/14
+## [1.1.1644] - 2021/08/11
 ### Change
 - `upload`/`download` better handles transfers with many files.
   - Improved performance with a new scanning state while the total number of files is not known.
@@ -128,23 +132,23 @@ Auto generated releases contain additions and fixes to models and method argumen
 - Errors now are sent to stderr rather than stdout.
 - `format` flag with `table` returns file size in a human readable format.
 
-## [1.1.1645] - 2021/08/11
+## [1.1.1588] - 2021/08/03
 ### Fix
 - Rendering output in the default table format was printed twice.
 - Fix documentation for `format` flag `table-light` to `table-bright`
 
-## [1.1.1644] - 2021/08/11
+## [1.1.1585] - 2021/08/03### Add
 ### Fix
 - `upload`/`download` flag `send-logs-to-cloud` has now been fixed.
 
-## [1.1.1588] - 2021/08/03
+## [1.0.1318] - 2021/06/29
 ### Add
 - Flag `format` default: `table`, options: "json, csv, table, table-dark, table-bright"
 
 ### Change
 - Default output format was `json` now it's `table`
 
-## [1.1.1585] - 2021/08/03### Add
+- String flags that only accept a list of values are validated before sending request. This list of values is also listed in the usage description.
 ### Add
 - `upload` and `download`
     - Flag `sync` to only transfer files based on the modified date.
@@ -159,23 +163,23 @@ Auto generated releases contain additions and fixes to models and method argumen
 - Incorrectly typed subcommands return error rather than no output.
 - `config reset` now resets all persistent config rather that having to reset by flags.
 
-## [1.0.1318] - 2021/06/29
+## [1.0.857] - 2021/04/28
 ### Fix
 - `files-cli download` Fix Windows issue `The process cannot access the file because it is being used by another process.`
 - `files-cli download` in some cases the CLI hangs after all files are download.
 
-- String flags that only accept a list of values are validated before sending request. This list of values is also listed in the usage description.
+## [1.0.856] - 2021/04/28
 ### Added
 - String flags that only accept a list of values are validated before sending request. This list of values is also listed in the usage description.
 
-## [1.0.857] - 2021/04/28
+## [1.0.669] - 2021/04/12
 ### Added
 - `upload` command processes file parts in parallel. Defaults to 25, but can be changed via flag `--max-concurrent-connections 50`
 
 ### Fix
 - Reduce memory usage when not in debug mode.
 
-## [1.0.856] - 2021/04/28
+## [1.0.215] - 2021/02/22
 ### Added
 - New flag `--max-concurrent-connections` to `download` and `upload` commands. (Default is 10)
 - `download` only shows one progress bar when downloading a single file.
@@ -188,7 +192,7 @@ Auto generated releases contain additions and fixes to models and method argumen
 - Fix file size attribute from failing on 32-bit releases.
 - Downloading large files could hang once showing 100% due to inconsistencies in reported size.
 
-## [1.0.669] - 2021/04/12
+## [1.0.210] - 2021/02/19
 ### Added
 - New commands `login` and `logout`
 - `config reset` now takes flags to reset a specific key.
@@ -197,19 +201,19 @@ Auto generated releases contain additions and fixes to models and method argumen
 - In some cases API errors were not being returned correctly.
 - `session delete` no longer returns an error.
 
-## [1.0.215] - 2021/02/22
+## [1.0.196] - 2021/02/17
 ### Fix
 - Windows command prompt for session login now formats input correctly.
 
-## [1.0.210] - 2021/02/19
+## [1.0.194] - 2021/02/16
 ### Fix
 - version command now displays the current version correctly.
 
-## [1.0.196] - 2021/02/17
+
 ### Fix
 - `download` and `upload` command now support session login
 
-## [1.0.194] - 2021/02/16
+
 ### Added
 - Support basic login and 2FA methods sms, u2f, yubi, and otp.
 - Command `config` holds configuration in `~/.config/files-cli`

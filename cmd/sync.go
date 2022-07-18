@@ -34,13 +34,12 @@ func SyncInit() *cobra.Command {
 			job = client.Uploader(
 				ctx,
 				file.UploaderParams{
-					LocalPath:     localPath,
-					RemotePath:    remotePath,
-					Sync:          transfer.SyncFlag,
-					Manager:       transfer.Manager,
-					Ignore:        *transfer.Ignore,
-					PreserveTimes: transfer.PreserveTimes,
-					RetryPolicy:   file.RetryUnfinished,
+					LocalPath:   localPath,
+					RemotePath:  remotePath,
+					Sync:        transfer.SyncFlag,
+					Manager:     transfer.Manager,
+					Ignore:      *transfer.Ignore,
+					RetryPolicy: file.RetryUnfinished,
 				},
 			)
 			lib.ClientError(ctx, transfer.ProcessJob(ctx, job, *config))
@@ -78,7 +77,7 @@ func SyncInit() *cobra.Command {
 	Sync.PersistentFlags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
 	Sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	Sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
-	Sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "preserve modification times")
+	Sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Pulled files to include the original modification time")
 	Sync.PersistentFlags().StringSliceVarP(transfer.Ignore, "ignore", "i", *transfer.Ignore, "ignore files. See https://git-scm.com/docs/gitignore#_pattern_format")
 
 	Sync.AddCommand(push)
