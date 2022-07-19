@@ -28,6 +28,7 @@ func AutomationsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsAutomationList := files_sdk.AutomationListParams{}
 	var MaxPagesList int64
 	listWithDeleted := false
@@ -61,7 +62,7 @@ func AutomationsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -75,10 +76,12 @@ func AutomationsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Automations.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsAutomationFind := files_sdk.AutomationFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -93,16 +96,19 @@ func AutomationsInit() {
 			var automation interface{}
 			var err error
 			automation, err = client.Find(ctx, paramsAutomationFind)
-			lib.HandleResponse(ctx, automation, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, automation, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationFind.Id, "id", 0, "Automation ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Automations.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createDisabled := false
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateTrigger := ""
@@ -129,7 +135,7 @@ func AutomationsInit() {
 			paramsAutomationCreate.Trigger = paramsAutomationCreate.Trigger.Enum()[AutomationCreateTrigger]
 			paramsAutomationCreate.Automation = paramsAutomationCreate.Automation.Enum()[AutomationCreateAutomation]
 			automation, err = client.Create(ctx, paramsAutomationCreate)
-			lib.HandleResponse(ctx, automation, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Source, "source", "", "Source Path")
@@ -149,10 +155,13 @@ func AutomationsInit() {
 	cmdCreate.Flags().StringVar(&AutomationCreateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Automations.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateDisabled := false
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
@@ -179,7 +188,7 @@ func AutomationsInit() {
 			paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[AutomationUpdateTrigger]
 			paramsAutomationUpdate.Automation = paramsAutomationUpdate.Automation.Enum()[AutomationUpdateAutomation]
 			automation, err = client.Update(ctx, paramsAutomationUpdate)
-			lib.HandleResponse(ctx, automation, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
@@ -200,10 +209,13 @@ func AutomationsInit() {
 	cmdUpdate.Flags().StringVar(&AutomationUpdateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Automations.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsAutomationDelete := files_sdk.AutomationDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -225,6 +237,8 @@ func AutomationsInit() {
 	cmdDelete.Flags().Int64Var(&paramsAutomationDelete.Id, "id", 0, "Automation ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Automations.AddCommand(cmdDelete)
 }

@@ -1,15 +1,29 @@
 package lib
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 )
 
-func JsonMarshalIter(it Iter, fields string, filter FilterIter, out io.Writer) error {
+func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter FilterIter, usePager bool, out io.Writer) error {
+	ctx, cancel := context.WithCancel(parentCtx)
+	defer cancel()
+	pager, err := Pager{UsePager: usePager}.Init(it, out)
+	if err != nil {
+		return err
+	}
+	spinner := &Spinner{Writer: out}
+	if err = spinner.Start(); err != nil {
+		return err
+	}
 	firstObject := true
 	for it.Next() {
+		if pager.Canceled(ctx) {
+			return nil
+		}
 		if filter != nil && !filter(it.Current()) {
 			continue
 		}
@@ -22,24 +36,37 @@ func JsonMarshalIter(it Iter, fields string, filter FilterIter, out io.Writer) e
 			panic(err)
 		}
 		if firstObject {
-			fmt.Fprintf(out, "[%s", string(prettyJSON))
+			spinner.Stop()
+			pager.Start(cancel)
+			fmt.Fprintf(pager, "[%s", string(prettyJSON))
 		} else {
-			fmt.Fprintf(out, ",\n%s", string(prettyJSON))
+			fmt.Fprintf(pager, ",\n%s", string(prettyJSON))
 		}
 
 		firstObject = false
 	}
+	spinner.Stop()
 	if firstObject {
-		fmt.Fprintf(out, "[\n")
+		fmt.Fprintf(out, "[]\n")
+	} else {
+		pager.Wait()
+		fmt.Fprintf(pager, "]\n")
 	}
-	fmt.Fprintf(out, "]\n")
+
 	if it.Err() != nil {
 		return it.Err()
 	}
 	return nil
 }
 
-func JsonMarshal(i interface{}, fields string, out ...io.Writer) error {
+func JsonMarshal(i interface{}, fields string, usePager bool, out ...io.Writer) error {
+	if len(out) == 0 {
+		out = append(out, os.Stdout)
+	}
+	pager, err := Pager{UsePager: usePager}.Init(i, out[0])
+	if err != nil {
+		return err
+	}
 	recordMap, _, err := OnlyFields(fields, i)
 	if err != nil {
 		return err
@@ -48,9 +75,8 @@ func JsonMarshal(i interface{}, fields string, out ...io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if len(out) == 0 {
-		out = append(out, os.Stdout)
-	}
+	pager.Start(func() {})
 	fmt.Fprintf(out[0], "%v\n", string(prettyJSON))
+	pager.Wait()
 	return err
 }

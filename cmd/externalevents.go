@@ -27,6 +27,7 @@ func ExternalEventsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsExternalEventList := files_sdk.ExternalEventListParams{}
 	var MaxPagesList int64
 
@@ -56,7 +57,7 @@ func ExternalEventsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -68,10 +69,12 @@ func ExternalEventsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	ExternalEvents.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsExternalEventFind := files_sdk.ExternalEventFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -86,16 +89,19 @@ func ExternalEventsInit() {
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
-			lib.HandleResponse(ctx, externalEvent, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	ExternalEvents.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsExternalEventCreate := files_sdk.ExternalEventCreateParams{}
 	ExternalEventCreateStatus := ""
 
@@ -112,13 +118,15 @@ func ExternalEventsInit() {
 			var err error
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
-			lib.HandleResponse(ctx, externalEvent, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsExternalEventCreate.Body, "body", "", "Event body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	ExternalEvents.AddCommand(cmdCreate)
 }

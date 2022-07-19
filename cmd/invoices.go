@@ -24,6 +24,7 @@ func InvoicesInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsInvoiceList := files_sdk.InvoiceListParams{}
 	var MaxPagesList int64
 
@@ -53,7 +54,7 @@ func InvoicesInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -65,10 +66,12 @@ func InvoicesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Invoices.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsInvoiceFind := files_sdk.InvoiceFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -83,12 +86,14 @@ func InvoicesInit() {
 			var accountLineItem interface{}
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsInvoiceFind)
-			lib.HandleResponse(ctx, accountLineItem, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsInvoiceFind.Id, "id", 0, "Invoice ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Invoices.AddCommand(cmdFind)
 }

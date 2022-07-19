@@ -27,6 +27,7 @@ func ActionNotificationExportsInit() {
 	}
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -41,16 +42,19 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
-			lib.HandleResponse(ctx, actionNotificationExport, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	ActionNotificationExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createQuerySuccess := false
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
 
@@ -70,7 +74,7 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
-			lib.HandleResponse(ctx, actionNotificationExport, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -85,6 +89,8 @@ func ActionNotificationExportsInit() {
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryFolder, "query-folder", "", "Return notifications that were triggered by actions in this folder.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	ActionNotificationExports.AddCommand(cmdCreate)
 }

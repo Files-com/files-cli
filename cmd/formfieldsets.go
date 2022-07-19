@@ -27,6 +27,7 @@ func FormFieldSetsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsFormFieldSetList := files_sdk.FormFieldSetListParams{}
 	var MaxPagesList int64
 
@@ -56,7 +57,7 @@ func FormFieldSetsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -69,10 +70,12 @@ func FormFieldSetsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	FormFieldSets.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsFormFieldSetFind := files_sdk.FormFieldSetFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -87,16 +90,19 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
-			lib.HandleResponse(ctx, formFieldSet, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	FormFieldSets.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createSkipEmail := false
 	createSkipName := false
 	createSkipCompany := false
@@ -124,7 +130,7 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
-			lib.HandleResponse(ctx, formFieldSet, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -134,10 +140,13 @@ func FormFieldSetsInit() {
 	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "Skip validating company")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	FormFieldSets.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateSkipEmail := false
 	updateSkipName := false
 	updateSkipCompany := false
@@ -165,7 +174,7 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Update(ctx, paramsFormFieldSetUpdate)
-			lib.HandleResponse(ctx, formFieldSet, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
@@ -175,10 +184,13 @@ func FormFieldSetsInit() {
 	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "Skip validating company")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	FormFieldSets.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsFormFieldSetDelete := files_sdk.FormFieldSetDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -200,6 +212,8 @@ func FormFieldSetsInit() {
 	cmdDelete.Flags().Int64Var(&paramsFormFieldSetDelete.Id, "id", 0, "Form Field Set ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	FormFieldSets.AddCommand(cmdDelete)
 }

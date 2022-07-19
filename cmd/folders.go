@@ -28,6 +28,7 @@ func FoldersInit() {
 	}
 	var fieldsListFor string
 	var formatListFor string
+	usePagerListFor := true
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
 	listForSearchAll := false
@@ -82,7 +83,7 @@ func FoldersInit() {
 					return false
 				}
 			}
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -104,10 +105,12 @@ func FoldersInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createMkdirParents := false
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 
@@ -130,13 +133,15 @@ func FoldersInit() {
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFolderCreate)
-			lib.HandleResponse(ctx, file, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")
 	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Folders.AddCommand(cmdCreate)
 }

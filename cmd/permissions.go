@@ -26,6 +26,7 @@ func PermissionsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
 	listIncludeGroups := false
@@ -59,7 +60,7 @@ func PermissionsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -75,10 +76,12 @@ func PermissionsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Permissions.AddCommand(cmdList)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createRecursive := false
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 
@@ -101,7 +104,7 @@ func PermissionsInit() {
 			var permission interface{}
 			var err error
 			permission, err = client.Create(ctx, paramsPermissionCreate)
-			lib.HandleResponse(ctx, permission, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
@@ -112,10 +115,13 @@ func PermissionsInit() {
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Username, "username", "", "User username.  Provide `username` or `user_id`")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Permissions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsPermissionDelete := files_sdk.PermissionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -137,6 +143,8 @@ func PermissionsInit() {
 	cmdDelete.Flags().Int64Var(&paramsPermissionDelete.Id, "id", 0, "Permission ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Permissions.AddCommand(cmdDelete)
 }

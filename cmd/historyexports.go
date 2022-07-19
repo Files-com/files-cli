@@ -25,6 +25,7 @@ func HistoryExportsInit() {
 	}
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsHistoryExportFind := files_sdk.HistoryExportFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -39,16 +40,19 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
-			lib.HandleResponse(ctx, historyExport, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	HistoryExports.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsHistoryExportCreate := files_sdk.HistoryExportCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -63,7 +67,7 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
-			lib.HandleResponse(ctx, historyExport, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -90,6 +94,8 @@ func HistoryExportsInit() {
 	cmdCreate.Flags().StringVar(&paramsHistoryExportCreate.QueryTargetPermissionSet, "query-target-permission-set", "", "If searching for Histories about API keys, this parameter restricts results to API keys with this permission set.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	HistoryExports.AddCommand(cmdCreate)
 }

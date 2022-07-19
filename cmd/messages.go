@@ -24,6 +24,7 @@ func MessagesInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsMessageList := files_sdk.MessageListParams{}
 	var MaxPagesList int64
 
@@ -53,7 +54,7 @@ func MessagesInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -67,10 +68,12 @@ func MessagesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Messages.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsMessageFind := files_sdk.MessageFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -85,16 +88,19 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Find(ctx, paramsMessageFind)
-			lib.HandleResponse(ctx, message, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, message, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageFind.Id, "id", 0, "Message ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Messages.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsMessageCreate := files_sdk.MessageCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -109,7 +115,7 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Create(ctx, paramsMessageCreate)
-			lib.HandleResponse(ctx, message, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, message, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -118,10 +124,13 @@ func MessagesInit() {
 	cmdCreate.Flags().StringVar(&paramsMessageCreate.Body, "body", "", "Message body.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Messages.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	paramsMessageUpdate := files_sdk.MessageUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -136,7 +145,7 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Update(ctx, paramsMessageUpdate)
-			lib.HandleResponse(ctx, message, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageUpdate.Id, "id", 0, "Message ID.")
@@ -145,10 +154,13 @@ func MessagesInit() {
 	cmdUpdate.Flags().StringVar(&paramsMessageUpdate.Body, "body", "", "Message body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Messages.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsMessageDelete := files_sdk.MessageDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -170,6 +182,8 @@ func MessagesInit() {
 	cmdDelete.Flags().Int64Var(&paramsMessageDelete.Id, "id", 0, "Message ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Messages.AddCommand(cmdDelete)
 }

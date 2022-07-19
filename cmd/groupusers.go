@@ -27,6 +27,7 @@ func GroupUsersInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsGroupUserList := files_sdk.GroupUserListParams{}
 	var MaxPagesList int64
 
@@ -56,7 +57,7 @@ func GroupUsersInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -70,10 +71,12 @@ func GroupUsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	GroupUsers.AddCommand(cmdList)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createAdmin := false
 	paramsGroupUserCreate := files_sdk.GroupUserCreateParams{}
 
@@ -93,7 +96,7 @@ func GroupUsersInit() {
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.Create(ctx, paramsGroupUserCreate)
-			lib.HandleResponse(ctx, groupUser, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.GroupId, "group-id", 0, "Group ID to add user to.")
@@ -101,10 +104,13 @@ func GroupUsersInit() {
 	cmdCreate.Flags().BoolVar(&createAdmin, "admin", createAdmin, "Is the user a group administrator?")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	GroupUsers.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateAdmin := false
 	paramsGroupUserUpdate := files_sdk.GroupUserUpdateParams{}
 
@@ -124,7 +130,7 @@ func GroupUsersInit() {
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.Update(ctx, paramsGroupUserUpdate)
-			lib.HandleResponse(ctx, groupUser, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.Id, "id", 0, "Group User ID.")
@@ -133,10 +139,13 @@ func GroupUsersInit() {
 	cmdUpdate.Flags().BoolVar(&updateAdmin, "admin", updateAdmin, "Is the user a group administrator?")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	GroupUsers.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsGroupUserDelete := files_sdk.GroupUserDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -160,6 +169,8 @@ func GroupUsersInit() {
 	cmdDelete.Flags().Int64Var(&paramsGroupUserDelete.UserId, "user-id", 0, "User ID to remove from group.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	GroupUsers.AddCommand(cmdDelete)
 }

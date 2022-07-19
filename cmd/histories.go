@@ -24,6 +24,7 @@ func HistoriesInit() {
 	}
 	var fieldsListForFile string
 	var formatListForFile string
+	usePagerListForFile := true
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
 
 	cmdListForFile := &cobra.Command{
@@ -41,7 +42,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForFile(ctx, paramsHistoryListForFile)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForFile, fieldsListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionCollection, err, formatListForFile, fieldsListForFile, usePagerListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at")
@@ -52,10 +53,13 @@ func HistoriesInit() {
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Path, "path", "", "Path to operate on.")
 
 	cmdListForFile.Flags().StringVarP(&fieldsListForFile, "fields", "", "", "comma separated list of field names")
-	cmdListForFile.Flags().StringVarP(&formatListForFile, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListForFile.Flags().StringVarP(&formatListForFile, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
+
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder string
 	var formatListForFolder string
+	usePagerListForFolder := true
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
 
 	cmdListForFolder := &cobra.Command{
@@ -73,7 +77,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForFolder, fieldsListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionCollection, err, formatListForFolder, fieldsListForFolder, usePagerListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at")
@@ -84,10 +88,13 @@ func HistoriesInit() {
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Path, "path", "", "Path to operate on.")
 
 	cmdListForFolder.Flags().StringVarP(&fieldsListForFolder, "fields", "", "", "comma separated list of field names")
-	cmdListForFolder.Flags().StringVarP(&formatListForFolder, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListForFolder.Flags().StringVarP(&formatListForFolder, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
+
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser string
 	var formatListForUser string
+	usePagerListForUser := true
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
 
 	cmdListForUser := &cobra.Command{
@@ -102,7 +109,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForUser(ctx, paramsHistoryListForUser)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForUser, fieldsListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionCollection, err, formatListForUser, fieldsListForUser, usePagerListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at")
@@ -113,10 +120,13 @@ func HistoriesInit() {
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.UserId, "user-id", 0, "User ID.")
 
 	cmdListForUser.Flags().StringVarP(&fieldsListForUser, "fields", "", "", "comma separated list of field names")
-	cmdListForUser.Flags().StringVarP(&formatListForUser, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListForUser.Flags().StringVarP(&formatListForUser, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
+
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins string
 	var formatListLogins string
+	usePagerListLogins := true
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
 
 	cmdListLogins := &cobra.Command{
@@ -131,7 +141,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListLogins(ctx, paramsHistoryListLogins)
-			lib.HandleResponse(ctx, actionCollection, err, formatListLogins, fieldsListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, actionCollection, err, formatListLogins, fieldsListLogins, usePagerListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at")
@@ -141,10 +151,13 @@ func HistoriesInit() {
 	cmdListLogins.Flags().Int64Var(&paramsHistoryListLogins.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdListLogins.Flags().StringVarP(&fieldsListLogins, "fields", "", "", "comma separated list of field names")
-	cmdListLogins.Flags().StringVarP(&formatListLogins, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListLogins.Flags().StringVarP(&formatListLogins, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
+
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsHistoryList := files_sdk.HistoryListParams{}
 	var MaxPagesList int64
 
@@ -174,7 +187,7 @@ func HistoriesInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -189,6 +202,7 @@ func HistoriesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdList)
 }

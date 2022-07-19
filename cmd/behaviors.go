@@ -26,6 +26,7 @@ func BehaviorsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
 	var MaxPagesList int64
 
@@ -55,7 +56,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -68,10 +69,12 @@ func BehaviorsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -86,16 +89,19 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Find(ctx, paramsBehaviorFind)
-			lib.HandleResponse(ctx, behavior, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Behaviors.AddCommand(cmdFind)
 	var fieldsListFor string
 	var formatListFor string
+	usePagerListFor := true
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
 
@@ -128,7 +134,7 @@ func BehaviorsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -143,10 +149,12 @@ func BehaviorsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -164,7 +172,7 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Create(ctx, paramsBehaviorCreate)
-			lib.HandleResponse(ctx, behavior, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
@@ -174,10 +182,13 @@ func BehaviorsInit() {
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Behavior, "behavior", "", "Behavior type.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Behaviors.AddCommand(cmdCreate)
 	var fieldsWebhookTest string
 	var formatWebhookTest string
+	usePagerWebhookTest := true
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
 
 	cmdWebhookTest := &cobra.Command{
@@ -202,10 +213,13 @@ func BehaviorsInit() {
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "action for test body")
 
 	cmdWebhookTest.Flags().StringVarP(&fieldsWebhookTest, "fields", "", "", "comma separated list of field names")
-	cmdWebhookTest.Flags().StringVarP(&formatWebhookTest, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdWebhookTest.Flags().StringVarP(&formatWebhookTest, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdWebhookTest.Flags().BoolVar(&usePagerWebhookTest, "use-pager", usePagerWebhookTest, "Use $PAGER (.ie less, more, etc)")
+
 	Behaviors.AddCommand(cmdWebhookTest)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateAttachmentDelete := false
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
@@ -228,7 +242,7 @@ func BehaviorsInit() {
 			var behavior interface{}
 			var err error
 			behavior, err = client.Update(ctx, paramsBehaviorUpdate)
-			lib.HandleResponse(ctx, behavior, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
@@ -240,10 +254,13 @@ func BehaviorsInit() {
 	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Behaviors.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -265,6 +282,8 @@ func BehaviorsInit() {
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Behaviors.AddCommand(cmdDelete)
 }

@@ -29,6 +29,7 @@ func RemoteServersInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
 	var MaxPagesList int64
 
@@ -58,7 +59,7 @@ func RemoteServersInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -70,10 +71,12 @@ func RemoteServersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsRemoteServerFind := files_sdk.RemoteServerFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -88,16 +91,19 @@ func RemoteServersInit() {
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
-			lib.HandleResponse(ctx, remoteServer, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	RemoteServers.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createResetAuthentication := false
 	createEnableDedicatedIps := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
@@ -129,7 +135,7 @@ func RemoteServersInit() {
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
-			lib.HandleResponse(ctx, remoteServer, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -182,10 +188,13 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	RemoteServers.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateResetAuthentication := false
 	updateEnableDedicatedIps := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
@@ -217,7 +226,7 @@ func RemoteServersInit() {
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
 			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
-			lib.HandleResponse(ctx, remoteServer, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
@@ -271,10 +280,13 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	RemoteServers.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsRemoteServerDelete := files_sdk.RemoteServerDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -296,6 +308,8 @@ func RemoteServersInit() {
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerDelete.Id, "id", 0, "Remote Server ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	RemoteServers.AddCommand(cmdDelete)
 }

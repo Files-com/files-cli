@@ -25,6 +25,7 @@ func MessageReactionsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsMessageReactionList := files_sdk.MessageReactionListParams{}
 	var MaxPagesList int64
 
@@ -54,7 +55,7 @@ func MessageReactionsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -68,10 +69,12 @@ func MessageReactionsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	MessageReactions.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsMessageReactionFind := files_sdk.MessageReactionFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -86,16 +89,19 @@ func MessageReactionsInit() {
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
-			lib.HandleResponse(ctx, messageReaction, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageReactionFind.Id, "id", 0, "Message Reaction ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	MessageReactions.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsMessageReactionCreate := files_sdk.MessageReactionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -110,17 +116,20 @@ func MessageReactionsInit() {
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
-			lib.HandleResponse(ctx, messageReaction, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsMessageReactionCreate.Emoji, "emoji", "", "Emoji to react with.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	MessageReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsMessageReactionDelete := files_sdk.MessageReactionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -142,6 +151,8 @@ func MessageReactionsInit() {
 	cmdDelete.Flags().Int64Var(&paramsMessageReactionDelete.Id, "id", 0, "Message Reaction ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	MessageReactions.AddCommand(cmdDelete)
 }

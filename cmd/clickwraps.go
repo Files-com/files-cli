@@ -26,6 +26,7 @@ func ClickwrapsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsClickwrapList := files_sdk.ClickwrapListParams{}
 	var MaxPagesList int64
 
@@ -55,7 +56,7 @@ func ClickwrapsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -67,10 +68,12 @@ func ClickwrapsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Clickwraps.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsClickwrapFind := files_sdk.ClickwrapFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -85,16 +88,19 @@ func ClickwrapsInit() {
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
-			lib.HandleResponse(ctx, clickwrap, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsClickwrapFind.Id, "id", 0, "Clickwrap ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Clickwraps.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsClickwrapCreate := files_sdk.ClickwrapCreateParams{}
 	ClickwrapCreateUseWithBundles := ""
 	ClickwrapCreateUseWithInboxes := ""
@@ -115,7 +121,7 @@ func ClickwrapsInit() {
 			paramsClickwrapCreate.UseWithInboxes = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
 			paramsClickwrapCreate.UseWithUsers = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
-			lib.HandleResponse(ctx, clickwrap, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsClickwrapCreate.Name, "name", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -125,10 +131,13 @@ func ClickwrapsInit() {
 	cmdCreate.Flags().StringVar(&ClickwrapCreateUseWithUsers, "use-with-users", "", fmt.Sprintf("Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password. %v", reflect.ValueOf(paramsClickwrapCreate.UseWithUsers.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Clickwraps.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	paramsClickwrapUpdate := files_sdk.ClickwrapUpdateParams{}
 	ClickwrapUpdateUseWithBundles := ""
 	ClickwrapUpdateUseWithInboxes := ""
@@ -149,7 +158,7 @@ func ClickwrapsInit() {
 			paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
 			paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
 			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
-			lib.HandleResponse(ctx, clickwrap, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsClickwrapUpdate.Id, "id", 0, "Clickwrap ID.")
@@ -160,10 +169,13 @@ func ClickwrapsInit() {
 	cmdUpdate.Flags().StringVar(&ClickwrapUpdateUseWithUsers, "use-with-users", "", fmt.Sprintf("Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password. %v", reflect.ValueOf(paramsClickwrapUpdate.UseWithUsers.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Clickwraps.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsClickwrapDelete := files_sdk.ClickwrapDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -185,6 +197,8 @@ func ClickwrapsInit() {
 	cmdDelete.Flags().Int64Var(&paramsClickwrapDelete.Id, "id", 0, "Clickwrap ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Clickwraps.AddCommand(cmdDelete)
 }

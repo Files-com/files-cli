@@ -25,6 +25,7 @@ func FileCommentReactionsInit() {
 	}
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsFileCommentReactionCreate := files_sdk.FileCommentReactionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -39,7 +40,7 @@ func FileCommentReactionsInit() {
 			var fileCommentReaction interface{}
 			var err error
 			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
-			lib.HandleResponse(ctx, fileCommentReaction, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -47,10 +48,13 @@ func FileCommentReactionsInit() {
 	cmdCreate.Flags().StringVar(&paramsFileCommentReactionCreate.Emoji, "emoji", "", "Emoji to react with.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	FileCommentReactions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsFileCommentReactionDelete := files_sdk.FileCommentReactionDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -72,6 +76,8 @@ func FileCommentReactionsInit() {
 	cmdDelete.Flags().Int64Var(&paramsFileCommentReactionDelete.Id, "id", 0, "File Comment Reaction ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	FileCommentReactions.AddCommand(cmdDelete)
 }

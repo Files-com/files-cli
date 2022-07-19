@@ -26,6 +26,7 @@ func SitesInit() {
 	}
 	var fieldsGet string
 	var formatGet string
+	usePagerGet := true
 	cmdGet := &cobra.Command{
 		Use:   "get",
 		Short: `Show site settings`,
@@ -38,15 +39,18 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Get(ctx)
-			lib.HandleResponse(ctx, site, err, formatGet, fieldsGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
 	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "", "", "comma separated list of field names")
-	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGet.Flags().BoolVar(&usePagerGet, "use-pager", usePagerGet, "Use $PAGER (.ie less, more, etc)")
+
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage string
 	var formatGetUsage string
+	usePagerGetUsage := true
 	cmdGetUsage := &cobra.Command{
 		Use:   "get-usage",
 		Short: `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
@@ -59,15 +63,18 @@ func SitesInit() {
 			var usageSnapshot interface{}
 			var err error
 			usageSnapshot, err = client.GetUsage(ctx)
-			lib.HandleResponse(ctx, usageSnapshot, err, formatGetUsage, fieldsGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
 	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "", "", "comma separated list of field names")
-	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetUsage.Flags().BoolVar(&usePagerGetUsage, "use-pager", usePagerGetUsage, "Use $PAGER (.ie less, more, etc)")
+
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateDomainHstsHeader := false
 	updateAllowBundleNames := false
 	updateOverageNotify := false
@@ -303,7 +310,7 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Update(ctx, paramsSiteUpdate)
-			lib.HandleResponse(ctx, site, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")
@@ -421,6 +428,8 @@ func SitesInit() {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Sites.AddCommand(cmdUpdate)
 }

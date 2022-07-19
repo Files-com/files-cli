@@ -25,6 +25,7 @@ func As2StationsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsAs2StationList := files_sdk.As2StationListParams{}
 	var MaxPagesList int64
 
@@ -54,7 +55,7 @@ func As2StationsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -66,10 +67,12 @@ func As2StationsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	As2Stations.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsAs2StationFind := files_sdk.As2StationFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -84,16 +87,19 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Find(ctx, paramsAs2StationFind)
-			lib.HandleResponse(ctx, as2Station, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2StationFind.Id, "id", 0, "As2 Station ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	As2Stations.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsAs2StationCreate := files_sdk.As2StationCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -108,7 +114,7 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
-			lib.HandleResponse(ctx, as2Station, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "AS2 Name")
@@ -117,10 +123,13 @@ func As2StationsInit() {
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKeyPassword, "private-key-password", "", "")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	As2Stations.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	paramsAs2StationUpdate := files_sdk.As2StationUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -135,7 +144,7 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Update(ctx, paramsAs2StationUpdate)
-			lib.HandleResponse(ctx, as2Station, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
@@ -145,10 +154,13 @@ func As2StationsInit() {
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKeyPassword, "private-key-password", "", "")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	As2Stations.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsAs2StationDelete := files_sdk.As2StationDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -170,6 +182,8 @@ func As2StationsInit() {
 	cmdDelete.Flags().Int64Var(&paramsAs2StationDelete.Id, "id", 0, "As2 Station ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	As2Stations.AddCommand(cmdDelete)
 }

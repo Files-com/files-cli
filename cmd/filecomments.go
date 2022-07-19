@@ -25,6 +25,7 @@ func FileCommentsInit() {
 	}
 	var fieldsListFor string
 	var formatListFor string
+	usePagerListFor := true
 	paramsFileCommentListFor := files_sdk.FileCommentListForParams{}
 	var MaxPagesListFor int64
 
@@ -57,7 +58,7 @@ func FileCommentsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -70,10 +71,12 @@ func FileCommentsInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -91,17 +94,20 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Create(ctx, paramsFileCommentCreate)
-			lib.HandleResponse(ctx, fileComment, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Path, "path", "", "File path.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	FileComments.AddCommand(cmdCreate)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -116,17 +122,20 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Update(ctx, paramsFileCommentUpdate)
-			lib.HandleResponse(ctx, fileComment, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
 	cmdUpdate.Flags().StringVar(&paramsFileCommentUpdate.Body, "body", "", "Comment body.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	FileComments.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsFileCommentDelete := files_sdk.FileCommentDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -148,6 +157,8 @@ func FileCommentsInit() {
 	cmdDelete.Flags().Int64Var(&paramsFileCommentDelete.Id, "id", 0, "File Comment ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	FileComments.AddCommand(cmdDelete)
 }

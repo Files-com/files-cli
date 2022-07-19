@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"context"
 	"regexp"
 	"strings"
 	"testing"
@@ -8,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTableMarshalIter_q(t *testing.T) {
+func TestTableMarshalIter(t *testing.T) {
 	assert := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
@@ -16,27 +17,7 @@ func TestTableMarshalIter_q(t *testing.T) {
 		return true
 	}}
 	out := strings.Builder{}
-	in := strings.NewReader("q")
-	TableMarshalIter("", it, "", &out, in, nil)
-	assert.Equal(strings.TrimSpace(`
-┌────────────┬───────────┬─────┐
-│ FIRST_NAME │ LAST_NAME │ AGE │
-├────────────┼───────────┼─────┤
-│ Dustin     │ Zeisler   │ 100 │
-└────────────┴───────────┴─────┘
-`), strings.TrimSpace(sanitizeOutput(out.String())))
-}
-
-func TestTableMarshalIter_newline(t *testing.T) {
-	assert := assert.New(t)
-	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
-	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
-	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}, eofPage: func(iter *MockIter) bool {
-		return true
-	}}
-	out := strings.Builder{}
-	in := strings.NewReader(" \n\n\n\n")
-	TableMarshalIter("", it, "", &out, in, nil)
+	TableMarshalIter(context.Background(), "", it, "", true, &out, nil)
 
 	assert.Equal(strings.TrimSpace(`
 ┌────────────┬───────────┬─────┐
@@ -58,8 +39,7 @@ func TestTableMarshalIter_FilterIter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	out := strings.Builder{}
-	in := strings.NewReader(" \n")
-	TableMarshalIter("", it, "", &out, in, func(i interface{}) bool {
+	TableMarshalIter(context.Background(), "", it, "", true, &out, func(i interface{}) bool {
 		if i.(Person).FirstName == "Dustin" {
 			return true
 		}

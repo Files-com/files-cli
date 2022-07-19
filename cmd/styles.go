@@ -24,6 +24,7 @@ func StylesInit() {
 	}
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsStyleFind := files_sdk.StyleFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -41,16 +42,19 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Find(ctx, paramsStyleFind)
-			lib.HandleResponse(ctx, style, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Styles.AddCommand(cmdFind)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	paramsStyleUpdate := files_sdk.StyleUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -68,16 +72,19 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Update(ctx, paramsStyleUpdate)
-			lib.HandleResponse(ctx, style, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Styles.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsStyleDelete := files_sdk.StyleDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -102,6 +109,8 @@ func StylesInit() {
 	cmdDelete.Flags().StringVar(&paramsStyleDelete.Path, "path", "", "Style path.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Styles.AddCommand(cmdDelete)
 }

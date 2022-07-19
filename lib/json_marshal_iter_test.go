@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bytes"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,7 +15,7 @@ func TestJsonMarshalIter(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
-	JsonMarshalIter(&it, "", nil, buf)
+	JsonMarshalIter(context.Background(), &it, "", nil, false, buf)
 
 	a.Equal(`[{
     "age": 100,
@@ -35,9 +36,9 @@ func TestJsonMarshalIter_Filter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
-	JsonMarshalIter(&it, "", func(i interface{}) bool {
+	JsonMarshalIter(context.Background(), &it, "", func(i interface{}) bool {
 		return i.(Person).FirstName == "Dustin"
-	}, buf)
+	}, false, buf)
 
 	a.Equal(`[{
     "age": 100,

@@ -25,6 +25,7 @@ func FileMigrationsInit() {
 	}
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsFileMigrationFind := files_sdk.FileMigrationFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -39,12 +40,14 @@ func FileMigrationsInit() {
 			var fileMigration interface{}
 			var err error
 			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
-			lib.HandleResponse(ctx, fileMigration, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	FileMigrations.AddCommand(cmdFind)
 }

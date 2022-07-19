@@ -63,7 +63,7 @@ func ConfigInit() {
 			if len(args) > 0 {
 				fields = args[0]
 			}
-			lib.JsonMarshal(configParams, fields)
+			lib.JsonMarshal(configParams, fields, false)
 		},
 	}
 

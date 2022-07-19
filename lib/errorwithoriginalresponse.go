@@ -25,16 +25,16 @@ func ErrorWithOriginalResponse(err error, format string, logger retryablehttp.Lo
 	}
 }
 
-func HandleResponse(ctx context.Context, i interface{}, errIn error, format string, fields string, stdout io.Writer, stderr io.Writer, logger retryablehttp.Logger) {
+func HandleResponse(ctx context.Context, i interface{}, errIn error, format string, fields string, usePager bool, stdout io.Writer, stderr io.Writer, logger retryablehttp.Logger) {
 	if errIn != nil {
 		originalResponse, err := ErrorWithOriginalResponse(errIn, format, logger)
 		if err != nil {
 			ClientError(ctx, err, stderr)
 		} else {
-			Format(originalResponse, "json", "", stdout)
+			Format(ctx, originalResponse, "json", "", usePager, stdout)
 		}
 	} else {
-		err := Format(i, format, fields, stdout)
+		err := Format(ctx, i, format, fields, usePager, stdout)
 		if err != nil {
 			ClientError(ctx, err, stderr)
 		}

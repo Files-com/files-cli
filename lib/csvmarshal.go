@@ -46,15 +46,21 @@ func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bo
 }
 
 func CSVMarshalIter(it Iter, fields string, skip FilterIter, out io.Writer) error {
+	spinner := &Spinner{Writer: out}
+	if err := spinner.Start(); err != nil {
+		return err
+	}
 	w := csv.NewWriter(out)
 	writeHeader := true
 	for it.Next() {
 		if skip != nil && !skip(it.Current()) {
 			continue
 		}
+		spinner.Stop()
 		csvMarshal(w, it.Current(), fields, writeHeader)
 		writeHeader = false
 	}
+	spinner.Stop()
 	if it.Err() != nil {
 		return it.Err()
 	}

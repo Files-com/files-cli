@@ -26,6 +26,7 @@ func LocksInit() {
 	}
 	var fieldsListFor string
 	var formatListFor string
+	usePagerListFor := true
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
 	listForIncludeChildren := false
@@ -62,7 +63,7 @@ func LocksInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatListFor, fieldsListFor, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -76,10 +77,12 @@ func LocksInit() {
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Locks.AddCommand(cmdListFor)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createAllowAccessByAnyUser := false
 	createExclusive := false
 	paramsLockCreate := files_sdk.LockCreateParams{}
@@ -106,7 +109,7 @@ func LocksInit() {
 			var lock interface{}
 			var err error
 			lock, err = client.Create(ctx, paramsLockCreate)
-			lib.HandleResponse(ctx, lock, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
@@ -116,10 +119,13 @@ func LocksInit() {
 	cmdCreate.Flags().Int64Var(&paramsLockCreate.Timeout, "timeout", 0, "Lock timeout length")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Locks.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsLockDelete := files_sdk.LockDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -145,6 +151,8 @@ func LocksInit() {
 	cmdDelete.Flags().StringVar(&paramsLockDelete.Token, "token", "", "Lock token")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Locks.AddCommand(cmdDelete)
 }

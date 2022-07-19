@@ -26,6 +26,7 @@ func RequestsInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
 	listMine := false
@@ -59,7 +60,7 @@ func RequestsInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -73,10 +74,12 @@ func RequestsInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
 	var formatGetFolder string
+	usePagerGetFolder := true
 	getFolderMine := false
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
 
@@ -99,7 +102,7 @@ func RequestsInit() {
 			var requestCollection interface{}
 			var err error
 			requestCollection, err = client.GetFolder(ctx, paramsRequestGetFolder)
-			lib.HandleResponse(ctx, requestCollection, err, formatGetFolder, fieldsGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, requestCollection, err, formatGetFolder, fieldsGetFolder, usePagerGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -108,10 +111,13 @@ func RequestsInit() {
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
 	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "", "", "comma separated list of field names")
-	cmdGetFolder.Flags().StringVarP(&formatGetFolder, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdGetFolder.Flags().StringVarP(&formatGetFolder, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
+
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -129,7 +135,7 @@ func RequestsInit() {
 			var request interface{}
 			var err error
 			request, err = client.Create(ctx, paramsRequestCreate)
-			lib.HandleResponse(ctx, request, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")
@@ -138,10 +144,13 @@ func RequestsInit() {
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.GroupIds, "group-ids", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Requests.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsRequestDelete := files_sdk.RequestDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -163,6 +172,8 @@ func RequestsInit() {
 	cmdDelete.Flags().Int64Var(&paramsRequestDelete.Id, "id", 0, "Request ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Requests.AddCommand(cmdDelete)
 }

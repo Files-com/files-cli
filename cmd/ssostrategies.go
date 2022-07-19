@@ -25,6 +25,7 @@ func SsoStrategiesInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsSsoStrategyList := files_sdk.SsoStrategyListParams{}
 	var MaxPagesList int64
 
@@ -54,7 +55,7 @@ func SsoStrategiesInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -66,10 +67,12 @@ func SsoStrategiesInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	SsoStrategies.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsSsoStrategyFind := files_sdk.SsoStrategyFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -84,16 +87,19 @@ func SsoStrategiesInit() {
 			var ssoStrategy interface{}
 			var err error
 			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
-			lib.HandleResponse(ctx, ssoStrategy, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	SsoStrategies.AddCommand(cmdFind)
 	var fieldsSync string
 	var formatSync string
+	usePagerSync := true
 	paramsSsoStrategySync := files_sdk.SsoStrategySyncParams{}
 
 	cmdSync := &cobra.Command{
@@ -115,6 +121,8 @@ func SsoStrategiesInit() {
 	cmdSync.Flags().Int64Var(&paramsSsoStrategySync.Id, "id", 0, "Sso Strategy ID.")
 
 	cmdSync.Flags().StringVarP(&fieldsSync, "fields", "", "", "comma separated list of field names")
-	cmdSync.Flags().StringVarP(&formatSync, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdSync.Flags().StringVarP(&formatSync, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdSync.Flags().BoolVar(&usePagerSync, "use-pager", usePagerSync, "Use $PAGER (.ie less, more, etc)")
+
 	SsoStrategies.AddCommand(cmdSync)
 }

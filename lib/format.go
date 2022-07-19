@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -22,45 +23,47 @@ type IterPaging interface {
 
 type FilterIter func(interface{}) bool
 
-func Format(result interface{}, format string, fields string, out ...io.Writer) error {
+func Format(ctx context.Context, result interface{}, format string, fields string, usePager bool, out ...io.Writer) error {
 	results, ok := interfaceSlice(result)
 	if ok {
-		return FormatIter(&SliceIter{Items: results}, format, fields, func(i interface{}) bool { return true }, out...)
+		return FormatIter(ctx, &SliceIter{Items: results}, format, fields, false, func(i interface{}) bool { return true }, out...)
 	}
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
 	switch format {
 	case "json":
-		return JsonMarshal(result, fields, out[0])
+		return JsonMarshal(result, fields, usePager, out[0])
 	case "csv":
 		return CSVMarshal(result, fields, out[0])
 	case "table":
-		return TableMarshal("", result, fields, out[0])
+		return TableMarshal("", result, fields, usePager, out[0])
 	case "table-dark":
-		return TableMarshal("dark", result, fields, out[0])
+		return TableMarshal("dark", result, fields, usePager, out[0])
 	case "table-bright":
-		return TableMarshal("bright", result, fields, out[0])
+		return TableMarshal("bright", result, fields, usePager, out[0])
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}
 }
 
-func FormatIter(it Iter, format string, fields string, filter FilterIter, out ...io.Writer) error {
+func FormatIter(ctx context.Context, it Iter, format string, fields string, usePager bool, filter FilterIter, out ...io.Writer) error {
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
 	switch format {
 	case "json":
-		return JsonMarshalIter(it, fields, filter, out[0])
+		return JsonMarshalIter(ctx, it, fields, filter, usePager, out[0])
 	case "csv":
 		return CSVMarshalIter(it, fields, filter, out[0])
 	case "table":
-		return TableMarshalIter("", it, fields, out[0], os.Stdin, filter)
+		return TableMarshalIter(ctx, "", it, fields, usePager, out[0], filter)
 	case "table-dark":
-		return TableMarshalIter("dark", it, fields, out[0], os.Stdin, filter)
+		return TableMarshalIter(ctx, "dark", it, fields, usePager, out[0], filter)
 	case "table-bright":
-		return TableMarshalIter("bright", it, fields, out[0], os.Stdin, filter)
+		return TableMarshalIter(ctx, "bright", it, fields, usePager, out[0], filter)
+	case "table-markdown":
+		return TableMarshalIter(ctx, "markdown", it, fields, usePager, out[0], filter)
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}

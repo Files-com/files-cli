@@ -26,6 +26,7 @@ func WebhookTestsInit() {
 	}
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createFileAsBody := false
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
@@ -45,7 +46,7 @@ func WebhookTestsInit() {
 			var webhookTest interface{}
 			var err error
 			webhookTest, err = client.Create(ctx, paramsWebhookTestCreate)
-			lib.HandleResponse(ctx, webhookTest, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")
@@ -57,6 +58,8 @@ func WebhookTestsInit() {
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Action, "action", "", "action for test body")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	WebhookTests.AddCommand(cmdCreate)
 }

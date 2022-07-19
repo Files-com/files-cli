@@ -24,6 +24,7 @@ func SessionsInit() {
 	}
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	paramsSessionCreate := files_sdk.SessionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -38,7 +39,7 @@ func SessionsInit() {
 			var session interface{}
 			var err error
 			session, err = client.Create(ctx, paramsSessionCreate)
-			lib.HandleResponse(ctx, session, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.Username, "username", "", "Username to sign in as")
@@ -47,10 +48,13 @@ func SessionsInit() {
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.PartialSessionId, "partial-session-id", "", "Identifier for a partially-completed login")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Sessions.AddCommand(cmdCreate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
 		Short: `Delete user session (log out)`,
@@ -69,6 +73,8 @@ func SessionsInit() {
 	}
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Sessions.AddCommand(cmdDelete)
 }

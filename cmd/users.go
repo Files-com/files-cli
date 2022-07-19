@@ -28,6 +28,7 @@ func UsersInit() {
 	}
 	var fieldsList string
 	var formatList string
+	usePagerList := true
 	paramsUserList := files_sdk.UserListParams{}
 	var MaxPagesList int64
 
@@ -57,7 +58,7 @@ func UsersInit() {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(it, formatList, fieldsList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
 				lib.ClientError(ctx, err, cmd.ErrOrStderr())
 			}
@@ -71,10 +72,12 @@ func UsersInit() {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Users.AddCommand(cmdList)
 	var fieldsFind string
 	var formatFind string
+	usePagerFind := true
 	paramsUserFind := files_sdk.UserFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -89,16 +92,19 @@ func UsersInit() {
 			var user interface{}
 			var err error
 			user, err = client.Find(ctx, paramsUserFind)
-			lib.HandleResponse(ctx, user, err, formatFind, fieldsFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
 
 	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdFind)
 	var fieldsCreate string
 	var formatCreate string
+	usePagerCreate := true
 	createAvatarDelete := false
 	createAnnouncementsRead := false
 	createAttachmentsPermission := false
@@ -192,7 +198,7 @@ func UsersInit() {
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
 			user, err = client.Create(ctx, paramsUserCreate)
-			lib.HandleResponse(ctx, user, err, formatCreate, fieldsCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -240,10 +246,13 @@ func UsersInit() {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
 
 	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdCreate)
 	var fieldsUnlock string
 	var formatUnlock string
+	usePagerUnlock := true
 	paramsUserUnlock := files_sdk.UserUnlockParams{}
 
 	cmdUnlock := &cobra.Command{
@@ -265,10 +274,13 @@ func UsersInit() {
 	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
 
 	cmdUnlock.Flags().StringVarP(&fieldsUnlock, "fields", "", "", "comma separated list of field names")
-	cmdUnlock.Flags().StringVarP(&formatUnlock, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUnlock.Flags().StringVarP(&formatUnlock, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUnlock.Flags().BoolVar(&usePagerUnlock, "use-pager", usePagerUnlock, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdUnlock)
 	var fieldsResendWelcomeEmail string
 	var formatResendWelcomeEmail string
+	usePagerResendWelcomeEmail := true
 	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
 
 	cmdResendWelcomeEmail := &cobra.Command{
@@ -290,10 +302,13 @@ func UsersInit() {
 	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
 
 	cmdResendWelcomeEmail.Flags().StringVarP(&fieldsResendWelcomeEmail, "fields", "", "", "comma separated list of field names")
-	cmdResendWelcomeEmail.Flags().StringVarP(&formatResendWelcomeEmail, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdResendWelcomeEmail.Flags().StringVarP(&formatResendWelcomeEmail, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdResendWelcomeEmail.Flags().BoolVar(&usePagerResendWelcomeEmail, "use-pager", usePagerResendWelcomeEmail, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset string
 	var formatUser2faReset string
+	usePagerUser2faReset := true
 	paramsUserUser2faReset := files_sdk.UserUser2faResetParams{}
 
 	cmdUser2faReset := &cobra.Command{
@@ -315,10 +330,13 @@ func UsersInit() {
 	cmdUser2faReset.Flags().Int64Var(&paramsUserUser2faReset.Id, "id", 0, "User ID.")
 
 	cmdUser2faReset.Flags().StringVarP(&fieldsUser2faReset, "fields", "", "", "comma separated list of field names")
-	cmdUser2faReset.Flags().StringVarP(&formatUser2faReset, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUser2faReset.Flags().StringVarP(&formatUser2faReset, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUser2faReset.Flags().BoolVar(&usePagerUser2faReset, "use-pager", usePagerUser2faReset, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdUser2faReset)
 	var fieldsUpdate string
 	var formatUpdate string
+	usePagerUpdate := true
 	updateAvatarDelete := false
 	updateAnnouncementsRead := false
 	updateAttachmentsPermission := false
@@ -412,7 +430,7 @@ func UsersInit() {
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
 			user, err = client.Update(ctx, paramsUserUpdate)
-			lib.HandleResponse(ctx, user, err, formatUpdate, fieldsUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
@@ -461,10 +479,13 @@ func UsersInit() {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
 
 	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdUpdate)
 	var fieldsDelete string
 	var formatDelete string
+	usePagerDelete := true
 	paramsUserDelete := files_sdk.UserDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -486,6 +507,8 @@ func UsersInit() {
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.Id, "id", 0, "User ID.")
 
 	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright")
+	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
+
 	Users.AddCommand(cmdDelete)
 }
