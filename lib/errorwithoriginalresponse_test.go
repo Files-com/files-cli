@@ -41,8 +41,8 @@ func TestHandleResponse(t *testing.T) {
 				"table",
 				"",
 			},
-			wantStderr: "the server returned an unexpected response can only format response as json (use `--format json`)\n",
-			wantLogger: "Original error: `json: cannot unmarshal number into Go value of type string`\n",
+			wantStdout: "",
+			wantLogger: "Recovering from original error: `json: cannot unmarshal number into Go value of type string`\n",
 		},
 		{
 			name: "unexpected server response prints json",

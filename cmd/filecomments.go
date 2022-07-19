@@ -46,7 +46,7 @@ func FileCommentsInit() {
 			client := file_comment.Client{Config: *config}
 			it, err := client.ListFor(ctx, params)
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatListFor, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

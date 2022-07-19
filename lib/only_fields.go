@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"reflect"
+	"sort"
 	"strings"
 
 	"github.com/fatih/structs"
@@ -11,7 +12,15 @@ import (
 
 func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, []string, error) {
 	if reflect.ValueOf(structure).Kind() == reflect.Map {
-		return structure.(map[string]interface{}), []string{}, nil
+		m, _ := structure.(map[string]interface{})
+		var ordered []string
+		for k := range m {
+			ordered = append(ordered, k)
+		}
+		sort.Slice(ordered, func(i, j int) bool {
+			return ordered[i] < ordered[j]
+		})
+		return structure.(map[string]interface{}), ordered, nil
 	}
 	unparsedFields := strings.Split(commaFields, ",")
 	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")

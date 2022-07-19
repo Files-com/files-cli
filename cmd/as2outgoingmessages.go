@@ -43,7 +43,7 @@ func As2OutgoingMessagesInit() {
 			client := as2_outgoing_message.Client{Config: *config}
 			it, err := client.List(ctx, params)
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, formatList, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
