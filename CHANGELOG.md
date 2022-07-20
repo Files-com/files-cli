@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.5.2] - 2022/07/20
+### Fix
+- `--format` `table-markdown` for non paginated requests.
+
 ## [1.5.1] - 2022/07/19
 ### Fix
 - Resources with parse errors no longer require format `json` to recover and display results.

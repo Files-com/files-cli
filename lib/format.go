@@ -42,6 +42,8 @@ func Format(ctx context.Context, result interface{}, format string, fields strin
 		return TableMarshal("dark", result, fields, usePager, out[0])
 	case "table-bright":
 		return TableMarshal("bright", result, fields, usePager, out[0])
+	case "table-markdown":
+		return TableMarshal("markdown", result, fields, usePager, out[0])
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}
