@@ -88,6 +88,7 @@ func SitesInit() {
 	updateMobileAppSessionIpPinning := false
 	updateFolderPermissionsGroupsOnly := false
 	updateOfficeIntegrationAvailable := false
+	updatePinAllRemoteServersToSiteRegion := false
 	updateSslRequired := false
 	updateTlsDisabled := false
 	updateSftpInsecureCiphers := false
@@ -112,6 +113,7 @@ func SitesInit() {
 	updateNonSsoUsersAllowed := false
 	updateSharingEnabled := false
 	updateUserRequestsEnabled := false
+	updateUserRequestsNotifyAdmins := false
 	updateFtpEnabled := false
 	updateSftpEnabled := false
 	updateAllowed2faMethodSms := false
@@ -179,6 +181,9 @@ func SitesInit() {
 			}
 			if updateOfficeIntegrationAvailable {
 				paramsSiteUpdate.OfficeIntegrationAvailable = flib.Bool(true)
+			}
+			if updatePinAllRemoteServersToSiteRegion {
+				paramsSiteUpdate.PinAllRemoteServersToSiteRegion = flib.Bool(true)
 			}
 			if updateSslRequired {
 				paramsSiteUpdate.SslRequired = flib.Bool(true)
@@ -251,6 +256,9 @@ func SitesInit() {
 			}
 			if updateUserRequestsEnabled {
 				paramsSiteUpdate.UserRequestsEnabled = flib.Bool(true)
+			}
+			if updateUserRequestsNotifyAdmins {
+				paramsSiteUpdate.UserRequestsNotifyAdmins = flib.Bool(true)
 			}
 			if updateFtpEnabled {
 				paramsSiteUpdate.FtpEnabled = flib.Bool(true)
@@ -341,6 +349,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "Does the welcome screen appear?")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationAvailable, "office-integration-available", updateOfficeIntegrationAvailable, "Allow users to use Office for the web?")
+	cmdUpdate.Flags().BoolVar(&updatePinAllRemoteServersToSiteRegion, "pin-all-remote-servers-to-site-region", updatePinAllRemoteServersToSiteRegion, "If true, we will ensure that all internal communications with any remote server are made through the primary region of the site. This setting overrides individual remote server settings.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateTlsDisabled, "tls-disabled", updateTlsDisabled, "Are Insecure TLS and SFTP Ciphers allowed?  Enabling this is insecure.")
@@ -377,6 +386,7 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateNonSsoUsersAllowed, "non-sso-users-allowed", updateNonSsoUsersAllowed, "If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVar(&updateSharingEnabled, "sharing-enabled", updateSharingEnabled, "Allow bundle creation")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsEnabled, "user-requests-enabled", updateUserRequestsEnabled, "Enable User Requests feature")
+	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")

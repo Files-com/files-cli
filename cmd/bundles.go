@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
@@ -109,6 +111,7 @@ func BundlesInit() {
 	createSkipName := false
 	createSkipCompany := false
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
+	BundleCreatePermissions := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -140,6 +143,7 @@ func BundlesInit() {
 
 			var bundle interface{}
 			var err error
+			paramsBundleCreate.Permissions = paramsBundleCreate.Permissions.Enum()[BundleCreatePermissions]
 			bundle, err = client.Create(ctx, paramsBundleCreate)
 			lib.HandleResponse(ctx, bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
@@ -153,6 +157,7 @@ func BundlesInit() {
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Note, "note", "", "Bundle internal note")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
+	cmdCreate.Flags().StringVar(&BundleCreatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleCreate.Permissions.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPreviewOnly, "preview-only", createPreviewOnly, "Restrict users to previewing files only?")
 	cmdCreate.Flags().BoolVar(&createRequireRegistration, "require-registration", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
@@ -208,6 +213,7 @@ func BundlesInit() {
 	updateSkipCompany := false
 	updateWatermarkAttachmentDelete := false
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
+	BundleUpdatePermissions := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -242,6 +248,7 @@ func BundlesInit() {
 
 			var bundle interface{}
 			var err error
+			paramsBundleUpdate.Permissions = paramsBundleUpdate.Permissions.Enum()[BundleUpdatePermissions]
 			bundle, err = client.Update(ctx, paramsBundleUpdate)
 			lib.HandleResponse(ctx, bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
@@ -257,6 +264,7 @@ func BundlesInit() {
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
+	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "Restrict users to previewing files only?")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")

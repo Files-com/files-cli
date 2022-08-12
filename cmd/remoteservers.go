@@ -105,6 +105,7 @@ func RemoteServersInit() {
 	var formatCreate string
 	usePagerCreate := true
 	createResetAuthentication := false
+	createPinToSiteRegion := false
 	createEnableDedicatedIps := false
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateServerCertificate := ""
@@ -123,6 +124,9 @@ func RemoteServersInit() {
 
 			if createResetAuthentication {
 				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(true)
+			}
+			if createPinToSiteRegion {
+				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(true)
 			}
 			if createEnableDedicatedIps {
 				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(true)
@@ -156,6 +160,7 @@ func RemoteServersInit() {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Hostname, "hostname", "", "Hostname or IP address")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Name, "name", "", "Internal name for your reference")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.MaxConnections, "max-connections", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
+	cmdCreate.Flags().BoolVar(&createPinToSiteRegion, "pin-to-site-region", createPinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a sitewide setting which will force it to true.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Region, "s3-region", "", "S3 region")
@@ -196,6 +201,7 @@ func RemoteServersInit() {
 	var formatUpdate string
 	usePagerUpdate := true
 	updateResetAuthentication := false
+	updatePinToSiteRegion := false
 	updateEnableDedicatedIps := false
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateServerCertificate := ""
@@ -214,6 +220,9 @@ func RemoteServersInit() {
 
 			if updateResetAuthentication {
 				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(true)
+			}
+			if updatePinToSiteRegion {
+				paramsRemoteServerUpdate.PinToSiteRegion = flib.Bool(true)
 			}
 			if updateEnableDedicatedIps {
 				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(true)
@@ -248,6 +257,7 @@ func RemoteServersInit() {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Hostname, "hostname", "", "Hostname or IP address")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Name, "name", "", "Internal name for your reference")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.MaxConnections, "max-connections", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
+	cmdUpdate.Flags().BoolVar(&updatePinToSiteRegion, "pin-to-site-region", updatePinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a sitewide setting which will force it to true.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "S3 region")
