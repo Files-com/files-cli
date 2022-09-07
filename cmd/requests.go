@@ -29,7 +29,7 @@ func RequestsInit() {
 	usePagerList := true
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
-	listMine := false
+	listMine := true
 
 	cmdList := &cobra.Command{
 		Use:   "list",
@@ -41,8 +41,8 @@ func RequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRequestList
 			params.MaxPages = MaxPagesList
-			if listMine {
-				paramsRequestList.Mine = flib.Bool(true)
+			if cmd.Flags().Changed("mine") {
+				paramsRequestList.Mine = flib.Bool(listMine)
 			}
 
 			client := request.Client{Config: *config}
@@ -80,7 +80,7 @@ func RequestsInit() {
 	var fieldsGetFolder string
 	var formatGetFolder string
 	usePagerGetFolder := true
-	getFolderMine := false
+	getFolderMine := true
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
 
 	cmdGetFolder := &cobra.Command{
@@ -92,8 +92,8 @@ func RequestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
 
-			if getFolderMine {
-				paramsRequestGetFolder.Mine = flib.Bool(true)
+			if cmd.Flags().Changed("mine") {
+				paramsRequestGetFolder.Mine = flib.Bool(getFolderMine)
 			}
 
 			if len(args) > 0 && args[0] != "" {

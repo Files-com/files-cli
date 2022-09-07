@@ -103,9 +103,9 @@ func FormFieldSetsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createSkipEmail := false
-	createSkipName := false
-	createSkipCompany := false
+	createSkipEmail := true
+	createSkipName := true
+	createSkipCompany := true
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -117,14 +117,14 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			if createSkipEmail {
-				paramsFormFieldSetCreate.SkipEmail = flib.Bool(true)
+			if cmd.Flags().Changed("skip-email") {
+				paramsFormFieldSetCreate.SkipEmail = flib.Bool(createSkipEmail)
 			}
-			if createSkipName {
-				paramsFormFieldSetCreate.SkipName = flib.Bool(true)
+			if cmd.Flags().Changed("skip-name") {
+				paramsFormFieldSetCreate.SkipName = flib.Bool(createSkipName)
 			}
-			if createSkipCompany {
-				paramsFormFieldSetCreate.SkipCompany = flib.Bool(true)
+			if cmd.Flags().Changed("skip-company") {
+				paramsFormFieldSetCreate.SkipCompany = flib.Bool(createSkipCompany)
 			}
 
 			var formFieldSet interface{}
@@ -147,9 +147,9 @@ func FormFieldSetsInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateSkipEmail := false
-	updateSkipName := false
-	updateSkipCompany := false
+	updateSkipEmail := true
+	updateSkipName := true
+	updateSkipCompany := true
 	paramsFormFieldSetUpdate := files_sdk.FormFieldSetUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -161,14 +161,14 @@ func FormFieldSetsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
-			if updateSkipEmail {
-				paramsFormFieldSetUpdate.SkipEmail = flib.Bool(true)
+			if cmd.Flags().Changed("skip-email") {
+				paramsFormFieldSetUpdate.SkipEmail = flib.Bool(updateSkipEmail)
 			}
-			if updateSkipName {
-				paramsFormFieldSetUpdate.SkipName = flib.Bool(true)
+			if cmd.Flags().Changed("skip-name") {
+				paramsFormFieldSetUpdate.SkipName = flib.Bool(updateSkipName)
 			}
-			if updateSkipCompany {
-				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(true)
+			if cmd.Flags().Changed("skip-company") {
+				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(updateSkipCompany)
 			}
 
 			var formFieldSet interface{}

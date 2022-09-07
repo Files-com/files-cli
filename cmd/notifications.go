@@ -29,7 +29,7 @@ func NotificationsInit() {
 	usePagerList := true
 	paramsNotificationList := files_sdk.NotificationListParams{}
 	var MaxPagesList int64
-	listIncludeAncestors := false
+	listIncludeAncestors := true
 
 	cmdList := &cobra.Command{
 		Use:   "list",
@@ -41,8 +41,8 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsNotificationList
 			params.MaxPages = MaxPagesList
-			if listIncludeAncestors {
-				paramsNotificationList.IncludeAncestors = flib.Bool(true)
+			if cmd.Flags().Changed("include-ancestors") {
+				paramsNotificationList.IncludeAncestors = flib.Bool(listIncludeAncestors)
 			}
 
 			client := notification.Client{Config: *config}
@@ -109,14 +109,14 @@ func NotificationsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createNotifyOnCopy := false
-	createNotifyOnDelete := false
-	createNotifyOnDownload := false
-	createNotifyOnMove := false
-	createNotifyOnUpload := false
-	createNotifyUserActions := false
-	createRecursive := false
-	createTriggerByShareRecipients := false
+	createNotifyOnCopy := true
+	createNotifyOnDelete := true
+	createNotifyOnDownload := true
+	createNotifyOnMove := true
+	createNotifyOnUpload := true
+	createNotifyUserActions := true
+	createRecursive := true
+	createTriggerByShareRecipients := true
 	paramsNotificationCreate := files_sdk.NotificationCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -128,29 +128,29 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			if createNotifyOnCopy {
-				paramsNotificationCreate.NotifyOnCopy = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-copy") {
+				paramsNotificationCreate.NotifyOnCopy = flib.Bool(createNotifyOnCopy)
 			}
-			if createNotifyOnDelete {
-				paramsNotificationCreate.NotifyOnDelete = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-delete") {
+				paramsNotificationCreate.NotifyOnDelete = flib.Bool(createNotifyOnDelete)
 			}
-			if createNotifyOnDownload {
-				paramsNotificationCreate.NotifyOnDownload = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-download") {
+				paramsNotificationCreate.NotifyOnDownload = flib.Bool(createNotifyOnDownload)
 			}
-			if createNotifyOnMove {
-				paramsNotificationCreate.NotifyOnMove = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-move") {
+				paramsNotificationCreate.NotifyOnMove = flib.Bool(createNotifyOnMove)
 			}
-			if createNotifyOnUpload {
-				paramsNotificationCreate.NotifyOnUpload = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-upload") {
+				paramsNotificationCreate.NotifyOnUpload = flib.Bool(createNotifyOnUpload)
 			}
-			if createNotifyUserActions {
-				paramsNotificationCreate.NotifyUserActions = flib.Bool(true)
+			if cmd.Flags().Changed("notify-user-actions") {
+				paramsNotificationCreate.NotifyUserActions = flib.Bool(createNotifyUserActions)
 			}
-			if createRecursive {
-				paramsNotificationCreate.Recursive = flib.Bool(true)
+			if cmd.Flags().Changed("recursive") {
+				paramsNotificationCreate.Recursive = flib.Bool(createRecursive)
 			}
-			if createTriggerByShareRecipients {
-				paramsNotificationCreate.TriggerByShareRecipients = flib.Bool(true)
+			if cmd.Flags().Changed("trigger-by-share-recipients") {
+				paramsNotificationCreate.TriggerByShareRecipients = flib.Bool(createTriggerByShareRecipients)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -186,14 +186,14 @@ func NotificationsInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateNotifyOnCopy := false
-	updateNotifyOnDelete := false
-	updateNotifyOnDownload := false
-	updateNotifyOnMove := false
-	updateNotifyOnUpload := false
-	updateNotifyUserActions := false
-	updateRecursive := false
-	updateTriggerByShareRecipients := false
+	updateNotifyOnCopy := true
+	updateNotifyOnDelete := true
+	updateNotifyOnDownload := true
+	updateNotifyOnMove := true
+	updateNotifyOnUpload := true
+	updateNotifyUserActions := true
+	updateRecursive := true
+	updateTriggerByShareRecipients := true
 	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -205,29 +205,29 @@ func NotificationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
-			if updateNotifyOnCopy {
-				paramsNotificationUpdate.NotifyOnCopy = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-copy") {
+				paramsNotificationUpdate.NotifyOnCopy = flib.Bool(updateNotifyOnCopy)
 			}
-			if updateNotifyOnDelete {
-				paramsNotificationUpdate.NotifyOnDelete = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-delete") {
+				paramsNotificationUpdate.NotifyOnDelete = flib.Bool(updateNotifyOnDelete)
 			}
-			if updateNotifyOnDownload {
-				paramsNotificationUpdate.NotifyOnDownload = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-download") {
+				paramsNotificationUpdate.NotifyOnDownload = flib.Bool(updateNotifyOnDownload)
 			}
-			if updateNotifyOnMove {
-				paramsNotificationUpdate.NotifyOnMove = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-move") {
+				paramsNotificationUpdate.NotifyOnMove = flib.Bool(updateNotifyOnMove)
 			}
-			if updateNotifyOnUpload {
-				paramsNotificationUpdate.NotifyOnUpload = flib.Bool(true)
+			if cmd.Flags().Changed("notify-on-upload") {
+				paramsNotificationUpdate.NotifyOnUpload = flib.Bool(updateNotifyOnUpload)
 			}
-			if updateNotifyUserActions {
-				paramsNotificationUpdate.NotifyUserActions = flib.Bool(true)
+			if cmd.Flags().Changed("notify-user-actions") {
+				paramsNotificationUpdate.NotifyUserActions = flib.Bool(updateNotifyUserActions)
 			}
-			if updateRecursive {
-				paramsNotificationUpdate.Recursive = flib.Bool(true)
+			if cmd.Flags().Changed("recursive") {
+				paramsNotificationUpdate.Recursive = flib.Bool(updateRecursive)
 			}
-			if updateTriggerByShareRecipients {
-				paramsNotificationUpdate.TriggerByShareRecipients = flib.Bool(true)
+			if cmd.Flags().Changed("trigger-by-share-recipients") {
+				paramsNotificationUpdate.TriggerByShareRecipients = flib.Bool(updateTriggerByShareRecipients)
 			}
 
 			var notification interface{}

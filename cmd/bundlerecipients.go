@@ -77,7 +77,7 @@ func BundleRecipientsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createShareAfterCreate := false
+	createShareAfterCreate := true
 	paramsBundleRecipientCreate := files_sdk.BundleRecipientCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -89,8 +89,8 @@ func BundleRecipientsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle_recipient.Client{Config: *config}
 
-			if createShareAfterCreate {
-				paramsBundleRecipientCreate.ShareAfterCreate = flib.Bool(true)
+			if cmd.Flags().Changed("share-after-create") {
+				paramsBundleRecipientCreate.ShareAfterCreate = flib.Bool(createShareAfterCreate)
 			}
 
 			var bundleRecipient interface{}

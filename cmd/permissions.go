@@ -29,7 +29,7 @@ func PermissionsInit() {
 	usePagerList := true
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
-	listIncludeGroups := false
+	listIncludeGroups := true
 
 	cmdList := &cobra.Command{
 		Use:   "list",
@@ -41,8 +41,8 @@ func PermissionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
-			if listIncludeGroups {
-				paramsPermissionList.IncludeGroups = flib.Bool(true)
+			if cmd.Flags().Changed("include-groups") {
+				paramsPermissionList.IncludeGroups = flib.Bool(listIncludeGroups)
 			}
 
 			client := permission.Client{Config: *config}
@@ -82,7 +82,7 @@ func PermissionsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createRecursive := false
+	createRecursive := true
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -94,8 +94,8 @@ func PermissionsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := permission.Client{Config: *config}
 
-			if createRecursive {
-				paramsPermissionCreate.Recursive = flib.Bool(true)
+			if cmd.Flags().Changed("recursive") {
+				paramsPermissionCreate.Recursive = flib.Bool(createRecursive)
 			}
 
 			if len(args) > 0 && args[0] != "" {

@@ -31,9 +31,9 @@ func FoldersInit() {
 	usePagerListFor := true
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
-	listForSearchAll := false
-	listForWithPreviews := false
-	listForWithPriorityColor := false
+	listForSearchAll := true
+	listForWithPreviews := true
+	listForWithPriorityColor := true
 
 	var listOnlyFolders bool
 	var listRecursively bool
@@ -52,14 +52,14 @@ func FoldersInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			if listForSearchAll {
-				paramsFolderListFor.SearchAll = flib.Bool(true)
+			if cmd.Flags().Changed("search-all") {
+				paramsFolderListFor.SearchAll = flib.Bool(listForSearchAll)
 			}
-			if listForWithPreviews {
-				paramsFolderListFor.WithPreviews = flib.Bool(true)
+			if cmd.Flags().Changed("with-previews") {
+				paramsFolderListFor.WithPreviews = flib.Bool(listForWithPreviews)
 			}
-			if listForWithPriorityColor {
-				paramsFolderListFor.WithPriorityColor = flib.Bool(true)
+			if cmd.Flags().Changed("with-priority-color") {
+				paramsFolderListFor.WithPriorityColor = flib.Bool(listForWithPriorityColor)
 			}
 
 			var it lib.Iter
@@ -111,7 +111,7 @@ func FoldersInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createMkdirParents := false
+	createMkdirParents := true
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -123,8 +123,8 @@ func FoldersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := folder.Client{Config: *config}
 
-			if createMkdirParents {
-				paramsFolderCreate.MkdirParents = flib.Bool(true)
+			if cmd.Flags().Changed("mkdir-parents") {
+				paramsFolderCreate.MkdirParents = flib.Bool(createMkdirParents)
 			}
 
 			if len(args) > 0 && args[0] != "" {

@@ -220,7 +220,7 @@ func BehaviorsInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateAttachmentDelete := false
+	updateAttachmentDelete := true
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -232,8 +232,8 @@ func BehaviorsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
-			if updateAttachmentDelete {
-				paramsBehaviorUpdate.AttachmentDelete = flib.Bool(true)
+			if cmd.Flags().Changed("attachment-delete") {
+				paramsBehaviorUpdate.AttachmentDelete = flib.Bool(updateAttachmentDelete)
 			}
 
 			if len(args) > 0 && args[0] != "" {

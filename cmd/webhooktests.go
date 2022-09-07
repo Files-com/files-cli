@@ -27,7 +27,7 @@ func WebhookTestsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createFileAsBody := false
+	createFileAsBody := true
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -39,8 +39,8 @@ func WebhookTestsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := webhooktest.Client{Config: *config}
 
-			if createFileAsBody {
-				paramsWebhookTestCreate.FileAsBody = flib.Bool(true)
+			if cmd.Flags().Changed("file-as-body") {
+				paramsWebhookTestCreate.FileAsBody = flib.Bool(createFileAsBody)
 			}
 
 			var webhookTest interface{}

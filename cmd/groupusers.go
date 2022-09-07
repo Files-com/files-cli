@@ -77,7 +77,7 @@ func GroupUsersInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createAdmin := false
+	createAdmin := true
 	paramsGroupUserCreate := files_sdk.GroupUserCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -89,8 +89,8 @@ func GroupUsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
 
-			if createAdmin {
-				paramsGroupUserCreate.Admin = flib.Bool(true)
+			if cmd.Flags().Changed("admin") {
+				paramsGroupUserCreate.Admin = flib.Bool(createAdmin)
 			}
 
 			var groupUser interface{}
@@ -111,7 +111,7 @@ func GroupUsersInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateAdmin := false
+	updateAdmin := true
 	paramsGroupUserUpdate := files_sdk.GroupUserUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -123,8 +123,8 @@ func GroupUsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
 
-			if updateAdmin {
-				paramsGroupUserUpdate.Admin = flib.Bool(true)
+			if cmd.Flags().Changed("admin") {
+				paramsGroupUserUpdate.Admin = flib.Bool(updateAdmin)
 			}
 
 			var groupUser interface{}

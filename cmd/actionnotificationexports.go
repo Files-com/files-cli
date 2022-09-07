@@ -55,7 +55,7 @@ func ActionNotificationExportsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createQuerySuccess := false
+	createQuerySuccess := true
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -67,8 +67,8 @@ func ActionNotificationExportsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_notification_export.Client{Config: *config}
 
-			if createQuerySuccess {
-				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(true)
+			if cmd.Flags().Changed("query-success") {
+				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(createQuerySuccess)
 			}
 
 			var actionNotificationExport interface{}

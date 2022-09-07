@@ -77,7 +77,7 @@ func InboxRecipientsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createShareAfterCreate := false
+	createShareAfterCreate := true
 	paramsInboxRecipientCreate := files_sdk.InboxRecipientCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -89,8 +89,8 @@ func InboxRecipientsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := inbox_recipient.Client{Config: *config}
 
-			if createShareAfterCreate {
-				paramsInboxRecipientCreate.ShareAfterCreate = flib.Bool(true)
+			if cmd.Flags().Changed("share-after-create") {
+				paramsInboxRecipientCreate.ShareAfterCreate = flib.Bool(createShareAfterCreate)
 			}
 
 			var inboxRecipient interface{}

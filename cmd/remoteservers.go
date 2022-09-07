@@ -104,9 +104,9 @@ func RemoteServersInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createResetAuthentication := false
-	createPinToSiteRegion := false
-	createEnableDedicatedIps := false
+	createResetAuthentication := true
+	createPinToSiteRegion := true
+	createEnableDedicatedIps := true
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateServerCertificate := ""
 	RemoteServerCreateServerType := ""
@@ -122,14 +122,14 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			if createResetAuthentication {
-				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(true)
+			if cmd.Flags().Changed("reset-authentication") {
+				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(createResetAuthentication)
 			}
-			if createPinToSiteRegion {
-				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(true)
+			if cmd.Flags().Changed("pin-to-site-region") {
+				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(createPinToSiteRegion)
 			}
-			if createEnableDedicatedIps {
-				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(true)
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
 			}
 
 			var remoteServer interface{}
@@ -200,9 +200,9 @@ func RemoteServersInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateResetAuthentication := false
-	updatePinToSiteRegion := false
-	updateEnableDedicatedIps := false
+	updateResetAuthentication := true
+	updatePinToSiteRegion := true
+	updateEnableDedicatedIps := true
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateServerCertificate := ""
 	RemoteServerUpdateServerType := ""
@@ -218,14 +218,14 @@ func RemoteServersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			if updateResetAuthentication {
-				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(true)
+			if cmd.Flags().Changed("reset-authentication") {
+				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(updateResetAuthentication)
 			}
-			if updatePinToSiteRegion {
-				paramsRemoteServerUpdate.PinToSiteRegion = flib.Bool(true)
+			if cmd.Flags().Changed("pin-to-site-region") {
+				paramsRemoteServerUpdate.PinToSiteRegion = flib.Bool(updatePinToSiteRegion)
 			}
-			if updateEnableDedicatedIps {
-				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(true)
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(updateEnableDedicatedIps)
 			}
 
 			var remoteServer interface{}

@@ -31,7 +31,7 @@ func AutomationsInit() {
 	usePagerList := true
 	paramsAutomationList := files_sdk.AutomationListParams{}
 	var MaxPagesList int64
-	listWithDeleted := false
+	listWithDeleted := true
 
 	cmdList := &cobra.Command{
 		Use:   "list",
@@ -43,8 +43,8 @@ func AutomationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
-			if listWithDeleted {
-				paramsAutomationList.WithDeleted = flib.Bool(true)
+			if cmd.Flags().Changed("with-deleted") {
+				paramsAutomationList.WithDeleted = flib.Bool(listWithDeleted)
 			}
 
 			client := automation.Client{Config: *config}
@@ -109,7 +109,7 @@ func AutomationsInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createDisabled := false
+	createDisabled := true
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateTrigger := ""
 	AutomationCreateAutomation := ""
@@ -123,8 +123,8 @@ func AutomationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			if createDisabled {
-				paramsAutomationCreate.Disabled = flib.Bool(true)
+			if cmd.Flags().Changed("disabled") {
+				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -162,7 +162,7 @@ func AutomationsInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateDisabled := false
+	updateDisabled := true
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
 	AutomationUpdateAutomation := ""
@@ -176,8 +176,8 @@ func AutomationsInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			if updateDisabled {
-				paramsAutomationUpdate.Disabled = flib.Bool(true)
+			if cmd.Flags().Changed("disabled") {
+				paramsAutomationUpdate.Disabled = flib.Bool(updateDisabled)
 			}
 
 			if len(args) > 0 && args[0] != "" {

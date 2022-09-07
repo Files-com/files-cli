@@ -29,7 +29,7 @@ func LocksInit() {
 	usePagerListFor := true
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
-	listForIncludeChildren := false
+	listForIncludeChildren := true
 
 	cmdListFor := &cobra.Command{
 		Use:   "list-for [path]",
@@ -44,8 +44,8 @@ func LocksInit() {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
-			if listForIncludeChildren {
-				paramsLockListFor.IncludeChildren = flib.Bool(true)
+			if cmd.Flags().Changed("include-children") {
+				paramsLockListFor.IncludeChildren = flib.Bool(listForIncludeChildren)
 			}
 
 			client := lock.Client{Config: *config}
@@ -83,8 +83,8 @@ func LocksInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createAllowAccessByAnyUser := false
-	createExclusive := false
+	createAllowAccessByAnyUser := true
+	createExclusive := true
 	paramsLockCreate := files_sdk.LockCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -96,11 +96,11 @@ func LocksInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := lock.Client{Config: *config}
 
-			if createAllowAccessByAnyUser {
-				paramsLockCreate.AllowAccessByAnyUser = flib.Bool(true)
+			if cmd.Flags().Changed("allow-access-by-any-user") {
+				paramsLockCreate.AllowAccessByAnyUser = flib.Bool(createAllowAccessByAnyUser)
 			}
-			if createExclusive {
-				paramsLockCreate.Exclusive = flib.Bool(true)
+			if cmd.Flags().Changed("exclusive") {
+				paramsLockCreate.Exclusive = flib.Bool(createExclusive)
 			}
 
 			if len(args) > 0 && args[0] != "" {

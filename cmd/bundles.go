@@ -104,12 +104,12 @@ func BundlesInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createPreviewOnly := false
-	createRequireRegistration := false
-	createRequireShareRecipient := false
-	createSkipEmail := false
-	createSkipName := false
-	createSkipCompany := false
+	createPreviewOnly := true
+	createRequireRegistration := true
+	createRequireShareRecipient := true
+	createSkipEmail := true
+	createSkipName := true
+	createSkipCompany := true
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
 	BundleCreatePermissions := ""
 
@@ -122,23 +122,23 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			if createPreviewOnly {
-				paramsBundleCreate.PreviewOnly = flib.Bool(true)
+			if cmd.Flags().Changed("preview-only") {
+				paramsBundleCreate.PreviewOnly = flib.Bool(createPreviewOnly)
 			}
-			if createRequireRegistration {
-				paramsBundleCreate.RequireRegistration = flib.Bool(true)
+			if cmd.Flags().Changed("require-registration") {
+				paramsBundleCreate.RequireRegistration = flib.Bool(createRequireRegistration)
 			}
-			if createRequireShareRecipient {
-				paramsBundleCreate.RequireShareRecipient = flib.Bool(true)
+			if cmd.Flags().Changed("require-share-recipient") {
+				paramsBundleCreate.RequireShareRecipient = flib.Bool(createRequireShareRecipient)
 			}
-			if createSkipEmail {
-				paramsBundleCreate.SkipEmail = flib.Bool(true)
+			if cmd.Flags().Changed("skip-email") {
+				paramsBundleCreate.SkipEmail = flib.Bool(createSkipEmail)
 			}
-			if createSkipName {
-				paramsBundleCreate.SkipName = flib.Bool(true)
+			if cmd.Flags().Changed("skip-name") {
+				paramsBundleCreate.SkipName = flib.Bool(createSkipName)
 			}
-			if createSkipCompany {
-				paramsBundleCreate.SkipCompany = flib.Bool(true)
+			if cmd.Flags().Changed("skip-company") {
+				paramsBundleCreate.SkipCompany = flib.Bool(createSkipCompany)
 			}
 
 			var bundle interface{}
@@ -205,13 +205,13 @@ func BundlesInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updatePreviewOnly := false
-	updateRequireRegistration := false
-	updateRequireShareRecipient := false
-	updateSkipEmail := false
-	updateSkipName := false
-	updateSkipCompany := false
-	updateWatermarkAttachmentDelete := false
+	updatePreviewOnly := true
+	updateRequireRegistration := true
+	updateRequireShareRecipient := true
+	updateSkipEmail := true
+	updateSkipName := true
+	updateSkipCompany := true
+	updateWatermarkAttachmentDelete := true
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 	BundleUpdatePermissions := ""
 
@@ -224,26 +224,26 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			if updatePreviewOnly {
-				paramsBundleUpdate.PreviewOnly = flib.Bool(true)
+			if cmd.Flags().Changed("preview-only") {
+				paramsBundleUpdate.PreviewOnly = flib.Bool(updatePreviewOnly)
 			}
-			if updateRequireRegistration {
-				paramsBundleUpdate.RequireRegistration = flib.Bool(true)
+			if cmd.Flags().Changed("require-registration") {
+				paramsBundleUpdate.RequireRegistration = flib.Bool(updateRequireRegistration)
 			}
-			if updateRequireShareRecipient {
-				paramsBundleUpdate.RequireShareRecipient = flib.Bool(true)
+			if cmd.Flags().Changed("require-share-recipient") {
+				paramsBundleUpdate.RequireShareRecipient = flib.Bool(updateRequireShareRecipient)
 			}
-			if updateSkipEmail {
-				paramsBundleUpdate.SkipEmail = flib.Bool(true)
+			if cmd.Flags().Changed("skip-email") {
+				paramsBundleUpdate.SkipEmail = flib.Bool(updateSkipEmail)
 			}
-			if updateSkipName {
-				paramsBundleUpdate.SkipName = flib.Bool(true)
+			if cmd.Flags().Changed("skip-name") {
+				paramsBundleUpdate.SkipName = flib.Bool(updateSkipName)
 			}
-			if updateSkipCompany {
-				paramsBundleUpdate.SkipCompany = flib.Bool(true)
+			if cmd.Flags().Changed("skip-company") {
+				paramsBundleUpdate.SkipCompany = flib.Bool(updateSkipCompany)
 			}
-			if updateWatermarkAttachmentDelete {
-				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(true)
+			if cmd.Flags().Changed("watermark-attachment-delete") {
+				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(updateWatermarkAttachmentDelete)
 			}
 
 			var bundle interface{}

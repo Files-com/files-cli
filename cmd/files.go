@@ -28,8 +28,8 @@ func FilesInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createMkdirParents := false
-	createWithRename := false
+	createMkdirParents := true
+	createWithRename := true
 	paramsFileCreate := files_sdk.FileCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -41,11 +41,11 @@ func FilesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if createMkdirParents {
-				paramsFileCreate.MkdirParents = flib.Bool(true)
+			if cmd.Flags().Changed("mkdir-parents") {
+				paramsFileCreate.MkdirParents = flib.Bool(createMkdirParents)
 			}
-			if createWithRename {
-				paramsFileCreate.WithRename = flib.Bool(true)
+			if cmd.Flags().Changed("with-rename") {
+				paramsFileCreate.WithRename = flib.Bool(createWithRename)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -110,7 +110,7 @@ func FilesInit() {
 	var fieldsDelete string
 	var formatDelete string
 	usePagerDelete := true
-	deleteRecursive := false
+	deleteRecursive := true
 	paramsFileDelete := files_sdk.FileDeleteParams{}
 
 	cmdDelete := &cobra.Command{
@@ -122,8 +122,8 @@ func FilesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if deleteRecursive {
-				paramsFileDelete.Recursive = flib.Bool(true)
+			if cmd.Flags().Changed("recursive") {
+				paramsFileDelete.Recursive = flib.Bool(deleteRecursive)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -147,8 +147,8 @@ func FilesInit() {
 	var fieldsFind string
 	var formatFind string
 	usePagerFind := true
-	findWithPreviews := false
-	findWithPriorityColor := false
+	findWithPreviews := true
+	findWithPriorityColor := true
 	paramsFileFind := files_sdk.FileFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -160,11 +160,11 @@ func FilesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if findWithPreviews {
-				paramsFileFind.WithPreviews = flib.Bool(true)
+			if cmd.Flags().Changed("with-previews") {
+				paramsFileFind.WithPreviews = flib.Bool(findWithPreviews)
 			}
-			if findWithPriorityColor {
-				paramsFileFind.WithPriorityColor = flib.Bool(true)
+			if cmd.Flags().Changed("with-priority-color") {
+				paramsFileFind.WithPriorityColor = flib.Bool(findWithPriorityColor)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -192,7 +192,7 @@ func FilesInit() {
 	var blockCopy bool
 	var noProgressCopy bool
 	var eventLogCopy bool
-	copyStructure := false
+	copyStructure := true
 	paramsFileCopy := files_sdk.FileCopyParams{}
 
 	cmdCopy := &cobra.Command{
@@ -204,8 +204,8 @@ func FilesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if copyStructure {
-				paramsFileCopy.Structure = flib.Bool(true)
+			if cmd.Flags().Changed("structure") {
+				paramsFileCopy.Structure = flib.Bool(copyStructure)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -271,8 +271,8 @@ func FilesInit() {
 	var fieldsBeginUpload string
 	var formatBeginUpload string
 	usePagerBeginUpload := true
-	beginUploadMkdirParents := false
-	beginUploadWithRename := false
+	beginUploadMkdirParents := true
+	beginUploadWithRename := true
 	paramsFileBeginUpload := files_sdk.FileBeginUploadParams{}
 
 	cmdBeginUpload := &cobra.Command{
@@ -284,11 +284,11 @@ func FilesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
-			if beginUploadMkdirParents {
-				paramsFileBeginUpload.MkdirParents = flib.Bool(true)
+			if cmd.Flags().Changed("mkdir-parents") {
+				paramsFileBeginUpload.MkdirParents = flib.Bool(beginUploadMkdirParents)
 			}
-			if beginUploadWithRename {
-				paramsFileBeginUpload.WithRename = flib.Bool(true)
+			if cmd.Flags().Changed("with-rename") {
+				paramsFileBeginUpload.WithRename = flib.Bool(beginUploadWithRename)
 			}
 
 			if len(args) > 0 && args[0] != "" {

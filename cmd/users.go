@@ -105,24 +105,24 @@ func UsersInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
-	createAvatarDelete := false
-	createAnnouncementsRead := false
-	createAttachmentsPermission := false
-	createBillingPermission := false
-	createBypassInactiveDisable := false
-	createBypassSiteAllowedIps := false
-	createDavPermission := false
-	createDisabled := false
-	createFtpPermission := false
-	createOfficeIntegrationEnabled := false
-	createReceiveAdminAlerts := false
-	createRequirePasswordChange := false
-	createRestapiPermission := false
-	createSelfManaged := false
-	createSftpPermission := false
-	createSiteAdmin := false
-	createSkipWelcomeScreen := false
-	createSubscribeToNewsletter := false
+	createAvatarDelete := true
+	createAnnouncementsRead := true
+	createAttachmentsPermission := true
+	createBillingPermission := true
+	createBypassInactiveDisable := true
+	createBypassSiteAllowedIps := true
+	createDavPermission := true
+	createDisabled := true
+	createFtpPermission := true
+	createOfficeIntegrationEnabled := true
+	createReceiveAdminAlerts := true
+	createRequirePasswordChange := true
+	createRestapiPermission := true
+	createSelfManaged := true
+	createSftpPermission := true
+	createSiteAdmin := true
+	createSkipWelcomeScreen := true
+	createSubscribeToNewsletter := true
 	paramsUserCreate := files_sdk.UserCreateParams{}
 	UserCreateAuthenticationMethod := ""
 	UserCreateSslRequired := ""
@@ -137,59 +137,59 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			if createAvatarDelete {
-				paramsUserCreate.AvatarDelete = flib.Bool(true)
+			if cmd.Flags().Changed("avatar-delete") {
+				paramsUserCreate.AvatarDelete = flib.Bool(createAvatarDelete)
 			}
-			if createAnnouncementsRead {
-				paramsUserCreate.AnnouncementsRead = flib.Bool(true)
+			if cmd.Flags().Changed("announcements-read") {
+				paramsUserCreate.AnnouncementsRead = flib.Bool(createAnnouncementsRead)
 			}
-			if createAttachmentsPermission {
-				paramsUserCreate.AttachmentsPermission = flib.Bool(true)
+			if cmd.Flags().Changed("attachments-permission") {
+				paramsUserCreate.AttachmentsPermission = flib.Bool(createAttachmentsPermission)
 			}
-			if createBillingPermission {
-				paramsUserCreate.BillingPermission = flib.Bool(true)
+			if cmd.Flags().Changed("billing-permission") {
+				paramsUserCreate.BillingPermission = flib.Bool(createBillingPermission)
 			}
-			if createBypassInactiveDisable {
-				paramsUserCreate.BypassInactiveDisable = flib.Bool(true)
+			if cmd.Flags().Changed("bypass-inactive-disable") {
+				paramsUserCreate.BypassInactiveDisable = flib.Bool(createBypassInactiveDisable)
 			}
-			if createBypassSiteAllowedIps {
-				paramsUserCreate.BypassSiteAllowedIps = flib.Bool(true)
+			if cmd.Flags().Changed("bypass-site-allowed-ips") {
+				paramsUserCreate.BypassSiteAllowedIps = flib.Bool(createBypassSiteAllowedIps)
 			}
-			if createDavPermission {
-				paramsUserCreate.DavPermission = flib.Bool(true)
+			if cmd.Flags().Changed("dav-permission") {
+				paramsUserCreate.DavPermission = flib.Bool(createDavPermission)
 			}
-			if createDisabled {
-				paramsUserCreate.Disabled = flib.Bool(true)
+			if cmd.Flags().Changed("disabled") {
+				paramsUserCreate.Disabled = flib.Bool(createDisabled)
 			}
-			if createFtpPermission {
-				paramsUserCreate.FtpPermission = flib.Bool(true)
+			if cmd.Flags().Changed("ftp-permission") {
+				paramsUserCreate.FtpPermission = flib.Bool(createFtpPermission)
 			}
-			if createOfficeIntegrationEnabled {
-				paramsUserCreate.OfficeIntegrationEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("office-integration-enabled") {
+				paramsUserCreate.OfficeIntegrationEnabled = flib.Bool(createOfficeIntegrationEnabled)
 			}
-			if createReceiveAdminAlerts {
-				paramsUserCreate.ReceiveAdminAlerts = flib.Bool(true)
+			if cmd.Flags().Changed("receive-admin-alerts") {
+				paramsUserCreate.ReceiveAdminAlerts = flib.Bool(createReceiveAdminAlerts)
 			}
-			if createRequirePasswordChange {
-				paramsUserCreate.RequirePasswordChange = flib.Bool(true)
+			if cmd.Flags().Changed("require-password-change") {
+				paramsUserCreate.RequirePasswordChange = flib.Bool(createRequirePasswordChange)
 			}
-			if createRestapiPermission {
-				paramsUserCreate.RestapiPermission = flib.Bool(true)
+			if cmd.Flags().Changed("restapi-permission") {
+				paramsUserCreate.RestapiPermission = flib.Bool(createRestapiPermission)
 			}
-			if createSelfManaged {
-				paramsUserCreate.SelfManaged = flib.Bool(true)
+			if cmd.Flags().Changed("self-managed") {
+				paramsUserCreate.SelfManaged = flib.Bool(createSelfManaged)
 			}
-			if createSftpPermission {
-				paramsUserCreate.SftpPermission = flib.Bool(true)
+			if cmd.Flags().Changed("sftp-permission") {
+				paramsUserCreate.SftpPermission = flib.Bool(createSftpPermission)
 			}
-			if createSiteAdmin {
-				paramsUserCreate.SiteAdmin = flib.Bool(true)
+			if cmd.Flags().Changed("site-admin") {
+				paramsUserCreate.SiteAdmin = flib.Bool(createSiteAdmin)
 			}
-			if createSkipWelcomeScreen {
-				paramsUserCreate.SkipWelcomeScreen = flib.Bool(true)
+			if cmd.Flags().Changed("skip-welcome-screen") {
+				paramsUserCreate.SkipWelcomeScreen = flib.Bool(createSkipWelcomeScreen)
 			}
-			if createSubscribeToNewsletter {
-				paramsUserCreate.SubscribeToNewsletter = flib.Bool(true)
+			if cmd.Flags().Changed("subscribe-to-newsletter") {
+				paramsUserCreate.SubscribeToNewsletter = flib.Bool(createSubscribeToNewsletter)
 			}
 
 			var user interface{}
@@ -337,24 +337,24 @@ func UsersInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateAvatarDelete := false
-	updateAnnouncementsRead := false
-	updateAttachmentsPermission := false
-	updateBillingPermission := false
-	updateBypassInactiveDisable := false
-	updateBypassSiteAllowedIps := false
-	updateDavPermission := false
-	updateDisabled := false
-	updateFtpPermission := false
-	updateOfficeIntegrationEnabled := false
-	updateReceiveAdminAlerts := false
-	updateRequirePasswordChange := false
-	updateRestapiPermission := false
-	updateSelfManaged := false
-	updateSftpPermission := false
-	updateSiteAdmin := false
-	updateSkipWelcomeScreen := false
-	updateSubscribeToNewsletter := false
+	updateAvatarDelete := true
+	updateAnnouncementsRead := true
+	updateAttachmentsPermission := true
+	updateBillingPermission := true
+	updateBypassInactiveDisable := true
+	updateBypassSiteAllowedIps := true
+	updateDavPermission := true
+	updateDisabled := true
+	updateFtpPermission := true
+	updateOfficeIntegrationEnabled := true
+	updateReceiveAdminAlerts := true
+	updateRequirePasswordChange := true
+	updateRestapiPermission := true
+	updateSelfManaged := true
+	updateSftpPermission := true
+	updateSiteAdmin := true
+	updateSkipWelcomeScreen := true
+	updateSubscribeToNewsletter := true
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	UserUpdateAuthenticationMethod := ""
 	UserUpdateSslRequired := ""
@@ -369,59 +369,59 @@ func UsersInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			if updateAvatarDelete {
-				paramsUserUpdate.AvatarDelete = flib.Bool(true)
+			if cmd.Flags().Changed("avatar-delete") {
+				paramsUserUpdate.AvatarDelete = flib.Bool(updateAvatarDelete)
 			}
-			if updateAnnouncementsRead {
-				paramsUserUpdate.AnnouncementsRead = flib.Bool(true)
+			if cmd.Flags().Changed("announcements-read") {
+				paramsUserUpdate.AnnouncementsRead = flib.Bool(updateAnnouncementsRead)
 			}
-			if updateAttachmentsPermission {
-				paramsUserUpdate.AttachmentsPermission = flib.Bool(true)
+			if cmd.Flags().Changed("attachments-permission") {
+				paramsUserUpdate.AttachmentsPermission = flib.Bool(updateAttachmentsPermission)
 			}
-			if updateBillingPermission {
-				paramsUserUpdate.BillingPermission = flib.Bool(true)
+			if cmd.Flags().Changed("billing-permission") {
+				paramsUserUpdate.BillingPermission = flib.Bool(updateBillingPermission)
 			}
-			if updateBypassInactiveDisable {
-				paramsUserUpdate.BypassInactiveDisable = flib.Bool(true)
+			if cmd.Flags().Changed("bypass-inactive-disable") {
+				paramsUserUpdate.BypassInactiveDisable = flib.Bool(updateBypassInactiveDisable)
 			}
-			if updateBypassSiteAllowedIps {
-				paramsUserUpdate.BypassSiteAllowedIps = flib.Bool(true)
+			if cmd.Flags().Changed("bypass-site-allowed-ips") {
+				paramsUserUpdate.BypassSiteAllowedIps = flib.Bool(updateBypassSiteAllowedIps)
 			}
-			if updateDavPermission {
-				paramsUserUpdate.DavPermission = flib.Bool(true)
+			if cmd.Flags().Changed("dav-permission") {
+				paramsUserUpdate.DavPermission = flib.Bool(updateDavPermission)
 			}
-			if updateDisabled {
-				paramsUserUpdate.Disabled = flib.Bool(true)
+			if cmd.Flags().Changed("disabled") {
+				paramsUserUpdate.Disabled = flib.Bool(updateDisabled)
 			}
-			if updateFtpPermission {
-				paramsUserUpdate.FtpPermission = flib.Bool(true)
+			if cmd.Flags().Changed("ftp-permission") {
+				paramsUserUpdate.FtpPermission = flib.Bool(updateFtpPermission)
 			}
-			if updateOfficeIntegrationEnabled {
-				paramsUserUpdate.OfficeIntegrationEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("office-integration-enabled") {
+				paramsUserUpdate.OfficeIntegrationEnabled = flib.Bool(updateOfficeIntegrationEnabled)
 			}
-			if updateReceiveAdminAlerts {
-				paramsUserUpdate.ReceiveAdminAlerts = flib.Bool(true)
+			if cmd.Flags().Changed("receive-admin-alerts") {
+				paramsUserUpdate.ReceiveAdminAlerts = flib.Bool(updateReceiveAdminAlerts)
 			}
-			if updateRequirePasswordChange {
-				paramsUserUpdate.RequirePasswordChange = flib.Bool(true)
+			if cmd.Flags().Changed("require-password-change") {
+				paramsUserUpdate.RequirePasswordChange = flib.Bool(updateRequirePasswordChange)
 			}
-			if updateRestapiPermission {
-				paramsUserUpdate.RestapiPermission = flib.Bool(true)
+			if cmd.Flags().Changed("restapi-permission") {
+				paramsUserUpdate.RestapiPermission = flib.Bool(updateRestapiPermission)
 			}
-			if updateSelfManaged {
-				paramsUserUpdate.SelfManaged = flib.Bool(true)
+			if cmd.Flags().Changed("self-managed") {
+				paramsUserUpdate.SelfManaged = flib.Bool(updateSelfManaged)
 			}
-			if updateSftpPermission {
-				paramsUserUpdate.SftpPermission = flib.Bool(true)
+			if cmd.Flags().Changed("sftp-permission") {
+				paramsUserUpdate.SftpPermission = flib.Bool(updateSftpPermission)
 			}
-			if updateSiteAdmin {
-				paramsUserUpdate.SiteAdmin = flib.Bool(true)
+			if cmd.Flags().Changed("site-admin") {
+				paramsUserUpdate.SiteAdmin = flib.Bool(updateSiteAdmin)
 			}
-			if updateSkipWelcomeScreen {
-				paramsUserUpdate.SkipWelcomeScreen = flib.Bool(true)
+			if cmd.Flags().Changed("skip-welcome-screen") {
+				paramsUserUpdate.SkipWelcomeScreen = flib.Bool(updateSkipWelcomeScreen)
 			}
-			if updateSubscribeToNewsletter {
-				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(true)
+			if cmd.Flags().Changed("subscribe-to-newsletter") {
+				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(updateSubscribeToNewsletter)
 			}
 
 			var user interface{}

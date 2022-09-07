@@ -75,63 +75,63 @@ func SitesInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
-	updateDomainHstsHeader := false
-	updateAllowBundleNames := false
-	updateOverageNotify := false
-	updateWelcomeEmailEnabled := false
-	updateAskAboutOverwrites := false
-	updateShowRequestAccessLink := false
-	updateWindowsModeFtp := false
-	updateDesktopApp := false
-	updateDesktopAppSessionIpPinning := false
-	updateMobileApp := false
-	updateMobileAppSessionIpPinning := false
-	updateFolderPermissionsGroupsOnly := false
-	updateOfficeIntegrationAvailable := false
-	updatePinAllRemoteServersToSiteRegion := false
-	updateSslRequired := false
-	updateTlsDisabled := false
-	updateSftpInsecureCiphers := false
-	updateUserLockout := false
-	updateIncludePasswordInWelcomeEmail := false
-	updatePasswordRequireLetter := false
-	updatePasswordRequireMixed := false
-	updatePasswordRequireSpecial := false
-	updatePasswordRequireNumber := false
-	updatePasswordRequireUnbreached := false
-	updateSftpUserRootEnabled := false
-	updateDisablePasswordReset := false
-	updateImmutableFiles := false
-	updateSessionPinnedByIp := false
-	updateBundlePasswordRequired := false
-	updateBundleRequireShareRecipient := false
-	updatePasswordRequirementsApplyToBundles := false
-	updateOptOutGlobal := false
-	updateUseProvidedModifiedAt := false
-	updateCustomNamespace := false
-	updateNonSsoGroupsAllowed := false
-	updateNonSsoUsersAllowed := false
-	updateSharingEnabled := false
-	updateUserRequestsEnabled := false
-	updateUserRequestsNotifyAdmins := false
-	updateFtpEnabled := false
-	updateSftpEnabled := false
-	updateAllowed2faMethodSms := false
-	updateAllowed2faMethodU2f := false
-	updateAllowed2faMethodTotp := false
-	updateAllowed2faMethodWebauthn := false
-	updateAllowed2faMethodYubi := false
-	updateAllowed2faMethodBypassForFtpSftpDav := false
-	updateRequire2fa := false
-	updateLdapEnabled := false
-	updateLdapSecure := false
-	updateIcon16Delete := false
-	updateIcon32Delete := false
-	updateIcon48Delete := false
-	updateIcon128Delete := false
-	updateLogoDelete := false
-	updateBundleWatermarkAttachmentDelete := false
-	updateDisable2faWithDelay := false
+	updateDomainHstsHeader := true
+	updateAllowBundleNames := true
+	updateOverageNotify := true
+	updateWelcomeEmailEnabled := true
+	updateAskAboutOverwrites := true
+	updateShowRequestAccessLink := true
+	updateWindowsModeFtp := true
+	updateDesktopApp := true
+	updateDesktopAppSessionIpPinning := true
+	updateMobileApp := true
+	updateMobileAppSessionIpPinning := true
+	updateFolderPermissionsGroupsOnly := true
+	updateOfficeIntegrationAvailable := true
+	updatePinAllRemoteServersToSiteRegion := true
+	updateSslRequired := true
+	updateTlsDisabled := true
+	updateSftpInsecureCiphers := true
+	updateUserLockout := true
+	updateIncludePasswordInWelcomeEmail := true
+	updatePasswordRequireLetter := true
+	updatePasswordRequireMixed := true
+	updatePasswordRequireSpecial := true
+	updatePasswordRequireNumber := true
+	updatePasswordRequireUnbreached := true
+	updateSftpUserRootEnabled := true
+	updateDisablePasswordReset := true
+	updateImmutableFiles := true
+	updateSessionPinnedByIp := true
+	updateBundlePasswordRequired := true
+	updateBundleRequireShareRecipient := true
+	updatePasswordRequirementsApplyToBundles := true
+	updateOptOutGlobal := true
+	updateUseProvidedModifiedAt := true
+	updateCustomNamespace := true
+	updateNonSsoGroupsAllowed := true
+	updateNonSsoUsersAllowed := true
+	updateSharingEnabled := true
+	updateUserRequestsEnabled := true
+	updateUserRequestsNotifyAdmins := true
+	updateFtpEnabled := true
+	updateSftpEnabled := true
+	updateAllowed2faMethodSms := true
+	updateAllowed2faMethodU2f := true
+	updateAllowed2faMethodTotp := true
+	updateAllowed2faMethodWebauthn := true
+	updateAllowed2faMethodYubi := true
+	updateAllowed2faMethodBypassForFtpSftpDav := true
+	updateRequire2fa := true
+	updateLdapEnabled := true
+	updateLdapSecure := true
+	updateIcon16Delete := true
+	updateIcon32Delete := true
+	updateIcon48Delete := true
+	updateIcon128Delete := true
+	updateLogoDelete := true
+	updateBundleWatermarkAttachmentDelete := true
+	updateDisable2faWithDelay := true
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -143,176 +143,176 @@ func SitesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
-			if updateDomainHstsHeader {
-				paramsSiteUpdate.DomainHstsHeader = flib.Bool(true)
+			if cmd.Flags().Changed("domain-hsts-header") {
+				paramsSiteUpdate.DomainHstsHeader = flib.Bool(updateDomainHstsHeader)
 			}
-			if updateAllowBundleNames {
-				paramsSiteUpdate.AllowBundleNames = flib.Bool(true)
+			if cmd.Flags().Changed("allow-bundle-names") {
+				paramsSiteUpdate.AllowBundleNames = flib.Bool(updateAllowBundleNames)
 			}
-			if updateOverageNotify {
-				paramsSiteUpdate.OverageNotify = flib.Bool(true)
+			if cmd.Flags().Changed("overage-notify") {
+				paramsSiteUpdate.OverageNotify = flib.Bool(updateOverageNotify)
 			}
-			if updateWelcomeEmailEnabled {
-				paramsSiteUpdate.WelcomeEmailEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("welcome-email-enabled") {
+				paramsSiteUpdate.WelcomeEmailEnabled = flib.Bool(updateWelcomeEmailEnabled)
 			}
-			if updateAskAboutOverwrites {
-				paramsSiteUpdate.AskAboutOverwrites = flib.Bool(true)
+			if cmd.Flags().Changed("ask-about-overwrites") {
+				paramsSiteUpdate.AskAboutOverwrites = flib.Bool(updateAskAboutOverwrites)
 			}
-			if updateShowRequestAccessLink {
-				paramsSiteUpdate.ShowRequestAccessLink = flib.Bool(true)
+			if cmd.Flags().Changed("show-request-access-link") {
+				paramsSiteUpdate.ShowRequestAccessLink = flib.Bool(updateShowRequestAccessLink)
 			}
-			if updateWindowsModeFtp {
-				paramsSiteUpdate.WindowsModeFtp = flib.Bool(true)
+			if cmd.Flags().Changed("windows-mode-ftp") {
+				paramsSiteUpdate.WindowsModeFtp = flib.Bool(updateWindowsModeFtp)
 			}
-			if updateDesktopApp {
-				paramsSiteUpdate.DesktopApp = flib.Bool(true)
+			if cmd.Flags().Changed("desktop-app") {
+				paramsSiteUpdate.DesktopApp = flib.Bool(updateDesktopApp)
 			}
-			if updateDesktopAppSessionIpPinning {
-				paramsSiteUpdate.DesktopAppSessionIpPinning = flib.Bool(true)
+			if cmd.Flags().Changed("desktop-app-session-ip-pinning") {
+				paramsSiteUpdate.DesktopAppSessionIpPinning = flib.Bool(updateDesktopAppSessionIpPinning)
 			}
-			if updateMobileApp {
-				paramsSiteUpdate.MobileApp = flib.Bool(true)
+			if cmd.Flags().Changed("mobile-app") {
+				paramsSiteUpdate.MobileApp = flib.Bool(updateMobileApp)
 			}
-			if updateMobileAppSessionIpPinning {
-				paramsSiteUpdate.MobileAppSessionIpPinning = flib.Bool(true)
+			if cmd.Flags().Changed("mobile-app-session-ip-pinning") {
+				paramsSiteUpdate.MobileAppSessionIpPinning = flib.Bool(updateMobileAppSessionIpPinning)
 			}
-			if updateFolderPermissionsGroupsOnly {
-				paramsSiteUpdate.FolderPermissionsGroupsOnly = flib.Bool(true)
+			if cmd.Flags().Changed("folder-permissions-groups-only") {
+				paramsSiteUpdate.FolderPermissionsGroupsOnly = flib.Bool(updateFolderPermissionsGroupsOnly)
 			}
-			if updateOfficeIntegrationAvailable {
-				paramsSiteUpdate.OfficeIntegrationAvailable = flib.Bool(true)
+			if cmd.Flags().Changed("office-integration-available") {
+				paramsSiteUpdate.OfficeIntegrationAvailable = flib.Bool(updateOfficeIntegrationAvailable)
 			}
-			if updatePinAllRemoteServersToSiteRegion {
-				paramsSiteUpdate.PinAllRemoteServersToSiteRegion = flib.Bool(true)
+			if cmd.Flags().Changed("pin-all-remote-servers-to-site-region") {
+				paramsSiteUpdate.PinAllRemoteServersToSiteRegion = flib.Bool(updatePinAllRemoteServersToSiteRegion)
 			}
-			if updateSslRequired {
-				paramsSiteUpdate.SslRequired = flib.Bool(true)
+			if cmd.Flags().Changed("ssl-required") {
+				paramsSiteUpdate.SslRequired = flib.Bool(updateSslRequired)
 			}
-			if updateTlsDisabled {
-				paramsSiteUpdate.TlsDisabled = flib.Bool(true)
+			if cmd.Flags().Changed("tls-disabled") {
+				paramsSiteUpdate.TlsDisabled = flib.Bool(updateTlsDisabled)
 			}
-			if updateSftpInsecureCiphers {
-				paramsSiteUpdate.SftpInsecureCiphers = flib.Bool(true)
+			if cmd.Flags().Changed("sftp-insecure-ciphers") {
+				paramsSiteUpdate.SftpInsecureCiphers = flib.Bool(updateSftpInsecureCiphers)
 			}
-			if updateUserLockout {
-				paramsSiteUpdate.UserLockout = flib.Bool(true)
+			if cmd.Flags().Changed("user-lockout") {
+				paramsSiteUpdate.UserLockout = flib.Bool(updateUserLockout)
 			}
-			if updateIncludePasswordInWelcomeEmail {
-				paramsSiteUpdate.IncludePasswordInWelcomeEmail = flib.Bool(true)
+			if cmd.Flags().Changed("include-password-in-welcome-email") {
+				paramsSiteUpdate.IncludePasswordInWelcomeEmail = flib.Bool(updateIncludePasswordInWelcomeEmail)
 			}
-			if updatePasswordRequireLetter {
-				paramsSiteUpdate.PasswordRequireLetter = flib.Bool(true)
+			if cmd.Flags().Changed("password-require-letter") {
+				paramsSiteUpdate.PasswordRequireLetter = flib.Bool(updatePasswordRequireLetter)
 			}
-			if updatePasswordRequireMixed {
-				paramsSiteUpdate.PasswordRequireMixed = flib.Bool(true)
+			if cmd.Flags().Changed("password-require-mixed") {
+				paramsSiteUpdate.PasswordRequireMixed = flib.Bool(updatePasswordRequireMixed)
 			}
-			if updatePasswordRequireSpecial {
-				paramsSiteUpdate.PasswordRequireSpecial = flib.Bool(true)
+			if cmd.Flags().Changed("password-require-special") {
+				paramsSiteUpdate.PasswordRequireSpecial = flib.Bool(updatePasswordRequireSpecial)
 			}
-			if updatePasswordRequireNumber {
-				paramsSiteUpdate.PasswordRequireNumber = flib.Bool(true)
+			if cmd.Flags().Changed("password-require-number") {
+				paramsSiteUpdate.PasswordRequireNumber = flib.Bool(updatePasswordRequireNumber)
 			}
-			if updatePasswordRequireUnbreached {
-				paramsSiteUpdate.PasswordRequireUnbreached = flib.Bool(true)
+			if cmd.Flags().Changed("password-require-unbreached") {
+				paramsSiteUpdate.PasswordRequireUnbreached = flib.Bool(updatePasswordRequireUnbreached)
 			}
-			if updateSftpUserRootEnabled {
-				paramsSiteUpdate.SftpUserRootEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("sftp-user-root-enabled") {
+				paramsSiteUpdate.SftpUserRootEnabled = flib.Bool(updateSftpUserRootEnabled)
 			}
-			if updateDisablePasswordReset {
-				paramsSiteUpdate.DisablePasswordReset = flib.Bool(true)
+			if cmd.Flags().Changed("disable-password-reset") {
+				paramsSiteUpdate.DisablePasswordReset = flib.Bool(updateDisablePasswordReset)
 			}
-			if updateImmutableFiles {
-				paramsSiteUpdate.ImmutableFiles = flib.Bool(true)
+			if cmd.Flags().Changed("immutable-files") {
+				paramsSiteUpdate.ImmutableFiles = flib.Bool(updateImmutableFiles)
 			}
-			if updateSessionPinnedByIp {
-				paramsSiteUpdate.SessionPinnedByIp = flib.Bool(true)
+			if cmd.Flags().Changed("session-pinned-by-ip") {
+				paramsSiteUpdate.SessionPinnedByIp = flib.Bool(updateSessionPinnedByIp)
 			}
-			if updateBundlePasswordRequired {
-				paramsSiteUpdate.BundlePasswordRequired = flib.Bool(true)
+			if cmd.Flags().Changed("bundle-password-required") {
+				paramsSiteUpdate.BundlePasswordRequired = flib.Bool(updateBundlePasswordRequired)
 			}
-			if updateBundleRequireShareRecipient {
-				paramsSiteUpdate.BundleRequireShareRecipient = flib.Bool(true)
+			if cmd.Flags().Changed("bundle-require-share-recipient") {
+				paramsSiteUpdate.BundleRequireShareRecipient = flib.Bool(updateBundleRequireShareRecipient)
 			}
-			if updatePasswordRequirementsApplyToBundles {
-				paramsSiteUpdate.PasswordRequirementsApplyToBundles = flib.Bool(true)
+			if cmd.Flags().Changed("password-requirements-apply-to-bundles") {
+				paramsSiteUpdate.PasswordRequirementsApplyToBundles = flib.Bool(updatePasswordRequirementsApplyToBundles)
 			}
-			if updateOptOutGlobal {
-				paramsSiteUpdate.OptOutGlobal = flib.Bool(true)
+			if cmd.Flags().Changed("opt-out-global") {
+				paramsSiteUpdate.OptOutGlobal = flib.Bool(updateOptOutGlobal)
 			}
-			if updateUseProvidedModifiedAt {
-				paramsSiteUpdate.UseProvidedModifiedAt = flib.Bool(true)
+			if cmd.Flags().Changed("use-provided-modified-at") {
+				paramsSiteUpdate.UseProvidedModifiedAt = flib.Bool(updateUseProvidedModifiedAt)
 			}
-			if updateCustomNamespace {
-				paramsSiteUpdate.CustomNamespace = flib.Bool(true)
+			if cmd.Flags().Changed("custom-namespace") {
+				paramsSiteUpdate.CustomNamespace = flib.Bool(updateCustomNamespace)
 			}
-			if updateNonSsoGroupsAllowed {
-				paramsSiteUpdate.NonSsoGroupsAllowed = flib.Bool(true)
+			if cmd.Flags().Changed("non-sso-groups-allowed") {
+				paramsSiteUpdate.NonSsoGroupsAllowed = flib.Bool(updateNonSsoGroupsAllowed)
 			}
-			if updateNonSsoUsersAllowed {
-				paramsSiteUpdate.NonSsoUsersAllowed = flib.Bool(true)
+			if cmd.Flags().Changed("non-sso-users-allowed") {
+				paramsSiteUpdate.NonSsoUsersAllowed = flib.Bool(updateNonSsoUsersAllowed)
 			}
-			if updateSharingEnabled {
-				paramsSiteUpdate.SharingEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("sharing-enabled") {
+				paramsSiteUpdate.SharingEnabled = flib.Bool(updateSharingEnabled)
 			}
-			if updateUserRequestsEnabled {
-				paramsSiteUpdate.UserRequestsEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("user-requests-enabled") {
+				paramsSiteUpdate.UserRequestsEnabled = flib.Bool(updateUserRequestsEnabled)
 			}
-			if updateUserRequestsNotifyAdmins {
-				paramsSiteUpdate.UserRequestsNotifyAdmins = flib.Bool(true)
+			if cmd.Flags().Changed("user-requests-notify-admins") {
+				paramsSiteUpdate.UserRequestsNotifyAdmins = flib.Bool(updateUserRequestsNotifyAdmins)
 			}
-			if updateFtpEnabled {
-				paramsSiteUpdate.FtpEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("ftp-enabled") {
+				paramsSiteUpdate.FtpEnabled = flib.Bool(updateFtpEnabled)
 			}
-			if updateSftpEnabled {
-				paramsSiteUpdate.SftpEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("sftp-enabled") {
+				paramsSiteUpdate.SftpEnabled = flib.Bool(updateSftpEnabled)
 			}
-			if updateAllowed2faMethodSms {
-				paramsSiteUpdate.Allowed2faMethodSms = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-sms") {
+				paramsSiteUpdate.Allowed2faMethodSms = flib.Bool(updateAllowed2faMethodSms)
 			}
-			if updateAllowed2faMethodU2f {
-				paramsSiteUpdate.Allowed2faMethodU2f = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-u2f") {
+				paramsSiteUpdate.Allowed2faMethodU2f = flib.Bool(updateAllowed2faMethodU2f)
 			}
-			if updateAllowed2faMethodTotp {
-				paramsSiteUpdate.Allowed2faMethodTotp = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-totp") {
+				paramsSiteUpdate.Allowed2faMethodTotp = flib.Bool(updateAllowed2faMethodTotp)
 			}
-			if updateAllowed2faMethodWebauthn {
-				paramsSiteUpdate.Allowed2faMethodWebauthn = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-webauthn") {
+				paramsSiteUpdate.Allowed2faMethodWebauthn = flib.Bool(updateAllowed2faMethodWebauthn)
 			}
-			if updateAllowed2faMethodYubi {
-				paramsSiteUpdate.Allowed2faMethodYubi = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-yubi") {
+				paramsSiteUpdate.Allowed2faMethodYubi = flib.Bool(updateAllowed2faMethodYubi)
 			}
-			if updateAllowed2faMethodBypassForFtpSftpDav {
-				paramsSiteUpdate.Allowed2faMethodBypassForFtpSftpDav = flib.Bool(true)
+			if cmd.Flags().Changed("allowed-2fa-method-bypass-for-ftp-sftp-dav") {
+				paramsSiteUpdate.Allowed2faMethodBypassForFtpSftpDav = flib.Bool(updateAllowed2faMethodBypassForFtpSftpDav)
 			}
-			if updateRequire2fa {
-				paramsSiteUpdate.Require2fa = flib.Bool(true)
+			if cmd.Flags().Changed("require-2fa") {
+				paramsSiteUpdate.Require2fa = flib.Bool(updateRequire2fa)
 			}
-			if updateLdapEnabled {
-				paramsSiteUpdate.LdapEnabled = flib.Bool(true)
+			if cmd.Flags().Changed("ldap-enabled") {
+				paramsSiteUpdate.LdapEnabled = flib.Bool(updateLdapEnabled)
 			}
-			if updateLdapSecure {
-				paramsSiteUpdate.LdapSecure = flib.Bool(true)
+			if cmd.Flags().Changed("ldap-secure") {
+				paramsSiteUpdate.LdapSecure = flib.Bool(updateLdapSecure)
 			}
-			if updateIcon16Delete {
-				paramsSiteUpdate.Icon16Delete = flib.Bool(true)
+			if cmd.Flags().Changed("icon16-delete") {
+				paramsSiteUpdate.Icon16Delete = flib.Bool(updateIcon16Delete)
 			}
-			if updateIcon32Delete {
-				paramsSiteUpdate.Icon32Delete = flib.Bool(true)
+			if cmd.Flags().Changed("icon32-delete") {
+				paramsSiteUpdate.Icon32Delete = flib.Bool(updateIcon32Delete)
 			}
-			if updateIcon48Delete {
-				paramsSiteUpdate.Icon48Delete = flib.Bool(true)
+			if cmd.Flags().Changed("icon48-delete") {
+				paramsSiteUpdate.Icon48Delete = flib.Bool(updateIcon48Delete)
 			}
-			if updateIcon128Delete {
-				paramsSiteUpdate.Icon128Delete = flib.Bool(true)
+			if cmd.Flags().Changed("icon128-delete") {
+				paramsSiteUpdate.Icon128Delete = flib.Bool(updateIcon128Delete)
 			}
-			if updateLogoDelete {
-				paramsSiteUpdate.LogoDelete = flib.Bool(true)
+			if cmd.Flags().Changed("logo-delete") {
+				paramsSiteUpdate.LogoDelete = flib.Bool(updateLogoDelete)
 			}
-			if updateBundleWatermarkAttachmentDelete {
-				paramsSiteUpdate.BundleWatermarkAttachmentDelete = flib.Bool(true)
+			if cmd.Flags().Changed("bundle-watermark-attachment-delete") {
+				paramsSiteUpdate.BundleWatermarkAttachmentDelete = flib.Bool(updateBundleWatermarkAttachmentDelete)
 			}
-			if updateDisable2faWithDelay {
-				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(true)
+			if cmd.Flags().Changed("disable-2fa-with-delay") {
+				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(updateDisable2faWithDelay)
 			}
 
 			var site interface{}
