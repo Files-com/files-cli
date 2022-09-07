@@ -149,7 +149,8 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 	params, err = SessionUnauthorizedError(
 		files_sdk.SessionCreateParams{Password: "password"},
 		files_sdk.ResponseError{
-			Type: "not-authenticated/two-factor-authentication-error",
+			Type:         "not-authenticated/two-factor-authentication-error",
+			ErrorMessage: "2FA Authentication error: Token from U2F is required",
 			Data: files_sdk.Data{
 				TwoFactorAuthenticationMethod: []string{"u2f"},
 				U2fSIgnRequests:               []files_sdk.U2fSignRequests{signRequest},
@@ -161,7 +162,7 @@ func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
 
 	if err.Error() == "failed to find any devices" {
 		assert.EqualError(err, "failed to find any devices")
-		assert.Equal("\n", stdOut.String())
+		assert.Equal("Token from U2F is required\n", stdOut.String())
 	} else {
 		assert.EqualError(err, "failed to get authentication response after 25 seconds", "Unplug u2f device")
 		assert.Contains(stdOut.String(), "Device version: U2F_V2")

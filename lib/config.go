@@ -190,7 +190,7 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	case "bad-request/invalid-username-or-password":
 		return paramsSessionCreate, err
 	case "not-authenticated/two-factor-authentication-error":
-		fmt.Fprintf(config.Out, "%v\n", responseError.ErrorMessage)
+		fmt.Fprintf(config.Out, "%v\n", strings.Replace(responseError.ErrorMessage, "2FA Authentication error: ", "", 1))
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "u2f") {
 			return U2fResponse(paramsSessionCreate, responseError, config)
