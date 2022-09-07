@@ -1,7 +1,7 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/Files-com/files-sdk-go/v2 v2.0.97-beta h1:bwsIDbZzX1grfHH5/R7DjRfnZLN0cTfj6LtyfB54an8=
-github.com/Files-com/files-sdk-go/v2 v2.0.97-beta/go.mod h1:O+2kqzW9QNFBD168W1ykySR3dMCPS/irO076SJkwVtM=
+github.com/Files-com/files-sdk-go/v2 v2.0.98-beta h1:ywYrgpg2F4LhtMbbguxukp4kod8WMwd8oA9JEGGoSOc=
+github.com/Files-com/files-sdk-go/v2 v2.0.98-beta/go.mod h1:O+2kqzW9QNFBD168W1ykySR3dMCPS/irO076SJkwVtM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
