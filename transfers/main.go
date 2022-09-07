@@ -235,11 +235,15 @@ func (t *Transfers) SetupSignals(job *status.Job) {
 	}()
 }
 
-func (t *Transfers) logOnEnd(status status.File) {
-	t.Log(fmt.Sprintf("%v %v size %v", bestPath(status), status.String(), lib.ByteCountSI(status.TransferBytes)), nil)
+func (t *Transfers) logOnEnd(s status.File) {
+	if s.Status.Is(status.Skipped) {
+		t.Log(fmt.Sprintf("%v %v", bestPath(s), s.String()), nil)
+	} else {
+		t.Log(fmt.Sprintf("%v %v size %v", bestPath(s), s.String(), lib.ByteCountSI(s.TransferBytes)), nil)
+	}
 
-	if status.Err != nil {
-		t.Log(fmt.Sprintf("%v %v %v", bestPath(status), status.String(), status.Err.Error()), status.Err)
+	if s.Err != nil {
+		t.Log(fmt.Sprintf("%v %v %v", bestPath(s), s.String(), s.Err.Error()), s.Err)
 	}
 }
 
