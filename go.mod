@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.18
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.99-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.100-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
@@ -13,6 +13,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.1
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/marshallbrekka/go-u2fhost v0.0.0-20210111072507-3ccdec8c8105
+	github.com/mattn/go-isatty v0.0.16
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.4
@@ -40,7 +41,6 @@ require (
 	github.com/lpar/date v1.0.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/muesli/ansi v0.0.0-20211018074035-2e021307bc4b // indirect
 	github.com/muesli/cancelreader v0.2.1 // indirect
@@ -52,7 +52,7 @@ require (
 	github.com/sabhiram/go-gitignore v0.0.0-20201211210132-54b8a0bf510f // indirect
 	github.com/smartystreets/assertions v1.13.0 // indirect
 	github.com/zenthangplus/goccm v0.0.0-20200608171100-39e9e08b694a // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

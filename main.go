@@ -214,6 +214,8 @@ func main() {
 	rootCmd.AddCommand(cmd.Sessions)
 	cmd.SettingsChangesInit()
 	rootCmd.AddCommand(cmd.SettingsChanges)
+	cmd.SftpHostKeysInit()
+	rootCmd.AddCommand(cmd.SftpHostKeys)
 	cmd.SitesInit()
 	rootCmd.AddCommand(cmd.Sites)
 	cmd.SsoStrategiesInit()

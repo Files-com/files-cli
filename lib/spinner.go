@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/mattn/go-isatty"
 	"github.com/theckman/yacspin"
 )
 
@@ -68,9 +69,10 @@ func isTerminal(w io.Writer) bool {
 		return false
 	}
 
-	if f.Name() == "/dev/stdout" {
+	if isatty.IsTerminal(f.Fd()) || isatty.IsCygwinTerminal(f.Fd()) {
 		return true
 	}
+
 	stat, err := f.Stat()
 	if err != nil {
 		return false
