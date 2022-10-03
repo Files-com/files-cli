@@ -12,6 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Files-com/files-cli/lib/version"
+
 	"github.com/Files-com/files-sdk-go/v2/lib"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -198,4 +200,93 @@ func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
 
 	assert.Equal("password", params.Password, "retains password")
 	assert.Equal("123456", params.Otp, "populates one-time password")
+}
+
+func TestConfig_CheckVersion(t *testing.T) {
+	type args struct {
+		version            string
+		fetchLatestVersion func() (version.Version, bool)
+		Config
+		installedViaBrew bool
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantStdout string
+		Config
+	}{
+		{
+			name: "Custom install with old version",
+			args: args{
+				version: "1.1.0",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: false,
+			},
+			wantStdout: "files-cli version 1.1.0 is out of date\nDownload latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n",
+			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+		},
+		{
+			name: "brew install with old version",
+			args: args{
+				version: "1.1.0",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: true,
+			},
+			wantStdout: "files-cli version 1.1.0 is out of date\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
+			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+		},
+		{
+			name: "already checked yesterday",
+			args: args{
+				version: "1.1.0",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: true,
+				Config:           Config{LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+			},
+			wantStdout: "",
+			Config:     Config{LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+		},
+		{
+			name: "already checked 3 days ago",
+			args: args{
+				version: "1.1.0",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: true,
+				Config:           Config{LastVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+			},
+			wantStdout: "files-cli version 1.1.0 is out of date\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
+			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+		},
+		{
+			name: "already known out of date",
+			args: args{
+				version: "1.1.0",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: true,
+				Config:           Config{LastVersionCheck: time.Now().Add(-24 * time.Hour), VersionOutOfDate: true},
+			},
+			wantStdout: "",
+			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stdOut := bytes.NewBufferString("")
+			tt.args.Config.CheckVersion(tt.args.version, tt.args.fetchLatestVersion, tt.args.installedViaBrew, stdOut)
+			assert.Equal(t, tt.wantStdout, stdOut.String())
+			assert.Equal(t, tt.Config.VersionOutOfDate, tt.args.Config.VersionOutOfDate)
+			assert.Equal(t, tt.Config.LastVersionCheck.Truncate(60*time.Second), tt.args.Config.LastVersionCheck.Truncate(60*time.Second))
+		})
+	}
 }

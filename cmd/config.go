@@ -52,6 +52,7 @@ func ConfigInit() {
 	resetDelete.Flags().BoolVarP(&resetConfig.APIKey, "api-key", "a", false, "API Key")
 	resetDelete.Flags().BoolVarP(&resetConfig.Endpoint, "endpoint", "e", false, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
 	resetDelete.Flags().BoolVarP(&resetConfig.Session, "session", "s", false, "")
+	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
 
 	Config.AddCommand(resetDelete)
 

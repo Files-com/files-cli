@@ -19,6 +19,7 @@ var VERSION string
 var OutputPath string
 
 func main() {
+	var ignoreVersionCheck bool
 	files.GlobalConfig.UserAgent = "Files.com CLI" + " " + strings.TrimSpace(VERSION)
 	var rootCmd = &cobra.Command{
 		Use:     "files-cli [resource]",
@@ -40,6 +41,10 @@ func main() {
 					lib.ClientError(x.Context(), err, x.ErrOrStderr())
 				}
 				x.SetOut(output)
+			}
+
+			if !ignoreVersionCheck {
+				config.CheckVersion(VERSION, lib.FetchLatestVersionNumber(x.Context()), lib.InstalledViaBrew(), x.ErrOrStderr())
 			}
 
 			if err != nil {
@@ -76,6 +81,7 @@ func main() {
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&files.APIKey, "api-key", "", "API Key")
+	rootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "API Key")
 	rootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	rootCmd.SuggestionsMinimumDistance = 1
 	cmd.ConfigInit()

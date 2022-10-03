@@ -1,23 +1,25 @@
 package lib
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
 	"os/user"
 	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
 
+	"github.com/Files-com/files-cli/lib/version"
+	"github.com/Files-com/files-sdk-go/v2/session"
+	"golang.org/x/crypto/ssh/terminal"
+
 	"fmt"
 	"io"
 	"os"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/session"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Overrides struct {
@@ -35,38 +37,48 @@ type Config struct {
 	Overrides          `json:"-"`
 	SessionId          string    `json:"session_id"`
 	SessionExpiry      time.Time `json:"session_expiry"`
+	LastVersionCheck   time.Time `json:"last_version_check"`
+	VersionOutOfDate   bool      `json:"version_out_of_date"`
 	Subdomain          string    `json:"subdomain"`
 	Username           string    `json:"username"`
 	APIKey             string    `json:"api_key"`
 	Endpoint           string    `json:"endpoint,omitempty"`
-	configPathOverride string    `json:"-"`
+	configPathOverride string
 }
 
 type ResetConfig struct {
-	Subdomain bool
-	Username  bool
-	APIKey    bool
-	Endpoint  bool
-	Session   bool
+	Subdomain    bool
+	Username     bool
+	APIKey       bool
+	Endpoint     bool
+	Session      bool
+	VersionCheck bool
 }
 
 var SessionExpiry = time.Hour * 6
+var CheckVersionEvery = time.Hour * 48
+
+const CLICurrentVersionURL = "https://raw.githubusercontent.com/Files-com/files-cli/master/_VERSION"
 
 func (c Config) ResetWith(reset ResetConfig) error {
-	if reset.Subdomain == true {
+	if reset.Subdomain {
 		c.Subdomain = ""
 	}
-	if reset.Username == true {
+	if reset.Username {
 		c.Username = ""
 	}
-	if reset.APIKey == true {
+	if reset.APIKey {
 		c.APIKey = ""
 	}
-	if reset.Endpoint == true {
+	if reset.Endpoint {
 		c.Endpoint = ""
 	}
-	if reset.Session == true {
+	if reset.Session {
 		c.SessionId = ""
+	}
+	if reset.VersionCheck {
+		c.VersionOutOfDate = false
+		c.LastVersionCheck = time.Now()
 	}
 	return c.Save()
 }
@@ -125,6 +137,87 @@ func (c *Config) ValidSession() bool {
 
 func (c *Config) SessionExpired() bool {
 	return c.SessionId != "" && time.Now().Local().After(c.SessionExpiry)
+}
+
+func (c *Config) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {
+	defer c.Save()
+
+	if time.Now().Local().Before(c.LastVersionCheck.Add(CheckVersionEvery)) {
+		return
+	}
+
+	runningVersion, _ := version.New(versionString)
+
+	if !c.VersionOutOfDate {
+		latestVersion, ok := fetchLatestVersion()
+		if !ok {
+			return
+		}
+		c.LastVersionCheck = time.Now()
+
+		if latestVersion.Equal(runningVersion) || latestVersion.Greater(runningVersion) {
+			return
+		}
+		c.VersionOutOfDate = true
+	}
+
+	writer.Write([]byte(fmt.Sprintf("files-cli version %v is out of date\n", runningVersion)))
+	if installedViaBrew {
+		writer.Write([]byte(fmt.Sprintf("Upgrade via Homebrew\n\tbrew upgrade files-cli\n\n")))
+		return
+	}
+
+	writer.Write([]byte(fmt.Sprintf("Download latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n")))
+}
+
+func FetchLatestVersionNumber(parentCtx context.Context) func() (version.Version, bool) {
+	return func() (version.Version, bool) {
+		checkingFailed := func(err error) bool {
+			if err != nil {
+				files_sdk.GlobalConfig.Logger().Printf("Versioning checking failed: %v", err.Error())
+				return true
+			}
+			return false
+		}
+
+		ctx, cancel := context.WithTimeout(parentCtx, 4*time.Second)
+		defer cancel()
+		req, err := http.NewRequestWithContext(ctx, "GET", CLICurrentVersionURL, nil)
+		if checkingFailed(err) {
+			return version.Version{}, false
+		}
+
+		resp, err := files_sdk.GlobalConfig.GetHttpClient().Do(req)
+		if checkingFailed(err) {
+			return version.Version{}, false
+		}
+		data, err := ioutil.ReadAll(resp.Body)
+		if checkingFailed(err) {
+			return version.Version{}, false
+		}
+		latestVersion, err := version.New(string(data))
+		if checkingFailed(err) {
+			return version.Version{}, false
+		}
+		return latestVersion, true
+	}
+}
+
+func InstalledViaBrew() bool {
+	e, err := os.Executable()
+	if err != nil {
+		return false
+	}
+	symPath, err := os.Readlink(e)
+	if err != nil {
+		return false
+	}
+
+	if strings.Contains(symPath, "../Cellar/files-cli") {
+		return true
+	}
+
+	return false
 }
 
 func (c *Config) configPath() (string, error) {
@@ -212,12 +305,6 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 	}
 
 	return paramsSessionCreate, err
-}
-
-func stringInput(reader *bufio.Reader, out io.Writer, label string) string {
-	fmt.Fprintf(out, "%v: ", label)
-	text, _ := reader.ReadString('\n')
-	return parseTermInput(text)
 }
 
 func parseTermInput(text string) string {
