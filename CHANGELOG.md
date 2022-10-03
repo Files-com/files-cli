@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.6.1] - 2022/10/03
+### Fix
+- Don't require valid api-key/session for `version` command.
+- version checking did not properly recheck once version was upgraded. If having issue use reset using `config reset --version-check`
+
 ## [1.6.0] - 2022/10/03
 ### Add
 - Check if running the latest version and if out of date provide upgrade instruction. Can be ignored with a global flag `ignore-version-check`.

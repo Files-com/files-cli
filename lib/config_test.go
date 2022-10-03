@@ -224,8 +224,8 @@ func TestConfig_CheckVersion(t *testing.T) {
 				},
 				installedViaBrew: false,
 			},
-			wantStdout: "files-cli version 1.1.0 is out of date\nDownload latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n",
-			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nDownload latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n",
+			Config:     Config{LastValidVersionCheck: time.Time{}},
 		},
 		{
 			name: "brew install with old version",
@@ -236,8 +236,8 @@ func TestConfig_CheckVersion(t *testing.T) {
 				},
 				installedViaBrew: true,
 			},
-			wantStdout: "files-cli version 1.1.0 is out of date\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
-			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
+			Config:     Config{LastValidVersionCheck: time.Time{}},
 		},
 		{
 			name: "already checked yesterday",
@@ -247,10 +247,10 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+				Config:           Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 			},
 			wantStdout: "",
-			Config:     Config{LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+			Config:     Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 		},
 		{
 			name: "already checked 3 days ago",
@@ -260,23 +260,36 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+				Config:           Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
 			},
-			wantStdout: "files-cli version 1.1.0 is out of date\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
-			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Local()},
+			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
+			Config:     Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
 		},
 		{
-			name: "already known out of date",
+			name: "out of date but not checking because within 48 hours of last good check",
 			args: args{
 				version: "1.1.0",
 				fetchLatestVersion: func() (version.Version, bool) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastVersionCheck: time.Now().Add(-24 * time.Hour), VersionOutOfDate: true},
+				Config:           Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 			},
 			wantStdout: "",
-			Config:     Config{VersionOutOfDate: true, LastVersionCheck: time.Now().Add(-24 * time.Hour)},
+			Config:     Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
+		},
+		{
+			name: "was out of date but client was upgraded",
+			args: args{
+				version: "1.2.9",
+				fetchLatestVersion: func() (version.Version, bool) {
+					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
+				},
+				installedViaBrew: true,
+				Config:           Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+			},
+			wantStdout: "",
+			Config:     Config{LastValidVersionCheck: time.Now()},
 		},
 	}
 
@@ -285,8 +298,7 @@ func TestConfig_CheckVersion(t *testing.T) {
 			stdOut := bytes.NewBufferString("")
 			tt.args.Config.CheckVersion(tt.args.version, tt.args.fetchLatestVersion, tt.args.installedViaBrew, stdOut)
 			assert.Equal(t, tt.wantStdout, stdOut.String())
-			assert.Equal(t, tt.Config.VersionOutOfDate, tt.args.Config.VersionOutOfDate)
-			assert.Equal(t, tt.Config.LastVersionCheck.Truncate(60*time.Second), tt.args.Config.LastVersionCheck.Truncate(60*time.Second))
+			assert.Equal(t, tt.Config.LastValidVersionCheck.Truncate(60*time.Second), tt.args.Config.LastValidVersionCheck.Truncate(60*time.Second))
 		})
 	}
 }

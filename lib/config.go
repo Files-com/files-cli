@@ -34,16 +34,15 @@ func (o Overrides) Init() Overrides {
 }
 
 type Config struct {
-	Overrides          `json:"-"`
-	SessionId          string    `json:"session_id"`
-	SessionExpiry      time.Time `json:"session_expiry"`
-	LastVersionCheck   time.Time `json:"last_version_check"`
-	VersionOutOfDate   bool      `json:"version_out_of_date"`
-	Subdomain          string    `json:"subdomain"`
-	Username           string    `json:"username"`
-	APIKey             string    `json:"api_key"`
-	Endpoint           string    `json:"endpoint,omitempty"`
-	configPathOverride string
+	Overrides             `json:"-"`
+	SessionId             string    `json:"session_id"`
+	SessionExpiry         time.Time `json:"session_expiry"`
+	LastValidVersionCheck time.Time `json:"last_valid_version_check"`
+	Subdomain             string    `json:"subdomain"`
+	Username              string    `json:"username"`
+	APIKey                string    `json:"api_key"`
+	Endpoint              string    `json:"endpoint,omitempty"`
+	configPathOverride    string
 }
 
 type ResetConfig struct {
@@ -77,8 +76,7 @@ func (c Config) ResetWith(reset ResetConfig) error {
 		c.SessionId = ""
 	}
 	if reset.VersionCheck {
-		c.VersionOutOfDate = false
-		c.LastVersionCheck = time.Now()
+		c.LastValidVersionCheck = time.Now()
 	}
 	return c.Save()
 }
@@ -142,26 +140,23 @@ func (c *Config) SessionExpired() bool {
 func (c *Config) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {
 	defer c.Save()
 
-	if time.Now().Local().Before(c.LastVersionCheck.Add(CheckVersionEvery)) {
+	if time.Now().Local().Before(c.LastValidVersionCheck.Add(CheckVersionEvery)) {
 		return
 	}
 
 	runningVersion, _ := version.New(versionString)
 
-	if !c.VersionOutOfDate {
-		latestVersion, ok := fetchLatestVersion()
-		if !ok {
-			return
-		}
-		c.LastVersionCheck = time.Now()
-
-		if latestVersion.Equal(runningVersion) || latestVersion.Greater(runningVersion) {
-			return
-		}
-		c.VersionOutOfDate = true
+	latestVersion, ok := fetchLatestVersion()
+	if !ok {
+		return
 	}
 
-	writer.Write([]byte(fmt.Sprintf("files-cli version %v is out of date\n", runningVersion)))
+	if latestVersion.Equal(runningVersion) || latestVersion.Greater(runningVersion) {
+		c.LastValidVersionCheck = time.Now()
+		return
+	}
+
+	writer.Write([]byte(fmt.Sprintf("files-cli version %v is out of date. Latest version is %v\n", runningVersion, latestVersion)))
 	if installedViaBrew {
 		writer.Write([]byte(fmt.Sprintf("Upgrade via Homebrew\n\tbrew upgrade files-cli\n\n")))
 		return

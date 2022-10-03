@@ -29,7 +29,7 @@ func main() {
 				return
 			}
 
-			if len(x.Aliases) != 0 && lib.Includes(x.Aliases[0], []string{"config-set", "config-reset", "config-show"}) {
+			if len(x.Aliases) != 0 && lib.Includes(x.Aliases[0], []string{"config-set", "config-reset", "config-show", "version"}) {
 				return
 			}
 			config := &lib.Config{}
