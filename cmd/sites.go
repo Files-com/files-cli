@@ -405,6 +405,8 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
