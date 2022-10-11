@@ -104,6 +104,7 @@ func BundlesInit() {
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
+	createDontSeparateSubmissionsByFolder := true
 	createPreviewOnly := true
 	createRequireRegistration := true
 	createRequireShareRecipient := true
@@ -122,6 +123,9 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
+			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
+				paramsBundleCreate.DontSeparateSubmissionsByFolder = flib.Bool(createDontSeparateSubmissionsByFolder)
+			}
 			if cmd.Flags().Changed("preview-only") {
 				paramsBundleCreate.PreviewOnly = flib.Bool(createPreviewOnly)
 			}
@@ -152,11 +156,13 @@ func BundlesInit() {
 	cmdCreate.Flags().StringSliceVar(&paramsBundleCreate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Password, "password", "", "Password for this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
+	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Note, "note", "", "Bundle internal note")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
+	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, and any custom form data.")
 	cmdCreate.Flags().StringVar(&BundleCreatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleCreate.Permissions.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPreviewOnly, "preview-only", createPreviewOnly, "Restrict users to previewing files only?")
 	cmdCreate.Flags().BoolVar(&createRequireRegistration, "require-registration", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
@@ -205,6 +211,7 @@ func BundlesInit() {
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
+	updateDontSeparateSubmissionsByFolder := true
 	updatePreviewOnly := true
 	updateRequireRegistration := true
 	updateRequireShareRecipient := true
@@ -224,6 +231,9 @@ func BundlesInit() {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
+			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
+				paramsBundleUpdate.DontSeparateSubmissionsByFolder = flib.Bool(updateDontSeparateSubmissionsByFolder)
+			}
 			if cmd.Flags().Changed("preview-only") {
 				paramsBundleUpdate.PreviewOnly = flib.Bool(updatePreviewOnly)
 			}
@@ -260,10 +270,12 @@ func BundlesInit() {
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Description, "description", "", "Public description")
+	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
+	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, and any custom form data.")
 	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "Restrict users to previewing files only?")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
