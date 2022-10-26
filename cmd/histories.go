@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/history"
 )
 
-var (
-	Histories = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Histories())
+}
 
-func HistoriesInit() {
-	Histories = &cobra.Command{
+func Histories() *cobra.Command {
+	Histories := &cobra.Command{
 		Use:  "histories [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -42,7 +42,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForFile(ctx, paramsHistoryListForFile)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForFile, fieldsListForFile, usePagerListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFile, fieldsListForFile, usePagerListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at")
@@ -77,7 +77,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForFolder, fieldsListForFolder, usePagerListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFolder, fieldsListForFolder, usePagerListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at")
@@ -109,7 +109,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListForUser(ctx, paramsHistoryListForUser)
-			lib.HandleResponse(ctx, actionCollection, err, formatListForUser, fieldsListForUser, usePagerListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForUser, fieldsListForUser, usePagerListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at")
@@ -141,7 +141,7 @@ func HistoriesInit() {
 			var actionCollection interface{}
 			var err error
 			actionCollection, err = client.ListLogins(ctx, paramsHistoryListLogins)
-			lib.HandleResponse(ctx, actionCollection, err, formatListLogins, fieldsListLogins, usePagerListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListLogins, fieldsListLogins, usePagerListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at")
@@ -184,12 +184,12 @@ func HistoriesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -205,4 +205,5 @@ func HistoriesInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdList)
+	return Histories
 }

@@ -19,12 +19,11 @@ func TestUploadCmd(t *testing.T) {
 	}
 	defer r.Stop()
 
-	upload := UploadCmd()
-	stdOut, stdErr := callCmd(upload, config, []string{"upload_test.go", "-d"})
+	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "-d"})
 	assert.Equal("", string(stdErr))
 	assert.ElementsMatch([]string{
 		"upload sync: false",
-		"upload_test.go complete size 1.7 kB",
+		"upload_test.go complete size 1.6 kB",
 	}, strings.Split(string(stdOut), "\n")[1:3])
 }
 
@@ -45,8 +44,7 @@ func TestUploadCmdCloudLog(t *testing.T) {
 	assert.NoError(err)
 	file.Write([]byte("hello how are you doing?"))
 	file.Close()
-	upload := UploadCmd()
-	out, stdErr := callCmd(upload, config, []string{file.Name(), "-d", "-l"})
+	out, stdErr := callCmd(Upload(), config, []string{file.Name(), "-d", "-l"})
 	assert.Equal("", string(stdErr))
 	assert.ElementsMatch([]string{
 		"upload sync: false",
@@ -63,7 +61,6 @@ func TestUploadCmdBadPath(t *testing.T) {
 	}
 	defer r.Stop()
 
-	upload := UploadCmd()
-	out, _ := callCmd(upload, config, []string{"bad-path", "-d"})
+	out, _ := callCmd(Upload(), config, []string{"bad-path", "-d"})
 	assert.Contains(strings.Split(string(out), "\n")[2], "bad-path errored size 0 B")
 }

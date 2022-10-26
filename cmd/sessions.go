@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/session"
 )
 
-var (
-	Sessions = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Sessions())
+}
 
-func SessionsInit() {
-	Sessions = &cobra.Command{
+func Sessions() *cobra.Command {
+	Sessions := &cobra.Command{
 		Use:  "sessions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -39,7 +39,7 @@ func SessionsInit() {
 			var session interface{}
 			var err error
 			session, err = client.Create(ctx, paramsSessionCreate)
-			lib.HandleResponse(ctx, session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.Username, "username", "", "Username to sign in as")
@@ -67,7 +67,7 @@ func SessionsInit() {
 			var err error
 			err = client.Delete(ctx)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -77,4 +77,5 @@ func SessionsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Sessions.AddCommand(cmdDelete)
+	return Sessions
 }

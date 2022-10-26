@@ -11,12 +11,12 @@ import (
 	sftp_host_key "github.com/Files-com/files-sdk-go/v2/sftphostkey"
 )
 
-var (
-	SftpHostKeys = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(SftpHostKeys())
+}
 
-func SftpHostKeysInit() {
-	SftpHostKeys = &cobra.Command{
+func SftpHostKeys() *cobra.Command {
+	SftpHostKeys := &cobra.Command{
 		Use:  "sftp-host-keys [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func SftpHostKeysInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func SftpHostKeysInit() {
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Find(ctx, paramsSftpHostKeyFind)
-			lib.HandleResponse(ctx, sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSftpHostKeyFind.Id, "id", 0, "Sftp Host Key ID.")
@@ -114,7 +114,7 @@ func SftpHostKeysInit() {
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Create(ctx, paramsSftpHostKeyCreate)
-			lib.HandleResponse(ctx, sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
@@ -142,7 +142,7 @@ func SftpHostKeysInit() {
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Update(ctx, paramsSftpHostKeyUpdate)
-			lib.HandleResponse(ctx, sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
@@ -171,7 +171,7 @@ func SftpHostKeysInit() {
 			var err error
 			err = client.Delete(ctx, paramsSftpHostKeyDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -182,4 +182,5 @@ func SftpHostKeysInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	SftpHostKeys.AddCommand(cmdDelete)
+	return SftpHostKeys
 }

@@ -11,12 +11,12 @@ import (
 	ip_address "github.com/Files-com/files-sdk-go/v2/ipaddress"
 )
 
-var (
-	IpAddresses = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(IpAddresses())
+}
 
-func IpAddressesInit() {
-	IpAddresses = &cobra.Command{
+func IpAddresses() *cobra.Command {
+	IpAddresses := &cobra.Command{
 		Use:  "ip-addresses [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func IpAddressesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func IpAddressesInit() {
 			var publicIpAddressCollection interface{}
 			var err error
 			publicIpAddressCollection, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
-			lib.HandleResponse(ctx, publicIpAddressCollection, err, formatGetReserved, fieldsGetReserved, usePagerGetReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetReserved, fieldsGetReserved, usePagerGetReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -98,4 +98,5 @@ func IpAddressesInit() {
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
 
 	IpAddresses.AddCommand(cmdGetReserved)
+	return IpAddresses
 }

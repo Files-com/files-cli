@@ -14,12 +14,12 @@ import (
 	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
-var (
-	Bundles = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Bundles())
+}
 
-func BundlesInit() {
-	Bundles = &cobra.Command{
+func Bundles() *cobra.Command {
+	Bundles := &cobra.Command{
 		Use:  "bundles [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -55,12 +55,12 @@ func BundlesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -91,7 +91,7 @@ func BundlesInit() {
 			var bundle interface{}
 			var err error
 			bundle, err = client.Find(ctx, paramsBundleFind)
-			lib.HandleResponse(ctx, bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
@@ -149,7 +149,7 @@ func BundlesInit() {
 			var err error
 			paramsBundleCreate.Permissions = paramsBundleCreate.Permissions.Enum()[BundleCreatePermissions]
 			bundle, err = client.Create(ctx, paramsBundleCreate)
-			lib.HandleResponse(ctx, bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -195,7 +195,7 @@ func BundlesInit() {
 			var err error
 			err = client.Share(ctx, paramsBundleShare)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -260,7 +260,7 @@ func BundlesInit() {
 			var err error
 			paramsBundleUpdate.Permissions = paramsBundleUpdate.Permissions.Enum()[BundleUpdatePermissions]
 			bundle, err = client.Update(ctx, paramsBundleUpdate)
-			lib.HandleResponse(ctx, bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
@@ -307,7 +307,7 @@ func BundlesInit() {
 			var err error
 			err = client.Delete(ctx, paramsBundleDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -318,4 +318,5 @@ func BundlesInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Bundles.AddCommand(cmdDelete)
+	return Bundles
 }

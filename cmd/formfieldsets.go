@@ -13,12 +13,12 @@ import (
 	form_field_set "github.com/Files-com/files-sdk-go/v2/formfieldset"
 )
 
-var (
-	FormFieldSets = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(FormFieldSets())
+}
 
-func FormFieldSetsInit() {
-	FormFieldSets = &cobra.Command{
+func FormFieldSets() *cobra.Command {
+	FormFieldSets := &cobra.Command{
 		Use:  "form-field-sets [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,12 +54,12 @@ func FormFieldSetsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -90,7 +90,7 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
-			lib.HandleResponse(ctx, formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
@@ -130,7 +130,7 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
-			lib.HandleResponse(ctx, formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -174,7 +174,7 @@ func FormFieldSetsInit() {
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Update(ctx, paramsFormFieldSetUpdate)
-			lib.HandleResponse(ctx, formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
@@ -205,7 +205,7 @@ func FormFieldSetsInit() {
 			var err error
 			err = client.Delete(ctx, paramsFormFieldSetDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -216,4 +216,5 @@ func FormFieldSetsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	FormFieldSets.AddCommand(cmdDelete)
+	return FormFieldSets
 }

@@ -11,12 +11,12 @@ import (
 	public_key "github.com/Files-com/files-sdk-go/v2/publickey"
 )
 
-var (
-	PublicKeys = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(PublicKeys())
+}
 
-func PublicKeysInit() {
-	PublicKeys = &cobra.Command{
+func PublicKeys() *cobra.Command {
+	PublicKeys := &cobra.Command{
 		Use:  "public-keys [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func PublicKeysInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -88,7 +88,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
-			lib.HandleResponse(ctx, publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
@@ -115,7 +115,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
-			lib.HandleResponse(ctx, publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -144,7 +144,7 @@ func PublicKeysInit() {
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Update(ctx, paramsPublicKeyUpdate)
-			lib.HandleResponse(ctx, publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")
@@ -172,7 +172,7 @@ func PublicKeysInit() {
 			var err error
 			err = client.Delete(ctx, paramsPublicKeyDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -183,4 +183,5 @@ func PublicKeysInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	PublicKeys.AddCommand(cmdDelete)
+	return PublicKeys
 }

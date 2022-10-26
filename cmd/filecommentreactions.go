@@ -11,12 +11,12 @@ import (
 	file_comment_reaction "github.com/Files-com/files-sdk-go/v2/filecommentreaction"
 )
 
-var (
-	FileCommentReactions = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(FileCommentReactions())
+}
 
-func FileCommentReactionsInit() {
-	FileCommentReactions = &cobra.Command{
+func FileCommentReactions() *cobra.Command {
+	FileCommentReactions := &cobra.Command{
 		Use:  "file-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -40,7 +40,7 @@ func FileCommentReactionsInit() {
 			var fileCommentReaction interface{}
 			var err error
 			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
-			lib.HandleResponse(ctx, fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -69,7 +69,7 @@ func FileCommentReactionsInit() {
 			var err error
 			err = client.Delete(ctx, paramsFileCommentReactionDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -80,4 +80,5 @@ func FileCommentReactionsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	FileCommentReactions.AddCommand(cmdDelete)
+	return FileCommentReactions
 }

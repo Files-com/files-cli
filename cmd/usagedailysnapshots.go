@@ -11,12 +11,12 @@ import (
 	usage_daily_snapshot "github.com/Files-com/files-sdk-go/v2/usagedailysnapshot"
 )
 
-var (
-	UsageDailySnapshots = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(UsageDailySnapshots())
+}
 
-func UsageDailySnapshotsInit() {
-	UsageDailySnapshots = &cobra.Command{
+func UsageDailySnapshots() *cobra.Command {
+	UsageDailySnapshots := &cobra.Command{
 		Use:  "usage-daily-snapshots [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func UsageDailySnapshotsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -70,4 +70,5 @@ func UsageDailySnapshotsInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	UsageDailySnapshots.AddCommand(cmdList)
+	return UsageDailySnapshots
 }

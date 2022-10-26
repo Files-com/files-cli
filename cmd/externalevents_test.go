@@ -15,8 +15,7 @@ func TestExternalEventsCreateSuccess(t *testing.T) {
 	}
 	defer r.Stop()
 
-	ExternalEventsInit()
-	out, stdErr := callCmd(ExternalEvents, config, []string{"create", "--status", "success", "--body", "this is a success test", "--format", "json"})
+	out, stdErr := callCmd(ExternalEvents(), config, []string{"create", "--status", "success", "--body", "this is a success test", "--format", "json"})
 	assert.Equal("", string(stdErr))
 	event := files_sdk.ExternalEvent{}
 	event.UnmarshalJSON(out)
@@ -33,8 +32,7 @@ func TestExternalEventsCreateError(t *testing.T) {
 	}
 	defer r.Stop()
 
-	ExternalEventsInit()
-	out, stderr := callCmd(ExternalEvents, config, []string{"create", "--status", "failure", "--body", "this is a error test", "--format", "json"})
+	out, stderr := callCmd(ExternalEvents(), config, []string{"create", "--status", "failure", "--body", "this is a error test", "--format", "json"})
 	assert.Equal("", string(stderr))
 	event := files_sdk.ExternalEvent{}
 	err = event.UnmarshalJSON(out)
@@ -52,8 +50,7 @@ func TestExternalEventsCreateNoStatus(t *testing.T) {
 	}
 	defer r.Stop()
 
-	ExternalEventsInit()
-	stdOut, errOut := callCmd(ExternalEvents, config, []string{"create", "--status", "taco", "--body", "this is a error test", "--format", "json"})
+	stdOut, errOut := callCmd(ExternalEvents(), config, []string{"create", "--status", "taco", "--body", "this is a error test", "--format", "json"})
 	event := files_sdk.ExternalEvent{}
 	err = event.UnmarshalJSON(stdOut)
 	assert.Error(err)

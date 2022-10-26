@@ -11,12 +11,12 @@ import (
 	sso_strategy "github.com/Files-com/files-sdk-go/v2/ssostrategy"
 )
 
-var (
-	SsoStrategies = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(SsoStrategies())
+}
 
-func SsoStrategiesInit() {
-	SsoStrategies = &cobra.Command{
+func SsoStrategies() *cobra.Command {
+	SsoStrategies := &cobra.Command{
 		Use:  "sso-strategies [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func SsoStrategiesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func SsoStrategiesInit() {
 			var ssoStrategy interface{}
 			var err error
 			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
-			lib.HandleResponse(ctx, ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
@@ -114,7 +114,7 @@ func SsoStrategiesInit() {
 			var err error
 			err = client.Sync(ctx, paramsSsoStrategySync)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -125,4 +125,5 @@ func SsoStrategiesInit() {
 	cmdSync.Flags().BoolVar(&usePagerSync, "use-pager", usePagerSync, "Use $PAGER (.ie less, more, etc)")
 
 	SsoStrategies.AddCommand(cmdSync)
+	return SsoStrategies
 }

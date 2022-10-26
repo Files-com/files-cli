@@ -11,12 +11,12 @@ import (
 	as2_incoming_message "github.com/Files-com/files-sdk-go/v2/as2incomingmessage"
 )
 
-var (
-	As2IncomingMessages = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(As2IncomingMessages())
+}
 
-func As2IncomingMessagesInit() {
-	As2IncomingMessages = &cobra.Command{
+func As2IncomingMessages() *cobra.Command {
+	As2IncomingMessages := &cobra.Command{
 		Use:  "as2-incoming-messages [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func As2IncomingMessagesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -71,4 +71,5 @@ func As2IncomingMessagesInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	As2IncomingMessages.AddCommand(cmdList)
+	return As2IncomingMessages
 }

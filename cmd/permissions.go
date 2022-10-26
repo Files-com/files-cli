@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/permission"
 )
 
-var (
-	Permissions = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Permissions())
+}
 
-func PermissionsInit() {
-	Permissions = &cobra.Command{
+func Permissions() *cobra.Command {
+	Permissions := &cobra.Command{
 		Use:  "permissions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -57,12 +57,12 @@ func PermissionsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -104,7 +104,7 @@ func PermissionsInit() {
 			var permission interface{}
 			var err error
 			permission, err = client.Create(ctx, paramsPermissionCreate)
-			lib.HandleResponse(ctx, permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
@@ -136,7 +136,7 @@ func PermissionsInit() {
 			var err error
 			err = client.Delete(ctx, paramsPermissionDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -147,4 +147,5 @@ func PermissionsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Permissions.AddCommand(cmdDelete)
+	return Permissions
 }

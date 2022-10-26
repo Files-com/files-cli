@@ -11,12 +11,12 @@ import (
 	as2_station "github.com/Files-com/files-sdk-go/v2/as2station"
 )
 
-var (
-	As2Stations = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(As2Stations())
+}
 
-func As2StationsInit() {
-	As2Stations = &cobra.Command{
+func As2Stations() *cobra.Command {
+	As2Stations := &cobra.Command{
 		Use:  "as2-stations [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func As2StationsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Find(ctx, paramsAs2StationFind)
-			lib.HandleResponse(ctx, as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2StationFind.Id, "id", 0, "As2 Station ID.")
@@ -114,7 +114,7 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
-			lib.HandleResponse(ctx, as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "AS2 Name")
@@ -144,7 +144,7 @@ func As2StationsInit() {
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Update(ctx, paramsAs2StationUpdate)
-			lib.HandleResponse(ctx, as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
@@ -175,7 +175,7 @@ func As2StationsInit() {
 			var err error
 			err = client.Delete(ctx, paramsAs2StationDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -186,4 +186,5 @@ func As2StationsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	As2Stations.AddCommand(cmdDelete)
+	return As2Stations
 }

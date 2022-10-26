@@ -13,12 +13,12 @@ import (
 	bundle_recipient "github.com/Files-com/files-sdk-go/v2/bundlerecipient"
 )
 
-var (
-	BundleRecipients = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(BundleRecipients())
+}
 
-func BundleRecipientsInit() {
-	BundleRecipients = &cobra.Command{
+func BundleRecipients() *cobra.Command {
+	BundleRecipients := &cobra.Command{
 		Use:  "bundle-recipients [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,12 +54,12 @@ func BundleRecipientsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -96,7 +96,7 @@ func BundleRecipientsInit() {
 			var bundleRecipient interface{}
 			var err error
 			bundleRecipient, err = client.Create(ctx, paramsBundleRecipientCreate)
-			lib.HandleResponse(ctx, bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -112,4 +112,5 @@ func BundleRecipientsInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	BundleRecipients.AddCommand(cmdCreate)
+	return BundleRecipients
 }

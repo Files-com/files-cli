@@ -11,12 +11,12 @@ import (
 	bundle_download "github.com/Files-com/files-sdk-go/v2/bundledownload"
 )
 
-var (
-	BundleDownloads = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(BundleDownloads())
+}
 
-func BundleDownloadsInit() {
-	BundleDownloads = &cobra.Command{
+func BundleDownloads() *cobra.Command {
+	BundleDownloads := &cobra.Command{
 		Use:  "bundle-downloads [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func BundleDownloadsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -72,4 +72,5 @@ func BundleDownloadsInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	BundleDownloads.AddCommand(cmdList)
+	return BundleDownloads
 }

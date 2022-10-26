@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/message"
 )
 
-var (
-	Messages = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Messages())
+}
 
-func MessagesInit() {
-	Messages = &cobra.Command{
+func Messages() *cobra.Command {
+	Messages := &cobra.Command{
 		Use:  "messages [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -51,12 +51,12 @@ func MessagesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -88,7 +88,7 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Find(ctx, paramsMessageFind)
-			lib.HandleResponse(ctx, message, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), message, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageFind.Id, "id", 0, "Message ID.")
@@ -115,7 +115,7 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Create(ctx, paramsMessageCreate)
-			lib.HandleResponse(ctx, message, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), message, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -145,7 +145,7 @@ func MessagesInit() {
 			var message interface{}
 			var err error
 			message, err = client.Update(ctx, paramsMessageUpdate)
-			lib.HandleResponse(ctx, message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageUpdate.Id, "id", 0, "Message ID.")
@@ -175,7 +175,7 @@ func MessagesInit() {
 			var err error
 			err = client.Delete(ctx, paramsMessageDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -186,4 +186,5 @@ func MessagesInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Messages.AddCommand(cmdDelete)
+	return Messages
 }

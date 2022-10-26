@@ -13,12 +13,12 @@ import (
 	api_key "github.com/Files-com/files-sdk-go/v2/apikey"
 )
 
-var (
-	ApiKeys = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(ApiKeys())
+}
 
-func ApiKeysInit() {
-	ApiKeys = &cobra.Command{
+func ApiKeys() *cobra.Command {
+	ApiKeys := &cobra.Command{
 		Use:  "api-keys [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,12 +54,12 @@ func ApiKeysInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -88,7 +88,7 @@ func ApiKeysInit() {
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.FindCurrent(ctx)
-			lib.HandleResponse(ctx, apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -114,7 +114,7 @@ func ApiKeysInit() {
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Find(ctx, paramsApiKeyFind)
-			lib.HandleResponse(ctx, apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsApiKeyFind.Id, "id", 0, "Api Key ID.")
@@ -146,7 +146,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
 			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
-			lib.HandleResponse(ctx, apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsApiKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -180,7 +180,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyUpdateCurrent.PermissionSet = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
 			apiKey, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
-			lib.HandleResponse(ctx, apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	lib.TimeVar(cmdUpdateCurrent.Flags(), paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at")
@@ -211,7 +211,7 @@ func ApiKeysInit() {
 			var err error
 			paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
 			apiKey, err = client.Update(ctx, paramsApiKeyUpdate)
-			lib.HandleResponse(ctx, apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsApiKeyUpdate.Id, "id", 0, "Api Key ID.")
@@ -240,7 +240,7 @@ func ApiKeysInit() {
 			var err error
 			err = client.DeleteCurrent(ctx)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -267,7 +267,7 @@ func ApiKeysInit() {
 			var err error
 			err = client.Delete(ctx, paramsApiKeyDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -278,4 +278,5 @@ func ApiKeysInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdDelete)
+	return ApiKeys
 }

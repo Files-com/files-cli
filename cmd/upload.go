@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func UploadCmd() *cobra.Command {
+func init() {
+	RootCmd.AddCommand(Upload())
+}
+
+func Upload() *cobra.Command {
 	transfer := transfers.New()
 	Upload := &cobra.Command{
 		Use:  "upload [source-path] [remote-path]",
@@ -41,7 +45,7 @@ func UploadCmd() *cobra.Command {
 				},
 			)
 
-			lib.ClientError(cmd.Context(), transfer.ProcessJob(cmd.Context(), job, *config))
+			lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
 		}}
 	Upload.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
 	Upload.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only upload files with a more recent modified date")

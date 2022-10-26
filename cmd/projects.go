@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/project"
 )
 
-var (
-	Projects = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Projects())
+}
 
-func ProjectsInit() {
-	Projects = &cobra.Command{
+func Projects() *cobra.Command {
+	Projects := &cobra.Command{
 		Use:  "projects [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -51,12 +51,12 @@ func ProjectsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -86,7 +86,7 @@ func ProjectsInit() {
 			var project interface{}
 			var err error
 			project, err = client.Find(ctx, paramsProjectFind)
-			lib.HandleResponse(ctx, project, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), project, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsProjectFind.Id, "id", 0, "Project ID.")
@@ -113,7 +113,7 @@ func ProjectsInit() {
 			var project interface{}
 			var err error
 			project, err = client.Create(ctx, paramsProjectCreate)
-			lib.HandleResponse(ctx, project, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), project, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsProjectCreate.GlobalAccess, "global-access", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
@@ -140,7 +140,7 @@ func ProjectsInit() {
 			var project interface{}
 			var err error
 			project, err = client.Update(ctx, paramsProjectUpdate)
-			lib.HandleResponse(ctx, project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsProjectUpdate.Id, "id", 0, "Project ID.")
@@ -168,7 +168,7 @@ func ProjectsInit() {
 			var err error
 			err = client.Delete(ctx, paramsProjectDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -179,4 +179,5 @@ func ProjectsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Projects.AddCommand(cmdDelete)
+	return Projects
 }

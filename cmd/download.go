@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func DownloadCmd() *cobra.Command {
+func init() {
+	RootCmd.AddCommand(Download())
+}
+
+func Download() *cobra.Command {
 	transfer := transfers.New()
 	Download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
@@ -40,7 +44,7 @@ func DownloadCmd() *cobra.Command {
 				},
 			)
 
-			lib.ClientError(cmd.Context(), transfer.ProcessJob(cmd.Context(), job, *config))
+			lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
 		},
 	}
 

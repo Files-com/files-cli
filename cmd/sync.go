@@ -9,14 +9,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	Sync = &cobra.Command{
+func init() {
+	RootCmd.AddCommand(Sync())
+}
+
+func Sync() *cobra.Command {
+	sync := &cobra.Command{
 		Use:  "sync",
 		Args: cobra.ExactArgs(1),
 	}
-)
-
-func SyncInit() *cobra.Command {
 	transfer := transfers.New()
 	transfer.SyncFlag = true
 	var localPath string
@@ -42,7 +43,7 @@ func SyncInit() *cobra.Command {
 					RetryPolicy: file.RetryUnfinished,
 				},
 			)
-			lib.ClientError(ctx, transfer.ProcessJob(ctx, job, *config))
+			lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
 		},
 	}
 	pull := &cobra.Command{
@@ -66,21 +67,21 @@ func SyncInit() *cobra.Command {
 					RetryPolicy:   file.RetryUnfinished,
 				},
 			)
-			lib.ClientError(ctx, transfer.ProcessJob(ctx, job, *config))
+			lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
 		},
 	}
 
-	Sync.PersistentFlags().StringVarP(&localPath, "local-path", "p", localPath, "{local path}")
-	Sync.PersistentFlags().StringVarP(&remotePath, "remote-path", "r", remotePath, "{remote path}")
-	Sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
-	Sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
-	Sync.PersistentFlags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
-	Sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
-	Sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
-	Sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Pulled files to include the original modification time")
-	Sync.PersistentFlags().StringSliceVarP(transfer.Ignore, "ignore", "i", *transfer.Ignore, "ignore files. See https://git-scm.com/docs/gitignore#_pattern_format")
+	sync.PersistentFlags().StringVarP(&localPath, "local-path", "p", localPath, "{local path}")
+	sync.PersistentFlags().StringVarP(&remotePath, "remote-path", "r", remotePath, "{remote path}")
+	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
+	sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
+	sync.PersistentFlags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
+	sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
+	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
+	sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Pulled files to include the original modification time")
+	sync.PersistentFlags().StringSliceVarP(transfer.Ignore, "ignore", "i", *transfer.Ignore, "ignore files. See https://git-scm.com/docs/gitignore#_pattern_format")
 
-	Sync.AddCommand(push)
-	Sync.AddCommand(pull)
-	return Sync
+	sync.AddCommand(push)
+	sync.AddCommand(pull)
+	return sync
 }

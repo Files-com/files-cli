@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/request"
 )
 
-var (
-	Requests = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Requests())
+}
 
-func RequestsInit() {
-	Requests = &cobra.Command{
+func Requests() *cobra.Command {
+	Requests := &cobra.Command{
 		Use:  "requests [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -57,12 +57,12 @@ func RequestsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -102,7 +102,7 @@ func RequestsInit() {
 			var requestCollection interface{}
 			var err error
 			requestCollection, err = client.GetFolder(ctx, paramsRequestGetFolder)
-			lib.HandleResponse(ctx, requestCollection, err, formatGetFolder, fieldsGetFolder, usePagerGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), requestCollection, err, formatGetFolder, fieldsGetFolder, usePagerGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -135,7 +135,7 @@ func RequestsInit() {
 			var request interface{}
 			var err error
 			request, err = client.Create(ctx, paramsRequestCreate)
-			lib.HandleResponse(ctx, request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")
@@ -165,7 +165,7 @@ func RequestsInit() {
 			var err error
 			err = client.Delete(ctx, paramsRequestDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -176,4 +176,5 @@ func RequestsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdDelete)
+	return Requests
 }

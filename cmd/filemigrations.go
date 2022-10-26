@@ -11,12 +11,12 @@ import (
 	file_migration "github.com/Files-com/files-sdk-go/v2/filemigration"
 )
 
-var (
-	FileMigrations = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(FileMigrations())
+}
 
-func FileMigrationsInit() {
-	FileMigrations = &cobra.Command{
+func FileMigrations() *cobra.Command {
+	FileMigrations := &cobra.Command{
 		Use:  "file-migrations [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -40,7 +40,7 @@ func FileMigrationsInit() {
 			var fileMigration interface{}
 			var err error
 			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
-			lib.HandleResponse(ctx, fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
@@ -50,4 +50,5 @@ func FileMigrationsInit() {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	FileMigrations.AddCommand(cmdFind)
+	return FileMigrations
 }

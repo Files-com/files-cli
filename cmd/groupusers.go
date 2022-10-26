@@ -13,12 +13,12 @@ import (
 	group_user "github.com/Files-com/files-sdk-go/v2/groupuser"
 )
 
-var (
-	GroupUsers = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(GroupUsers())
+}
 
-func GroupUsersInit() {
-	GroupUsers = &cobra.Command{
+func GroupUsers() *cobra.Command {
+	GroupUsers := &cobra.Command{
 		Use:  "group-users [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,12 +54,12 @@ func GroupUsersInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -96,7 +96,7 @@ func GroupUsersInit() {
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.Create(ctx, paramsGroupUserCreate)
-			lib.HandleResponse(ctx, groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.GroupId, "group-id", 0, "Group ID to add user to.")
@@ -130,7 +130,7 @@ func GroupUsersInit() {
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.Update(ctx, paramsGroupUserUpdate)
-			lib.HandleResponse(ctx, groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.Id, "id", 0, "Group User ID.")
@@ -160,7 +160,7 @@ func GroupUsersInit() {
 			var err error
 			err = client.Delete(ctx, paramsGroupUserDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -173,4 +173,5 @@ func GroupUsersInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	GroupUsers.AddCommand(cmdDelete)
+	return GroupUsers
 }

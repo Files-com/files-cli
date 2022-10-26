@@ -13,12 +13,12 @@ import (
 	action_notification_export "github.com/Files-com/files-sdk-go/v2/actionnotificationexport"
 )
 
-var (
-	ActionNotificationExports = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(ActionNotificationExports())
+}
 
-func ActionNotificationExportsInit() {
-	ActionNotificationExports = &cobra.Command{
+func ActionNotificationExports() *cobra.Command {
+	ActionNotificationExports := &cobra.Command{
 		Use:  "action-notification-exports [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -42,7 +42,7 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
-			lib.HandleResponse(ctx, actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
@@ -74,7 +74,7 @@ func ActionNotificationExportsInit() {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
-			lib.HandleResponse(ctx, actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -93,4 +93,5 @@ func ActionNotificationExportsInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	ActionNotificationExports.AddCommand(cmdCreate)
+	return ActionNotificationExports
 }

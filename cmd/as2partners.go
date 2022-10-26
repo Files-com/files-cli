@@ -11,12 +11,12 @@ import (
 	as2_partner "github.com/Files-com/files-sdk-go/v2/as2partner"
 )
 
-var (
-	As2Partners = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(As2Partners())
+}
 
-func As2PartnersInit() {
-	As2Partners = &cobra.Command{
+func As2Partners() *cobra.Command {
+	As2Partners := &cobra.Command{
 		Use:  "as2-partners [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func As2PartnersInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
-			lib.HandleResponse(ctx, as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
@@ -114,7 +114,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
-			lib.HandleResponse(ctx, as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "AS2 Name")
@@ -145,7 +145,7 @@ func As2PartnersInit() {
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Update(ctx, paramsAs2PartnerUpdate)
-			lib.HandleResponse(ctx, as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
@@ -176,7 +176,7 @@ func As2PartnersInit() {
 			var err error
 			err = client.Delete(ctx, paramsAs2PartnerDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -187,4 +187,5 @@ func As2PartnersInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	As2Partners.AddCommand(cmdDelete)
+	return As2Partners
 }

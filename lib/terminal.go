@@ -54,7 +54,7 @@ func (p PretextInputModel) View() string {
 	return fmt.Sprintf(p.display, p.textInput.View()) + "\n"
 }
 
-func PromptUserWithPretext(display string, pretext string, config Config) (string, error) {
+func PromptUserWithPretext(display string, pretext string, profile *Profiles) (string, error) {
 	var pretextModel PretextInputModel
 	maxInputLength := 156
 	var maxAdditionalCharViewSpace int
@@ -64,7 +64,7 @@ func PromptUserWithPretext(display string, pretext string, config Config) (strin
 		maxAdditionalCharViewSpace = 10
 	}
 	pretextModel.new(display, pretext, maxInputLength, len(pretext)+maxAdditionalCharViewSpace)
-	p := tea.NewProgram(pretextModel, tea.WithOutput(config.Out), tea.WithInput(config.In))
+	p := tea.NewProgram(pretextModel, tea.WithOutput(profile.Out), tea.WithInput(profile.In))
 	newModel, err := p.StartReturningModel()
 	return newModel.(PretextInputModel).textInput.Value(), err
 }

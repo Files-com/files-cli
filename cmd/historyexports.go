@@ -11,12 +11,12 @@ import (
 	history_export "github.com/Files-com/files-sdk-go/v2/historyexport"
 )
 
-var (
-	HistoryExports = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(HistoryExports())
+}
 
-func HistoryExportsInit() {
-	HistoryExports = &cobra.Command{
+func HistoryExports() *cobra.Command {
+	HistoryExports := &cobra.Command{
 		Use:  "history-exports [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -40,7 +40,7 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
-			lib.HandleResponse(ctx, historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
@@ -67,7 +67,7 @@ func HistoryExportsInit() {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
-			lib.HandleResponse(ctx, historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -98,4 +98,5 @@ func HistoryExportsInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	HistoryExports.AddCommand(cmdCreate)
+	return HistoryExports
 }

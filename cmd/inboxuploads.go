@@ -11,12 +11,12 @@ import (
 	inbox_upload "github.com/Files-com/files-sdk-go/v2/inboxupload"
 )
 
-var (
-	InboxUploads = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(InboxUploads())
+}
 
-func InboxUploadsInit() {
-	InboxUploads = &cobra.Command{
+func InboxUploads() *cobra.Command {
+	InboxUploads := &cobra.Command{
 		Use:  "inbox-uploads [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func InboxUploadsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -72,4 +72,5 @@ func InboxUploadsInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	InboxUploads.AddCommand(cmdList)
+	return InboxUploads
 }

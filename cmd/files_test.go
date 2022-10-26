@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 
+	cliLib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/Files-com/files-sdk-go/v2/folder"
-	"github.com/Files-com/files-sdk-go/v2/lib"
 	"github.com/dnaeon/go-vcr/cassette"
 	recorder "github.com/dnaeon/go-vcr/recorder"
 	"github.com/spf13/cobra"
@@ -37,13 +37,19 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 	httpClient := &http.Client{
 		Transport: r,
 	}
-	config.Debug = lib.Bool(false)
 	config.SetHttpClient(httpClient)
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Key")
 		return nil
 	})
+	if Version == "" {
+		Version = "10.0.0"
+	}
+	if config.APIKey == "" {
+		config.APIKey = "test"
+	}
+
 	return r, &config, nil
 }
 
@@ -67,8 +73,7 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	}
 	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
-	FilesInit()
-	out, stdErr := callCmd(Files, config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
+	out, stdErr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
 	assert.Equal("", string(stdErr))
 
 	assert.Contains(string(out), "")
@@ -93,9 +98,8 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	}
 	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
-	FilesInit()
 
-	out, stderr := callCmd(Files, config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
+	out, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
 	assert.Equal("", string(out))
 
 	assert.Contains(string(stderr), "Folder Not Empty - `Folder test-dir-files-delete not empty`")
@@ -105,8 +109,11 @@ func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([
 	errOut := bytes.NewBufferString("")
 	stdOut := bytes.NewBufferString("")
 	command.SetArgs(args)
-	ctx1 := context.WithValue(context.Background(), "config", config)
-	ctx := context.WithValue(ctx1, "testing", true)
+	ctx := context.WithValue(context.Background(), "config", config)
+	ctx = context.WithValue(ctx, "testing", true)
+	profile := &cliLib.Profiles{Config: config}
+	profile.Init()
+	ctx = context.WithValue(ctx, "profile", profile)
 	command.SetOut(stdOut)
 	command.SetErr(errOut)
 	command.ExecuteContext(ctx)

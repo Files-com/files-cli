@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/lock"
 )
 
-var (
-	Locks = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Locks())
+}
 
-func LocksInit() {
-	Locks = &cobra.Command{
+func Locks() *cobra.Command {
+	Locks := &cobra.Command{
 		Use:  "locks [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -60,12 +60,12 @@ func LocksInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -109,7 +109,7 @@ func LocksInit() {
 			var lock interface{}
 			var err error
 			lock, err = client.Create(ctx, paramsLockCreate)
-			lib.HandleResponse(ctx, lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
@@ -143,7 +143,7 @@ func LocksInit() {
 			var err error
 			err = client.Delete(ctx, paramsLockDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -155,4 +155,5 @@ func LocksInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Locks.AddCommand(cmdDelete)
+	return Locks
 }

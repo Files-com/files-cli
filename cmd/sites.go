@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/site"
 )
 
-var (
-	Sites = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Sites())
+}
 
-func SitesInit() {
-	Sites = &cobra.Command{
+func Sites() *cobra.Command {
+	Sites := &cobra.Command{
 		Use:  "sites [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -39,7 +39,7 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Get(ctx)
-			lib.HandleResponse(ctx, site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -63,7 +63,7 @@ func SitesInit() {
 			var usageSnapshot interface{}
 			var err error
 			usageSnapshot, err = client.GetUsage(ctx)
-			lib.HandleResponse(ctx, usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -330,7 +330,7 @@ func SitesInit() {
 			var site interface{}
 			var err error
 			site, err = client.Update(ctx, paramsSiteUpdate)
-			lib.HandleResponse(ctx, site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")
@@ -460,4 +460,5 @@ func SitesInit() {
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdUpdate)
+	return Sites
 }

@@ -6,16 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	Errors = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Errors())
+}
 
-func ErrorsInit() {
-	Errors = &cobra.Command{
+func Errors() *cobra.Command {
+	Errors := &cobra.Command{
 		Use:  "errors [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("invalid command errors\n\t%v", args[0])
 		},
 	}
+	return Errors
 }

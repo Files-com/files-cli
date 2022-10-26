@@ -15,12 +15,12 @@ import (
 	remote_server "github.com/Files-com/files-sdk-go/v2/remoteserver"
 )
 
-var (
-	RemoteServers = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(RemoteServers())
+}
 
-func RemoteServersInit() {
-	RemoteServers = &cobra.Command{
+func RemoteServers() *cobra.Command {
+	RemoteServers := &cobra.Command{
 		Use:  "remote-servers [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -56,12 +56,12 @@ func RemoteServersInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -91,7 +91,7 @@ func RemoteServersInit() {
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
-			lib.HandleResponse(ctx, remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
@@ -139,7 +139,7 @@ func RemoteServersInit() {
 			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
 			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
-			lib.HandleResponse(ctx, remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -235,7 +235,7 @@ func RemoteServersInit() {
 			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
 			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
 			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
-			lib.HandleResponse(ctx, remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
@@ -311,7 +311,7 @@ func RemoteServersInit() {
 			var err error
 			err = client.Delete(ctx, paramsRemoteServerDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -322,4 +322,5 @@ func RemoteServersInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdDelete)
+	return RemoteServers
 }

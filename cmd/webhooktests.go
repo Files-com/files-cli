@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/webhooktest"
 )
 
-var (
-	WebhookTests = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(WebhookTests())
+}
 
-func WebhookTestsInit() {
-	WebhookTests = &cobra.Command{
+func WebhookTests() *cobra.Command {
+	WebhookTests := &cobra.Command{
 		Use:  "webhook-tests [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -46,7 +46,7 @@ func WebhookTestsInit() {
 			var webhookTest interface{}
 			var err error
 			webhookTest, err = client.Create(ctx, paramsWebhookTestCreate)
-			lib.HandleResponse(ctx, webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")
@@ -62,4 +62,5 @@ func WebhookTestsInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	WebhookTests.AddCommand(cmdCreate)
+	return WebhookTests
 }

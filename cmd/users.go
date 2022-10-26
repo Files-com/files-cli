@@ -14,12 +14,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/user"
 )
 
-var (
-	Users = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Users())
+}
 
-func UsersInit() {
-	Users = &cobra.Command{
+func Users() *cobra.Command {
+	Users := &cobra.Command{
 		Use:  "users [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -55,12 +55,12 @@ func UsersInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -92,7 +92,7 @@ func UsersInit() {
 			var user interface{}
 			var err error
 			user, err = client.Find(ctx, paramsUserFind)
-			lib.HandleResponse(ctx, user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
@@ -198,7 +198,7 @@ func UsersInit() {
 			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
 			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
 			user, err = client.Create(ctx, paramsUserCreate)
-			lib.HandleResponse(ctx, user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -267,7 +267,7 @@ func UsersInit() {
 			var err error
 			err = client.Unlock(ctx, paramsUserUnlock)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -295,7 +295,7 @@ func UsersInit() {
 			var err error
 			err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -323,7 +323,7 @@ func UsersInit() {
 			var err error
 			err = client.User2faReset(ctx, paramsUserUser2faReset)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -430,7 +430,7 @@ func UsersInit() {
 			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
 			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
 			user, err = client.Update(ctx, paramsUserUpdate)
-			lib.HandleResponse(ctx, user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
@@ -500,7 +500,7 @@ func UsersInit() {
 			var err error
 			err = client.Delete(ctx, paramsUserDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -511,4 +511,5 @@ func UsersInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdDelete)
+	return Users
 }

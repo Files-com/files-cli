@@ -11,12 +11,12 @@ import (
 	message_comment_reaction "github.com/Files-com/files-sdk-go/v2/messagecommentreaction"
 )
 
-var (
-	MessageCommentReactions = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(MessageCommentReactions())
+}
 
-func MessageCommentReactionsInit() {
-	MessageCommentReactions = &cobra.Command{
+func MessageCommentReactions() *cobra.Command {
+	MessageCommentReactions := &cobra.Command{
 		Use:  "message-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func MessageCommentReactionsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -89,7 +89,7 @@ func MessageCommentReactionsInit() {
 			var messageCommentReaction interface{}
 			var err error
 			messageCommentReaction, err = client.Find(ctx, paramsMessageCommentReactionFind)
-			lib.HandleResponse(ctx, messageCommentReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentReactionFind.Id, "id", 0, "Message Comment Reaction ID.")
@@ -116,7 +116,7 @@ func MessageCommentReactionsInit() {
 			var messageCommentReaction interface{}
 			var err error
 			messageCommentReaction, err = client.Create(ctx, paramsMessageCommentReactionCreate)
-			lib.HandleResponse(ctx, messageCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -144,7 +144,7 @@ func MessageCommentReactionsInit() {
 			var err error
 			err = client.Delete(ctx, paramsMessageCommentReactionDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -155,4 +155,5 @@ func MessageCommentReactionsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	MessageCommentReactions.AddCommand(cmdDelete)
+	return MessageCommentReactions
 }

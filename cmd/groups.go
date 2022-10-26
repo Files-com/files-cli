@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/group"
 )
 
-var (
-	Groups = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Groups())
+}
 
-func GroupsInit() {
-	Groups = &cobra.Command{
+func Groups() *cobra.Command {
+	Groups := &cobra.Command{
 		Use:  "groups [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -51,12 +51,12 @@ func GroupsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func GroupsInit() {
 			var group interface{}
 			var err error
 			group, err = client.Find(ctx, paramsGroupFind)
-			lib.HandleResponse(ctx, group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsGroupFind.Id, "id", 0, "Group ID.")
@@ -114,7 +114,7 @@ func GroupsInit() {
 			var group interface{}
 			var err error
 			group, err = client.Create(ctx, paramsGroupCreate)
-			lib.HandleResponse(ctx, group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
@@ -144,7 +144,7 @@ func GroupsInit() {
 			var group interface{}
 			var err error
 			group, err = client.Update(ctx, paramsGroupUpdate)
-			lib.HandleResponse(ctx, group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.Id, "id", 0, "Group ID.")
@@ -175,7 +175,7 @@ func GroupsInit() {
 			var err error
 			err = client.Delete(ctx, paramsGroupDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -186,4 +186,5 @@ func GroupsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Groups.AddCommand(cmdDelete)
+	return Groups
 }

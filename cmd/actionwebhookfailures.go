@@ -11,12 +11,12 @@ import (
 	action_webhook_failure "github.com/Files-com/files-sdk-go/v2/actionwebhookfailure"
 )
 
-var (
-	ActionWebhookFailures = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(ActionWebhookFailures())
+}
 
-func ActionWebhookFailuresInit() {
-	ActionWebhookFailures = &cobra.Command{
+func ActionWebhookFailures() *cobra.Command {
+	ActionWebhookFailures := &cobra.Command{
 		Use:  "action-webhook-failures [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -40,7 +40,7 @@ func ActionWebhookFailuresInit() {
 			var err error
 			err = client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -51,4 +51,5 @@ func ActionWebhookFailuresInit() {
 	cmdRetry.Flags().BoolVar(&usePagerRetry, "use-pager", usePagerRetry, "Use $PAGER (.ie less, more, etc)")
 
 	ActionWebhookFailures.AddCommand(cmdRetry)
+	return ActionWebhookFailures
 }

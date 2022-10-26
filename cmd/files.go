@@ -12,19 +12,19 @@ import (
 	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
-var (
-	Files = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Files())
+}
 
-func FilesInit() {
-	Files = &cobra.Command{
+func Files() *cobra.Command {
+	Files := &cobra.Command{
 		Use:  "files [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("invalid command files\n\t%v", args[0])
 		},
 	}
-	Files.AddCommand(DownloadCmd())
+	Files.AddCommand(Download())
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
@@ -54,7 +54,7 @@ func FilesInit() {
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFileCreate)
-			lib.HandleResponse(ctx, file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
@@ -95,7 +95,7 @@ func FilesInit() {
 			var file interface{}
 			var err error
 			file, err = client.Update(ctx, paramsFileUpdate)
-			lib.HandleResponse(ctx, file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
@@ -132,7 +132,7 @@ func FilesInit() {
 			var err error
 			err = client.Delete(ctx, paramsFileDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -173,7 +173,7 @@ func FilesInit() {
 			var file interface{}
 			var err error
 			file, err = client.Find(ctx, paramsFileFind)
-			lib.HandleResponse(ctx, file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsFileFind.Path, "path", "", "Path to operate on.")
@@ -215,7 +215,7 @@ func FilesInit() {
 			var err error
 			fileAction, err = client.Copy(ctx, paramsFileCopy)
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
-			lib.HandleResponse(ctx, fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
@@ -254,7 +254,7 @@ func FilesInit() {
 			var err error
 			fileAction, err = client.Move(ctx, paramsFileMove)
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
-			lib.HandleResponse(ctx, fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
@@ -297,7 +297,7 @@ func FilesInit() {
 			var fileUploadPartCollection interface{}
 			var err error
 			fileUploadPartCollection, err = client.BeginUpload(ctx, paramsFileBeginUpload)
-			lib.HandleResponse(ctx, fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Path, "path", "", "Path to operate on.")
@@ -314,4 +314,5 @@ func FilesInit() {
 	cmdBeginUpload.Flags().BoolVar(&usePagerBeginUpload, "use-pager", usePagerBeginUpload, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdBeginUpload)
+	return Files
 }

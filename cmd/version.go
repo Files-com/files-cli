@@ -6,15 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func VersionCmd(Version string) *cobra.Command {
-	cmd := &cobra.Command{
+var (
+	VersionCmd *cobra.Command
+)
+
+func init() {
+	VersionCmd = &cobra.Command{
 		Use:     "version",
 		Aliases: []string{"version"},
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("files-cli version %v\n", Version)
+			fmt.Printf("files-cli version %v\n", RootCmd.Version)
 		},
 	}
 
-	return cmd
+	RootCmd.AddCommand(VersionCmd)
 }

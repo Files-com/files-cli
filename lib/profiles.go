@@ -3,10 +3,10 @@ package lib
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"os/user"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"syscall"
 	"time"
@@ -33,8 +33,16 @@ func (o Overrides) Init() Overrides {
 	return o
 }
 
-type Config struct {
+type Profiles struct {
+	Profiles              map[string]*Profile `json:"profiles"`
+	*files_sdk.Config     `json:"-"`
 	Overrides             `json:"-"`
+	Profile               string `json:"-"`
+	files_sdk.Environment `json:"-"`
+	ConfigDir             string `json:"-"`
+}
+
+type Profile struct {
 	SessionId             string    `json:"session_id"`
 	SessionExpiry         time.Time `json:"session_expiry"`
 	LastValidVersionCheck time.Time `json:"last_valid_version_check"`
@@ -43,6 +51,7 @@ type Config struct {
 	APIKey                string    `json:"api_key"`
 	Endpoint              string    `json:"endpoint,omitempty"`
 	configPathOverride    string
+	files_sdk.Environment `json:"environment"`
 }
 
 type ResetConfig struct {
@@ -59,88 +68,134 @@ var CheckVersionEvery = time.Hour * 48
 
 const CLICurrentVersionURL = "https://raw.githubusercontent.com/Files-com/files-cli/master/_VERSION"
 
-func (c Config) ResetWith(reset ResetConfig) error {
+func (p *Profiles) Current() *Profile {
+	env, ok := p.Profiles[p.Profile]
+	if !ok {
+		p.Profiles[p.Profile] = &Profile{Environment: p.Environment, APIKey: p.APIKey}
+		return p.Current()
+	}
+	return env
+}
+
+func (p *Profiles) ResetWith(reset ResetConfig) error {
 	if reset.Subdomain {
-		c.Subdomain = ""
+		p.Current().Subdomain = ""
 	}
 	if reset.Username {
-		c.Username = ""
+		p.Current().Username = ""
 	}
 	if reset.APIKey {
-		c.APIKey = ""
+		p.Current().APIKey = ""
 	}
 	if reset.Endpoint {
-		c.Endpoint = ""
+		p.Current().Endpoint = ""
 	}
 	if reset.Session {
-		c.SessionId = ""
+		p.Current().SessionId = ""
 	}
 	if reset.VersionCheck {
-		c.LastValidVersionCheck = time.Now()
+		p.Current().LastValidVersionCheck = time.Now()
 	}
-	return c.Save()
+	return p.Save()
 }
 
-func (c Config) Reset() error {
-	return initConfig()
+func (p *Profiles) Reset() error {
+	return p.initConfig()
 }
 
-func (c *Config) Load() error {
-	usr, err := user.Current()
-	if err != nil {
-		return err
-	}
-	configRoot := filepath.Join(usr.HomeDir, ".config")
-	configPath := filepath.Join(configRoot, "files-cli")
-	_, err = os.Stat(configPath)
-	if os.IsNotExist(err) {
-		initConfig()
-		return nil
-	}
+func (p *Profiles) Init() *Profiles {
+	p.Profiles = make(map[string]*Profile)
+	return p
+}
 
-	data, err := ioutil.ReadFile(configPath)
+func (p *Profiles) Load(config *files_sdk.Config, profile string) error {
+	p.Init()
+	p.initConfig()
+
+	data, err := p.read()
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(data, &c)
+	v1Profile := Profile{}
 
+	err = json.Unmarshal(data, &v1Profile)
 	if err != nil {
 		return err
 	}
 
-	c.SetGlobal()
+	if reflect.ValueOf(v1Profile).IsZero() {
+		err = json.Unmarshal(data, &p)
+		if err != nil {
+			return err
+		}
+	} else {
+		p.Profiles["default"] = &v1Profile
+	}
+
+	if profile != "" {
+		p.Profile = profile
+	} else {
+		p.Profile = "default"
+	}
+	p.Environment = config.Environment
+	p.Config = config
+
+	p.SetOnConfig()
+	p.Save()
 	return nil
 }
 
-func (c *Config) SetGlobal() {
-	files_sdk.GlobalConfig.SessionId = c.SessionId
-	files_sdk.GlobalConfig.Subdomain = c.Subdomain
-	files_sdk.GlobalConfig.APIKey = c.APIKey
-	files_sdk.GlobalConfig.Endpoint = c.Endpoint
+func (p *Profiles) read() (b []byte, err error) {
+	var path string
+	path, err = p.configPath()
+	if err != nil {
+		return b, err
+	}
+	return os.ReadFile(path)
 }
 
-func (c *Config) Save() error {
-	file, _ := json.MarshalIndent(c, "", " ")
-	path, err := c.configPath()
+func (p *Profiles) SetOnConfig() {
+	p.Config.SessionId = p.Current().SessionId
+	if p.Config.Endpoint == "" {
+		p.Config.Endpoint = p.Current().Endpoint
+	} else {
+		p.Current().Endpoint = p.Config.Endpoint
+	}
+	if p.Config.Subdomain == "" {
+		p.Config.Subdomain = p.Current().Subdomain
+	} else {
+		p.Current().Subdomain = p.Config.Subdomain
+	}
+	if p.Config.APIKey == "" {
+		p.Config.APIKey = p.Current().APIKey
+	} else {
+		p.Current().APIKey = p.Config.APIKey
+	}
+	p.Config.Environment = p.Current().Environment
+}
+
+func (p *Profiles) Save() error {
+	file, _ := json.MarshalIndent(p, "", " ")
+	path, err := p.configPath()
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, file, 0644)
+	return os.WriteFile(path, file, 0644)
 }
 
-func (c *Config) ValidSession() bool {
-	return c.SessionId != "" && !c.SessionExpired()
+func (p *Profiles) ValidSession() bool {
+	return p.SessionId != "" && !p.SessionExpired()
 }
 
-func (c *Config) SessionExpired() bool {
-	return c.SessionId != "" && time.Now().Local().After(c.SessionExpiry)
+func (p *Profiles) SessionExpired() bool {
+	return p.SessionId != "" && time.Now().Local().After(p.Current().SessionExpiry)
 }
 
-func (c *Config) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {
-	defer c.Save()
+func (p *Profiles) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {
+	defer p.Save()
 
-	if time.Now().Local().Before(c.LastValidVersionCheck.Add(CheckVersionEvery)) {
+	if time.Now().Local().Before(p.Current().LastValidVersionCheck.Add(CheckVersionEvery)) {
 		return
 	}
 
@@ -152,7 +207,7 @@ func (c *Config) CheckVersion(versionString string, fetchLatestVersion func() (v
 	}
 
 	if latestVersion.Equal(runningVersion) || latestVersion.Greater(runningVersion) {
-		c.LastValidVersionCheck = time.Now()
+		p.Current().LastValidVersionCheck = time.Now()
 		return
 	}
 
@@ -165,11 +220,11 @@ func (c *Config) CheckVersion(versionString string, fetchLatestVersion func() (v
 	writer.Write([]byte(fmt.Sprintf("Download latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n")))
 }
 
-func FetchLatestVersionNumber(parentCtx context.Context) func() (version.Version, bool) {
+func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context) func() (version.Version, bool) {
 	return func() (version.Version, bool) {
 		checkingFailed := func(err error) bool {
 			if err != nil {
-				files_sdk.GlobalConfig.Logger().Printf("Versioning checking failed: %v", err.Error())
+				config.Logger().Printf("Versioning checking failed: %v", err.Error())
 				return true
 			}
 			return false
@@ -182,11 +237,11 @@ func FetchLatestVersionNumber(parentCtx context.Context) func() (version.Version
 			return version.Version{}, false
 		}
 
-		resp, err := files_sdk.GlobalConfig.GetHttpClient().Do(req)
+		resp, err := config.GetHttpClient().Do(req)
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
-		data, err := ioutil.ReadAll(resp.Body)
+		data, err := io.ReadAll(resp.Body)
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
@@ -215,18 +270,18 @@ func InstalledViaBrew() bool {
 	return false
 }
 
-func (c *Config) configPath() (string, error) {
-	if c.configPathOverride != "" {
-		return c.configPathOverride, nil
-	}
-	root, err := configRoot()
+func (p *Profiles) configPath() (string, error) {
+	root, err := p.configRoot()
 	if err != nil {
 		return "", err
 	}
 	return filepath.Join(root, "files-cli"), nil
 }
 
-func configRoot() (string, error) {
+func (p *Profiles) configRoot() (string, error) {
+	if p.ConfigDir != "" {
+		return p.ConfigDir, nil
+	}
 	usr, err := user.Current()
 	if err != nil {
 		return "", err
@@ -234,8 +289,8 @@ func configRoot() (string, error) {
 	return filepath.Join(usr.HomeDir, ".config"), nil
 }
 
-func initConfig() error {
-	root, err := configRoot()
+func (p *Profiles) initConfig() error {
+	root, err := p.configRoot()
 	if err != nil {
 		return err
 	}
@@ -244,17 +299,20 @@ func initConfig() error {
 		os.MkdirAll(root, 0600)
 	}
 
-	path, err := (&Config{}).configPath()
-	if err != nil {
-		return err
-	}
-	f, err := os.Create(path)
+	path, err := p.configPath()
 	if err != nil {
 		return err
 	}
 
-	f.Write([]byte("{}"))
-	f.Close()
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		f, err := os.Create(path)
+		if err != nil {
+			return err
+		}
+		f.Write([]byte("{}"))
+		f.Close()
+	}
 	return nil
 }
 
@@ -267,7 +325,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, config Config) (files_sdk.SessionCreateParams, error) {
+func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, config *Profiles) (files_sdk.SessionCreateParams, error) {
 	responseError, ok := err.(files_sdk.ResponseError)
 	if !ok {
 		return paramsSessionCreate, err
@@ -279,10 +337,6 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 		return paramsSessionCreate, err
 	case "not-authenticated/two-factor-authentication-error":
 		fmt.Fprintf(config.Out, "%v\n", strings.Replace(responseError.ErrorMessage, "2FA Authentication error: ", "", 1))
-
-		if contains(responseError.Data.TwoFactorAuthenticationMethod, "u2f") {
-			return U2fResponse(paramsSessionCreate, responseError, config)
-		}
 
 		if contains(responseError.Data.TwoFactorAuthenticationMethod, "yubi") {
 			return YubiResponse(paramsSessionCreate, responseError, config.Out)
@@ -308,40 +362,40 @@ func parseTermInput(text string) string {
 	return text
 }
 
-func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config *Config) error {
+func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
 	var err error
-	config.Subdomain, err = PromptUserWithPretext("Subdomain: %s", config.Subdomain, *config)
+	profile.Current().Subdomain, err = PromptUserWithPretext("Subdomain: %s", profile.Current().Subdomain, profile)
 	if err != nil {
 		return err
 	}
 
 	userNameDisplay := "Username: %s"
 	if paramsSessionCreate.Username != "" {
-		config.Username, err = PromptUserWithPretext(userNameDisplay, paramsSessionCreate.Username, *config)
+		profile.Current().Username, err = PromptUserWithPretext(userNameDisplay, paramsSessionCreate.Username, profile)
 	} else {
-		config.Username, err = PromptUserWithPretext(userNameDisplay, config.Username, *config)
+		profile.Current().Username, err = PromptUserWithPretext(userNameDisplay, profile.Current().Username, profile)
 	}
-	paramsSessionCreate.Username = config.Username
+	paramsSessionCreate.Username = profile.Current().Username
 
 	if paramsSessionCreate.Password == "" {
-		fmt.Fprintf(config.Out, "Password: ")
+		fmt.Fprintf(profile.Out, "Password: ")
 		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
 			return err
 		}
 
 		paramsSessionCreate.Password = parseTermInput(string(bytePassword))
-		fmt.Fprintf(config.Out, "\n")
+		fmt.Fprintf(profile.Out, "\n")
 	}
 
-	config.SetGlobal()
-	files_sdk.GlobalConfig.SessionId = ""
-	client := session.Client{Config: files_sdk.GlobalConfig}
+	profile.SetOnConfig()
+	profile.SessionId = ""
+	client := session.Client{Config: *profile.Config}
 
 	result, err := client.Create(context.TODO(), paramsSessionCreate)
 
 	if err != nil {
-		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, *config)
+		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, profile)
 		if err == nil {
 			result, err = client.Create(context.TODO(), otpSessionCreate)
 		}
@@ -350,13 +404,13 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, config *Co
 			return err
 		}
 	}
-	config.SessionId = result.Id
-	config.SessionExpiry = time.Now().Local().Add(SessionExpiry)
+	profile.SessionId = result.Id
+	profile.Current().SessionExpiry = time.Now().Local().Add(SessionExpiry)
 
-	err = config.Save()
+	err = profile.Save()
 	if err != nil {
 		return err
 	}
-	config.SetGlobal()
+	profile.SetOnConfig()
 	return nil
 }

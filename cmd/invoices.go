@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/invoice"
 )
 
-var (
-	Invoices = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Invoices())
+}
 
-func InvoicesInit() {
-	Invoices = &cobra.Command{
+func Invoices() *cobra.Command {
+	Invoices := &cobra.Command{
 		Use:  "invoices [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -51,12 +51,12 @@ func InvoicesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -86,7 +86,7 @@ func InvoicesInit() {
 			var accountLineItem interface{}
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsInvoiceFind)
-			lib.HandleResponse(ctx, accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsInvoiceFind.Id, "id", 0, "Invoice ID.")
@@ -96,4 +96,5 @@ func InvoicesInit() {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Invoices.AddCommand(cmdFind)
+	return Invoices
 }

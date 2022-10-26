@@ -20,7 +20,7 @@ func ErrorWithOriginalResponse(err error, logger retryablehttp.Logger) (interfac
 	}
 }
 
-func HandleResponse(ctx context.Context, i interface{}, errIn error, format string, fields string, usePager bool, stdout io.Writer, stderr io.Writer, logger retryablehttp.Logger) {
+func HandleResponse(ctx context.Context, profile *Profiles, i interface{}, errIn error, format string, fields string, usePager bool, stdout io.Writer, stderr io.Writer, logger retryablehttp.Logger) {
 	var err error
 	if errIn != nil {
 		var originalResponse interface{}
@@ -32,6 +32,6 @@ func HandleResponse(ctx context.Context, i interface{}, errIn error, format stri
 		err = Format(ctx, i, format, fields, usePager, stdout)
 	}
 	if err != nil {
-		ClientError(ctx, err, stderr)
+		ClientError(ctx, profile, err, stderr)
 	}
 }

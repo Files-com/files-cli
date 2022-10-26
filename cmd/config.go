@@ -6,22 +6,35 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var (
-	Config = &cobra.Command{
+func init() {
+	RootCmd.AddCommand(Config())
+}
+
+func Config() *cobra.Command {
+	Config := &cobra.Command{
 		Use:  "config",
 		Args: cobra.ExactArgs(0),
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
-)
-
-func ConfigInit() {
-	configParams := lib.Config{}
-	configParams.Load()
+	configParams := &lib.Profile{}
 	subdomainCreate := &cobra.Command{
 		Use:     "set",
 		Aliases: []string{"config-set"},
 		Run: func(cmd *cobra.Command, args []string) {
-			configParams.Save()
+			if configParams.Subdomain != "" {
+				Profile(cmd).Current().Subdomain = configParams.Subdomain
+			}
+			if configParams.Username != "" {
+				Profile(cmd).Current().Username = configParams.Username
+			}
+			if configParams.APIKey != "" {
+				Profile(cmd).Current().APIKey = configParams.APIKey
+			}
+			if configParams.Endpoint != "" {
+				Profile(cmd).Current().Endpoint = configParams.Endpoint
+			}
+
+			Profile(cmd).Save()
 		},
 	}
 	subdomainCreate.Flags().StringVarP(&configParams.Subdomain, "subdomain", "d", configParams.Subdomain, "Subdomain of site")
@@ -40,10 +53,11 @@ func ConfigInit() {
 			resetDelete.Flags().Visit(func(flag *pflag.Flag) {
 				anyFlagSet = true
 			})
+
 			if anyFlagSet {
-				return configParams.ResetWith(resetConfig)
+				return Profile(cmd).ResetWith(resetConfig)
 			} else {
-				return configParams.Reset()
+				return Profile(cmd).Reset()
 			}
 		},
 	}
@@ -64,9 +78,10 @@ func ConfigInit() {
 			if len(args) > 0 {
 				fields = args[0]
 			}
-			lib.JsonMarshal(configParams, fields, false)
+			lib.JsonMarshal(Profile(cmd), fields, false)
 		},
 	}
 
 	Config.AddCommand(configShow)
+	return Config
 }

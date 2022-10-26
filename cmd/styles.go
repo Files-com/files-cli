@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/style"
 )
 
-var (
-	Styles = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Styles())
+}
 
-func StylesInit() {
-	Styles = &cobra.Command{
+func Styles() *cobra.Command {
+	Styles := &cobra.Command{
 		Use:  "styles [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -42,7 +42,7 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Find(ctx, paramsStyleFind)
-			lib.HandleResponse(ctx, style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
@@ -72,7 +72,7 @@ func StylesInit() {
 			var style interface{}
 			var err error
 			style, err = client.Update(ctx, paramsStyleUpdate)
-			lib.HandleResponse(ctx, style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
@@ -102,7 +102,7 @@ func StylesInit() {
 			var err error
 			err = client.Delete(ctx, paramsStyleDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -113,4 +113,5 @@ func StylesInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Styles.AddCommand(cmdDelete)
+	return Styles
 }

@@ -11,12 +11,12 @@ import (
 	user_request "github.com/Files-com/files-sdk-go/v2/userrequest"
 )
 
-var (
-	UserRequests = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(UserRequests())
+}
 
-func UserRequestsInit() {
-	UserRequests = &cobra.Command{
+func UserRequests() *cobra.Command {
+	UserRequests := &cobra.Command{
 		Use:  "user-requests [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func UserRequestsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -87,7 +87,7 @@ func UserRequestsInit() {
 			var userRequest interface{}
 			var err error
 			userRequest, err = client.Find(ctx, paramsUserRequestFind)
-			lib.HandleResponse(ctx, userRequest, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserRequestFind.Id, "id", 0, "User Request ID.")
@@ -114,7 +114,7 @@ func UserRequestsInit() {
 			var userRequest interface{}
 			var err error
 			userRequest, err = client.Create(ctx, paramsUserRequestCreate)
-			lib.HandleResponse(ctx, userRequest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Name, "name", "", "Name of user requested")
@@ -143,7 +143,7 @@ func UserRequestsInit() {
 			var err error
 			err = client.Delete(ctx, paramsUserRequestDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -154,4 +154,5 @@ func UserRequestsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	UserRequests.AddCommand(cmdDelete)
+	return UserRequests
 }

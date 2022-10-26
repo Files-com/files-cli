@@ -12,12 +12,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/notification"
 )
 
-var (
-	Notifications = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Notifications())
+}
 
-func NotificationsInit() {
-	Notifications = &cobra.Command{
+func Notifications() *cobra.Command {
+	Notifications := &cobra.Command{
 		Use:  "notifications [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -57,12 +57,12 @@ func NotificationsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -96,7 +96,7 @@ func NotificationsInit() {
 			var notification interface{}
 			var err error
 			notification, err = client.Find(ctx, paramsNotificationFind)
-			lib.HandleResponse(ctx, notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsNotificationFind.Id, "id", 0, "Notification ID.")
@@ -159,7 +159,7 @@ func NotificationsInit() {
 			var notification interface{}
 			var err error
 			notification, err = client.Create(ctx, paramsNotificationCreate)
-			lib.HandleResponse(ctx, notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.UserId, "user-id", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
@@ -233,7 +233,7 @@ func NotificationsInit() {
 			var notification interface{}
 			var err error
 			notification, err = client.Update(ctx, paramsNotificationUpdate)
-			lib.HandleResponse(ctx, notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.Id, "id", 0, "Notification ID.")
@@ -271,7 +271,7 @@ func NotificationsInit() {
 			var err error
 			err = client.Delete(ctx, paramsNotificationDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -282,4 +282,5 @@ func NotificationsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Notifications.AddCommand(cmdDelete)
+	return Notifications
 }

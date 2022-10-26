@@ -13,12 +13,12 @@ import (
 	external_event "github.com/Files-com/files-sdk-go/v2/externalevent"
 )
 
-var (
-	ExternalEvents = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(ExternalEvents())
+}
 
-func ExternalEventsInit() {
-	ExternalEvents = &cobra.Command{
+func ExternalEvents() *cobra.Command {
+	ExternalEvents := &cobra.Command{
 		Use:  "external-events [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,12 +54,12 @@ func ExternalEventsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -89,7 +89,7 @@ func ExternalEventsInit() {
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
-			lib.HandleResponse(ctx, externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
@@ -118,7 +118,7 @@ func ExternalEventsInit() {
 			var err error
 			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
-			lib.HandleResponse(ctx, externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))
@@ -129,4 +129,5 @@ func ExternalEventsInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	ExternalEvents.AddCommand(cmdCreate)
+	return ExternalEvents
 }

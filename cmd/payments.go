@@ -10,12 +10,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/payment"
 )
 
-var (
-	Payments = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Payments())
+}
 
-func PaymentsInit() {
-	Payments = &cobra.Command{
+func Payments() *cobra.Command {
+	Payments := &cobra.Command{
 		Use:  "payments [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -51,12 +51,12 @@ func PaymentsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -86,7 +86,7 @@ func PaymentsInit() {
 			var accountLineItem interface{}
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsPaymentFind)
-			lib.HandleResponse(ctx, accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPaymentFind.Id, "id", 0, "Payment ID.")
@@ -96,4 +96,5 @@ func PaymentsInit() {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Payments.AddCommand(cmdFind)
+	return Payments
 }

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [1.6.5] - 2022/10/26
+## Add
+- `profile` flag - Can setup different profiles to many sites using an api key or session login.
+  ```bash
+  files-cli config set --api-key {API_KEY_GOES_HERE} --profile site1
+  files-cli folders ls --profile site1
+  
+  files-cli login --profile site2
+  files-cli folders ls --profile site2
+  ```
+  
+- `agent` currently hidden and under beta. This is an on-perm remote server. Contact customer support before use. 
+  
+## Remove
+- u2f login, removing support due to OS deprecation warnings and [Chrome Browser](https://developer.chrome.com/blog/deps-rems-95/#deprecate-u2f-api-cryptotoken) dropping support. Will migrate to [WebAuthn](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API) in the future.
+
 ## [1.6.1] - 2022/10/03
 ### Fix
 - Don't require valid api-key/session for `version` command.

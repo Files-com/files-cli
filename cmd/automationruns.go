@@ -11,12 +11,12 @@ import (
 	automation_run "github.com/Files-com/files-sdk-go/v2/automationrun"
 )
 
-var (
-	AutomationRuns = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(AutomationRuns())
+}
 
-func AutomationRunsInit() {
-	AutomationRuns = &cobra.Command{
+func AutomationRuns() *cobra.Command {
+	AutomationRuns := &cobra.Command{
 		Use:  "automation-runs [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func AutomationRunsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -89,7 +89,7 @@ func AutomationRunsInit() {
 			var automationRun interface{}
 			var err error
 			automationRun, err = client.Find(ctx, paramsAutomationRunFind)
-			lib.HandleResponse(ctx, automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")
@@ -99,4 +99,5 @@ func AutomationRunsInit() {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	AutomationRuns.AddCommand(cmdFind)
+	return AutomationRuns
 }

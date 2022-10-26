@@ -11,12 +11,12 @@ import (
 	user_cipher_use "github.com/Files-com/files-sdk-go/v2/usercipheruse"
 )
 
-var (
-	UserCipherUses = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(UserCipherUses())
+}
 
-func UserCipherUsesInit() {
-	UserCipherUses = &cobra.Command{
+func UserCipherUses() *cobra.Command {
+	UserCipherUses := &cobra.Command{
 		Use:  "user-cipher-uses [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func UserCipherUsesInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -71,4 +71,5 @@ func UserCipherUsesInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	UserCipherUses.AddCommand(cmdList)
+	return UserCipherUses
 }

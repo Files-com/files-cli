@@ -11,12 +11,12 @@ import (
 	message_reaction "github.com/Files-com/files-sdk-go/v2/messagereaction"
 )
 
-var (
-	MessageReactions = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(MessageReactions())
+}
 
-func MessageReactionsInit() {
-	MessageReactions = &cobra.Command{
+func MessageReactions() *cobra.Command {
+	MessageReactions := &cobra.Command{
 		Use:  "message-reactions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func MessageReactionsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -89,7 +89,7 @@ func MessageReactionsInit() {
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
-			lib.HandleResponse(ctx, messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageReactionFind.Id, "id", 0, "Message Reaction ID.")
@@ -116,7 +116,7 @@ func MessageReactionsInit() {
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
-			lib.HandleResponse(ctx, messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -144,7 +144,7 @@ func MessageReactionsInit() {
 			var err error
 			err = client.Delete(ctx, paramsMessageReactionDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -155,4 +155,5 @@ func MessageReactionsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	MessageReactions.AddCommand(cmdDelete)
+	return MessageReactions
 }

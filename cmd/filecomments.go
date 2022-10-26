@@ -11,12 +11,12 @@ import (
 	file_comment "github.com/Files-com/files-sdk-go/v2/filecomment"
 )
 
-var (
-	FileComments = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(FileComments())
+}
 
-func FileCommentsInit() {
-	FileComments = &cobra.Command{
+func FileComments() *cobra.Command {
+	FileComments := &cobra.Command{
 		Use:  "file-comments [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -55,12 +55,12 @@ func FileCommentsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -94,7 +94,7 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Create(ctx, paramsFileCommentCreate)
-			lib.HandleResponse(ctx, fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
@@ -122,7 +122,7 @@ func FileCommentsInit() {
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Update(ctx, paramsFileCommentUpdate)
-			lib.HandleResponse(ctx, fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
@@ -150,7 +150,7 @@ func FileCommentsInit() {
 			var err error
 			err = client.Delete(ctx, paramsFileCommentDelete)
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -161,4 +161,5 @@ func FileCommentsInit() {
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	FileComments.AddCommand(cmdDelete)
+	return FileComments
 }

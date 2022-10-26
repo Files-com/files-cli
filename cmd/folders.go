@@ -14,12 +14,12 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/folder"
 )
 
-var (
-	Folders = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(Folders())
+}
 
-func FoldersInit() {
-	Folders = &cobra.Command{
+func Folders() *cobra.Command {
+	Folders := &cobra.Command{
 		Use:  "folders [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -71,7 +71,7 @@ func FoldersInit() {
 				it, err = fileClient.ListFor(ctx, params)
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if listOnlyFolders {
@@ -85,7 +85,7 @@ func FoldersInit() {
 			}
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -133,7 +133,7 @@ func FoldersInit() {
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFolderCreate)
-			lib.HandleResponse(ctx, file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")
@@ -144,4 +144,5 @@ func FoldersInit() {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Folders.AddCommand(cmdCreate)
+	return Folders
 }

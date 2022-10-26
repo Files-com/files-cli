@@ -2,19 +2,22 @@ package lib
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 	"time"
 
-	"github.com/Files-com/files-cli/lib/version"
+	"github.com/samber/lo"
 
-	"github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/stretchr/testify/require"
+
+	"github.com/Files-com/files-cli/lib/version"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/dnaeon/go-vcr/cassette"
@@ -44,24 +47,19 @@ func pipeInput(input string, f func()) {
 	f()
 }
 
-func createTempConfig() (*os.File, *Config) {
-	_, err := os.Stat("tmp")
-	if os.IsNotExist(err) {
-		os.MkdirAll("tmp", 0755)
-	}
-	file, err := ioutil.TempFile("tmp", "file-cli-config-test")
+func createTempConfig(sdkConfig *files_sdk.Config) (string, *Profiles) {
+	dir, err := os.MkdirTemp(os.TempDir(), "file-cli-config-test")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	config := &Config{}
-	config.configPathOverride = file.Name()
-	return file, config
+	config := &Profiles{ConfigDir: dir}
+	config.Load(sdkConfig, "")
+	return filepath.Join(dir, "files-cli"), config
 }
 
-func createRecorder(fixture string) *recorder.Recorder {
-	var r *recorder.Recorder
+func createRecorder(fixture string) (sdkConfig *files_sdk.Config, r *recorder.Recorder) {
 	var err error
+	sdkConfig = &files_sdk.Config{}
 	if os.Getenv("GITLAB") != "" {
 		fmt.Println("using ModeReplaying")
 		r, err = recorder.NewAsMode(filepath.Join("fixtures", fixture), recorder.ModeReplaying, nil)
@@ -74,14 +72,13 @@ func createRecorder(fixture string) *recorder.Recorder {
 	httpClient := &http.Client{
 		Transport: r,
 	}
-	files_sdk.GlobalConfig.Debug = lib.Bool(false)
-	files_sdk.GlobalConfig.SetHttpClient(httpClient)
+	sdkConfig.SetHttpClient(httpClient)
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Auth")
 		return nil
 	})
-	return r
+	return sdkConfig, r
 }
 
 type StubInput struct {
@@ -101,78 +98,130 @@ func (s *StubInput) Read(b []byte) (int, error) {
 	return bytes.NewBufferString(s.inputs[s.index]).Read(b)
 }
 
+func TestProfiles_Load(t *testing.T) {
+	dir, err := os.MkdirTemp(os.TempDir(), "file-cli-config-test")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t.Log("creates default profile")
+	{
+		config := &files_sdk.Config{}
+		config.APIKey = "123456789"
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "")
+	}
+
+	t.Log("creates custom profile")
+	{
+		config := &files_sdk.Config{}
+		config.APIKey = "xxxxxxxxxx"
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "custom")
+	}
+
+	t.Log("creates custom profile with environment")
+	{
+		config := &files_sdk.Config{}
+		config.APIKey = "zzzzzzzzzzz"
+		config.Environment = files_sdk.Staging
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "staging")
+	}
+
+	config := &files_sdk.Config{}
+	profile := &Profiles{ConfigDir: dir}
+	profile.Load(config, "")
+	profileNames := lo.Keys[string, *Profile](profile.Profiles)
+	sort.Strings(profileNames)
+	require.Equal(t, []string{"custom", "default", "staging"}, profileNames)
+
+	assert.Equal(t, "123456789", profile.Profiles["default"].APIKey)
+	assert.Equal(t, "xxxxxxxxxx", profile.Profiles["custom"].APIKey)
+	assert.Equal(t, "zzzzzzzzzzz", profile.Profiles["staging"].APIKey)
+
+	t.Log("loads default profile")
+	{
+		config := &files_sdk.Config{}
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "")
+		assert.Equal(t, "123456789", config.APIKey)
+		assert.Equal(t, files_sdk.Production, config.Environment)
+	}
+
+	t.Log("loads custom profile")
+	{
+		config := &files_sdk.Config{}
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "custom")
+		assert.Equal(t, "xxxxxxxxxx", config.APIKey)
+		assert.Equal(t, files_sdk.Production, config.Environment)
+	}
+
+	t.Log("loads custom profile with environment")
+	{
+		config := &files_sdk.Config{}
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "staging")
+		assert.Equal(t, "zzzzzzzzzzz", config.APIKey)
+		assert.Equal(t, files_sdk.Staging, config.Environment)
+	}
+
+	t.Log("updates custom profile with environment")
+	{
+		config := &files_sdk.Config{APIKey: "yyyyyyyy"}
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "staging")
+		assert.Equal(t, "yyyyyyyy", config.APIKey)
+		assert.Equal(t, files_sdk.Staging, config.Environment)
+	}
+
+	t.Log("upgrades v1 to v2")
+	{
+		v1Profile := Profile{APIKey: "xxxxxx"}
+		j, _ := json.MarshalIndent(v1Profile, "", " ")
+		os.WriteFile(filepath.Join(dir, "files-cli"), j, 0644)
+
+		config := &files_sdk.Config{}
+		profile := &Profiles{ConfigDir: dir}
+		err := profile.Load(config, "")
+		require.NoError(t, err)
+
+		assert.Equal(t, "xxxxxx", config.APIKey)
+	}
+}
+
 func TestCreateSession_InvalidPassword(t *testing.T) {
 	assert := assert.New(t)
 
-	r := createRecorder("TestCreateSession_InvalidPassword")
+	sdkConfig, r := createRecorder("TestCreateSession_InvalidPassword")
 	defer r.Stop()
-	file, config := createTempConfig()
-	defer os.Remove(file.Name())
+	_, config := createTempConfig(sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
 	err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config)
 
-	assert.Equal("testdomain", config.Subdomain)
-	assert.Equal("testuser", config.Username)
+	assert.Equal("testdomain", config.Current().Subdomain)
+	assert.Equal("testuser", config.Current().Username)
 	assert.Equal("Invalid username or password", err.(files_sdk.ResponseError).ErrorMessage)
 }
 
 func TestCreateSession_ValidPassword(t *testing.T) {
 	assert := assert.New(t)
 
-	r := createRecorder("TestCreateSession_ValidPassword")
+	sdkConfig, r := createRecorder("TestCreateSession_ValidPassword")
 	defer r.Stop()
-	file, config := createTempConfig()
-	defer os.Remove(file.Name())
+	_, config := createTempConfig(sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}
 	err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
 	assert.NoError(err)
-	assert.Equal("testdomain", config.Subdomain)
-	assert.Equal("testuser", config.Username)
-}
-
-func TestCreateSession_SessionUnauthorizedError_U2F(t *testing.T) {
-	assert := assert.New(t)
-	signRequest := files_sdk.U2fSignRequests{
-		Challenge:   "taco",
-		AppId:       "taco.com",
-		SignRequest: files_sdk.SignRequest{KeyHandle: "xxxxx"},
-	}
-
-	var params files_sdk.SessionCreateParams
-	var err error
-
-	stdOut := bytes.NewBufferString("")
-	params, err = SessionUnauthorizedError(
-		files_sdk.SessionCreateParams{Password: "password"},
-		files_sdk.ResponseError{
-			Type:         "not-authenticated/two-factor-authentication-error",
-			ErrorMessage: "2FA Authentication error: Token from U2F is required",
-			Data: files_sdk.Data{
-				TwoFactorAuthenticationMethod: []string{"u2f"},
-				U2fSIgnRequests:               []files_sdk.U2fSignRequests{signRequest},
-				PartialSessionId:              "123456",
-			},
-		},
-		Config{Overrides: Overrides{Out: stdOut, Timeout: time.Second * 5}},
-	)
-
-	if err.Error() == "failed to find any devices" {
-		assert.EqualError(err, "failed to find any devices")
-		assert.Equal("Token from U2F is required\n", stdOut.String())
-	} else {
-		assert.EqualError(err, "failed to get authentication response after 25 seconds", "Unplug u2f device")
-		assert.Contains(stdOut.String(), "Device version: U2F_V2")
-	}
-
-	assert.Equal("", params.Password, "clears password")
-	assert.Equal("123456", params.PartialSessionId, "Uses PartialSessionId instead of password")
-	assert.Equal("null", params.Otp, "Otp is set to null because of error")
+	assert.Equal("testdomain", config.Current().Subdomain)
+	assert.Equal("testuser", config.Current().Username)
 }
 
 func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
@@ -191,7 +240,7 @@ func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {
 					TwoFactorAuthenticationMethod: []string{"totp"},
 				},
 			},
-			Config{Overrides: Overrides{Out: stdOut, Timeout: time.Second * 5}},
+			&Profiles{Overrides: Overrides{Out: stdOut, Timeout: time.Second * 5}},
 		)
 	})
 
@@ -206,14 +255,14 @@ func TestConfig_CheckVersion(t *testing.T) {
 	type args struct {
 		version            string
 		fetchLatestVersion func() (version.Version, bool)
-		Config
+		Profile
 		installedViaBrew bool
 	}
 	tests := []struct {
 		name       string
 		args       args
 		wantStdout string
-		Config
+		Profile
 	}{
 		{
 			name: "Custom install with old version",
@@ -225,7 +274,7 @@ func TestConfig_CheckVersion(t *testing.T) {
 				installedViaBrew: false,
 			},
 			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nDownload latest version from\nhttps://github.com/Files-com/files-cli/releases\n\n",
-			Config:     Config{LastValidVersionCheck: time.Time{}},
+			Profile:    Profile{LastValidVersionCheck: time.Time{}},
 		},
 		{
 			name: "brew install with old version",
@@ -237,7 +286,7 @@ func TestConfig_CheckVersion(t *testing.T) {
 				installedViaBrew: true,
 			},
 			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
-			Config:     Config{LastValidVersionCheck: time.Time{}},
+			Profile:    Profile{LastValidVersionCheck: time.Time{}},
 		},
 		{
 			name: "already checked yesterday",
@@ -247,10 +296,10 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
+				Profile:          Profile{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 			},
 			wantStdout: "",
-			Config:     Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
+			Profile:    Profile{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 		},
 		{
 			name: "already checked 3 days ago",
@@ -260,10 +309,10 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+				Profile:          Profile{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
 			},
 			wantStdout: "files-cli version 1.1.0 is out of date. Latest version is 1.2.9\nUpgrade via Homebrew\n\tbrew upgrade files-cli\n\n",
-			Config:     Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+			Profile:    Profile{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
 		},
 		{
 			name: "out of date but not checking because within 48 hours of last good check",
@@ -273,10 +322,10 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
+				Profile:          Profile{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 			},
 			wantStdout: "",
-			Config:     Config{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
+			Profile:    Profile{LastValidVersionCheck: time.Now().Add(-24 * time.Hour)},
 		},
 		{
 			name: "was out of date but client was upgraded",
@@ -286,19 +335,24 @@ func TestConfig_CheckVersion(t *testing.T) {
 					return version.Version{Major: 1, Minor: 2, Patch: 9}, true
 				},
 				installedViaBrew: true,
-				Config:           Config{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
+				Profile:          Profile{LastValidVersionCheck: time.Now().Add(-(24 * time.Hour) * 3)},
 			},
 			wantStdout: "",
-			Config:     Config{LastValidVersionCheck: time.Now()},
+			Profile:    Profile{LastValidVersionCheck: time.Now()},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			stdOut := bytes.NewBufferString("")
-			tt.args.Config.CheckVersion(tt.args.version, tt.args.fetchLatestVersion, tt.args.installedViaBrew, stdOut)
+			tempDir, err := os.MkdirTemp(os.TempDir(), tt.name)
+			require.NoError(t, err)
+			profile := (&Profiles{ConfigDir: tempDir}).Init()
+			profile.Profile = tt.name
+			profile.Profiles[tt.name] = &tt.args.Profile
+			profile.CheckVersion(tt.args.version, tt.args.fetchLatestVersion, tt.args.installedViaBrew, stdOut)
 			assert.Equal(t, tt.wantStdout, stdOut.String())
-			assert.Equal(t, tt.Config.LastValidVersionCheck.Truncate(60*time.Second), tt.args.Config.LastValidVersionCheck.Truncate(60*time.Second))
+			assert.Equal(t, tt.LastValidVersionCheck.Truncate(60*time.Second), tt.args.LastValidVersionCheck.Truncate(60*time.Second))
 		})
 	}
 }

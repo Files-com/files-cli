@@ -11,12 +11,12 @@ import (
 	bandwidth_snapshot "github.com/Files-com/files-sdk-go/v2/bandwidthsnapshot"
 )
 
-var (
-	BandwidthSnapshots = &cobra.Command{}
-)
+func init() {
+	RootCmd.AddCommand(BandwidthSnapshots())
+}
 
-func BandwidthSnapshotsInit() {
-	BandwidthSnapshots = &cobra.Command{
+func BandwidthSnapshots() *cobra.Command {
+	BandwidthSnapshots := &cobra.Command{
 		Use:  "bandwidth-snapshots [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,12 +52,12 @@ func BandwidthSnapshotsInit() {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, err, cmd.ErrOrStderr())
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 		},
 	}
@@ -70,4 +70,5 @@ func BandwidthSnapshotsInit() {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	BandwidthSnapshots.AddCommand(cmdList)
+	return BandwidthSnapshots
 }
