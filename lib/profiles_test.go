@@ -205,6 +205,8 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 
 	assert.Equal("testdomain", config.Current().Subdomain)
 	assert.Equal("testuser", config.Current().Username)
+	assert.Equal("", config.Current().SessionId)
+	assert.Equal(time.Time{}, config.Current().SessionExpiry)
 	assert.Equal("Invalid username or password", err.(files_sdk.ResponseError).ErrorMessage)
 }
 
@@ -222,6 +224,8 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal("testdomain", config.Current().Subdomain)
 	assert.Equal("testuser", config.Current().Username)
+	assert.NotEqual("", config.Current().SessionId)
+	assert.NotEqual(time.Time{}, config.Current().SessionExpiry)
 }
 
 func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {

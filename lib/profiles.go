@@ -11,13 +11,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Files-com/files-cli/lib/version"
-	"github.com/Files-com/files-sdk-go/v2/session"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/Files-com/files-cli/lib/version"
+	"github.com/Files-com/files-sdk-go/v2/session"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 )
@@ -185,11 +186,11 @@ func (p *Profiles) Save() error {
 }
 
 func (p *Profiles) ValidSession() bool {
-	return p.SessionId != "" && !p.SessionExpired()
+	return p.Current().SessionId != "" && !p.SessionExpired()
 }
 
 func (p *Profiles) SessionExpired() bool {
-	return p.SessionId != "" && time.Now().Local().After(p.Current().SessionExpiry)
+	return p.Current().SessionId != "" && time.Now().Local().After(p.Current().SessionExpiry)
 }
 
 func (p *Profiles) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {
@@ -404,7 +405,7 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, profile *P
 			return err
 		}
 	}
-	profile.SessionId = result.Id
+	profile.Current().SessionId = result.Id
 	profile.Current().SessionExpiry = time.Now().Local().Add(SessionExpiry)
 
 	err = profile.Save()
