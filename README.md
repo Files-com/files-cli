@@ -53,6 +53,36 @@ files-cli login
 
 If your account requires Two-Factor Authentication, you will be prompted for the second factor after you submit your password. Once you are logged in, subsequent uses of the CLI App will perform those actions using your credentials and permissions until you log out.
 
+### Using Multiple Accounts
+
+The CLI App allows you to access multiple Files.com accounts by using different profiles for each account.
+
+To set up profiles for your Files.com accounts, use the following commands:
+
+``` shell
+files-cli config set --subdomain MYFIRSTCOMPANY --username FIRSTUSERNAME --profile firstaccount
+
+files-cli config set --subdomain MYSECONDCOMPANY --username SECONDUSERNAME --profile secondaccount
+```
+
+To execute commands for a specific account, use the `--profile` option in your command. For example:
+
+``` shell
+files-cli folders list-for /path/to/folder/in/account1/ --profile firstaccount
+
+files-cli folders list-for /path/to/folder/in/account2/ --profile secondaccount
+```
+
+You can also configure API Keys for profiles:
+
+``` shell
+files-cli config set --api-key API_KEY_ONE --profile firstaccount
+
+files-cli config set --api-key API_KEY_TWO --profile secondaccount
+```
+
+If the `--profile` option is not specified then all configuration and operations will use your default profile settings.
+
 ### Logging Out
 
 Your login session will expire automatically after a period of time. The CLI App will expire your session after 6 hours or your session will expire based on the settings of your authentication system, whichever is sooner.
