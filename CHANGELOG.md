@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.0.4] - 2022/11/02
+## Fix
+- Validate enum flag values and return error if invalid.
+
 ## [1.6.5] - 2022/10/26
 ## Add
 - `profile` flag - Can setup different profiles to many sites using an api key or session login.

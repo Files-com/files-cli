@@ -38,7 +38,7 @@ func Automations() *cobra.Command {
 		Short: "List Automations",
 		Long:  `List Automations`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAutomationList
@@ -66,6 +66,7 @@ func Automations() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -88,7 +89,7 @@ func Automations() *cobra.Command {
 		Use:   "find",
 		Short: `Show Automation`,
 		Long:  `Show Automation`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
@@ -97,6 +98,7 @@ func Automations() *cobra.Command {
 			var err error
 			automation, err = client.Find(ctx, paramsAutomationFind)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationFind.Id, "id", 0, "Automation ID.")
@@ -118,7 +120,7 @@ func Automations() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Automation`,
 		Long:  `Create Automation`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
@@ -132,10 +134,19 @@ func Automations() *cobra.Command {
 			}
 			var automation interface{}
 			var err error
-			paramsAutomationCreate.Trigger = paramsAutomationCreate.Trigger.Enum()[AutomationCreateTrigger]
-			paramsAutomationCreate.Automation = paramsAutomationCreate.Automation.Enum()[AutomationCreateAutomation]
+			var AutomationCreateTriggerOk bool
+			paramsAutomationCreate.Trigger, AutomationCreateTriggerOk = paramsAutomationCreate.Trigger.Enum()[AutomationCreateTrigger]
+			if AutomationCreateTrigger != "" && !AutomationCreateTriggerOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "trigger", AutomationCreateTrigger)
+			}
+			var AutomationCreateAutomationOk bool
+			paramsAutomationCreate.Automation, AutomationCreateAutomationOk = paramsAutomationCreate.Automation.Enum()[AutomationCreateAutomation]
+			if AutomationCreateAutomation != "" && !AutomationCreateAutomationOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "automation", AutomationCreateAutomation)
+			}
 			automation, err = client.Create(ctx, paramsAutomationCreate)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Source, "source", "", "Source Path")
@@ -171,7 +182,7 @@ func Automations() *cobra.Command {
 		Use:   "update [path]",
 		Short: `Update Automation`,
 		Long:  `Update Automation`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
@@ -185,10 +196,19 @@ func Automations() *cobra.Command {
 			}
 			var automation interface{}
 			var err error
-			paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[AutomationUpdateTrigger]
-			paramsAutomationUpdate.Automation = paramsAutomationUpdate.Automation.Enum()[AutomationUpdateAutomation]
+			var AutomationUpdateTriggerOk bool
+			paramsAutomationUpdate.Trigger, AutomationUpdateTriggerOk = paramsAutomationUpdate.Trigger.Enum()[AutomationUpdateTrigger]
+			if AutomationUpdateTrigger != "" && !AutomationUpdateTriggerOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "trigger", AutomationUpdateTrigger)
+			}
+			var AutomationUpdateAutomationOk bool
+			paramsAutomationUpdate.Automation, AutomationUpdateAutomationOk = paramsAutomationUpdate.Automation.Enum()[AutomationUpdateAutomation]
+			if AutomationUpdateAutomation != "" && !AutomationUpdateAutomationOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "automation", AutomationUpdateAutomation)
+			}
 			automation, err = client.Update(ctx, paramsAutomationUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
@@ -222,7 +242,7 @@ func Automations() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Automation`,
 		Long:  `Delete Automation`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
@@ -232,6 +252,7 @@ func Automations() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAutomationDelete.Id, "id", 0, "Automation ID.")

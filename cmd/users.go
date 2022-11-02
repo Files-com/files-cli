@@ -37,7 +37,7 @@ func Users() *cobra.Command {
 		Short: "List Users",
 		Long:  `List Users`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsUserList
@@ -62,6 +62,7 @@ func Users() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -84,7 +85,7 @@ func Users() *cobra.Command {
 		Use:   "find",
 		Short: `Show User`,
 		Long:  `Show User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -93,6 +94,7 @@ func Users() *cobra.Command {
 			var err error
 			user, err = client.Find(ctx, paramsUserFind)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
@@ -132,7 +134,7 @@ func Users() *cobra.Command {
 		Use:   "create",
 		Short: `Create User`,
 		Long:  `Create User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -194,11 +196,24 @@ func Users() *cobra.Command {
 
 			var user interface{}
 			var err error
-			paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
-			paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
-			paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
+			var UserCreateAuthenticationMethodOk bool
+			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodOk = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
+			if UserCreateAuthenticationMethod != "" && !UserCreateAuthenticationMethodOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "authentication-method", UserCreateAuthenticationMethod)
+			}
+			var UserCreateSslRequiredOk bool
+			paramsUserCreate.SslRequired, UserCreateSslRequiredOk = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
+			if UserCreateSslRequired != "" && !UserCreateSslRequiredOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "ssl-required", UserCreateSslRequired)
+			}
+			var UserCreateRequire2faOk bool
+			paramsUserCreate.Require2fa, UserCreateRequire2faOk = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
+			if UserCreateRequire2fa != "" && !UserCreateRequire2faOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "require-2fa", UserCreateRequire2fa)
+			}
 			user, err = client.Create(ctx, paramsUserCreate)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -259,7 +274,7 @@ func Users() *cobra.Command {
 		Use:   "unlock",
 		Short: `Unlock user who has been locked out due to failed logins`,
 		Long:  `Unlock user who has been locked out due to failed logins`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -269,6 +284,7 @@ func Users() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
@@ -287,7 +303,7 @@ func Users() *cobra.Command {
 		Use:   "resend-welcome-email",
 		Short: `Resend user welcome email`,
 		Long:  `Resend user welcome email`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -297,6 +313,7 @@ func Users() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
@@ -315,7 +332,7 @@ func Users() *cobra.Command {
 		Use:   "user-2fa-reset",
 		Short: `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
 		Long:  `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -325,6 +342,7 @@ func Users() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdUser2faReset.Flags().Int64Var(&paramsUserUser2faReset.Id, "id", 0, "User ID.")
@@ -364,7 +382,7 @@ func Users() *cobra.Command {
 		Use:   "update",
 		Short: `Update User`,
 		Long:  `Update User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -426,11 +444,24 @@ func Users() *cobra.Command {
 
 			var user interface{}
 			var err error
-			paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
-			paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
-			paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
+			var UserUpdateAuthenticationMethodOk bool
+			paramsUserUpdate.AuthenticationMethod, UserUpdateAuthenticationMethodOk = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
+			if UserUpdateAuthenticationMethod != "" && !UserUpdateAuthenticationMethodOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "authentication-method", UserUpdateAuthenticationMethod)
+			}
+			var UserUpdateSslRequiredOk bool
+			paramsUserUpdate.SslRequired, UserUpdateSslRequiredOk = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
+			if UserUpdateSslRequired != "" && !UserUpdateSslRequiredOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "ssl-required", UserUpdateSslRequired)
+			}
+			var UserUpdateRequire2faOk bool
+			paramsUserUpdate.Require2fa, UserUpdateRequire2faOk = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
+			if UserUpdateRequire2fa != "" && !UserUpdateRequire2faOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "require-2fa", UserUpdateRequire2fa)
+			}
 			user, err = client.Update(ctx, paramsUserUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
@@ -492,7 +523,7 @@ func Users() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete User`,
 		Long:  `Delete User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
@@ -502,6 +533,7 @@ func Users() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.Id, "id", 0, "User ID.")

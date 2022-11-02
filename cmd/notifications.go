@@ -36,7 +36,7 @@ func Notifications() *cobra.Command {
 		Short: "List Notifications",
 		Long:  `List Notifications`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsNotificationList
@@ -64,6 +64,7 @@ func Notifications() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -88,7 +89,7 @@ func Notifications() *cobra.Command {
 		Use:   "find",
 		Short: `Show Notification`,
 		Long:  `Show Notification`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
@@ -97,6 +98,7 @@ func Notifications() *cobra.Command {
 			var err error
 			notification, err = client.Find(ctx, paramsNotificationFind)
 			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsNotificationFind.Id, "id", 0, "Notification ID.")
@@ -123,7 +125,7 @@ func Notifications() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Notification`,
 		Long:  `Create Notification`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
@@ -160,6 +162,7 @@ func Notifications() *cobra.Command {
 			var err error
 			notification, err = client.Create(ctx, paramsNotificationCreate)
 			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.UserId, "user-id", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
@@ -200,7 +203,7 @@ func Notifications() *cobra.Command {
 		Use:   "update",
 		Short: `Update Notification`,
 		Long:  `Update Notification`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
@@ -234,6 +237,7 @@ func Notifications() *cobra.Command {
 			var err error
 			notification, err = client.Update(ctx, paramsNotificationUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.Id, "id", 0, "Notification ID.")
@@ -263,7 +267,7 @@ func Notifications() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Notification`,
 		Long:  `Delete Notification`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
@@ -273,6 +277,7 @@ func Notifications() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsNotificationDelete.Id, "id", 0, "Notification ID.")

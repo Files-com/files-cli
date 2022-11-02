@@ -36,7 +36,7 @@ func GroupUsers() *cobra.Command {
 		Short: "List Group Users",
 		Long:  `List Group Users`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsGroupUserList
@@ -61,6 +61,7 @@ func GroupUsers() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -84,7 +85,7 @@ func GroupUsers() *cobra.Command {
 		Use:   "create",
 		Short: `Create Group User`,
 		Long:  `Create Group User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
@@ -97,6 +98,7 @@ func GroupUsers() *cobra.Command {
 			var err error
 			groupUser, err = client.Create(ctx, paramsGroupUserCreate)
 			lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.GroupId, "group-id", 0, "Group ID to add user to.")
@@ -118,7 +120,7 @@ func GroupUsers() *cobra.Command {
 		Use:   "update",
 		Short: `Update Group User`,
 		Long:  `Update Group User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
@@ -131,6 +133,7 @@ func GroupUsers() *cobra.Command {
 			var err error
 			groupUser, err = client.Update(ctx, paramsGroupUserUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.Id, "id", 0, "Group User ID.")
@@ -152,7 +155,7 @@ func GroupUsers() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Group User`,
 		Long:  `Delete Group User`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
@@ -162,6 +165,7 @@ func GroupUsers() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsGroupUserDelete.Id, "id", 0, "Group User ID.")

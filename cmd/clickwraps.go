@@ -35,7 +35,7 @@ func Clickwraps() *cobra.Command {
 		Short: "List Clickwraps",
 		Long:  `List Clickwraps`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsClickwrapList
@@ -60,6 +60,7 @@ func Clickwraps() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -80,7 +81,7 @@ func Clickwraps() *cobra.Command {
 		Use:   "find",
 		Short: `Show Clickwrap`,
 		Long:  `Show Clickwrap`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
@@ -89,6 +90,7 @@ func Clickwraps() *cobra.Command {
 			var err error
 			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsClickwrapFind.Id, "id", 0, "Clickwrap ID.")
@@ -110,18 +112,31 @@ func Clickwraps() *cobra.Command {
 		Use:   "create",
 		Short: `Create Clickwrap`,
 		Long:  `Create Clickwrap`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
 			var clickwrap interface{}
 			var err error
-			paramsClickwrapCreate.UseWithBundles = paramsClickwrapCreate.UseWithBundles.Enum()[ClickwrapCreateUseWithBundles]
-			paramsClickwrapCreate.UseWithInboxes = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
-			paramsClickwrapCreate.UseWithUsers = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
+			var ClickwrapCreateUseWithBundlesOk bool
+			paramsClickwrapCreate.UseWithBundles, ClickwrapCreateUseWithBundlesOk = paramsClickwrapCreate.UseWithBundles.Enum()[ClickwrapCreateUseWithBundles]
+			if ClickwrapCreateUseWithBundles != "" && !ClickwrapCreateUseWithBundlesOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-bundles", ClickwrapCreateUseWithBundles)
+			}
+			var ClickwrapCreateUseWithInboxesOk bool
+			paramsClickwrapCreate.UseWithInboxes, ClickwrapCreateUseWithInboxesOk = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
+			if ClickwrapCreateUseWithInboxes != "" && !ClickwrapCreateUseWithInboxesOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-inboxes", ClickwrapCreateUseWithInboxes)
+			}
+			var ClickwrapCreateUseWithUsersOk bool
+			paramsClickwrapCreate.UseWithUsers, ClickwrapCreateUseWithUsersOk = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
+			if ClickwrapCreateUseWithUsers != "" && !ClickwrapCreateUseWithUsersOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-users", ClickwrapCreateUseWithUsers)
+			}
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsClickwrapCreate.Name, "name", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -147,18 +162,31 @@ func Clickwraps() *cobra.Command {
 		Use:   "update",
 		Short: `Update Clickwrap`,
 		Long:  `Update Clickwrap`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
 			var clickwrap interface{}
 			var err error
-			paramsClickwrapUpdate.UseWithBundles = paramsClickwrapUpdate.UseWithBundles.Enum()[ClickwrapUpdateUseWithBundles]
-			paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
-			paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
+			var ClickwrapUpdateUseWithBundlesOk bool
+			paramsClickwrapUpdate.UseWithBundles, ClickwrapUpdateUseWithBundlesOk = paramsClickwrapUpdate.UseWithBundles.Enum()[ClickwrapUpdateUseWithBundles]
+			if ClickwrapUpdateUseWithBundles != "" && !ClickwrapUpdateUseWithBundlesOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-bundles", ClickwrapUpdateUseWithBundles)
+			}
+			var ClickwrapUpdateUseWithInboxesOk bool
+			paramsClickwrapUpdate.UseWithInboxes, ClickwrapUpdateUseWithInboxesOk = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
+			if ClickwrapUpdateUseWithInboxes != "" && !ClickwrapUpdateUseWithInboxesOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-inboxes", ClickwrapUpdateUseWithInboxes)
+			}
+			var ClickwrapUpdateUseWithUsersOk bool
+			paramsClickwrapUpdate.UseWithUsers, ClickwrapUpdateUseWithUsersOk = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
+			if ClickwrapUpdateUseWithUsers != "" && !ClickwrapUpdateUseWithUsersOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-users", ClickwrapUpdateUseWithUsers)
+			}
 			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsClickwrapUpdate.Id, "id", 0, "Clickwrap ID.")
@@ -182,7 +210,7 @@ func Clickwraps() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Clickwrap`,
 		Long:  `Delete Clickwrap`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
@@ -192,6 +220,7 @@ func Clickwraps() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsClickwrapDelete.Id, "id", 0, "Clickwrap ID.")

@@ -34,7 +34,7 @@ func As2OutgoingMessages() *cobra.Command {
 		Short: "List As2 Outgoing Messages",
 		Long:  `List As2 Outgoing Messages`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAs2OutgoingMessageList
@@ -59,6 +59,7 @@ func As2OutgoingMessages() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 

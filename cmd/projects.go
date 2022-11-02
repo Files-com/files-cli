@@ -33,7 +33,7 @@ func Projects() *cobra.Command {
 		Short: "List Projects",
 		Long:  `List Projects`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsProjectList
@@ -58,6 +58,7 @@ func Projects() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -78,7 +79,7 @@ func Projects() *cobra.Command {
 		Use:   "find",
 		Short: `Show Project`,
 		Long:  `Show Project`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
@@ -87,6 +88,7 @@ func Projects() *cobra.Command {
 			var err error
 			project, err = client.Find(ctx, paramsProjectFind)
 			lib.HandleResponse(ctx, Profile(cmd), project, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsProjectFind.Id, "id", 0, "Project ID.")
@@ -105,7 +107,7 @@ func Projects() *cobra.Command {
 		Use:   "create",
 		Short: `Create Project`,
 		Long:  `Create Project`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
@@ -114,6 +116,7 @@ func Projects() *cobra.Command {
 			var err error
 			project, err = client.Create(ctx, paramsProjectCreate)
 			lib.HandleResponse(ctx, Profile(cmd), project, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsProjectCreate.GlobalAccess, "global-access", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
@@ -132,7 +135,7 @@ func Projects() *cobra.Command {
 		Use:   "update",
 		Short: `Update Project`,
 		Long:  `Update Project`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
@@ -141,6 +144,7 @@ func Projects() *cobra.Command {
 			var err error
 			project, err = client.Update(ctx, paramsProjectUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsProjectUpdate.Id, "id", 0, "Project ID.")
@@ -160,7 +164,7 @@ func Projects() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Project`,
 		Long:  `Delete Project`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
@@ -170,6 +174,7 @@ func Projects() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsProjectDelete.Id, "id", 0, "Project ID.")

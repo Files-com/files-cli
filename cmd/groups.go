@@ -33,7 +33,7 @@ func Groups() *cobra.Command {
 		Short: "List Groups",
 		Long:  `List Groups`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsGroupList
@@ -58,6 +58,7 @@ func Groups() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func Groups() *cobra.Command {
 		Use:   "find",
 		Short: `Show Group`,
 		Long:  `Show Group`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
@@ -88,6 +89,7 @@ func Groups() *cobra.Command {
 			var err error
 			group, err = client.Find(ctx, paramsGroupFind)
 			lib.HandleResponse(ctx, Profile(cmd), group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsGroupFind.Id, "id", 0, "Group ID.")
@@ -106,7 +108,7 @@ func Groups() *cobra.Command {
 		Use:   "create",
 		Short: `Create Group`,
 		Long:  `Create Group`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
@@ -115,6 +117,7 @@ func Groups() *cobra.Command {
 			var err error
 			group, err = client.Create(ctx, paramsGroupCreate)
 			lib.HandleResponse(ctx, Profile(cmd), group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
@@ -136,7 +139,7 @@ func Groups() *cobra.Command {
 		Use:   "update",
 		Short: `Update Group`,
 		Long:  `Update Group`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
@@ -145,6 +148,7 @@ func Groups() *cobra.Command {
 			var err error
 			group, err = client.Update(ctx, paramsGroupUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.Id, "id", 0, "Group ID.")
@@ -167,7 +171,7 @@ func Groups() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Group`,
 		Long:  `Delete Group`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
@@ -177,6 +181,7 @@ func Groups() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsGroupDelete.Id, "id", 0, "Group ID.")

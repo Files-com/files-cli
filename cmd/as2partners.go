@@ -34,7 +34,7 @@ func As2Partners() *cobra.Command {
 		Short: "List As2 Partners",
 		Long:  `List As2 Partners`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAs2PartnerList
@@ -59,6 +59,7 @@ func As2Partners() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func As2Partners() *cobra.Command {
 		Use:   "find",
 		Short: `Show As2 Partner`,
 		Long:  `Show As2 Partner`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
@@ -88,6 +89,7 @@ func As2Partners() *cobra.Command {
 			var err error
 			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
 			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
@@ -106,7 +108,7 @@ func As2Partners() *cobra.Command {
 		Use:   "create",
 		Short: `Create As2 Partner`,
 		Long:  `Create As2 Partner`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
@@ -115,6 +117,7 @@ func As2Partners() *cobra.Command {
 			var err error
 			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
 			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "AS2 Name")
@@ -137,7 +140,7 @@ func As2Partners() *cobra.Command {
 		Use:   "update",
 		Short: `Update As2 Partner`,
 		Long:  `Update As2 Partner`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
@@ -146,6 +149,7 @@ func As2Partners() *cobra.Command {
 			var err error
 			as2Partner, err = client.Update(ctx, paramsAs2PartnerUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
@@ -168,7 +172,7 @@ func As2Partners() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete As2 Partner`,
 		Long:  `Delete As2 Partner`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
@@ -178,6 +182,7 @@ func As2Partners() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAs2PartnerDelete.Id, "id", 0, "As2 Partner ID.")

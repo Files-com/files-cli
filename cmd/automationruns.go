@@ -34,7 +34,7 @@ func AutomationRuns() *cobra.Command {
 		Short: "List Automation Runs",
 		Long:  `List Automation Runs`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAutomationRunList
@@ -59,6 +59,7 @@ func AutomationRuns() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -81,7 +82,7 @@ func AutomationRuns() *cobra.Command {
 		Use:   "find",
 		Short: `Show Automation Run`,
 		Long:  `Show Automation Run`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation_run.Client{Config: *config}
@@ -90,6 +91,7 @@ func AutomationRuns() *cobra.Command {
 			var err error
 			automationRun, err = client.Find(ctx, paramsAutomationRunFind)
 			lib.HandleResponse(ctx, Profile(cmd), automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")

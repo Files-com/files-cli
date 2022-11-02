@@ -34,7 +34,7 @@ func RemoteBandwidthSnapshots() *cobra.Command {
 		Short: "List Remote Bandwidth Snapshots",
 		Long:  `List Remote Bandwidth Snapshots`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRemoteBandwidthSnapshotList
@@ -59,6 +59,7 @@ func RemoteBandwidthSnapshots() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 

@@ -34,7 +34,7 @@ func IpAddresses() *cobra.Command {
 		Short: "List IP Addresses associated with the current site",
 		Long:  `List IP Addresses associated with the current site`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsIpAddressList
@@ -59,6 +59,7 @@ func IpAddresses() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func IpAddresses() *cobra.Command {
 		Use:   "get-exavault-reserved",
 		Short: `List all possible public ExaVault IP addresses`,
 		Long:  `List all possible public ExaVault IP addresses`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := ip_address.Client{Config: *config}
@@ -88,6 +89,7 @@ func IpAddresses() *cobra.Command {
 			var err error
 			publicIpAddressCollection, err = client.GetExavaultReserved(ctx, paramsIpAddressGetExavaultReserved)
 			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -107,7 +109,7 @@ func IpAddresses() *cobra.Command {
 		Use:   "get-reserved",
 		Short: `List all possible public IP addresses`,
 		Long:  `List all possible public IP addresses`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := ip_address.Client{Config: *config}
@@ -116,6 +118,7 @@ func IpAddresses() *cobra.Command {
 			var err error
 			publicIpAddressCollection, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
 			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetReserved, fieldsGetReserved, usePagerGetReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")

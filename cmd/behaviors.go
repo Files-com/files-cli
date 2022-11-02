@@ -35,7 +35,7 @@ func Behaviors() *cobra.Command {
 		Short: "List Behaviors",
 		Long:  `List Behaviors`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBehaviorList
@@ -60,6 +60,7 @@ func Behaviors() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -81,7 +82,7 @@ func Behaviors() *cobra.Command {
 		Use:   "find",
 		Short: `Show Behavior`,
 		Long:  `Show Behavior`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
@@ -90,6 +91,7 @@ func Behaviors() *cobra.Command {
 			var err error
 			behavior, err = client.Find(ctx, paramsBehaviorFind)
 			lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
@@ -110,7 +112,7 @@ func Behaviors() *cobra.Command {
 		Short: "List Behaviors by path",
 		Long:  `List Behaviors by path`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBehaviorListFor
@@ -138,6 +140,7 @@ func Behaviors() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -161,7 +164,7 @@ func Behaviors() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Behavior`,
 		Long:  `Create Behavior`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
@@ -173,6 +176,7 @@ func Behaviors() *cobra.Command {
 			var err error
 			behavior, err = client.Create(ctx, paramsBehaviorCreate)
 			lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
@@ -195,7 +199,7 @@ func Behaviors() *cobra.Command {
 		Use:   "webhook-test",
 		Short: `Test webhook`,
 		Long:  `Test webhook`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
@@ -205,6 +209,7 @@ func Behaviors() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Url, "url", "", "URL for testing the webhook.")
@@ -227,7 +232,7 @@ func Behaviors() *cobra.Command {
 		Use:   "update [path]",
 		Short: `Update Behavior`,
 		Long:  `Update Behavior`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
@@ -243,6 +248,7 @@ func Behaviors() *cobra.Command {
 			var err error
 			behavior, err = client.Update(ctx, paramsBehaviorUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
@@ -267,7 +273,7 @@ func Behaviors() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Behavior`,
 		Long:  `Delete Behavior`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
@@ -277,6 +283,7 @@ func Behaviors() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")

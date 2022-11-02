@@ -38,7 +38,7 @@ func RemoteServers() *cobra.Command {
 		Short: "List Remote Servers",
 		Long:  `List Remote Servers`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRemoteServerList
@@ -63,6 +63,7 @@ func RemoteServers() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -83,7 +84,7 @@ func RemoteServers() *cobra.Command {
 		Use:   "find",
 		Short: `Show Remote Server`,
 		Long:  `Show Remote Server`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
@@ -92,6 +93,7 @@ func RemoteServers() *cobra.Command {
 			var err error
 			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
@@ -117,7 +119,7 @@ func RemoteServers() *cobra.Command {
 		Use:   "create",
 		Short: `Create Remote Server`,
 		Long:  `Create Remote Server`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
@@ -134,12 +136,29 @@ func RemoteServers() *cobra.Command {
 
 			var remoteServer interface{}
 			var err error
-			paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
-			paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
-			paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
-			paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
+			var RemoteServerCreateServerCertificateOk bool
+			paramsRemoteServerCreate.ServerCertificate, RemoteServerCreateServerCertificateOk = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
+			if RemoteServerCreateServerCertificate != "" && !RemoteServerCreateServerCertificateOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "server-certificate", RemoteServerCreateServerCertificate)
+			}
+			var RemoteServerCreateServerTypeOk bool
+			paramsRemoteServerCreate.ServerType, RemoteServerCreateServerTypeOk = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
+			if RemoteServerCreateServerType != "" && !RemoteServerCreateServerTypeOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "server-type", RemoteServerCreateServerType)
+			}
+			var RemoteServerCreateSslOk bool
+			paramsRemoteServerCreate.Ssl, RemoteServerCreateSslOk = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
+			if RemoteServerCreateSsl != "" && !RemoteServerCreateSslOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "ssl", RemoteServerCreateSsl)
+			}
+			var RemoteServerCreateOneDriveAccountTypeOk bool
+			paramsRemoteServerCreate.OneDriveAccountType, RemoteServerCreateOneDriveAccountTypeOk = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
+			if RemoteServerCreateOneDriveAccountType != "" && !RemoteServerCreateOneDriveAccountTypeOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerCreateOneDriveAccountType)
+			}
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -213,7 +232,7 @@ func RemoteServers() *cobra.Command {
 		Use:   "update",
 		Short: `Update Remote Server`,
 		Long:  `Update Remote Server`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
@@ -230,12 +249,29 @@ func RemoteServers() *cobra.Command {
 
 			var remoteServer interface{}
 			var err error
-			paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
-			paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
-			paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
-			paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
+			var RemoteServerUpdateServerCertificateOk bool
+			paramsRemoteServerUpdate.ServerCertificate, RemoteServerUpdateServerCertificateOk = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
+			if RemoteServerUpdateServerCertificate != "" && !RemoteServerUpdateServerCertificateOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "server-certificate", RemoteServerUpdateServerCertificate)
+			}
+			var RemoteServerUpdateServerTypeOk bool
+			paramsRemoteServerUpdate.ServerType, RemoteServerUpdateServerTypeOk = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
+			if RemoteServerUpdateServerType != "" && !RemoteServerUpdateServerTypeOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "server-type", RemoteServerUpdateServerType)
+			}
+			var RemoteServerUpdateSslOk bool
+			paramsRemoteServerUpdate.Ssl, RemoteServerUpdateSslOk = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
+			if RemoteServerUpdateSsl != "" && !RemoteServerUpdateSslOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "ssl", RemoteServerUpdateSsl)
+			}
+			var RemoteServerUpdateOneDriveAccountTypeOk bool
+			paramsRemoteServerUpdate.OneDriveAccountType, RemoteServerUpdateOneDriveAccountTypeOk = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
+			if RemoteServerUpdateOneDriveAccountType != "" && !RemoteServerUpdateOneDriveAccountTypeOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerUpdateOneDriveAccountType)
+			}
 			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
@@ -303,7 +339,7 @@ func RemoteServers() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Remote Server`,
 		Long:  `Delete Remote Server`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
@@ -313,6 +349,7 @@ func RemoteServers() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerDelete.Id, "id", 0, "Remote Server ID.")

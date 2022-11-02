@@ -36,7 +36,7 @@ func Requests() *cobra.Command {
 		Short: "List Requests",
 		Long:  `List Requests`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRequestList
@@ -64,6 +64,7 @@ func Requests() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -87,7 +88,7 @@ func Requests() *cobra.Command {
 		Use:   "get-folder [path]",
 		Short: `List Requests`,
 		Long:  `List Requests`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
@@ -103,6 +104,7 @@ func Requests() *cobra.Command {
 			var err error
 			requestCollection, err = client.GetFolder(ctx, paramsRequestGetFolder)
 			lib.HandleResponse(ctx, Profile(cmd), requestCollection, err, formatGetFolder, fieldsGetFolder, usePagerGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -124,7 +126,7 @@ func Requests() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Request`,
 		Long:  `Create Request`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
@@ -136,6 +138,7 @@ func Requests() *cobra.Command {
 			var err error
 			request, err = client.Create(ctx, paramsRequestCreate)
 			lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")
@@ -157,7 +160,7 @@ func Requests() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Request`,
 		Long:  `Delete Request`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := request.Client{Config: *config}
@@ -167,6 +170,7 @@ func Requests() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRequestDelete.Id, "id", 0, "Request ID.")

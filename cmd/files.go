@@ -36,7 +36,7 @@ func Files() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Upload file`,
 		Long:  `Upload file`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -55,6 +55,7 @@ func Files() *cobra.Command {
 			var err error
 			file, err = client.Create(ctx, paramsFileCreate)
 			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
@@ -84,7 +85,7 @@ func Files() *cobra.Command {
 		Use:   "update [path]",
 		Short: `Update file/folder metadata`,
 		Long:  `Update file/folder metadata`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -96,6 +97,7 @@ func Files() *cobra.Command {
 			var err error
 			file, err = client.Update(ctx, paramsFileUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
@@ -117,7 +119,7 @@ func Files() *cobra.Command {
 		Use:   "delete [path]",
 		Short: `Delete file/folder`,
 		Long:  `Delete file/folder`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -134,6 +136,7 @@ func Files() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().StringVar(&paramsFileDelete.Path, "path", "", "Path to operate on.")
@@ -155,7 +158,7 @@ func Files() *cobra.Command {
 		Use:   "find [path]",
 		Short: `Find file/folder by path`,
 		Long:  `Find file/folder by path`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -174,6 +177,7 @@ func Files() *cobra.Command {
 			var err error
 			file, err = client.Find(ctx, paramsFileFind)
 			lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsFileFind.Path, "path", "", "Path to operate on.")
@@ -199,7 +203,7 @@ func Files() *cobra.Command {
 		Use:   "copy [path]",
 		Short: `Copy file/folder`,
 		Long:  `Copy file/folder`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -216,6 +220,7 @@ func Files() *cobra.Command {
 			fileAction, err = client.Copy(ctx, paramsFileCopy)
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
 			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
@@ -242,7 +247,7 @@ func Files() *cobra.Command {
 		Use:   "move [path]",
 		Short: `Move file/folder`,
 		Long:  `Move file/folder`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -255,6 +260,7 @@ func Files() *cobra.Command {
 			fileAction, err = client.Move(ctx, paramsFileMove)
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
 			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
@@ -279,7 +285,7 @@ func Files() *cobra.Command {
 		Use:   "begin-upload [path]",
 		Short: `Begin file upload`,
 		Long:  `Begin file upload`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
@@ -298,6 +304,7 @@ func Files() *cobra.Command {
 			var err error
 			fileUploadPartCollection, err = client.BeginUpload(ctx, paramsFileBeginUpload)
 			lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Path, "path", "", "Path to operate on.")

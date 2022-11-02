@@ -37,7 +37,7 @@ func Bundles() *cobra.Command {
 		Short: "List Bundles",
 		Long:  `List Bundles`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBundleList
@@ -62,6 +62,7 @@ func Bundles() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -83,7 +84,7 @@ func Bundles() *cobra.Command {
 		Use:   "find",
 		Short: `Show Bundle`,
 		Long:  `Show Bundle`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
@@ -92,6 +93,7 @@ func Bundles() *cobra.Command {
 			var err error
 			bundle, err = client.Find(ctx, paramsBundleFind)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
@@ -118,7 +120,7 @@ func Bundles() *cobra.Command {
 		Use:   "create",
 		Short: `Create Bundle`,
 		Long:  `Create Bundle`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
@@ -147,9 +149,14 @@ func Bundles() *cobra.Command {
 
 			var bundle interface{}
 			var err error
-			paramsBundleCreate.Permissions = paramsBundleCreate.Permissions.Enum()[BundleCreatePermissions]
+			var BundleCreatePermissionsOk bool
+			paramsBundleCreate.Permissions, BundleCreatePermissionsOk = paramsBundleCreate.Permissions.Enum()[BundleCreatePermissions]
+			if BundleCreatePermissions != "" && !BundleCreatePermissionsOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "permissions", BundleCreatePermissions)
+			}
 			bundle, err = client.Create(ctx, paramsBundleCreate)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -187,7 +194,7 @@ func Bundles() *cobra.Command {
 		Use:   "share",
 		Short: `Send email(s) with a link to bundle`,
 		Long:  `Send email(s) with a link to bundle`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
@@ -197,6 +204,7 @@ func Bundles() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdShare.Flags().Int64Var(&paramsBundleShare.Id, "id", 0, "Bundle ID.")
@@ -226,7 +234,7 @@ func Bundles() *cobra.Command {
 		Use:   "update",
 		Short: `Update Bundle`,
 		Long:  `Update Bundle`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
@@ -258,9 +266,14 @@ func Bundles() *cobra.Command {
 
 			var bundle interface{}
 			var err error
-			paramsBundleUpdate.Permissions = paramsBundleUpdate.Permissions.Enum()[BundleUpdatePermissions]
+			var BundleUpdatePermissionsOk bool
+			paramsBundleUpdate.Permissions, BundleUpdatePermissionsOk = paramsBundleUpdate.Permissions.Enum()[BundleUpdatePermissions]
+			if BundleUpdatePermissions != "" && !BundleUpdatePermissionsOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "permissions", BundleUpdatePermissions)
+			}
 			bundle, err = client.Update(ctx, paramsBundleUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
@@ -299,7 +312,7 @@ func Bundles() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Bundle`,
 		Long:  `Delete Bundle`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
@@ -309,6 +322,7 @@ func Bundles() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBundleDelete.Id, "id", 0, "Bundle ID.")

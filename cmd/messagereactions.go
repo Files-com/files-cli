@@ -34,7 +34,7 @@ func MessageReactions() *cobra.Command {
 		Short: "List Message Reactions",
 		Long:  `List Message Reactions`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsMessageReactionList
@@ -59,6 +59,7 @@ func MessageReactions() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -81,7 +82,7 @@ func MessageReactions() *cobra.Command {
 		Use:   "find",
 		Short: `Show Message Reaction`,
 		Long:  `Show Message Reaction`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
@@ -90,6 +91,7 @@ func MessageReactions() *cobra.Command {
 			var err error
 			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
 			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageReactionFind.Id, "id", 0, "Message Reaction ID.")
@@ -108,7 +110,7 @@ func MessageReactions() *cobra.Command {
 		Use:   "create",
 		Short: `Create Message Reaction`,
 		Long:  `Create Message Reaction`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
@@ -117,6 +119,7 @@ func MessageReactions() *cobra.Command {
 			var err error
 			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
 			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -136,7 +139,7 @@ func MessageReactions() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Message Reaction`,
 		Long:  `Delete Message Reaction`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_reaction.Client{Config: *config}
@@ -146,6 +149,7 @@ func MessageReactions() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsMessageReactionDelete.Id, "id", 0, "Message Reaction ID.")

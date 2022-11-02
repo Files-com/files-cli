@@ -33,7 +33,7 @@ func Invoices() *cobra.Command {
 		Short: "List Invoices",
 		Long:  `List Invoices`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsInvoiceList
@@ -58,6 +58,7 @@ func Invoices() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -78,7 +79,7 @@ func Invoices() *cobra.Command {
 		Use:   "find",
 		Short: `Show Invoice`,
 		Long:  `Show Invoice`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := invoice.Client{Config: *config}
@@ -87,6 +88,7 @@ func Invoices() *cobra.Command {
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsInvoiceFind)
 			lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsInvoiceFind.Id, "id", 0, "Invoice ID.")

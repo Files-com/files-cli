@@ -34,7 +34,7 @@ func SsoStrategies() *cobra.Command {
 		Short: "List Sso Strategies",
 		Long:  `List Sso Strategies`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsSsoStrategyList
@@ -59,6 +59,7 @@ func SsoStrategies() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func SsoStrategies() *cobra.Command {
 		Use:   "find",
 		Short: `Show Sso Strategy`,
 		Long:  `Show Sso Strategy`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sso_strategy.Client{Config: *config}
@@ -88,6 +89,7 @@ func SsoStrategies() *cobra.Command {
 			var err error
 			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
 			lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
@@ -106,7 +108,7 @@ func SsoStrategies() *cobra.Command {
 		Use:   "sync",
 		Short: `Synchronize provisioning data with the SSO remote server`,
 		Long:  `Synchronize provisioning data with the SSO remote server`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sso_strategy.Client{Config: *config}
@@ -116,6 +118,7 @@ func SsoStrategies() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdSync.Flags().Int64Var(&paramsSsoStrategySync.Id, "id", 0, "Sso Strategy ID.")

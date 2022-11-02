@@ -31,7 +31,7 @@ func Sites() *cobra.Command {
 		Use:   "get",
 		Short: `Show site settings`,
 		Long:  `Show site settings`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
@@ -40,6 +40,7 @@ func Sites() *cobra.Command {
 			var err error
 			site, err = client.Get(ctx)
 			lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 
@@ -55,7 +56,7 @@ func Sites() *cobra.Command {
 		Use:   "get-usage",
 		Short: `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
 		Long:  `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
@@ -64,6 +65,7 @@ func Sites() *cobra.Command {
 			var err error
 			usageSnapshot, err = client.GetUsage(ctx)
 			lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 
@@ -141,7 +143,7 @@ func Sites() *cobra.Command {
 		Use:   "update",
 		Short: `Update site settings`,
 		Long:  `Update site settings`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
@@ -331,6 +333,7 @@ func Sites() *cobra.Command {
 			var err error
 			site, err = client.Update(ctx, paramsSiteUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")

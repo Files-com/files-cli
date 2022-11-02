@@ -42,7 +42,7 @@ func TestExternalEventsCreateError(t *testing.T) {
 	assert.Equal("failure", event.Status)
 }
 
-func TestExternalEventsCreateNoStatus(t *testing.T) {
+func TestExternalEventsCreateInvalidStatus(t *testing.T) {
 	assert := assert.New(t)
 	r, config, err := CreateConfig("TestExternalEventsCreateNoStatus")
 	if err != nil {
@@ -54,6 +54,5 @@ func TestExternalEventsCreateNoStatus(t *testing.T) {
 	event := files_sdk.ExternalEvent{}
 	err = event.UnmarshalJSON(stdOut)
 	assert.Error(err)
-	assert.Equal("missing required field: ExternalEventCreateParams{}.Status\n", string(errOut))
-	assert.Equal("", string(stdOut))
+	assert.Equal("Error: invalid status flag value: 'taco'\n", string(errOut))
 }

@@ -36,7 +36,7 @@ func Locks() *cobra.Command {
 		Short: "List Locks by path",
 		Long:  `List Locks by path`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsLockListFor
@@ -67,6 +67,7 @@ func Locks() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -91,7 +92,7 @@ func Locks() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Lock`,
 		Long:  `Create Lock`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := lock.Client{Config: *config}
@@ -110,6 +111,7 @@ func Locks() *cobra.Command {
 			var err error
 			lock, err = client.Create(ctx, paramsLockCreate)
 			lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
@@ -132,7 +134,7 @@ func Locks() *cobra.Command {
 		Use:   "delete [path]",
 		Short: `Delete Lock`,
 		Long:  `Delete Lock`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := lock.Client{Config: *config}
@@ -145,6 +147,7 @@ func Locks() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().StringVar(&paramsLockDelete.Path, "path", "", "Path")

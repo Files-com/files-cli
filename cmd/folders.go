@@ -44,7 +44,7 @@ func Folders() *cobra.Command {
 		Long:    `List Folders by path`,
 		Args:    cobra.MinimumNArgs(0),
 		Aliases: []string{"ls"},
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFolderListFor
@@ -87,6 +87,7 @@ func Folders() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -118,7 +119,7 @@ func Folders() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create folder`,
 		Long:  `Create folder`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := folder.Client{Config: *config}
@@ -134,6 +135,7 @@ func Folders() *cobra.Command {
 			var err error
 			file, err = client.Create(ctx, paramsFolderCreate)
 			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")

@@ -36,7 +36,7 @@ func ExternalEvents() *cobra.Command {
 		Short: "List External Events",
 		Long:  `List External Events`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsExternalEventList
@@ -61,6 +61,7 @@ func ExternalEvents() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -81,7 +82,7 @@ func ExternalEvents() *cobra.Command {
 		Use:   "find",
 		Short: `Show External Event`,
 		Long:  `Show External Event`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
@@ -90,6 +91,7 @@ func ExternalEvents() *cobra.Command {
 			var err error
 			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
 			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
@@ -109,16 +111,21 @@ func ExternalEvents() *cobra.Command {
 		Use:   "create",
 		Short: `Create External Event`,
 		Long:  `Create External Event`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
 			var externalEvent interface{}
 			var err error
-			paramsExternalEventCreate.Status = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
+			var ExternalEventCreateStatusOk bool
+			paramsExternalEventCreate.Status, ExternalEventCreateStatusOk = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
+			if ExternalEventCreateStatus != "" && !ExternalEventCreateStatusOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "status", ExternalEventCreateStatus)
+			}
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
 			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))

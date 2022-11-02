@@ -33,7 +33,7 @@ func Messages() *cobra.Command {
 		Short: "List Messages",
 		Long:  `List Messages`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsMessageList
@@ -58,6 +58,7 @@ func Messages() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -80,7 +81,7 @@ func Messages() *cobra.Command {
 		Use:   "find",
 		Short: `Show Message`,
 		Long:  `Show Message`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
@@ -89,6 +90,7 @@ func Messages() *cobra.Command {
 			var err error
 			message, err = client.Find(ctx, paramsMessageFind)
 			lib.HandleResponse(ctx, Profile(cmd), message, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageFind.Id, "id", 0, "Message ID.")
@@ -107,7 +109,7 @@ func Messages() *cobra.Command {
 		Use:   "create",
 		Short: `Create Message`,
 		Long:  `Create Message`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
@@ -116,6 +118,7 @@ func Messages() *cobra.Command {
 			var err error
 			message, err = client.Create(ctx, paramsMessageCreate)
 			lib.HandleResponse(ctx, Profile(cmd), message, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -137,7 +140,7 @@ func Messages() *cobra.Command {
 		Use:   "update",
 		Short: `Update Message`,
 		Long:  `Update Message`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
@@ -146,6 +149,7 @@ func Messages() *cobra.Command {
 			var err error
 			message, err = client.Update(ctx, paramsMessageUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageUpdate.Id, "id", 0, "Message ID.")
@@ -167,7 +171,7 @@ func Messages() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Message`,
 		Long:  `Delete Message`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
@@ -177,6 +181,7 @@ func Messages() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsMessageDelete.Id, "id", 0, "Message ID.")

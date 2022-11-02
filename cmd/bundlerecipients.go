@@ -36,7 +36,7 @@ func BundleRecipients() *cobra.Command {
 		Short: "List Bundle Recipients",
 		Long:  `List Bundle Recipients`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBundleRecipientList
@@ -61,6 +61,7 @@ func BundleRecipients() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -84,7 +85,7 @@ func BundleRecipients() *cobra.Command {
 		Use:   "create",
 		Short: `Create Bundle Recipient`,
 		Long:  `Create Bundle Recipient`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle_recipient.Client{Config: *config}
@@ -97,6 +98,7 @@ func BundleRecipients() *cobra.Command {
 			var err error
 			bundleRecipient, err = client.Create(ctx, paramsBundleRecipientCreate)
 			lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

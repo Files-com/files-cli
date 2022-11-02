@@ -33,7 +33,7 @@ func Payments() *cobra.Command {
 		Short: "List Payments",
 		Long:  `List Payments`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPaymentList
@@ -58,6 +58,7 @@ func Payments() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -78,7 +79,7 @@ func Payments() *cobra.Command {
 		Use:   "find",
 		Short: `Show Payment`,
 		Long:  `Show Payment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := payment.Client{Config: *config}
@@ -87,6 +88,7 @@ func Payments() *cobra.Command {
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsPaymentFind)
 			lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPaymentFind.Id, "id", 0, "Payment ID.")

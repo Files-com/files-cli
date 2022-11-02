@@ -31,7 +31,7 @@ func Sessions() *cobra.Command {
 		Use:   "create",
 		Short: `Create user session (log in)`,
 		Long:  `Create user session (log in)`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := session.Client{Config: *config}
@@ -40,6 +40,7 @@ func Sessions() *cobra.Command {
 			var err error
 			session, err = client.Create(ctx, paramsSessionCreate)
 			lib.HandleResponse(ctx, Profile(cmd), session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.Username, "username", "", "Username to sign in as")
@@ -59,7 +60,7 @@ func Sessions() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete user session (log out)`,
 		Long:  `Delete user session (log out)`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := session.Client{Config: *config}
@@ -69,6 +70,7 @@ func Sessions() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 

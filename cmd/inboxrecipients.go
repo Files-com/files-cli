@@ -36,7 +36,7 @@ func InboxRecipients() *cobra.Command {
 		Short: "List Inbox Recipients",
 		Long:  `List Inbox Recipients`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsInboxRecipientList
@@ -61,6 +61,7 @@ func InboxRecipients() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -84,7 +85,7 @@ func InboxRecipients() *cobra.Command {
 		Use:   "create",
 		Short: `Create Inbox Recipient`,
 		Long:  `Create Inbox Recipient`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := inbox_recipient.Client{Config: *config}
@@ -97,6 +98,7 @@ func InboxRecipients() *cobra.Command {
 			var err error
 			inboxRecipient, err = client.Create(ctx, paramsInboxRecipientCreate)
 			lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

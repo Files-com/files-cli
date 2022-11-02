@@ -34,7 +34,7 @@ func MessageComments() *cobra.Command {
 		Short: "List Message Comments",
 		Long:  `List Message Comments`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsMessageCommentList
@@ -59,6 +59,7 @@ func MessageComments() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -81,7 +82,7 @@ func MessageComments() *cobra.Command {
 		Use:   "find",
 		Short: `Show Message Comment`,
 		Long:  `Show Message Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
@@ -90,6 +91,7 @@ func MessageComments() *cobra.Command {
 			var err error
 			messageComment, err = client.Find(ctx, paramsMessageCommentFind)
 			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentFind.Id, "id", 0, "Message Comment ID.")
@@ -108,7 +110,7 @@ func MessageComments() *cobra.Command {
 		Use:   "create",
 		Short: `Create Message Comment`,
 		Long:  `Create Message Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
@@ -117,6 +119,7 @@ func MessageComments() *cobra.Command {
 			var err error
 			messageComment, err = client.Create(ctx, paramsMessageCommentCreate)
 			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -136,7 +139,7 @@ func MessageComments() *cobra.Command {
 		Use:   "update",
 		Short: `Update Message Comment`,
 		Long:  `Update Message Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
@@ -145,6 +148,7 @@ func MessageComments() *cobra.Command {
 			var err error
 			messageComment, err = client.Update(ctx, paramsMessageCommentUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageCommentUpdate.Id, "id", 0, "Message Comment ID.")
@@ -164,7 +168,7 @@ func MessageComments() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Message Comment`,
 		Long:  `Delete Message Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
@@ -174,6 +178,7 @@ func MessageComments() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsMessageCommentDelete.Id, "id", 0, "Message Comment ID.")

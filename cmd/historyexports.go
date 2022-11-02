@@ -32,7 +32,7 @@ func HistoryExports() *cobra.Command {
 		Use:   "find",
 		Short: `Show History Export`,
 		Long:  `Show History Export`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history_export.Client{Config: *config}
@@ -41,6 +41,7 @@ func HistoryExports() *cobra.Command {
 			var err error
 			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
 			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
@@ -59,7 +60,7 @@ func HistoryExports() *cobra.Command {
 		Use:   "create",
 		Short: `Create History Export`,
 		Long:  `Create History Export`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history_export.Client{Config: *config}
@@ -68,6 +69,7 @@ func HistoryExports() *cobra.Command {
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
 			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

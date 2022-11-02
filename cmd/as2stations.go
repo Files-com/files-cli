@@ -34,7 +34,7 @@ func As2Stations() *cobra.Command {
 		Short: "List As2 Stations",
 		Long:  `List As2 Stations`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAs2StationList
@@ -59,6 +59,7 @@ func As2Stations() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func As2Stations() *cobra.Command {
 		Use:   "find",
 		Short: `Show As2 Station`,
 		Long:  `Show As2 Station`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
@@ -88,6 +89,7 @@ func As2Stations() *cobra.Command {
 			var err error
 			as2Station, err = client.Find(ctx, paramsAs2StationFind)
 			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2StationFind.Id, "id", 0, "As2 Station ID.")
@@ -106,7 +108,7 @@ func As2Stations() *cobra.Command {
 		Use:   "create",
 		Short: `Create As2 Station`,
 		Long:  `Create As2 Station`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
@@ -115,6 +117,7 @@ func As2Stations() *cobra.Command {
 			var err error
 			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
 			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "AS2 Name")
@@ -136,7 +139,7 @@ func As2Stations() *cobra.Command {
 		Use:   "update",
 		Short: `Update As2 Station`,
 		Long:  `Update As2 Station`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
@@ -145,6 +148,7 @@ func As2Stations() *cobra.Command {
 			var err error
 			as2Station, err = client.Update(ctx, paramsAs2StationUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
@@ -167,7 +171,7 @@ func As2Stations() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete As2 Station`,
 		Long:  `Delete As2 Station`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
@@ -177,6 +181,7 @@ func As2Stations() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAs2StationDelete.Id, "id", 0, "As2 Station ID.")

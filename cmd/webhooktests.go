@@ -34,7 +34,7 @@ func WebhookTests() *cobra.Command {
 		Use:   "create",
 		Short: `Create Webhook Test`,
 		Long:  `Create Webhook Test`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := webhooktest.Client{Config: *config}
@@ -47,6 +47,7 @@ func WebhookTests() *cobra.Command {
 			var err error
 			webhookTest, err = client.Create(ctx, paramsWebhookTestCreate)
 			lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")

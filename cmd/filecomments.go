@@ -34,7 +34,7 @@ func FileComments() *cobra.Command {
 		Short: "List File Comments by path",
 		Long:  `List File Comments by path`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFileCommentListFor
@@ -62,6 +62,7 @@ func FileComments() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -83,7 +84,7 @@ func FileComments() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create File Comment`,
 		Long:  `Create File Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
@@ -95,6 +96,7 @@ func FileComments() *cobra.Command {
 			var err error
 			fileComment, err = client.Create(ctx, paramsFileCommentCreate)
 			lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
@@ -114,7 +116,7 @@ func FileComments() *cobra.Command {
 		Use:   "update",
 		Short: `Update File Comment`,
 		Long:  `Update File Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
@@ -123,6 +125,7 @@ func FileComments() *cobra.Command {
 			var err error
 			fileComment, err = client.Update(ctx, paramsFileCommentUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
@@ -142,7 +145,7 @@ func FileComments() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete File Comment`,
 		Long:  `Delete File Comment`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
@@ -152,6 +155,7 @@ func FileComments() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsFileCommentDelete.Id, "id", 0, "File Comment ID.")

@@ -34,7 +34,7 @@ func PublicKeys() *cobra.Command {
 		Short: "List Public Keys",
 		Long:  `List Public Keys`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPublicKeyList
@@ -59,6 +59,7 @@ func PublicKeys() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -80,7 +81,7 @@ func PublicKeys() *cobra.Command {
 		Use:   "find",
 		Short: `Show Public Key`,
 		Long:  `Show Public Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
@@ -89,6 +90,7 @@ func PublicKeys() *cobra.Command {
 			var err error
 			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
 			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
@@ -107,7 +109,7 @@ func PublicKeys() *cobra.Command {
 		Use:   "create",
 		Short: `Create Public Key`,
 		Long:  `Create Public Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
@@ -116,6 +118,7 @@ func PublicKeys() *cobra.Command {
 			var err error
 			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
 			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -136,7 +139,7 @@ func PublicKeys() *cobra.Command {
 		Use:   "update",
 		Short: `Update Public Key`,
 		Long:  `Update Public Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
@@ -145,6 +148,7 @@ func PublicKeys() *cobra.Command {
 			var err error
 			publicKey, err = client.Update(ctx, paramsPublicKeyUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")
@@ -164,7 +168,7 @@ func PublicKeys() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Public Key`,
 		Long:  `Delete Public Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
@@ -174,6 +178,7 @@ func PublicKeys() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPublicKeyDelete.Id, "id", 0, "Public Key ID.")

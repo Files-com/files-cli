@@ -31,7 +31,7 @@ func Histories() *cobra.Command {
 		Use:   "list-for-file [path]",
 		Short: `List history for specific file`,
 		Long:  `List history for specific file`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
@@ -43,6 +43,7 @@ func Histories() *cobra.Command {
 			var err error
 			actionCollection, err = client.ListForFile(ctx, paramsHistoryListForFile)
 			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFile, fieldsListForFile, usePagerListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at")
@@ -66,7 +67,7 @@ func Histories() *cobra.Command {
 		Use:   "list-for-folder [path]",
 		Short: `List history for specific folder`,
 		Long:  `List history for specific folder`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
@@ -78,6 +79,7 @@ func Histories() *cobra.Command {
 			var err error
 			actionCollection, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
 			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFolder, fieldsListForFolder, usePagerListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at")
@@ -101,7 +103,7 @@ func Histories() *cobra.Command {
 		Use:   "list-for-user",
 		Short: `List history for specific user`,
 		Long:  `List history for specific user`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
@@ -110,6 +112,7 @@ func Histories() *cobra.Command {
 			var err error
 			actionCollection, err = client.ListForUser(ctx, paramsHistoryListForUser)
 			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForUser, fieldsListForUser, usePagerListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at")
@@ -133,7 +136,7 @@ func Histories() *cobra.Command {
 		Use:   "list-logins",
 		Short: `List site login history`,
 		Long:  `List site login history`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history.Client{Config: *config}
@@ -142,6 +145,7 @@ func Histories() *cobra.Command {
 			var err error
 			actionCollection, err = client.ListLogins(ctx, paramsHistoryListLogins)
 			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListLogins, fieldsListLogins, usePagerListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at")
@@ -166,7 +170,7 @@ func Histories() *cobra.Command {
 		Short: "List site full action history",
 		Long:  `List site full action history`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryList
@@ -191,6 +195,7 @@ func Histories() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 

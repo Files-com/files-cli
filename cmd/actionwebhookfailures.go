@@ -32,7 +32,7 @@ func ActionWebhookFailures() *cobra.Command {
 		Use:   "retry",
 		Short: `retry Action Webhook Failure`,
 		Long:  `retry Action Webhook Failure`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_webhook_failure.Client{Config: *config}
@@ -42,6 +42,7 @@ func ActionWebhookFailures() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdRetry.Flags().Int64Var(&paramsActionWebhookFailureRetry.Id, "id", 0, "Action Webhook Failure ID.")

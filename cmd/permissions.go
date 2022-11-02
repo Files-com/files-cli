@@ -36,7 +36,7 @@ func Permissions() *cobra.Command {
 		Short: "List Permissions",
 		Long:  `List Permissions`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPermissionList
@@ -64,6 +64,7 @@ func Permissions() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -89,7 +90,7 @@ func Permissions() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Create Permission`,
 		Long:  `Create Permission`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := permission.Client{Config: *config}
@@ -105,6 +106,7 @@ func Permissions() *cobra.Command {
 			var err error
 			permission, err = client.Create(ctx, paramsPermissionCreate)
 			lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
@@ -128,7 +130,7 @@ func Permissions() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Permission`,
 		Long:  `Delete Permission`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := permission.Client{Config: *config}
@@ -138,6 +140,7 @@ func Permissions() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPermissionDelete.Id, "id", 0, "Permission ID.")

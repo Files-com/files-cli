@@ -34,7 +34,7 @@ func BundleDownloads() *cobra.Command {
 		Short: "List Bundle Downloads",
 		Long:  `List Bundle Downloads`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsBundleDownloadList
@@ -59,6 +59,7 @@ func BundleDownloads() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 

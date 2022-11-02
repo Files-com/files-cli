@@ -31,7 +31,7 @@ func Styles() *cobra.Command {
 		Use:   "find [path]",
 		Short: `Show Style`,
 		Long:  `Show Style`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := style.Client{Config: *config}
@@ -43,6 +43,7 @@ func Styles() *cobra.Command {
 			var err error
 			style, err = client.Find(ctx, paramsStyleFind)
 			lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
@@ -61,7 +62,7 @@ func Styles() *cobra.Command {
 		Use:   "update [path]",
 		Short: `Update Style`,
 		Long:  `Update Style`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := style.Client{Config: *config}
@@ -73,6 +74,7 @@ func Styles() *cobra.Command {
 			var err error
 			style, err = client.Update(ctx, paramsStyleUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
@@ -91,7 +93,7 @@ func Styles() *cobra.Command {
 		Use:   "delete [path]",
 		Short: `Delete Style`,
 		Long:  `Delete Style`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := style.Client{Config: *config}
@@ -104,6 +106,7 @@ func Styles() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().StringVar(&paramsStyleDelete.Path, "path", "", "Style path.")

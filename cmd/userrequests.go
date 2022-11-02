@@ -34,7 +34,7 @@ func UserRequests() *cobra.Command {
 		Short: "List User Requests",
 		Long:  `List User Requests`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsUserRequestList
@@ -59,6 +59,7 @@ func UserRequests() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func UserRequests() *cobra.Command {
 		Use:   "find",
 		Short: `Show User Request`,
 		Long:  `Show User Request`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
@@ -88,6 +89,7 @@ func UserRequests() *cobra.Command {
 			var err error
 			userRequest, err = client.Find(ctx, paramsUserRequestFind)
 			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserRequestFind.Id, "id", 0, "User Request ID.")
@@ -106,7 +108,7 @@ func UserRequests() *cobra.Command {
 		Use:   "create",
 		Short: `Create User Request`,
 		Long:  `Create User Request`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
@@ -115,6 +117,7 @@ func UserRequests() *cobra.Command {
 			var err error
 			userRequest, err = client.Create(ctx, paramsUserRequestCreate)
 			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Name, "name", "", "Name of user requested")
@@ -135,7 +138,7 @@ func UserRequests() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete User Request`,
 		Long:  `Delete User Request`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user_request.Client{Config: *config}
@@ -145,6 +148,7 @@ func UserRequests() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserRequestDelete.Id, "id", 0, "User Request ID.")

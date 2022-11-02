@@ -36,7 +36,7 @@ func FormFieldSets() *cobra.Command {
 		Short: "List Form Field Sets",
 		Long:  `List Form Field Sets`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsFormFieldSetList
@@ -61,6 +61,7 @@ func FormFieldSets() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -82,7 +83,7 @@ func FormFieldSets() *cobra.Command {
 		Use:   "find",
 		Short: `Show Form Field Set`,
 		Long:  `Show Form Field Set`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
@@ -91,6 +92,7 @@ func FormFieldSets() *cobra.Command {
 			var err error
 			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
 			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
@@ -112,7 +114,7 @@ func FormFieldSets() *cobra.Command {
 		Use:   "create",
 		Short: `Create Form Field Set`,
 		Long:  `Create Form Field Set`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
@@ -131,6 +133,7 @@ func FormFieldSets() *cobra.Command {
 			var err error
 			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
 			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -156,7 +159,7 @@ func FormFieldSets() *cobra.Command {
 		Use:   "update",
 		Short: `Update Form Field Set`,
 		Long:  `Update Form Field Set`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
@@ -175,6 +178,7 @@ func FormFieldSets() *cobra.Command {
 			var err error
 			formFieldSet, err = client.Update(ctx, paramsFormFieldSetUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
@@ -197,7 +201,7 @@ func FormFieldSets() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Form Field Set`,
 		Long:  `Delete Form Field Set`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
@@ -207,6 +211,7 @@ func FormFieldSets() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsFormFieldSetDelete.Id, "id", 0, "Form Field Set ID.")

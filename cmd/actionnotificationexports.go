@@ -34,7 +34,7 @@ func ActionNotificationExports() *cobra.Command {
 		Use:   "find",
 		Short: `Show Action Notification Export`,
 		Long:  `Show Action Notification Export`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_notification_export.Client{Config: *config}
@@ -43,6 +43,7 @@ func ActionNotificationExports() *cobra.Command {
 			var err error
 			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
 			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
@@ -62,7 +63,7 @@ func ActionNotificationExports() *cobra.Command {
 		Use:   "create",
 		Short: `Create Action Notification Export`,
 		Long:  `Create Action Notification Export`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := action_notification_export.Client{Config: *config}
@@ -75,6 +76,7 @@ func ActionNotificationExports() *cobra.Command {
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
 			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

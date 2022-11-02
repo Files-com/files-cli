@@ -34,7 +34,7 @@ func SftpHostKeys() *cobra.Command {
 		Short: "List Sftp Host Keys",
 		Long:  `List Sftp Host Keys`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsSftpHostKeyList
@@ -59,6 +59,7 @@ func SftpHostKeys() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 
@@ -79,7 +80,7 @@ func SftpHostKeys() *cobra.Command {
 		Use:   "find",
 		Short: `Show Sftp Host Key`,
 		Long:  `Show Sftp Host Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sftp_host_key.Client{Config: *config}
@@ -88,6 +89,7 @@ func SftpHostKeys() *cobra.Command {
 			var err error
 			sftpHostKey, err = client.Find(ctx, paramsSftpHostKeyFind)
 			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSftpHostKeyFind.Id, "id", 0, "Sftp Host Key ID.")
@@ -106,7 +108,7 @@ func SftpHostKeys() *cobra.Command {
 		Use:   "create",
 		Short: `Create Sftp Host Key`,
 		Long:  `Create Sftp Host Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sftp_host_key.Client{Config: *config}
@@ -115,6 +117,7 @@ func SftpHostKeys() *cobra.Command {
 			var err error
 			sftpHostKey, err = client.Create(ctx, paramsSftpHostKeyCreate)
 			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
@@ -134,7 +137,7 @@ func SftpHostKeys() *cobra.Command {
 		Use:   "update",
 		Short: `Update Sftp Host Key`,
 		Long:  `Update Sftp Host Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sftp_host_key.Client{Config: *config}
@@ -143,6 +146,7 @@ func SftpHostKeys() *cobra.Command {
 			var err error
 			sftpHostKey, err = client.Update(ctx, paramsSftpHostKeyUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
@@ -163,7 +167,7 @@ func SftpHostKeys() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Sftp Host Key`,
 		Long:  `Delete Sftp Host Key`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sftp_host_key.Client{Config: *config}
@@ -173,6 +177,7 @@ func SftpHostKeys() *cobra.Command {
 			if err != nil {
 				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
+			return nil
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsSftpHostKeyDelete.Id, "id", 0, "Sftp Host Key ID.")
