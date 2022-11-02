@@ -70,6 +70,34 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdList)
+	var fieldsGetExavaultReserved string
+	var formatGetExavaultReserved string
+	usePagerGetExavaultReserved := true
+	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
+
+	cmdGetExavaultReserved := &cobra.Command{
+		Use:   "get-exavault-reserved",
+		Short: `List all possible public ExaVault IP addresses`,
+		Long:  `List all possible public ExaVault IP addresses`,
+		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := ip_address.Client{Config: *config}
+
+			var publicIpAddressCollection interface{}
+			var err error
+			publicIpAddressCollection, err = client.GetExavaultReserved(ctx, paramsIpAddressGetExavaultReserved)
+			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+		},
+	}
+	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
+	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
+	cmdGetExavaultReserved.Flags().StringVarP(&fieldsGetExavaultReserved, "fields", "", "", "comma separated list of field names")
+	cmdGetExavaultReserved.Flags().StringVarP(&formatGetExavaultReserved, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
+
+	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved string
 	var formatGetReserved string
 	usePagerGetReserved := true
