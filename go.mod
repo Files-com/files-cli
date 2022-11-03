@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.18
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.109-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.110-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
