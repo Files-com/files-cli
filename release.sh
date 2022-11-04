@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if goreleaser release --rm-dist; then
+if GOWORK=off goreleaser release --rm-dist; then
   true
 else
   go install github.com/goreleaser/goreleaser@latest
-  $(go env GOPATH)/bin/goreleaser release --rm-dist || exit 1
+  GOWORK=off $(go env GOPATH)/bin/goreleaser release --rm-dist || exit 1
 fi
