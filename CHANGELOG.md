@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.0.8] - 2022/11/07
+### Fix
+- Listing a resource with format JSON was missing an ending bracket. [issue#2](https://github.com/Files-com/files-cli/issues/2)
+
 ## [2.0.6] - 2022/11/04
 ### Fix
 - Uploading a zero byte file, with `upload`/`sync`, resulted in error `Upload Not Found`

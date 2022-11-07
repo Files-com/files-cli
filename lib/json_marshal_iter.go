@@ -49,8 +49,8 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter F
 	if firstObject {
 		fmt.Fprintf(out, "[]\n")
 	} else {
-		pager.Wait()
 		fmt.Fprintf(pager, "]\n")
+		pager.Wait()
 	}
 
 	if it.Err() != nil {
