@@ -69,8 +69,11 @@ func Behaviors() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsBehaviorList.Behavior, "behavior", "", "If set, only shows folder behaviors matching this behavior type.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind string
@@ -96,8 +99,11 @@ func Behaviors() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
 
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
+	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdFind)
@@ -151,8 +157,11 @@ func Behaviors() *cobra.Command {
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Behavior, "behavior", "", "DEPRECATED: If set only shows folder behaviors matching this behavior type. Use `filter[behavior]` instead.")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdListFor.Flags().StringVarP(&fieldsListFor, "fields", "", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVarP(&formatListFor, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdListFor.Flags().StringVar(&fieldsListFor, "fields", "", "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringVar(&formatListFor, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate string
@@ -185,8 +194,11 @@ func Behaviors() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Folder behaviors path.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Behavior, "behavior", "", "Behavior type.")
 
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdCreate)
@@ -217,8 +229,11 @@ func Behaviors() *cobra.Command {
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Encoding, "encoding", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "action for test body")
 
-	cmdWebhookTest.Flags().StringVarP(&fieldsWebhookTest, "fields", "", "", "comma separated list of field names")
-	cmdWebhookTest.Flags().StringVarP(&formatWebhookTest, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdWebhookTest.Flags().StringVar(&fieldsWebhookTest, "fields", "", "comma separated list of field names")
+	cmdWebhookTest.Flags().StringVar(&formatWebhookTest, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdWebhookTest.Flags().BoolVar(&usePagerWebhookTest, "use-pager", usePagerWebhookTest, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdWebhookTest)
@@ -259,8 +274,11 @@ func Behaviors() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Path, "path", "", "Folder behaviors path.")
 	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
 
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdUpdate)
@@ -288,8 +306,11 @@ func Behaviors() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
 
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdDelete)

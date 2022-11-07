@@ -46,8 +46,11 @@ func FileMigrations() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
 
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
+	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	FileMigrations.AddCommand(cmdFind)

@@ -74,8 +74,11 @@ func Requests() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsRequestList.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder string
@@ -112,8 +115,11 @@ func Requests() *cobra.Command {
 	cmdGetFolder.Flags().BoolVar(&getFolderMine, "mine", getFolderMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
-	cmdGetFolder.Flags().StringVarP(&fieldsGetFolder, "fields", "", "", "comma separated list of field names")
-	cmdGetFolder.Flags().StringVarP(&formatGetFolder, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetFolder.Flags().StringVar(&fieldsGetFolder, "fields", "", "comma separated list of field names")
+	cmdGetFolder.Flags().StringVar(&formatGetFolder, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdGetFolder)
@@ -146,8 +152,11 @@ func Requests() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.UserIds, "user-ids", "", "A list of user IDs to request the file from. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.GroupIds, "group-ids", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
 
-	cmdCreate.Flags().StringVarP(&fieldsCreate, "fields", "", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVarP(&formatCreate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
+	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdCreate)
@@ -175,8 +184,11 @@ func Requests() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsRequestDelete.Id, "id", 0, "Request ID.")
 
-	cmdDelete.Flags().StringVarP(&fieldsDelete, "fields", "", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVarP(&formatDelete, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
+	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdDelete)

@@ -38,6 +38,9 @@ var (
 					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 					os.Exit(1)
 				}
+				var d bool
+				d = true
+				sdkConfig.Debug = &d
 				sdkConfig.SetLogger(log.New(logFile, "", log.LstdFlags))
 			}
 			profile := &lib.Profiles{}

@@ -67,8 +67,11 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsIpAddressList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetExavaultReserved string
@@ -95,8 +98,11 @@ func IpAddresses() *cobra.Command {
 	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
-	cmdGetExavaultReserved.Flags().StringVarP(&fieldsGetExavaultReserved, "fields", "", "", "comma separated list of field names")
-	cmdGetExavaultReserved.Flags().StringVarP(&formatGetExavaultReserved, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetExavaultReserved.Flags().StringVar(&fieldsGetExavaultReserved, "fields", "", "comma separated list of field names")
+	cmdGetExavaultReserved.Flags().StringVar(&formatGetExavaultReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
 
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
@@ -124,8 +130,11 @@ func IpAddresses() *cobra.Command {
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
-	cmdGetReserved.Flags().StringVarP(&fieldsGetReserved, "fields", "", "", "comma separated list of field names")
-	cmdGetReserved.Flags().StringVarP(&formatGetReserved, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetReserved.Flags().StringVar(&fieldsGetReserved, "fields", "", "comma separated list of field names")
+	cmdGetReserved.Flags().StringVar(&formatGetReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
 
 	IpAddresses.AddCommand(cmdGetReserved)

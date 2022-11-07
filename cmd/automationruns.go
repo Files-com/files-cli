@@ -69,8 +69,11 @@ func AutomationRuns() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsAutomationRunList.AutomationId, "automation-id", 0, "ID of the associated Automation.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVarP(&fieldsList, "fields", "", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVarP(&formatList, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
+	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	AutomationRuns.AddCommand(cmdList)
 	var fieldsFind string
@@ -96,8 +99,11 @@ func AutomationRuns() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")
 
-	cmdFind.Flags().StringVarP(&fieldsFind, "fields", "", "", "comma separated list of field names")
-	cmdFind.Flags().StringVarP(&formatFind, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
+	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	AutomationRuns.AddCommand(cmdFind)

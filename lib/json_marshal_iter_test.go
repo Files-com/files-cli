@@ -15,7 +15,7 @@ func TestJsonMarshalIter(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
-	JsonMarshalIter(context.Background(), &it, "", nil, false, buf)
+	JsonMarshalIter(context.Background(), &it, "", nil, false, "", buf)
 
 	a.Equal(`[{
     "age": 100,
@@ -27,6 +27,19 @@ func TestJsonMarshalIter(t *testing.T) {
     "first_name": "Tom",
     "last_name": "Smith"
 }]
+`, buf.String())
+}
+
+func TestJsonMarshalIter_Raw(t *testing.T) {
+	a := assert.New(t)
+	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
+	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
+	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
+	buf := bytes.NewBufferString("")
+
+	JsonMarshalIter(context.Background(), &it, "", nil, false, "raw", buf)
+
+	a.Equal(`[{"age":100,"first_name":"Dustin","last_name":"Zeisler"},{"age":99,"first_name":"Tom","last_name":"Smith"}]
 `, buf.String())
 }
 
@@ -59,7 +72,7 @@ func TestJsonMarshalIter_UsePager(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := (&StringBufferWithClose{}).Init()
 
-	JsonMarshalIter(context.Background(), &it, "", nil, true, buf)
+	JsonMarshalIter(context.Background(), &it, "", nil, true, "", buf)
 
 	a.Equal(`[{
     "age": 100,
@@ -82,7 +95,7 @@ func TestJsonMarshalIter_Filter(t *testing.T) {
 	buf := bytes.NewBufferString("")
 	JsonMarshalIter(context.Background(), &it, "", func(i interface{}) bool {
 		return i.(Person).FirstName == "Dustin"
-	}, false, buf)
+	}, false, "", buf)
 
 	a.Equal(`[{
     "age": 100,

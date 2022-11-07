@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/jedib0t/go-pretty/v6/text"
+
 	"github.com/jedib0t/go-pretty/v6/table"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -37,7 +39,7 @@ func renderTable(t table.Writer, style string) {
 	}
 }
 
-func TableMarshal(style string, result interface{}, fields string, usePager bool, out io.Writer) error {
+func TableMarshal(style string, result interface{}, fields string, usePager bool, out io.Writer, direction string) error {
 	var pager *Pager
 	var err error
 	var t table.Writer
@@ -46,8 +48,11 @@ func TableMarshal(style string, result interface{}, fields string, usePager bool
 		return err
 	}
 	t = tableWriter(style, pager)
-
-	err = tableMarshal(t, result, fields, true)
+	if direction == "vertical" {
+		err = tableMarshalVertical(t, result, fields, true, true)
+	} else {
+		err = tableMarshal(t, result, fields, true, true)
+	}
 	if err != nil {
 		return err
 	}
@@ -58,30 +63,55 @@ func TableMarshal(style string, result interface{}, fields string, usePager bool
 	return nil
 }
 
-func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader bool) error {
+func tableMarshalVertical(t table.Writer, result interface{}, fields string, writeHeader bool, skipNil bool) error {
 	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
 	}
+	custom := t.Style()
+	custom.Options.SeparateRows = true
+	custom.Format.Header = text.FormatDefault
+	t.SetStyle(*custom)
+	var headers table.Row
+	var values table.Row
+	for i, key := range orderedKeys {
+		if record[key] != nil || !skipNil {
+			if i == 0 {
+				headers = append(headers, text.FormatUpper.Apply(key))
+				headers = append(headers, fmt.Sprintf("%v", formatValues(key, record[key])))
+			} else {
+				values = append(values, text.FormatUpper.Apply(key))
+				values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
+				t.AppendRow(values)
+				values = table.Row{}
+			}
+		}
+	}
 	if writeHeader {
-		var headers table.Row
-		for _, key := range orderedKeys {
-			headers = append(headers, key)
-		}
 		t.AppendHeader(headers)
-		if err != nil {
-			return err
-		}
 	}
 
-	var values table.Row
-	for _, key := range orderedKeys {
-		values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
-	}
-	t.AppendRow(values)
+	return nil
+}
+
+func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader bool, skipNil bool) error {
+	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
 	}
+
+	var headers table.Row
+	var values table.Row
+	for _, key := range orderedKeys {
+		if record[key] != nil || !skipNil {
+			values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
+			headers = append(headers, key)
+		}
+	}
+	if writeHeader {
+		t.AppendHeader(headers)
+	}
+	t.AppendRow(values)
 	return nil
 }
 
@@ -107,7 +137,7 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields s
 			return nil
 		}
 		if filter == nil || filter(it.Current()) {
-			err := tableMarshal(t, it.Current(), fields, writeHeader)
+			err := tableMarshal(t, it.Current(), fields, writeHeader, false)
 			if err != nil {
 				return err
 			}

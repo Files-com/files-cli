@@ -9,6 +9,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestTableMarshal_Vertical(t *testing.T) {
+	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
+	out := strings.Builder{}
+	TableMarshal("", p1, "", true, &out, "vertical")
+	assert.Equal(t, strings.TrimSpace(`
+┌────────────┬─────────┐
+│ FIRST_NAME │ Dustin  │
+├────────────┼─────────┤
+│ LAST_NAME  │ Zeisler │
+├────────────┼─────────┤
+│ AGE        │ 100     │
+└────────────┴─────────┘
+`), strings.TrimSpace(sanitizeOutput(out.String())))
+}
+
+func TestTableMarshal_Horizontal(t *testing.T) {
+	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
+	out := strings.Builder{}
+	TableMarshal("", p1, "", true, &out, "horizontal")
+	assert.Equal(t, strings.TrimSpace(`
+┌────────────┬───────────┬─────┐
+│ FIRST_NAME │ LAST_NAME │ AGE │
+├────────────┼───────────┼─────┤
+│ Dustin     │ Zeisler   │ 100 │
+└────────────┴───────────┴─────┘
+`), strings.TrimSpace(sanitizeOutput(out.String())))
+}
+
 func TestTableMarshalIter(t *testing.T) {
 	assert := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}

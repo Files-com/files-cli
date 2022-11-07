@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"strings"
 )
 
 type Iter interface {
@@ -31,19 +32,24 @@ func Format(ctx context.Context, result interface{}, format string, fields strin
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
-	switch format {
+	separators := []string{"-", ",", " "}
+	formats := []string{"table", "light", "vertical"}
+	for _, sep := range separators {
+		splitFormat := strings.Split(format, sep)
+		for i, f := range splitFormat {
+			formats[i] = f
+		}
+		if len(splitFormat) > 1 {
+			break
+		}
+	}
+	switch formats[0] {
 	case "json":
-		return JsonMarshal(result, fields, usePager, out[0])
+		return JsonMarshal(result, fields, usePager, formats[1], out[0])
 	case "csv":
 		return CSVMarshal(result, fields, out[0])
 	case "table":
-		return TableMarshal("", result, fields, usePager, out[0])
-	case "table-dark":
-		return TableMarshal("dark", result, fields, usePager, out[0])
-	case "table-bright":
-		return TableMarshal("bright", result, fields, usePager, out[0])
-	case "table-markdown":
-		return TableMarshal("markdown", result, fields, usePager, out[0])
+		return TableMarshal(formats[1], result, fields, usePager, out[0], formats[2])
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}
@@ -53,19 +59,24 @@ func FormatIter(ctx context.Context, it Iter, format string, fields string, useP
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
-	switch format {
+	separators := []string{"-", ",", " "}
+	formats := []string{"table", "light", ""}
+	for _, sep := range separators {
+		splitFormat := strings.Split(format, sep)
+		for i, f := range splitFormat {
+			formats[i] = f
+		}
+		if len(splitFormat) > 1 {
+			break
+		}
+	}
+	switch formats[0] {
 	case "json":
-		return JsonMarshalIter(ctx, it, fields, filter, usePager, out[0])
+		return JsonMarshalIter(ctx, it, fields, filter, usePager, formats[1], out[0])
 	case "csv":
 		return CSVMarshalIter(it, fields, filter, out[0])
 	case "table":
-		return TableMarshalIter(ctx, "", it, fields, usePager, out[0], filter)
-	case "table-dark":
-		return TableMarshalIter(ctx, "dark", it, fields, usePager, out[0], filter)
-	case "table-bright":
-		return TableMarshalIter(ctx, "bright", it, fields, usePager, out[0], filter)
-	case "table-markdown":
-		return TableMarshalIter(ctx, "markdown", it, fields, usePager, out[0], filter)
+		return TableMarshalIter(ctx, formats[1], it, fields, usePager, out[0], filter)
 	default:
 		return fmt.Errorf("Unknown format `" + format + "`")
 	}

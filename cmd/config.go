@@ -78,7 +78,7 @@ func Config() *cobra.Command {
 			if len(args) > 0 {
 				fields = args[0]
 			}
-			lib.JsonMarshal(Profile(cmd), fields, false)
+			lib.JsonMarshal(Profile(cmd), fields, false, "")
 		},
 	}
 

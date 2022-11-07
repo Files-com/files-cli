@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter FilterIter, usePager bool, out io.Writer) error {
+func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter FilterIter, usePager bool, format string, out io.Writer) error {
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 	pager, err := Pager{UsePager: usePager}.Init(it, out)
@@ -31,16 +31,26 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter F
 		if err != nil {
 			return err
 		}
-		prettyJSON, err := json.MarshalIndent(recordMap, "", "    ")
+		var jsonObject []byte
+		if format == "raw" {
+			jsonObject, err = json.Marshal(recordMap)
+		} else {
+			jsonObject, err = json.MarshalIndent(recordMap, "", "    ")
+		}
 		if err != nil {
-			panic(err)
+			return err
 		}
 		if firstObject {
 			spinner.Stop()
 			pager.Start(cancel)
-			fmt.Fprintf(pager, "[%s", string(prettyJSON))
+
+			fmt.Fprintf(pager, "[%s", string(jsonObject))
 		} else {
-			fmt.Fprintf(pager, ",\n%s", string(prettyJSON))
+			if format == "raw" {
+				fmt.Fprintf(pager, ",%s", string(jsonObject))
+			} else {
+				fmt.Fprintf(pager, ",\n%s", string(jsonObject))
+			}
 		}
 
 		firstObject = false
@@ -59,7 +69,7 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields string, filter F
 	return nil
 }
 
-func JsonMarshal(i interface{}, fields string, usePager bool, out ...io.Writer) error {
+func JsonMarshal(i interface{}, fields string, usePager bool, format string, out ...io.Writer) error {
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
@@ -71,12 +81,17 @@ func JsonMarshal(i interface{}, fields string, usePager bool, out ...io.Writer) 
 	if err != nil {
 		return err
 	}
-	prettyJSON, err := json.MarshalIndent(recordMap, "", "    ")
+	var jsonObject []byte
+	if format == "raw" {
+		jsonObject, err = json.Marshal(recordMap)
+	} else {
+		jsonObject, err = json.MarshalIndent(recordMap, "", "    ")
+	}
 	if err != nil {
 		return err
 	}
 	pager.Start(func() {})
-	fmt.Fprintf(out[0], "%v\n", string(prettyJSON))
+	fmt.Fprintf(out[0], "%v\n", string(jsonObject))
 	pager.Wait()
 	return err
 }

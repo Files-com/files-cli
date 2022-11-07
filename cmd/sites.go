@@ -44,8 +44,11 @@ func Sites() *cobra.Command {
 		},
 	}
 
-	cmdGet.Flags().StringVarP(&fieldsGet, "fields", "", "", "comma separated list of field names")
-	cmdGet.Flags().StringVarP(&formatGet, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGet.Flags().StringVar(&fieldsGet, "fields", "", "comma separated list of field names")
+	cmdGet.Flags().StringVar(&formatGet, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdGet.Flags().BoolVar(&usePagerGet, "use-pager", usePagerGet, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGet)
@@ -69,8 +72,11 @@ func Sites() *cobra.Command {
 		},
 	}
 
-	cmdGetUsage.Flags().StringVarP(&fieldsGetUsage, "fields", "", "", "comma separated list of field names")
-	cmdGetUsage.Flags().StringVarP(&formatGetUsage, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdGetUsage.Flags().StringVar(&fieldsGetUsage, "fields", "", "comma separated list of field names")
+	cmdGetUsage.Flags().StringVar(&formatGetUsage, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdGetUsage.Flags().BoolVar(&usePagerGetUsage, "use-pager", usePagerGetUsage, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGetUsage)
@@ -458,8 +464,11 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
 
-	cmdUpdate.Flags().StringVarP(&fieldsUpdate, "fields", "", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVarP(&formatUpdate, "format", "", "table", "json, csv, table, table-dark, table-bright, table-markdown")
+	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
+	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdUpdate)

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.0] - 2022/11/07
+### Add
+- Single resource results now removes empty columns from `table` format.
+- Single resource results now display vertically.
+- `format` flag now take these options: '{format} {style} {direction}' - formats: {json, csv, table}
+    - table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+    - json-styles: {raw, pretty}
+
+### Fix
+- `debug` flag sends more detailed logs to file including generated curl commands.
+
 ## [2.0.8] - 2022/11/07
 ### Fix
 - Listing a resource with format JSON was missing an ending bracket. [issue#2](https://github.com/Files-com/files-cli/issues/2)
