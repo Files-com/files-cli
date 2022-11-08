@@ -402,6 +402,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSessionPinnedByIp, "session-pinned-by-ip", updateSessionPinnedByIp, "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)")
 	cmdUpdate.Flags().BoolVar(&updateBundlePasswordRequired, "bundle-password-required", updateBundlePasswordRequired, "Do Bundles require password protection?")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireShareRecipient, "bundle-require-share-recipient", updateBundleRequireShareRecipient, "Do Bundles require recipients for sharing?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleRegistrationNotifications, "bundle-registration-notifications", "", "Do Bundle owners receive registration notification?")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")
 	cmdUpdate.Flags().BoolVar(&updateUseProvidedModifiedAt, "use-provided-modified-at", updateUseProvidedModifiedAt, "Allow uploaders to set `provided_modified_at` for uploaded files?")

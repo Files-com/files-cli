@@ -1,9 +1,10 @@
-//go:build !noportable && !windows
+//go:build !noportable
 
 package cmd
 
 import (
 	"github.com/Files-com/files-cli/lib"
+	"github.com/drakkan/sftpgo/v2/service"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,10 @@ Please take a look at the usage below to customize the serving parameters`,
 			if err != nil {
 				return err
 			}
-			return AgentService.Start()
+			winService := service.WindowsService{
+				Service: AgentService.Service,
+			}
+			return winService.RunService()
 		},
 	}
 )

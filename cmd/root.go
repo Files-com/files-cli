@@ -15,14 +15,15 @@ import (
 )
 
 var (
-	Version            string
-	ProfileValue       string
-	Environment        string
-	APIKey             string
-	debug              string
-	ignoreVersionCheck bool
-	OutputPath         string
-	RootCmd            = &cobra.Command{
+	IgnoreCredentialsCheck []string
+	Version                string
+	ProfileValue           string
+	Environment            string
+	APIKey                 string
+	debug                  string
+	ignoreVersionCheck     bool
+	OutputPath             string
+	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			sdkConfig := cmd.Context().Value("config").(*files.Config)
@@ -63,7 +64,11 @@ var (
 				return
 			}
 
-			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], []string{"config-set", "config-reset", "config-show", "version"}) {
+			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) {
+				return
+			}
+
+			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], []string{"config-set", "config-reset", "config-show", "version", "agent"}) {
 				return
 			}
 

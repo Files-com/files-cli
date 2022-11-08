@@ -109,6 +109,37 @@ func RemoteServers() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFind)
+	var fieldsFindConfigurationFile string
+	var formatFindConfigurationFile string
+	usePagerFindConfigurationFile := true
+	paramsRemoteServerFindConfigurationFile := files_sdk.RemoteServerFindConfigurationFileParams{}
+
+	cmdFindConfigurationFile := &cobra.Command{
+		Use:   "find-configuration-file",
+		Short: `Download configuration file (required for some Remote Server integrations, such as the Files.com Agent)`,
+		Long:  `Download configuration file (required for some Remote Server integrations, such as the Files.com Agent)`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
+
+			var remoteServerConfigurationFile interface{}
+			var err error
+			remoteServerConfigurationFile, err = client.FindConfigurationFile(ctx, paramsRemoteServerFindConfigurationFile)
+			lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
+		},
+	}
+	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
+
+	cmdFindConfigurationFile.Flags().StringVar(&fieldsFindConfigurationFile, "fields", "", "comma separated list of field names")
+	cmdFindConfigurationFile.Flags().StringVar(&formatFindConfigurationFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
+	cmdFindConfigurationFile.Flags().BoolVar(&usePagerFindConfigurationFile, "use-pager", usePagerFindConfigurationFile, "Use $PAGER (.ie less, more, etc)")
+
+	RemoteServers.AddCommand(cmdFindConfigurationFile)
 	var fieldsCreate string
 	var formatCreate string
 	usePagerCreate := true
@@ -120,6 +151,7 @@ func RemoteServers() *cobra.Command {
 	RemoteServerCreateServerType := ""
 	RemoteServerCreateSsl := ""
 	RemoteServerCreateOneDriveAccountType := ""
+	RemoteServerCreateFilesAgentPermissionSet := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -161,6 +193,11 @@ func RemoteServers() *cobra.Command {
 			paramsRemoteServerCreate.OneDriveAccountType, RemoteServerCreateOneDriveAccountTypeOk = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
 			if RemoteServerCreateOneDriveAccountType != "" && !RemoteServerCreateOneDriveAccountTypeOk {
 				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerCreateOneDriveAccountType)
+			}
+			var RemoteServerCreateFilesAgentPermissionSetOk bool
+			paramsRemoteServerCreate.FilesAgentPermissionSet, RemoteServerCreateFilesAgentPermissionSetOk = paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()[RemoteServerCreateFilesAgentPermissionSet]
+			if RemoteServerCreateFilesAgentPermissionSet != "" && !RemoteServerCreateFilesAgentPermissionSetOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "files-agent-permission-set", RemoteServerCreateFilesAgentPermissionSet)
 			}
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -216,6 +253,8 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
+	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
 	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -225,6 +264,46 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdCreate)
+	var fieldsConfigurationFile string
+	var formatConfigurationFile string
+	usePagerConfigurationFile := true
+	paramsRemoteServerConfigurationFile := files_sdk.RemoteServerConfigurationFileParams{}
+
+	cmdConfigurationFile := &cobra.Command{
+		Use:   "configuration-file",
+		Short: `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
+		Long:  `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := remote_server.Client{Config: *config}
+
+			var remoteServerConfigurationFile interface{}
+			var err error
+			remoteServerConfigurationFile, err = client.ConfigurationFile(ctx, paramsRemoteServerConfigurationFile)
+			lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
+		},
+	}
+	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Id, "id", 0, "Remote Server ID.")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ApiToken, "api-token", "", "Files Agent API Token")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PermissionSet, "permission-set", "", "")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Root, "root", "", "Agent local root path")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Hostname, "hostname", "", "")
+	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Port, "port", 0, "Incoming port for files agent connections")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Status, "status", "", "either running or shutdown")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ConfigVersion, "config-version", "", "agent config version")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PrivateKey, "private-key", "", "private key")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PublicKey, "public-key", "", "public key")
+
+	cmdConfigurationFile.Flags().StringVar(&fieldsConfigurationFile, "fields", "", "comma separated list of field names")
+	cmdConfigurationFile.Flags().StringVar(&formatConfigurationFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
+	cmdConfigurationFile.Flags().BoolVar(&usePagerConfigurationFile, "use-pager", usePagerConfigurationFile, "Use $PAGER (.ie less, more, etc)")
+
+	RemoteServers.AddCommand(cmdConfigurationFile)
 	var fieldsUpdate string
 	var formatUpdate string
 	usePagerUpdate := true
@@ -236,6 +315,7 @@ func RemoteServers() *cobra.Command {
 	RemoteServerUpdateServerType := ""
 	RemoteServerUpdateSsl := ""
 	RemoteServerUpdateOneDriveAccountType := ""
+	RemoteServerUpdateFilesAgentPermissionSet := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -277,6 +357,11 @@ func RemoteServers() *cobra.Command {
 			paramsRemoteServerUpdate.OneDriveAccountType, RemoteServerUpdateOneDriveAccountTypeOk = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
 			if RemoteServerUpdateOneDriveAccountType != "" && !RemoteServerUpdateOneDriveAccountTypeOk {
 				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerUpdateOneDriveAccountType)
+			}
+			var RemoteServerUpdateFilesAgentPermissionSetOk bool
+			paramsRemoteServerUpdate.FilesAgentPermissionSet, RemoteServerUpdateFilesAgentPermissionSetOk = paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()[RemoteServerUpdateFilesAgentPermissionSet]
+			if RemoteServerUpdateFilesAgentPermissionSet != "" && !RemoteServerUpdateFilesAgentPermissionSetOk {
+				return fmt.Errorf("invalid %v flag value: '%v'", "files-agent-permission-set", RemoteServerUpdateFilesAgentPermissionSet)
 			}
 			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -333,6 +418,8 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
+	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
 	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
