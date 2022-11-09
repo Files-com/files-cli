@@ -378,6 +378,8 @@ func (a *AgentService) updateCloudConfig(ctx context.Context, status string) err
 	params.ApiToken = a.ApiToken
 	params.Hostname = a.Hostname
 	params.ConfigVersion = a.ConfigVersion
+	params.PrivateKey = a.PrivateKey
+	params.PublicKey = a.PublicKey
 	a.Logger().Printf("Response: %v", params)
 	_, err := client.ConfigurationFile(ctx, params)
 	if err != nil {
