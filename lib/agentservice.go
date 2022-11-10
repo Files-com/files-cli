@@ -54,6 +54,7 @@ type AgentService struct {
 	PortableLogVerbose                 bool
 	PortableLogUTCTime                 bool
 	PortableSFTPFingerprints           []string
+	ipWhitelist                        []string
 	context.Context
 }
 
@@ -87,6 +88,7 @@ multiple concurrent requests and this
 allows data to be transferred at a
 faster rate, over high latency networks,
 by overlapping round-trip times`)
+	flags.StringSliceVar(&a.ipWhitelist, "append-to-ip-whitelist", []string{"127.0.0.1"}, "Add additional IPs to whitelist")
 }
 
 func (a *AgentService) Init(ctx context.Context) error {
@@ -126,11 +128,11 @@ func (a *AgentService) Init(ctx context.Context) error {
 	a.portableSFTPFingerprints = append(a.portableSFTPFingerprints, a.PrivateKey)
 	a.portablePublicKeys = append(a.portablePublicKeys, a.PublicKey)
 
-	addresses, err := a.loadPublicIpAddress(ctx, a.Config)
+	err = a.loadPublicIpAddress(ctx, a.Config)
 	if err != nil {
 		return err
 	}
-	whiteListFile, err := a.createServerTempWhiteList(addresses)
+	whiteListFile, err := a.createServerTempWhiteList()
 	if err != nil {
 		return err
 	}
@@ -306,24 +308,22 @@ func (a *AgentService) loadConfig() error {
 	return err
 }
 
-func (a *AgentService) loadPublicIpAddress(ctx context.Context, clientConfig files_sdk.Config) (addresses []string, err error) {
+func (a *AgentService) loadPublicIpAddress(ctx context.Context, clientConfig files_sdk.Config) (err error) {
 	client := ip_address.Client{Config: clientConfig}
-	addressResults, err := client.GetReserved(ctx, files_sdk.IpAddressGetReservedParams{})
+	iter, err := client.GetReserved(ctx, files_sdk.IpAddressGetReservedParams{})
 	if err != nil {
 		return
 	}
-	for _, address := range addressResults {
-		addresses = append(addresses, address.IpAddress)
+	for iter.Next() {
+		a.ipWhitelist = append(a.ipWhitelist, iter.PublicIpAddress().IpAddress)
 	}
-
-	addresses = append(addresses, "127.0.0.1") // TODO this is for local dev
 
 	return
 }
 
-func (a *AgentService) createServerTempWhiteList(addresses []string) (file *os.File, err error) {
+func (a *AgentService) createServerTempWhiteList() (file *os.File, err error) {
 	safeListTmp := make(map[string]interface{})
-	safeListTmp["addresses"] = addresses
+	safeListTmp["addresses"] = a.ipWhitelist
 	file, err = os.CreateTemp("", "whitelist-*.json")
 	if err != nil {
 		return

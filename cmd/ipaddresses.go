@@ -78,65 +78,103 @@ func IpAddresses() *cobra.Command {
 	var formatGetExavaultReserved string
 	usePagerGetExavaultReserved := true
 	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
+	var MaxPagesGetExavaultReserved int64
 
 	cmdGetExavaultReserved := &cobra.Command{
 		Use:   "get-exavault-reserved",
-		Short: `List all possible public ExaVault IP addresses`,
+		Short: "List all possible public ExaVault IP addresses",
 		Long:  `List all possible public ExaVault IP addresses`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := ip_address.Client{Config: *config}
+			params := paramsIpAddressGetExavaultReserved
+			params.MaxPages = MaxPagesGetExavaultReserved
 
-			var publicIpAddressCollection interface{}
-			var err error
-			publicIpAddressCollection, err = client.GetExavaultReserved(ctx, paramsIpAddressGetExavaultReserved)
-			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			client := ip_address.Client{Config: *config}
+			it, err := client.GetExavaultReserved(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
-	cmdGetExavaultReserved.Flags().StringVar(&fieldsGetExavaultReserved, "fields", "", "comma separated list of field names")
+	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetExavaultReserved.Flags().StringVar(&fieldsGetExavaultReserved, "fields", "", "comma separated list of field names to include in response")
 	cmdGetExavaultReserved.Flags().StringVar(&formatGetExavaultReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
-
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved string
 	var formatGetReserved string
 	usePagerGetReserved := true
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
+	var MaxPagesGetReserved int64
 
 	cmdGetReserved := &cobra.Command{
 		Use:   "get-reserved",
-		Short: `List all possible public IP addresses`,
+		Short: "List all possible public IP addresses",
 		Long:  `List all possible public IP addresses`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := ip_address.Client{Config: *config}
+			params := paramsIpAddressGetReserved
+			params.MaxPages = MaxPagesGetReserved
 
-			var publicIpAddressCollection interface{}
-			var err error
-			publicIpAddressCollection, err = client.GetReserved(ctx, paramsIpAddressGetReserved)
-			lib.HandleResponse(ctx, Profile(cmd), publicIpAddressCollection, err, formatGetReserved, fieldsGetReserved, usePagerGetReserved, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			client := ip_address.Client{Config: *config}
+			it, err := client.GetReserved(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatGetReserved, fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
-	cmdGetReserved.Flags().StringVar(&fieldsGetReserved, "fields", "", "comma separated list of field names")
+	cmdGetReserved.Flags().Int64VarP(&MaxPagesGetReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetReserved.Flags().StringVar(&fieldsGetReserved, "fields", "", "comma separated list of field names to include in response")
 	cmdGetReserved.Flags().StringVar(&formatGetReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
-
 	IpAddresses.AddCommand(cmdGetReserved)
 	return IpAddresses
 }

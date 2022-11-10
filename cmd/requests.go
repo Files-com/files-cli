@@ -84,44 +84,59 @@ func Requests() *cobra.Command {
 	var fieldsGetFolder string
 	var formatGetFolder string
 	usePagerGetFolder := true
-	getFolderMine := true
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
+	var MaxPagesGetFolder int64
+	getFolderMine := true
 
 	cmdGetFolder := &cobra.Command{
-		Use:   "get-folder [path]",
-		Short: `List Requests`,
+		Use:   "get-folder",
+		Short: "List Requests",
 		Long:  `List Requests`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := request.Client{Config: *config}
-
+			params := paramsRequestGetFolder
+			params.MaxPages = MaxPagesGetFolder
 			if cmd.Flags().Changed("mine") {
 				paramsRequestGetFolder.Mine = flib.Bool(getFolderMine)
 			}
 
-			if len(args) > 0 && args[0] != "" {
-				paramsRequestGetFolder.Path = args[0]
+			client := request.Client{Config: *config}
+			it, err := client.GetFolder(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
 			}
-			var requestCollection interface{}
-			var err error
-			requestCollection, err = client.GetFolder(ctx, paramsRequestGetFolder)
-			lib.HandleResponse(ctx, Profile(cmd), requestCollection, err, formatGetFolder, fieldsGetFolder, usePagerGetFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatGetFolder, fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetFolder.Flags().Int64Var(&paramsRequestGetFolder.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdGetFolder.Flags().BoolVar(&getFolderMine, "mine", getFolderMine, "Only show requests of the current user?  (Defaults to true if current user is not a site admin.)")
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Path, "path", "", "Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory.")
 
-	cmdGetFolder.Flags().StringVar(&fieldsGetFolder, "fields", "", "comma separated list of field names")
+	cmdGetFolder.Flags().Int64VarP(&MaxPagesGetFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetFolder.Flags().StringVar(&fieldsGetFolder, "fields", "", "comma separated list of field names to include in response")
 	cmdGetFolder.Flags().StringVar(&formatGetFolder, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
-
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate string
 	var formatCreate string

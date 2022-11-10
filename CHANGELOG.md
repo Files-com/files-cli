@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.5] - 2022/11/10
+### Fix
+- In cases of listing resources, where the server returned unexpected results, it would not show beyond the first page of results.
+
 ## [2.1.2] - 2022/11/09
 ### Fix
 - Better parsing of API errors.

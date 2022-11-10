@@ -26,26 +26,42 @@ func Histories() *cobra.Command {
 	var formatListForFile string
 	usePagerListForFile := true
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
+	var MaxPagesListForFile int64
 
 	cmdListForFile := &cobra.Command{
-		Use:   "list-for-file [path]",
-		Short: `List history for specific file`,
+		Use:   "list-for-file",
+		Short: "List history for specific file",
 		Long:  `List history for specific file`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := history.Client{Config: *config}
+			params := paramsHistoryListForFile
+			params.MaxPages = MaxPagesListForFile
 
-			if len(args) > 0 && args[0] != "" {
-				paramsHistoryListForFile.Path = args[0]
+			client := history.Client{Config: *config}
+			it, err := client.ListForFile(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
 			}
-			var actionCollection interface{}
-			var err error
-			actionCollection, err = client.ListForFile(ctx, paramsHistoryListForFile)
-			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFile, fieldsListForFile, usePagerListForFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatListForFile, fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at")
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.EndAt, "end-at")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
@@ -53,38 +69,54 @@ func Histories() *cobra.Command {
 	cmdListForFile.Flags().Int64Var(&paramsHistoryListForFile.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Path, "path", "", "Path to operate on.")
 
-	cmdListForFile.Flags().StringVar(&fieldsListForFile, "fields", "", "comma separated list of field names")
+	cmdListForFile.Flags().Int64VarP(&MaxPagesListForFile, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListForFile.Flags().StringVar(&fieldsListForFile, "fields", "", "comma separated list of field names to include in response")
 	cmdListForFile.Flags().StringVar(&formatListForFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
-
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder string
 	var formatListForFolder string
 	usePagerListForFolder := true
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
+	var MaxPagesListForFolder int64
 
 	cmdListForFolder := &cobra.Command{
-		Use:   "list-for-folder [path]",
-		Short: `List history for specific folder`,
+		Use:   "list-for-folder",
+		Short: "List history for specific folder",
 		Long:  `List history for specific folder`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := history.Client{Config: *config}
+			params := paramsHistoryListForFolder
+			params.MaxPages = MaxPagesListForFolder
 
-			if len(args) > 0 && args[0] != "" {
-				paramsHistoryListForFolder.Path = args[0]
+			client := history.Client{Config: *config}
+			it, err := client.ListForFolder(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
 			}
-			var actionCollection interface{}
-			var err error
-			actionCollection, err = client.ListForFolder(ctx, paramsHistoryListForFolder)
-			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForFolder, fieldsListForFolder, usePagerListForFolder, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatListForFolder, fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at")
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.EndAt, "end-at")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
@@ -92,35 +124,54 @@ func Histories() *cobra.Command {
 	cmdListForFolder.Flags().Int64Var(&paramsHistoryListForFolder.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Path, "path", "", "Path to operate on.")
 
-	cmdListForFolder.Flags().StringVar(&fieldsListForFolder, "fields", "", "comma separated list of field names")
+	cmdListForFolder.Flags().Int64VarP(&MaxPagesListForFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListForFolder.Flags().StringVar(&fieldsListForFolder, "fields", "", "comma separated list of field names to include in response")
 	cmdListForFolder.Flags().StringVar(&formatListForFolder, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
-
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser string
 	var formatListForUser string
 	usePagerListForUser := true
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
+	var MaxPagesListForUser int64
 
 	cmdListForUser := &cobra.Command{
 		Use:   "list-for-user",
-		Short: `List history for specific user`,
+		Short: "List history for specific user",
 		Long:  `List history for specific user`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := history.Client{Config: *config}
+			params := paramsHistoryListForUser
+			params.MaxPages = MaxPagesListForUser
 
-			var actionCollection interface{}
-			var err error
-			actionCollection, err = client.ListForUser(ctx, paramsHistoryListForUser)
-			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListForUser, fieldsListForUser, usePagerListForUser, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			client := history.Client{Config: *config}
+			it, err := client.ListForUser(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatListForUser, fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at")
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.EndAt, "end-at")
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
@@ -128,48 +179,67 @@ func Histories() *cobra.Command {
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.UserId, "user-id", 0, "User ID.")
 
-	cmdListForUser.Flags().StringVar(&fieldsListForUser, "fields", "", "comma separated list of field names")
+	cmdListForUser.Flags().Int64VarP(&MaxPagesListForUser, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListForUser.Flags().StringVar(&fieldsListForUser, "fields", "", "comma separated list of field names to include in response")
 	cmdListForUser.Flags().StringVar(&formatListForUser, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
-
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins string
 	var formatListLogins string
 	usePagerListLogins := true
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
+	var MaxPagesListLogins int64
 
 	cmdListLogins := &cobra.Command{
 		Use:   "list-logins",
-		Short: `List site login history`,
+		Short: "List site login history",
 		Long:  `List site login history`,
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			client := history.Client{Config: *config}
+			params := paramsHistoryListLogins
+			params.MaxPages = MaxPagesListLogins
 
-			var actionCollection interface{}
-			var err error
-			actionCollection, err = client.ListLogins(ctx, paramsHistoryListLogins)
-			lib.HandleResponse(ctx, Profile(cmd), actionCollection, err, formatListLogins, fieldsListLogins, usePagerListLogins, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			client := history.Client{Config: *config}
+			it, err := client.ListLogins(ctx, params)
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			err = lib.FormatIter(ctx, it, formatListLogins, fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
+			if err != nil {
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			}
 			return nil
 		},
 	}
+
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at")
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.EndAt, "end-at")
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListLogins.Flags().Int64Var(&paramsHistoryListLogins.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
-	cmdListLogins.Flags().StringVar(&fieldsListLogins, "fields", "", "comma separated list of field names")
+	cmdListLogins.Flags().Int64VarP(&MaxPagesListLogins, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListLogins.Flags().StringVar(&fieldsListLogins, "fields", "", "comma separated list of field names to include in response")
 	cmdListLogins.Flags().StringVar(&formatListLogins, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+        json-styles: {raw, pretty}
+        `)
 	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
-
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList string
 	var formatList string
