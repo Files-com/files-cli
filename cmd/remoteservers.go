@@ -295,6 +295,7 @@ func RemoteServers() *cobra.Command {
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ConfigVersion, "config-version", "", "agent config version")
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PrivateKey, "private-key", "", "private key")
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PublicKey, "public-key", "", "public key")
+	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ServerHostKey, "server-host-key", "", "")
 
 	cmdConfigurationFile.Flags().StringVar(&fieldsConfigurationFile, "fields", "", "comma separated list of field names")
 	cmdConfigurationFile.Flags().StringVar(&formatConfigurationFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
