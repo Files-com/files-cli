@@ -70,3 +70,5 @@ nfpms:
       - apk
       - deb
       - rpm
+    file_name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}{{.Arm}}'
+    maintainer: 'Dustin Zeisler <dustin.zeisler@files.com>'
