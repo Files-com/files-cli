@@ -1,4 +1,4 @@
-//go:build !noportable && !windows
+//go:build !noportable
 
 package cmd
 
@@ -18,15 +18,24 @@ $ files-cli agent --config {path-to/config.json}
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			AgentService.Config = *Profile(cmd).Config
-			err := AgentService.Init(cmd.Context())
+			err := AgentInt(cmd)
 			if err != nil {
 				return err
 			}
-			return AgentService.Start()
+			err = AgentService.Start(true)
+			if err != nil {
+				return err
+			}
+			AgentService.Wait()
+			return AgentService.Error
 		},
 	}
 )
+
+func AgentInt(cmd *cobra.Command) error {
+	AgentService.Config = *Profile(cmd).Config
+	return AgentService.Init(cmd.Context())
+}
 
 func init() {
 	AgentService = &lib.AgentService{}

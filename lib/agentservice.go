@@ -10,6 +10,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drakkan/sftpgo/v2/util"
+	"github.com/rs/zerolog"
+
+	"github.com/drakkan/sftpgo/v2/logger"
+
 	"github.com/drakkan/sftpgo/v2/config"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -60,7 +65,7 @@ type AgentService struct {
 
 func (a *AgentService) AddFlags(flags *pflag.FlagSet) {
 	flags.StringVar(&a.ConfigPath, "config", "./files-agent-config.json", "")
-	flags.StringVarP(&a.PortableLogFile, logFilePathFlag, "l", "", "Leave empty to disable logging")
+	flags.StringVarP(&a.PortableLogFile, logFilePathFlag, "l", "files-agent.log", "Leave empty to disable logging")
 	flags.BoolVarP(&a.PortableLogVerbose, logVerboseFlag, "v", false, "Enable verbose logs")
 	flags.BoolVar(&a.PortableLogUTCTime, logUTCTimeFlag, false, "Use UTC time for logging")
 	flags.StringArrayVar(&a.PortableAllowedPatterns, "allowed-patterns", []string{},
@@ -96,6 +101,37 @@ func (a *AgentService) Init(ctx context.Context) error {
 	var d bool
 	d = true
 	a.Config.Debug = &d
+	a.Config.SetLogger(logger.GetLogger())
+	a.permissions = make(map[string][]string)
+	a.shutdown = make(chan bool)
+	if !filepath.IsAbs(a.PortableLogFile) && util.IsFileInputValid(a.PortableLogFile) {
+		var err error
+		a.PortableLogFile, err = filepath.Abs(a.PortableLogFile)
+		if err != nil {
+			return nil
+		}
+	}
+	a.LogFilePath = a.PortableLogFile
+	return nil
+}
+
+func (a *AgentService) LoadConfig(ctx context.Context) error {
+	a.Context = ctx
+	var d bool
+	d = true
+	a.Config.Debug = &d
+
+	logLevel := zerolog.DebugLevel
+	if !a.LogVerbose {
+		logLevel = zerolog.DebugLevel
+	}
+
+	logger.InitLogger(a.LogFilePath, a.LogMaxSize, a.LogMaxBackups, a.LogMaxAge, a.LogCompress, a.LogUTCTime, logLevel)
+	logger.EnableConsoleLogger(logLevel)
+	if a.LogFilePath == "" {
+		return fmt.Errorf("log path is empty")
+	}
+	a.Config.SetLogger(logger.GetLogger())
 	err := a.loadConfig()
 	if err != nil {
 		return err
@@ -117,7 +153,6 @@ func (a *AgentService) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	a.permissions = make(map[string][]string)
 	a.permissions["/"] = p
 
 	portableSFTPPrivateKey := a.PrivateKey
@@ -126,6 +161,7 @@ func (a *AgentService) Init(ctx context.Context) error {
 	}
 
 	a.portableSFTPFingerprints = append(a.portableSFTPFingerprints, a.PrivateKey)
+	a.RemoteServerConfigurationFile.ServerHostKey = a.portableSFTPFingerprints[0]
 	a.portablePublicKeys = append(a.portablePublicKeys, a.PublicKey)
 
 	err = a.loadPublicIpAddress(ctx, a.Config)
@@ -141,14 +177,12 @@ func (a *AgentService) Init(ctx context.Context) error {
 		return err
 	}
 
-	a.LogFilePath = a.PortableLogFile
 	a.LogMaxSize = defaultLogMaxSize
 	a.LogMaxBackups = defaultLogMaxBackup
 	a.LogMaxAge = defaultLogMaxAge
 	a.LogCompress = defaultLogCompress
 	a.LogVerbose = a.PortableLogVerbose
 	a.LogUTCTime = a.PortableLogUTCTime
-	a.shutdown = make(chan bool)
 	a.Service.PortableMode = 1
 	a.PortableUser = dataprovider.User{
 		BaseUser: sdk.BaseUser{
@@ -179,15 +213,16 @@ func (a *AgentService) Init(ctx context.Context) error {
 		},
 	}
 
+	return nil
+}
+
+func (a *AgentService) Start(_ bool) error {
+	a.LoadConfig(a.Context)
+	logger.Debug("files-cli", "", "AgentService.Start")
 	go func() {
 		<-a.shutdown
 		a.updateCloudConfig(a.Context, "shutdown")
 	}()
-
-	return nil
-}
-
-func (a *AgentService) Start() error {
 	a.Logger().Printf("%v", a.Service)
 	if err := a.Service.StartPortableMode(int(a.Port), 0, 0, []string{}, false,
 		false, "", "", "", ""); err == nil {
@@ -195,7 +230,7 @@ func (a *AgentService) Start() error {
 			ctx, cancel := context.WithTimeout(a.Context, time.Second*30)
 			defer cancel()
 			for {
-				if ctx.Err() != nil && a.Service.Error == nil {
+				if ctx.Err() != nil || a.Service.Error != nil {
 					break
 				}
 				time.Sleep(time.Second * 5)
@@ -205,15 +240,33 @@ func (a *AgentService) Start() error {
 				}
 			}
 		}()
-		a.Service.Wait()
-		if a.Service.Error == nil {
-			a.updateCloudConfig(a.Context, "running")
-			os.Exit(0)
-		}
+
 	}
+	logger.Debug("files-cli", "", "AgentService.Start finished")
+
+	return a.Service.Error
+}
+
+func (a *AgentService) Wait() {
+	logger.Debug("files-cli", "", "AgentService.Wait")
+	a.Service.Wait()
 	a.updateCloudConfig(a.Context, "shutdown")
 	os.Exit(1)
-	return nil
+}
+
+func (a *AgentService) ServiceArgs() []string {
+	args := []string{
+		"agent", "start",
+		"--config", a.ConfigPath,
+		fmt.Sprintf("--%v", logFilePathFlag), a.LogFilePath,
+		fmt.Sprintf("--%v", logVerboseFlag), fmt.Sprintf("%v", a.PortableLogVerbose),
+		fmt.Sprintf("--%v", logUTCTimeFlag), fmt.Sprintf("%v", a.PortableLogUTCTime),
+	}
+
+	if len(a.PortableAllowedPatterns) > 0 {
+		args = append(args, "--allowed-patterns", strings.Join(a.PortableAllowedPatterns, ","))
+	}
+	return args
 }
 
 func (a *AgentService) parsePatternsFilesFilters() []sdk.PatternsFilter {
@@ -285,6 +338,11 @@ func (a *AgentService) mapPermissions() ([]string, error) {
 }
 
 func (a *AgentService) loadConfig() error {
+	absPath, err := filepath.Abs(a.ConfigPath)
+	if err != nil {
+		return err
+	}
+	a.ConfigPath = absPath
 	configBytes, err := os.ReadFile(a.ConfigPath)
 	if err != nil {
 		return err
