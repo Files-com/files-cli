@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.19
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.116-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.117-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
@@ -14,7 +14,6 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.1
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.16
-	github.com/rs/zerolog v1.28.0
 	github.com/samber/lo v1.33.0
 	github.com/sftpgo/sdk v0.1.1
 	github.com/spf13/cobra v1.6.0
@@ -23,7 +22,6 @@ require (
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v7 v7.1.5
 	golang.org/x/crypto v0.1.0
-	golang.org/x/sys v0.1.0
 )
 
 require (
@@ -150,6 +148,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/rs/xid v1.4.0 // indirect
+	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20201211210132-54b8a0bf510f // indirect
 	github.com/shirou/gopsutil/v3 v3.22.9 // indirect
 	github.com/smartystreets/assertions v1.13.0 // indirect
@@ -174,6 +173,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
