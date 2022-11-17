@@ -28,13 +28,13 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			winService := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 
 			err = winService.RunService()
-			logger.Debug("files-cli", "", "Start Cmd - err: %v", err)
 
 			if err != nil {
+				logger.Debug("files-cli", "", "Start Cmd - err: %v", err)
 				return fmt.Errorf("Error starting service: %v\r\n", err)
 			} else {
 				fmt.Printf("Service started!\r\n")
@@ -56,11 +56,12 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			winService := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 
 			err = winService.Install(AgentService.ServiceArgs()...)
 			if err != nil {
+				logger.Debug("files-cli", "", "Error installing service: %v", err)
 				return fmt.Errorf("Error installing service: %v\r\n", err)
 			}
 			fmt.Printf("Service installed!\r\n")
@@ -77,10 +78,11 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			s := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 			err = s.Uninstall()
 			if err != nil {
+				logger.Debug("files-cli", "", "Error removing service: %v", err)
 				return fmt.Errorf("Error removing service: %v\r\n", err)
 			} else {
 				fmt.Printf("Service uninstalled\r\n")
@@ -98,10 +100,11 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			s := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 			status, err := s.Status()
 			if err != nil {
+				logger.Debug("files-cli", "", "Error querying service status: %v", err)
 				return fmt.Errorf("Error querying service status: %v\r\n", err)
 			} else {
 				fmt.Printf("Service status: %#v\r\n", status.String())
@@ -119,10 +122,11 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			s := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 			err = s.Stop()
 			if err != nil {
+				logger.Debug("files-cli", "", "Error stopping service: %v\r\n", err)
 				return fmt.Errorf("Error stopping service: %v\r\n", err)
 			} else {
 				fmt.Printf("Service stopped!\r\n")
@@ -139,10 +143,11 @@ Please take a look at the usage below to customize the serving parameters`,
 				return err
 			}
 			s := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 			err = s.Reload()
 			if err != nil {
+				logger.Debug("files-cli", "", "Error sending reload signal: %v", err)
 				return fmt.Errorf("Error sending reload signal: %v\r\n", err)
 			} else {
 				fmt.Printf("Reload signal sent!\r\n")
@@ -160,7 +165,7 @@ Please take a look at the usage below to customize the serving parameters`,
 				os.Exit(1)
 			}
 			s := lib.WindowsService{
-				Service: AgentService,
+				AgentService: AgentService,
 			}
 			err = s.RotateLogFile()
 			if err != nil {

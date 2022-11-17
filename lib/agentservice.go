@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -41,7 +42,7 @@ const (
 
 type AgentService struct {
 	service.Service
-	files_sdk.Config
+	*files_sdk.Config
 	ConfigPath string
 	files_sdk.RemoteServerConfigurationFile
 	portableFsProvider                 string
@@ -112,6 +113,7 @@ func (a *AgentService) Init(ctx context.Context) error {
 		}
 	}
 	a.LogFilePath = a.PortableLogFile
+	a.Service.PortableMode = 1
 	return nil
 }
 
@@ -136,7 +138,7 @@ func (a *AgentService) LoadConfig(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	err = a.updateCloudConfig(a.Context, "shutdown")
+	err = a.updateCloudConfig(a.Context, "shutdown", "API check")
 	if err != nil {
 		return err
 	}
@@ -164,7 +166,7 @@ func (a *AgentService) LoadConfig(ctx context.Context) error {
 	a.RemoteServerConfigurationFile.ServerHostKey = a.portableSFTPFingerprints[0]
 	a.portablePublicKeys = append(a.portablePublicKeys, a.PublicKey)
 
-	err = a.loadPublicIpAddress(ctx, a.Config)
+	err = a.loadPublicIpAddress(ctx)
 	if err != nil {
 		return err
 	}
@@ -217,32 +219,43 @@ func (a *AgentService) LoadConfig(ctx context.Context) error {
 }
 
 func (a *AgentService) Start(_ bool) error {
-	a.LoadConfig(a.Context)
+	err := a.LoadConfig(a.Context)
+	if err != nil {
+		return err
+	}
 	logger.Debug("files-cli", "", "AgentService.Start")
+	a.Config.SetLogger(logger.GetLogger())
 	go func() {
 		<-a.shutdown
-		a.updateCloudConfig(a.Context, "shutdown")
+		a.updateCloudConfig(a.Context, "shutdown", "shutdown chan received")
 	}()
-	a.Logger().Printf("%v", a.Service)
-	if err := a.Service.StartPortableMode(int(a.Port), 0, 0, []string{}, false,
-		false, "", "", "", ""); err == nil {
+	err = a.Service.StartPortableMode(int(a.Port), 0, 0, []string{}, false,
+		false, "", "", "", "")
+	if err == nil {
 		go func() {
+			a.Config.SetLogger(logger.GetLogger())
 			ctx, cancel := context.WithTimeout(a.Context, time.Second*30)
 			defer cancel()
 			for {
 				if ctx.Err() != nil || a.Service.Error != nil {
 					break
 				}
-				time.Sleep(time.Second * 5)
-				err := a.updateCloudConfig(a.Context, "running")
-				if err == nil {
+
+				innerErr := a.updateCloudConfig(a.Context, "running", "after start loop")
+				if innerErr == nil {
 					break
 				}
+				time.Sleep(time.Second * 5)
 			}
 		}()
-
+		logger.Debug("files-cli", "", "AgentService.Start finished")
+	} else {
+		logger.Debug("files-cli", "", "AgentService.Start err: %v", err)
+		buf := make([]byte, 1<<16)
+		runtime.Stack(buf, true)
+		logger.Debug("files-cli", "", "%s", buf)
+		return err
 	}
-	logger.Debug("files-cli", "", "AgentService.Start finished")
 
 	return a.Service.Error
 }
@@ -250,7 +263,7 @@ func (a *AgentService) Start(_ bool) error {
 func (a *AgentService) Wait() {
 	logger.Debug("files-cli", "", "AgentService.Wait")
 	a.Service.Wait()
-	a.updateCloudConfig(a.Context, "shutdown")
+	a.updateCloudConfig(a.Context, "shutdown", "done waiting")
 	os.Exit(1)
 }
 
@@ -366,8 +379,8 @@ func (a *AgentService) loadConfig() error {
 	return err
 }
 
-func (a *AgentService) loadPublicIpAddress(ctx context.Context, clientConfig files_sdk.Config) (err error) {
-	client := ip_address.Client{Config: clientConfig}
+func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
+	client := ip_address.Client{Config: *a.Config}
 	iter, err := client.GetReserved(ctx, files_sdk.IpAddressGetReservedParams{})
 	if err != nil {
 		return
@@ -387,7 +400,7 @@ func (a *AgentService) createServerTempWhiteList() (file *os.File, err error) {
 		return
 	}
 	safeListBytes, err := json.Marshal(safeListTmp)
-	a.Logger().Printf("Ip whitelist: %v", safeListTmp)
+	logger.Debug("files-cli", "", "Ip whitelist: %v", safeListTmp)
 	if err != nil {
 		return
 	}
@@ -420,12 +433,12 @@ func (a *AgentService) createServerTempConfig(whiteList *os.File) (string, strin
 		return "", "", err
 	}
 	dir, file := filepath.Split(configTempFile.Name())
-	a.Logger().Printf("Config Path: %v", configTempFile.Name())
+	logger.Debug("files-cli", "", "Config Path: %v", configTempFile.Name())
 	return dir, file, config.LoadConfig(dir, file)
 }
 
-func (a *AgentService) updateCloudConfig(ctx context.Context, status string) error {
-	client := remote_server.Client{Config: a.Config}
+func (a *AgentService) updateCloudConfig(ctx context.Context, status string, source string) error {
+	client := remote_server.Client{Config: *a.Config}
 	params := files_sdk.RemoteServerConfigurationFileParams{}
 
 	params.Status = status
@@ -438,10 +451,14 @@ func (a *AgentService) updateCloudConfig(ctx context.Context, status string) err
 	params.ConfigVersion = a.ConfigVersion
 	params.PrivateKey = a.PrivateKey
 	params.PublicKey = a.PublicKey
-	a.Logger().Printf("Response: %v", params)
-	_, err := client.ConfigurationFile(ctx, params)
+	logger.Debug("files-cli", "", "Update Cloud Configuration - source (%v) : %v", source, params)
+	newConfig, err := client.ConfigurationFile(ctx, params)
 	if err != nil {
-		a.Logger().Printf("Response: %v", err)
+		logger.Debug("files-cli", "", "Cloud Configuration Update Error - source (%v): %v", source, err)
+		return err
 	}
-	return err
+
+	logger.Debug("files-cli", "", "Cloud Configuration Update Response: %v", newConfig)
+
+	return nil
 }

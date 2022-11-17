@@ -17,8 +17,10 @@ package lib
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -65,7 +67,7 @@ const (
 )
 
 type WindowsService struct {
-	Service       *AgentService
+	AgentService  *AgentService
 	isInteractive bool
 }
 
@@ -91,7 +93,7 @@ func (s Status) String() string {
 }
 
 func (s *WindowsService) handleExit(wasStopped chan bool) {
-	s.Service.Wait()
+	s.AgentService.Wait()
 
 	select {
 	case <-wasStopped:
@@ -101,8 +103,8 @@ func (s *WindowsService) handleExit(wasStopped chan bool) {
 	default:
 		// the server failed while running, we must be sure to exit the process.
 		// The defined recovery action will be executed.
-		logger.Debug(logSender, "", "Service wait ended, error: %v", s.Service.Error)
-		if s.Service.Error == nil {
+		logger.Debug(logSender, "", "Service wait ended, error: %v", s.AgentService.Error)
+		if s.AgentService.Error == nil {
 			os.Exit(0)
 		} else {
 			os.Exit(1)
@@ -114,7 +116,7 @@ func (s *WindowsService) Execute(args []string, r <-chan svc.ChangeRequest, chan
 	const cmdsAccepted = svc.AcceptStop | svc.AcceptShutdown | svc.AcceptParamChange | acceptRotateLog
 	logger.Debug(logSender, "", "Execute")
 	changes <- svc.Status{State: svc.StartPending}
-	if err := s.Service.Start(false); err != nil {
+	if err := s.AgentService.Start(false); err != nil {
 		return true, 1
 	}
 
@@ -134,7 +136,7 @@ loop:
 			logger.Debug(logSender, "", "Received service stop request")
 			changes <- svc.Status{State: svc.StopPending}
 			wasStopped <- true
-			s.Service.Stop()
+			s.AgentService.Stop()
 			plugin.Handler.Cleanup()
 			break loop
 		case svc.ParamChange:
@@ -182,7 +184,6 @@ loop:
 }
 
 func (s *WindowsService) RunService() error {
-
 	exePath, err := s.getExePath()
 	if err != nil {
 		return fmt.Errorf("getExePath - %v", err)
@@ -261,6 +262,10 @@ func (s *WindowsService) RotateLogFile() error {
 }
 
 func (s *WindowsService) Install(args ...string) error {
+	err := s.AddFirewallRule()
+	if err != nil {
+		return err
+	}
 	exePath, err := s.getExePath()
 	if err != nil {
 		return err
@@ -401,4 +406,34 @@ func (s *WindowsService) Status() (Status, error) {
 
 func (s *WindowsService) getExePath() (string, error) {
 	return os.Executable()
+}
+
+func (s *WindowsService) AddFirewallRule() error {
+	cmd := exec.Command("netsh", "advfirewall", "firewall", "delete", "rule", `name=Files Agent Service`)
+	fmt.Println(cmd.String())
+	stdWriter := bytes.NewBufferString("")
+	cmd.Stdout = stdWriter
+	err := cmd.Run()
+	if err != nil && !strings.Contains(stdWriter.String(), "No rules match the specified criteria") {
+		return err
+	}
+
+	path, err := s.getExePath()
+	if err != nil {
+		return err
+	}
+	cmd = exec.Command(""+
+		"netsh",
+		"advfirewall",
+		"firewall",
+		"add",
+		"rule",
+		`name=Files Agent Service`,
+		"dir=in",
+		"action=allow",
+		fmt.Sprintf(`program=%v`, path),
+	)
+	fmt.Println(cmd.String())
+	cmd.Stdout = os.Stdout
+	return cmd.Run()
 }
