@@ -105,12 +105,20 @@ func (a *AgentService) Init(ctx context.Context) error {
 	a.Config.SetLogger(logger.GetLogger())
 	a.permissions = make(map[string][]string)
 	a.shutdown = make(chan bool)
-	if !filepath.IsAbs(a.PortableLogFile) && util.IsFileInputValid(a.PortableLogFile) {
+	if util.IsFileInputValid(a.PortableLogFile) && !filepath.IsAbs(a.PortableLogFile) {
 		var err error
 		a.PortableLogFile, err = filepath.Abs(a.PortableLogFile)
 		if err != nil {
 			return nil
 		}
+	}
+	if a.PortableLogFile == "" {
+		exePath, err := os.Executable()
+		if err != nil {
+			return err
+		}
+		exeDir, _ := filepath.Split(exePath)
+		a.PortableLogFile = filepath.Join(exeDir, "files-agent.log")
 	}
 	a.LogFilePath = a.PortableLogFile
 	a.Service.PortableMode = 1
