@@ -241,19 +241,24 @@ func (a *AgentService) Start(_ bool) error {
 		false, "", "", "", "")
 	if err == nil {
 		go func() {
+			logger.Debug("files-cli", "", "Contacting Files.com to attempt an agent connection")
 			a.Config.SetLogger(logger.GetLogger())
-			ctx, cancel := context.WithTimeout(a.Context, time.Second*30)
+			ctx, cancel := context.WithTimeout(a.Context, time.Minute*6)
 			defer cancel()
+			attemptCount := 0
 			for {
-				if ctx.Err() != nil || a.Service.Error != nil {
+				if ctx.Err() != nil || a.Service.Error != nil || err != nil {
 					break
 				}
+				requestCtx, requestCancel := context.WithTimeout(ctx, time.Minute)
+				innerErr := a.updateCloudConfig(requestCtx, "running", "after start loop")
+				requestCancel()
 
-				innerErr := a.updateCloudConfig(a.Context, "running", "after start loop")
 				if innerErr == nil {
 					break
 				}
-				time.Sleep(time.Second * 5)
+				attemptCount += 1
+				time.Sleep(time.Second * time.Duration(5*attemptCount))
 			}
 		}()
 		logger.Debug("files-cli", "", "AgentService.Start finished")
@@ -463,10 +468,17 @@ func (a *AgentService) updateCloudConfig(ctx context.Context, status string, sou
 	newConfig, err := client.ConfigurationFile(ctx, params)
 	if err != nil {
 		logger.Debug("files-cli", "", "Cloud Configuration Update Error - source (%v): %v", source, err)
+		remoteAgentModel, findErr := client.Find(ctx, files_sdk.RemoteServerFindParams{Id: params.Id})
+		if findErr == nil {
+			logger.Debug("files-cli", "", "Server set attributes - hostname: %v, port: %v, disabled: %v, root: %v",
+				remoteAgentModel.Hostname, remoteAgentModel.Port, remoteAgentModel.Disabled, remoteAgentModel.FilesAgentRoot,
+			)
+		}
 		return err
 	}
 
-	logger.Debug("files-cli", "", "Cloud Configuration Update Response: %v", newConfig)
+	logger.Debug("files-cli", "", "Cloud Configuration Update Response - hostname: %v, port: %v, status: %v, root: %v",
+		newConfig.Hostname, newConfig.Port, newConfig.Status, newConfig.Root)
 
 	return nil
 }
