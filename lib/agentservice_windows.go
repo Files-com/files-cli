@@ -415,6 +415,7 @@ func (s *WindowsService) AddFirewallRule() error {
 	cmd.Stdout = stdWriter
 	err := cmd.Run()
 	if err != nil && !strings.Contains(stdWriter.String(), "No rules match the specified criteria") {
+		fmt.Println(stdWriter.String())
 		return err
 	}
 
