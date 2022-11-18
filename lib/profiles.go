@@ -297,7 +297,7 @@ func (p *Profiles) initConfig() error {
 	}
 	_, err = os.Stat(root)
 	if os.IsNotExist(err) {
-		os.MkdirAll(root, 0600)
+		os.MkdirAll(root, 755)
 	}
 
 	path, err := p.configPath()
