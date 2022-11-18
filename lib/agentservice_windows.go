@@ -422,7 +422,7 @@ func (s *WindowsService) AddFirewallRule() error {
 	if err != nil {
 		return err
 	}
-	cmd = exec.Command(""+
+	cmd = exec.Command(
 		"netsh",
 		"advfirewall",
 		"firewall",
