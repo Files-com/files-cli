@@ -179,7 +179,9 @@ Please take a look at the usage below to customize the serving parameters`,
 )
 
 func init() {
-	AgentService = &lib.AgentService{}
+	if AgentService == nil {
+		AgentService = &lib.AgentService{}
+	}
 	AgentService.AddFlags(AgentCmdInstall.Flags())
 	AgentService.AddFlags(AgentCmdStart.Flags())
 	AgentCmd.AddCommand(AgentCmdUninstall)

@@ -109,6 +109,7 @@ func (a *AgentService) Init(ctx context.Context) error {
 	a.Config.SetLogger(logger.GetLogger())
 	a.permissions = make(map[string][]string)
 	a.shutdown = make(chan bool)
+	a.ipWhitelist = make(map[string]bool)
 	if util.IsFileInputValid(a.PortableLogFile) && !filepath.IsAbs(a.PortableLogFile) {
 		var err error
 		a.PortableLogFile, err = filepath.Abs(a.PortableLogFile)
@@ -133,7 +134,6 @@ func (a *AgentService) Init(ctx context.Context) error {
 	}
 	a.ConfigPath = absPath
 	_, err = os.Stat(a.ConfigPath)
-
 	return err
 }
 

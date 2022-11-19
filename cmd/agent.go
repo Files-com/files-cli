@@ -38,7 +38,9 @@ func AgentInt(cmd *cobra.Command) error {
 }
 
 func init() {
-	AgentService = &lib.AgentService{}
+	if AgentService == nil {
+		AgentService = &lib.AgentService{}
+	}
 	AgentCmd.CompletionOptions.DisableDefaultCmd = true
 	AgentService.AddFlags(AgentCmd.Flags())
 	RootCmd.AddCommand(AgentCmd)
