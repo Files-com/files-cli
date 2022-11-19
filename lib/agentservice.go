@@ -30,9 +30,10 @@ import (
 )
 
 const (
-	logFilePathFlag = "log-file-path"
-	logVerboseFlag  = "log-verbose"
-	logUTCTimeFlag  = "log-utc-time"
+	logFilePathFlag         = "log-file-path"
+	logVerboseFlag          = "log-verbose"
+	logUTCTimeFlag          = "log-utc-time"
+	appendToIpWhitelistFlag = "append-to-ip-whitelist"
 
 	defaultLogMaxSize   = 10
 	defaultLogMaxBackup = 5
@@ -60,7 +61,10 @@ type AgentService struct {
 	PortableLogVerbose                 bool
 	PortableLogUTCTime                 bool
 	PortableSFTPFingerprints           []string
-	ipWhitelist                        []string
+	ipWhitelist                        map[string]bool
+	appendedIpWhitelist                []string
+	whiteListFilePath                  string
+	sftpGoConfigPath                   string
 	context.Context
 }
 
@@ -94,7 +98,7 @@ multiple concurrent requests and this
 allows data to be transferred at a
 faster rate, over high latency networks,
 by overlapping round-trip times`)
-	flags.StringSliceVar(&a.ipWhitelist, "append-to-ip-whitelist", []string{"127.0.0.1"}, "Add additional IPs to whitelist")
+	flags.StringSliceVar(&a.appendedIpWhitelist, "append-to-ip-whitelist", []string{"127.0.0.1"}, "Add additional IPs to whitelist")
 }
 
 func (a *AgentService) Init(ctx context.Context) error {
@@ -122,7 +126,15 @@ func (a *AgentService) Init(ctx context.Context) error {
 	}
 	a.LogFilePath = a.PortableLogFile
 	a.Service.PortableMode = 1
-	return nil
+
+	absPath, err := filepath.Abs(a.ConfigPath)
+	if err != nil {
+		return err
+	}
+	a.ConfigPath = absPath
+	_, err = os.Stat(a.ConfigPath)
+
+	return err
 }
 
 func (a *AgentService) LoadConfig(ctx context.Context) error {
@@ -233,34 +245,10 @@ func (a *AgentService) Start(_ bool) error {
 	}
 	logger.Debug("files-cli", "", "AgentService.Start")
 	a.Config.SetLogger(logger.GetLogger())
-	go func() {
-		<-a.shutdown
-		a.updateCloudConfig(a.Context, "shutdown", "shutdown chan received")
-	}()
 	err = a.Service.StartPortableMode(int(a.Port), 0, 0, []string{}, false,
 		false, "", "", "", "")
 	if err == nil {
-		go func() {
-			logger.Debug("files-cli", "", "Contacting Files.com to attempt an agent connection")
-			a.Config.SetLogger(logger.GetLogger())
-			ctx, cancel := context.WithTimeout(a.Context, time.Minute*6)
-			defer cancel()
-			attemptCount := 0
-			for {
-				if ctx.Err() != nil || a.Service.Error != nil || err != nil {
-					break
-				}
-				requestCtx, requestCancel := context.WithTimeout(ctx, time.Minute)
-				innerErr := a.updateCloudConfig(requestCtx, "running", "after start loop")
-				requestCancel()
-
-				if innerErr == nil {
-					break
-				}
-				attemptCount += 1
-				time.Sleep(time.Second * time.Duration(5*attemptCount))
-			}
-		}()
+		go a.afterStart()
 		logger.Debug("files-cli", "", "AgentService.Start finished")
 	} else {
 		logger.Debug("files-cli", "", "AgentService.Start err: %v", err)
@@ -271,6 +259,11 @@ func (a *AgentService) Start(_ bool) error {
 	}
 
 	return a.Service.Error
+}
+
+func (a *AgentService) Stop() {
+	a.updateCloudConfig(a.Context, "shutdown", "stopping")
+	a.Service.Stop()
 }
 
 func (a *AgentService) Wait() {
@@ -287,6 +280,7 @@ func (a *AgentService) ServiceArgs() []string {
 		fmt.Sprintf("--%v", logFilePathFlag), a.LogFilePath,
 		fmt.Sprintf("--%v", logVerboseFlag), fmt.Sprintf("%v", a.PortableLogVerbose),
 		fmt.Sprintf("--%v", logUTCTimeFlag), fmt.Sprintf("%v", a.PortableLogUTCTime),
+		fmt.Sprintf("--%v", appendToIpWhitelistFlag), strings.Join(a.appendedIpWhitelist, ","),
 	}
 
 	if len(a.PortableAllowedPatterns) > 0 {
@@ -335,7 +329,7 @@ func getPatternsFilterValues(value string) (string, []string) {
 		dirExts := strings.Split(value, "::")
 		if len(dirExts) > 1 {
 			dir := strings.TrimSpace(dirExts[0])
-			exts := []string{}
+			var exts []string
 			for _, e := range strings.Split(dirExts[1], ",") {
 				cleanedExt := strings.TrimSpace(e)
 				if cleanedExt != "" {
@@ -361,6 +355,55 @@ func (a *AgentService) mapPermissions() ([]string, error) {
 	default:
 		return []string{}, fmt.Errorf("invalid or missing permissions: %v", a.PermissionSet)
 	}
+}
+
+func (a *AgentService) afterStart() {
+	a.pingServer()
+	for range time.Tick(24 * time.Hour) {
+		err := a.whitelistRefresh()
+		if err != nil {
+			logger.Info("files-cli", "", "Unable to refresh files.com whitelist - %v", err.Error())
+		}
+	}
+}
+
+func (a *AgentService) pingServer() {
+	logger.Debug("files-cli", "", "Contacting Files.com to attempt an agent connection")
+	a.Config.SetLogger(logger.GetLogger())
+	ctx, cancel := context.WithTimeout(a.Context, time.Minute*6)
+	defer cancel()
+	attemptCount := 0
+	for {
+		if ctx.Err() != nil || a.Service.Error != nil {
+			break
+		}
+		requestCtx, requestCancel := context.WithTimeout(ctx, time.Minute)
+		err := a.updateCloudConfig(requestCtx, "running", "after start loop")
+		requestCancel()
+
+		if err == nil {
+			break
+		}
+		attemptCount += 1
+		time.Sleep(time.Second * time.Duration(5*attemptCount))
+	}
+}
+
+func (a *AgentService) whitelistRefresh() error {
+	err := a.loadPublicIpAddress(a.Context)
+	if err != nil {
+		return err
+	}
+	file, err := os.Open(a.whiteListFilePath)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+	err = a.saveWhitelist(file)
+	if err != nil {
+		return err
+	}
+	return a.reloadConfig()
 }
 
 func (a *AgentService) loadConfig() error {
@@ -393,36 +436,50 @@ func (a *AgentService) loadConfig() error {
 }
 
 func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
+	for _, ip := range a.appendedIpWhitelist {
+		a.ipWhitelist[ip] = true
+	}
+
 	client := ip_address.Client{Config: *a.Config}
 	iter, err := client.GetReserved(ctx, files_sdk.IpAddressGetReservedParams{})
 	if err != nil {
 		return
 	}
 	for iter.Next() {
-		a.ipWhitelist = append(a.ipWhitelist, iter.PublicIpAddress().IpAddress)
+		if iter.Err() != nil {
+			return iter.Err()
+		}
+		a.ipWhitelist[iter.PublicIpAddress().IpAddress] = true
 	}
 
 	return
 }
 
 func (a *AgentService) createServerTempWhiteList() (file *os.File, err error) {
-	safeListTmp := make(map[string]interface{})
-	safeListTmp["addresses"] = a.ipWhitelist
 	file, err = os.CreateTemp("", "whitelist-*.json")
+	defer file.Close()
 	if err != nil {
 		return
 	}
-	safeListBytes, err := json.Marshal(safeListTmp)
-	logger.Debug("files-cli", "", "Ip whitelist: %v", safeListTmp)
-	if err != nil {
-		return
-	}
-	_, err = file.Write(safeListBytes)
-	if err != nil {
-		return
-	}
-	err = file.Close()
+	a.whiteListFilePath = file.Name()
+	err = a.saveWhitelist(file)
 	return
+}
+
+func (a *AgentService) saveWhitelist(file *os.File) error {
+	safeListTmp := make(map[string]interface{})
+	var addresses []string
+	for k := range a.ipWhitelist {
+		addresses = append(addresses, k)
+	}
+	safeListTmp["addresses"] = addresses
+	safeListBytes, err := json.Marshal(safeListTmp)
+	if err != nil {
+		return err
+	}
+	logger.Debug("files-cli", "", "Ip whitelist: %v", safeListTmp)
+	_, err = file.Write(safeListBytes)
+	return err
 }
 
 func (a *AgentService) createServerTempConfig(whiteList *os.File) (string, string, error) {
@@ -445,9 +502,15 @@ func (a *AgentService) createServerTempConfig(whiteList *os.File) (string, strin
 	if err != nil {
 		return "", "", err
 	}
-	dir, file := filepath.Split(configTempFile.Name())
-	logger.Debug("files-cli", "", "Config Path: %v", configTempFile.Name())
-	return dir, file, config.LoadConfig(dir, file)
+	a.sftpGoConfigPath = configTempFile.Name()
+	logger.Debug("files-cli", "", "Config Path: %v", a.sftpGoConfigPath)
+	dir, file := filepath.Split(a.sftpGoConfigPath)
+	return dir, file, a.reloadConfig()
+}
+
+func (a *AgentService) reloadConfig() error {
+	dir, file := filepath.Split(a.sftpGoConfigPath)
+	return config.LoadConfig(dir, file)
 }
 
 func (a *AgentService) updateCloudConfig(ctx context.Context, status string, source string) error {
