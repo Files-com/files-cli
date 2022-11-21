@@ -72,3 +72,8 @@ nfpms:
       - rpm
     file_name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}{{.Arm}}'
     maintainer: 'Dustin Zeisler <dustin.zeisler@files.com>'
+dockers:
+  -
+    image_templates:
+      - "gcr.io/File-com/files-cli:{{ .Tag }}"
+      - "gcr.io/File-com/files-cli:latest"

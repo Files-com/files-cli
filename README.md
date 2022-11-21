@@ -247,24 +247,3 @@ DEVELOPMENT_BUILD ./build.sh
 ```
 
 This will build both the compressed release version and an uncompressed executable for the 3 platforms.
-
-### Docker
-
-```shell
-docker build . --tag files-cli:latest
-docker run --workdir /app --volume ${PWD}:/app -it files-cli 
-```
-
-#### Run CLI
-
-```shell
- docker run --workdir /app --volume ${PWD}:/app -it files-cli bash -c "go run main.go"
-```
-
-#### Link local Go SDK
-
-```shell
-go mod edit -replace github.com/Files-com/files-sdk-go/v2=../files-sdk-go
-docker run --workdir /app --volume ${PWD}:/app --volume ${HOME}/go/src/github.com/Files-com/files-sdk-go:/files-sdk-go -it files-cli 
-```
-
