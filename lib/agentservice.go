@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/drakkan/sftpgo/v2/common"
+
 	"github.com/drakkan/sftpgo/v2/util"
 	"github.com/rs/zerolog"
 
@@ -63,7 +65,6 @@ type AgentService struct {
 	PortableSFTPFingerprints           []string
 	ipWhitelist                        map[string]bool
 	appendedIpWhitelist                []string
-	whiteListFilePath                  string
 	sftpGoConfigPath                   string
 	context.Context
 }
@@ -117,23 +118,18 @@ func (a *AgentService) Init(ctx context.Context) error {
 			return nil
 		}
 	}
-	if a.PortableLogFile == "" {
-		exePath, err := os.Executable()
-		if err != nil {
-			return err
-		}
-		exeDir, _ := filepath.Split(exePath)
-		a.PortableLogFile = filepath.Join(exeDir, "files-agent.log")
-	}
 	a.LogFilePath = a.PortableLogFile
 	a.Service.PortableMode = 1
-
 	absPath, err := filepath.Abs(a.ConfigPath)
 	if err != nil {
 		return err
 	}
 	a.ConfigPath = absPath
 	_, err = os.Stat(a.ConfigPath)
+	if a.PortableLogFile == "" {
+		dir, _ := filepath.Split(a.ConfigPath)
+		a.PortableLogFile = filepath.Join(dir, "files-agent.log")
+	}
 	return err
 }
 
@@ -190,11 +186,7 @@ func (a *AgentService) LoadConfig(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	whiteListFile, err := a.createServerTempWhiteList()
-	if err != nil {
-		return err
-	}
-	a.ConfigDir, a.ConfigFile, err = a.createServerTempConfig(whiteListFile)
+	a.ConfigDir, a.ConfigFile, err = a.createServerTempConfig()
 	if err != nil {
 		return err
 	}
@@ -394,12 +386,7 @@ func (a *AgentService) whitelistRefresh() error {
 	if err != nil {
 		return err
 	}
-	file, err := os.Open(a.whiteListFilePath)
-	defer file.Close()
-	if err != nil {
-		return err
-	}
-	err = a.saveWhitelist(file)
+	_, err = a.whitelistFile()
 	if err != nil {
 		return err
 	}
@@ -455,19 +442,23 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 	return
 }
 
-func (a *AgentService) createServerTempWhiteList() (file *os.File, err error) {
-	file, err = os.CreateTemp("", "whitelist-*.json")
-	defer file.Close()
+func (a *AgentService) whitelistFile() (file *os.File, err error) {
+	if common.Config.WhiteListFile == "" {
+		file, err = os.CreateTemp("", "whitelist-*.json")
+		common.Config.WhiteListFile = file.Name()
+	} else {
+		file, err = os.OpenFile(common.Config.WhiteListFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	}
 	if err != nil {
 		return
 	}
-	a.whiteListFilePath = file.Name()
+
 	err = a.saveWhitelist(file)
 	return
 }
 
 func (a *AgentService) saveWhitelist(file *os.File) error {
-	safeListTmp := make(map[string]interface{})
+	safeListTmp := make(map[string][]string)
 	var addresses []string
 	for k := range a.ipWhitelist {
 		addresses = append(addresses, k)
@@ -479,10 +470,15 @@ func (a *AgentService) saveWhitelist(file *os.File) error {
 	}
 	logger.Debug("files-cli", "", "Ip whitelist: %v", safeListTmp)
 	_, err = file.Write(safeListBytes)
+	defer file.Close()
 	return err
 }
 
-func (a *AgentService) createServerTempConfig(whiteList *os.File) (string, string, error) {
+func (a *AgentService) createServerTempConfig() (string, string, error) {
+	whiteList, err := a.whitelistFile()
+	if err != nil {
+		return "", "", err
+	}
 	tmpConfig := make(map[string]interface{})
 	tmpConfig["common"] = map[string]string{"whitelist_file": whiteList.Name()}
 	configTempFile, err := os.CreateTemp("", "config-*.json")
@@ -510,7 +506,14 @@ func (a *AgentService) createServerTempConfig(whiteList *os.File) (string, strin
 
 func (a *AgentService) reloadConfig() error {
 	dir, file := filepath.Split(a.sftpGoConfigPath)
-	return config.LoadConfig(dir, file)
+	err := config.LoadConfig(dir, file)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(common.Config)
+
+	return common.Reload()
 }
 
 func (a *AgentService) updateCloudConfig(ctx context.Context, status string, source string) error {
