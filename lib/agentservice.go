@@ -102,7 +102,7 @@ by overlapping round-trip times`)
 	flags.StringSliceVar(&a.appendedIpWhitelist, "append-to-ip-whitelist", []string{"127.0.0.1"}, "Add additional IPs to whitelist")
 }
 
-func (a *AgentService) Init(ctx context.Context) error {
+func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
 	a.Context = ctx
 	var d bool
 	d = true
@@ -111,15 +111,23 @@ func (a *AgentService) Init(ctx context.Context) error {
 	a.permissions = make(map[string][]string)
 	a.shutdown = make(chan bool)
 	a.ipWhitelist = make(map[string]bool)
+	a.Service.PortableMode = 1
+
+	if requirePaths {
+		return a.initPaths()
+	}
+	return nil
+}
+
+func (a *AgentService) initPaths() error {
 	if util.IsFileInputValid(a.PortableLogFile) && !filepath.IsAbs(a.PortableLogFile) {
 		var err error
 		a.PortableLogFile, err = filepath.Abs(a.PortableLogFile)
 		if err != nil {
-			return nil
+			return err
 		}
 	}
 	a.LogFilePath = a.PortableLogFile
-	a.Service.PortableMode = 1
 	absPath, err := filepath.Abs(a.ConfigPath)
 	if err != nil {
 		return err

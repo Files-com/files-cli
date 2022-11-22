@@ -18,7 +18,7 @@ $ files-cli agent --config {path-to/config.json}
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, true)
 			if err != nil {
 				return err
 			}
@@ -32,9 +32,9 @@ Please take a look at the usage below to customize the serving parameters`,
 	}
 )
 
-func AgentInt(cmd *cobra.Command) error {
+func AgentInt(cmd *cobra.Command, requirePaths bool) error {
 	AgentService.Config = Profile(cmd).Config
-	return AgentService.Init(cmd.Context())
+	return AgentService.Init(cmd.Context(), requirePaths)
 }
 
 func init() {

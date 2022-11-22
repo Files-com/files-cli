@@ -23,7 +23,7 @@ $ files-cli agent start
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, false)
 			if err != nil {
 				return err
 			}
@@ -51,7 +51,7 @@ $ files-cli agent install --config {path-to/config.json}
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, true)
 			if err != nil {
 				return err
 			}
@@ -73,7 +73,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "uninstall",
 		Short: "Uninstall Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, false)
 			if err != nil {
 				return err
 			}
@@ -95,7 +95,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "status",
 		Short: "Status of Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, false)
 			if err != nil {
 				return err
 			}
@@ -117,7 +117,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "stop",
 		Short: "Stop Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, false)
 			if err != nil {
 				return err
 			}
@@ -134,32 +134,11 @@ Please take a look at the usage below to customize the serving parameters`,
 			return nil
 		},
 	}
-	AgentCmdReload = &cobra.Command{
-		Use:   "reload",
-		Short: "Reload Files.com Agent Windows Service",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd)
-			if err != nil {
-				return err
-			}
-			s := lib.WindowsService{
-				AgentService: AgentService,
-			}
-			err = s.Reload()
-			if err != nil {
-				logger.Debug("files-cli", "", "Error sending reload signal: %v", err)
-				return fmt.Errorf("Error sending reload signal: %v\r\n", err)
-			} else {
-				fmt.Printf("Reload signal sent!\r\n")
-			}
-			return nil
-		},
-	}
 	AgentCmdRotateLog = &cobra.Command{
 		Use:   "rotatelogs",
 		Short: "Signal to the running service to rotate the logs",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := AgentInt(cmd)
+			err := AgentInt(cmd, false)
 			if err != nil {
 				fmt.Printf("Error sending rotate log file signal to the service: %v\r\n", err)
 				os.Exit(1)
@@ -189,13 +168,11 @@ func init() {
 	AgentCmd.AddCommand(AgentCmdStop)
 	AgentCmd.AddCommand(AgentCmdStart)
 	AgentCmd.AddCommand(AgentCmdStatus)
-	AgentCmd.AddCommand(AgentCmdReload)
 	AgentCmd.AddCommand(AgentCmdRotateLog)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdUninstall.Use)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdInstall.Use)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdStop.Use)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdStart.Use)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdStatus.Use)
-	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdReload.Use)
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, AgentCmdRotateLog.Use)
 }
