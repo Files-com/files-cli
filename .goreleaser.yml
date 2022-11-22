@@ -75,5 +75,5 @@ nfpms:
 dockers:
   -
     image_templates:
-      - "gcr.io/File-com/files-cli:{{ .Tag }}"
-      - "gcr.io/File-com/files-cli:latest"
+      - "gcr.io/files-com/files-cli:{{ .Tag }}"
+      - "gcr.io/files-com/files-cli:latest"
