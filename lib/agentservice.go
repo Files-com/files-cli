@@ -113,13 +113,14 @@ func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
 	a.ipWhitelist = make(map[string]bool)
 	a.Service.PortableMode = 1
 
+	err := a.InitPaths()
 	if requirePaths {
-		return a.initPaths()
+		return err
 	}
 	return nil
 }
 
-func (a *AgentService) initPaths() error {
+func (a *AgentService) InitPaths() error {
 	if util.IsFileInputValid(a.PortableLogFile) && !filepath.IsAbs(a.PortableLogFile) {
 		var err error
 		a.PortableLogFile, err = filepath.Abs(a.PortableLogFile)
