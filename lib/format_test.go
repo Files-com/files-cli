@@ -14,7 +14,7 @@ func TestFormat(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	buf := bytes.NewBufferString("")
 	result := []interface{}{p1, p2}
-	Format(context.Background(), result, "json", "", false, buf)
+	Format(context.Background(), result, []string{"json"}, []string{}, false, buf)
 
 	a.Equal(`[{
     "age": 100,

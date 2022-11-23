@@ -22,8 +22,8 @@ func Sessions() *cobra.Command {
 			return fmt.Errorf("invalid command sessions\n\t%v", args[0])
 		},
 	}
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	paramsSessionCreate := files_sdk.SessionCreateParams{}
 
@@ -48,16 +48,16 @@ func Sessions() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.Otp, "otp", "", "If this user has a 2FA device, provide its OTP or code here.")
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.PartialSessionId, "partial-session-id", "", "Identifier for a partially-completed login")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Sessions.AddCommand(cmdCreate)
-	var fieldsDelete string
-	var formatDelete string
+	var fieldsDelete []string
+	var formatDelete []string
 	usePagerDelete := true
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
@@ -77,8 +77,8 @@ func Sessions() *cobra.Command {
 		},
 	}
 
-	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

@@ -25,8 +25,8 @@ func InboxRecipients() *cobra.Command {
 			return fmt.Errorf("invalid command inbox-recipients\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsInboxRecipientList := files_sdk.InboxRecipientListParams{}
 	var MaxPagesList int64
@@ -71,15 +71,15 @@ func InboxRecipients() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsInboxRecipientList.InboxId, "inbox-id", 0, "List recipients for the inbox with this ID.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	InboxRecipients.AddCommand(cmdList)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createShareAfterCreate := true
 	paramsInboxRecipientCreate := files_sdk.InboxRecipientCreateParams{}
@@ -112,8 +112,8 @@ func InboxRecipients() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Note, "note", "", "Note to include in email.")
 	cmdCreate.Flags().BoolVar(&createShareAfterCreate, "share-after-create", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

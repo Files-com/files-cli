@@ -24,8 +24,8 @@ func Sites() *cobra.Command {
 			return fmt.Errorf("invalid command sites\n\t%v", args[0])
 		},
 	}
-	var fieldsGet string
-	var formatGet string
+	var fieldsGet []string
+	var formatGet []string
 	usePagerGet := true
 	cmdGet := &cobra.Command{
 		Use:   "get",
@@ -44,16 +44,16 @@ func Sites() *cobra.Command {
 		},
 	}
 
-	cmdGet.Flags().StringVar(&fieldsGet, "fields", "", "comma separated list of field names")
-	cmdGet.Flags().StringVar(&formatGet, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdGet.Flags().StringSliceVar(&fieldsGet, "fields", []string{}, "comma separated list of field names")
+	cmdGet.Flags().StringSliceVar(&formatGet, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdGet.Flags().BoolVar(&usePagerGet, "use-pager", usePagerGet, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGet)
-	var fieldsGetUsage string
-	var formatGetUsage string
+	var fieldsGetUsage []string
+	var formatGetUsage []string
 	usePagerGetUsage := true
 	cmdGetUsage := &cobra.Command{
 		Use:   "get-usage",
@@ -72,16 +72,16 @@ func Sites() *cobra.Command {
 		},
 	}
 
-	cmdGetUsage.Flags().StringVar(&fieldsGetUsage, "fields", "", "comma separated list of field names")
-	cmdGetUsage.Flags().StringVar(&formatGetUsage, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdGetUsage.Flags().StringSliceVar(&fieldsGetUsage, "fields", []string{}, "comma separated list of field names")
+	cmdGetUsage.Flags().StringSliceVar(&formatGetUsage, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdGetUsage.Flags().BoolVar(&usePagerGetUsage, "use-pager", usePagerGetUsage, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGetUsage)
-	var fieldsUpdate string
-	var formatUpdate string
+	var fieldsUpdate []string
+	var formatUpdate []string
 	usePagerUpdate := true
 	updateDomainHstsHeader := true
 	updateAllowBundleNames := true
@@ -465,8 +465,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
 
-	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

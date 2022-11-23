@@ -23,8 +23,8 @@ func FileMigrations() *cobra.Command {
 			return fmt.Errorf("invalid command file-migrations\n\t%v", args[0])
 		},
 	}
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsFileMigrationFind := files_sdk.FileMigrationFindParams{}
 
@@ -46,8 +46,8 @@ func FileMigrations() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

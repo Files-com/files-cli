@@ -23,8 +23,8 @@ func MessageComments() *cobra.Command {
 			return fmt.Errorf("invalid command message-comments\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsMessageCommentList := files_sdk.MessageCommentListParams{}
 	var MaxPagesList int64
@@ -69,15 +69,15 @@ func MessageComments() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsMessageCommentList.MessageId, "message-id", 0, "Message comment to return comments for.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	MessageComments.AddCommand(cmdList)
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsMessageCommentFind := files_sdk.MessageCommentFindParams{}
 
@@ -99,16 +99,16 @@ func MessageComments() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentFind.Id, "id", 0, "Message Comment ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	MessageComments.AddCommand(cmdFind)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	paramsMessageCommentCreate := files_sdk.MessageCommentCreateParams{}
 
@@ -131,16 +131,16 @@ func MessageComments() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsMessageCommentCreate.Body, "body", "", "Comment body.")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	MessageComments.AddCommand(cmdCreate)
-	var fieldsUpdate string
-	var formatUpdate string
+	var fieldsUpdate []string
+	var formatUpdate []string
 	usePagerUpdate := true
 	paramsMessageCommentUpdate := files_sdk.MessageCommentUpdateParams{}
 
@@ -163,16 +163,16 @@ func MessageComments() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsMessageCommentUpdate.Id, "id", 0, "Message Comment ID.")
 	cmdUpdate.Flags().StringVar(&paramsMessageCommentUpdate.Body, "body", "", "Comment body.")
 
-	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	MessageComments.AddCommand(cmdUpdate)
-	var fieldsDelete string
-	var formatDelete string
+	var fieldsDelete []string
+	var formatDelete []string
 	usePagerDelete := true
 	paramsMessageCommentDelete := files_sdk.MessageCommentDeleteParams{}
 
@@ -195,8 +195,8 @@ func MessageComments() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsMessageCommentDelete.Id, "id", 0, "Message Comment ID.")
 
-	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

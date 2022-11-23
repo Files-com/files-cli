@@ -18,7 +18,7 @@ func TestCSVMarshal(t *testing.T) {
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshal(p1, "", buf)
+	CSVMarshal(p1, []string{}, buf)
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
@@ -37,7 +37,7 @@ func TestCSVMarshalNil(t *testing.T) {
 	p1 := PersonNil{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshal(p1, "", buf)
+	CSVMarshal(p1, []string{}, buf)
 
 	a.Equal(`first_name,last_name,age,dont-show-nil
 Dustin,Zeisler,100,
@@ -49,7 +49,7 @@ func TestCSVMarshal_Fields(t *testing.T) {
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshal(p1, "first_name,last_name", buf)
+	CSVMarshal(p1, []string{"first_name", "last_name"}, buf)
 
 	a.Equal(`first_name,last_name
 Dustin,Zeisler
@@ -84,7 +84,7 @@ func TestCSVMarshalIter(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshalIter(&it, "", nil, buf)
+	CSVMarshalIter(&it, []string{}, nil, buf)
 
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
@@ -98,7 +98,7 @@ func TestCSVMarshalIter_FilterIter(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshalIter(&it, "", func(i interface{}) bool {
+	CSVMarshalIter(&it, []string{}, func(i interface{}) bool {
 		return i.(Person).FirstName == "Dustin"
 	}, buf)
 

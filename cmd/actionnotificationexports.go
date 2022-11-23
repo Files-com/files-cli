@@ -25,8 +25,8 @@ func ActionNotificationExports() *cobra.Command {
 			return fmt.Errorf("invalid command action-notification-exports\n\t%v", args[0])
 		},
 	}
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsActionNotificationExportFind := files_sdk.ActionNotificationExportFindParams{}
 
@@ -48,16 +48,16 @@ func ActionNotificationExports() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	ActionNotificationExports.AddCommand(cmdFind)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createQuerySuccess := true
 	paramsActionNotificationExportCreate := files_sdk.ActionNotificationExportCreateParams{}
@@ -93,8 +93,8 @@ func ActionNotificationExports() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryPath, "query-path", "", "Return notifications that were triggered by actions on this specific path.")
 	cmdCreate.Flags().StringVar(&paramsActionNotificationExportCreate.QueryFolder, "query-folder", "", "Return notifications that were triggered by actions in this folder.")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

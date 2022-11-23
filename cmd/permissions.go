@@ -24,8 +24,8 @@ func Permissions() *cobra.Command {
 			return fmt.Errorf("invalid command permissions\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
@@ -76,15 +76,15 @@ func Permissions() *cobra.Command {
 	cmdList.Flags().BoolVar(&listIncludeGroups, "include-groups", listIncludeGroups, "If searching by user or group, also include user's permissions that are inherited from its groups?")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Permissions.AddCommand(cmdList)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createRecursive := true
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
@@ -119,16 +119,16 @@ func Permissions() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.UserId, "user-id", 0, "User ID.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Username, "username", "", "User username.  Provide `username` or `user_id`")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Permissions.AddCommand(cmdCreate)
-	var fieldsDelete string
-	var formatDelete string
+	var fieldsDelete []string
+	var formatDelete []string
 	usePagerDelete := true
 	paramsPermissionDelete := files_sdk.PermissionDeleteParams{}
 
@@ -151,8 +151,8 @@ func Permissions() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsPermissionDelete.Id, "id", 0, "Permission ID.")
 
-	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

@@ -26,8 +26,8 @@ func Users() *cobra.Command {
 			return fmt.Errorf("invalid command users\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsUserList := files_sdk.UserListParams{}
 	var MaxPagesList int64
@@ -72,15 +72,15 @@ func Users() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsUserList.Search, "search", "", "Searches for partial matches of name, username, or email.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Users.AddCommand(cmdList)
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsUserFind := files_sdk.UserFindParams{}
 
@@ -102,16 +102,16 @@ func Users() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdFind)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createAvatarDelete := true
 	createAnnouncementsRead := true
@@ -266,16 +266,16 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdCreate)
-	var fieldsUnlock string
-	var formatUnlock string
+	var fieldsUnlock []string
+	var formatUnlock []string
 	usePagerUnlock := true
 	paramsUserUnlock := files_sdk.UserUnlockParams{}
 
@@ -298,16 +298,16 @@ func Users() *cobra.Command {
 	}
 	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
 
-	cmdUnlock.Flags().StringVar(&fieldsUnlock, "fields", "", "comma separated list of field names")
-	cmdUnlock.Flags().StringVar(&formatUnlock, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUnlock.Flags().StringSliceVar(&fieldsUnlock, "fields", []string{}, "comma separated list of field names")
+	cmdUnlock.Flags().StringSliceVar(&formatUnlock, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdUnlock.Flags().BoolVar(&usePagerUnlock, "use-pager", usePagerUnlock, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdUnlock)
-	var fieldsResendWelcomeEmail string
-	var formatResendWelcomeEmail string
+	var fieldsResendWelcomeEmail []string
+	var formatResendWelcomeEmail []string
 	usePagerResendWelcomeEmail := true
 	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
 
@@ -330,16 +330,16 @@ func Users() *cobra.Command {
 	}
 	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
 
-	cmdResendWelcomeEmail.Flags().StringVar(&fieldsResendWelcomeEmail, "fields", "", "comma separated list of field names")
-	cmdResendWelcomeEmail.Flags().StringVar(&formatResendWelcomeEmail, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdResendWelcomeEmail.Flags().StringSliceVar(&fieldsResendWelcomeEmail, "fields", []string{}, "comma separated list of field names")
+	cmdResendWelcomeEmail.Flags().StringSliceVar(&formatResendWelcomeEmail, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdResendWelcomeEmail.Flags().BoolVar(&usePagerResendWelcomeEmail, "use-pager", usePagerResendWelcomeEmail, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdResendWelcomeEmail)
-	var fieldsUser2faReset string
-	var formatUser2faReset string
+	var fieldsUser2faReset []string
+	var formatUser2faReset []string
 	usePagerUser2faReset := true
 	paramsUserUser2faReset := files_sdk.UserUser2faResetParams{}
 
@@ -362,16 +362,16 @@ func Users() *cobra.Command {
 	}
 	cmdUser2faReset.Flags().Int64Var(&paramsUserUser2faReset.Id, "id", 0, "User ID.")
 
-	cmdUser2faReset.Flags().StringVar(&fieldsUser2faReset, "fields", "", "comma separated list of field names")
-	cmdUser2faReset.Flags().StringVar(&formatUser2faReset, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUser2faReset.Flags().StringSliceVar(&fieldsUser2faReset, "fields", []string{}, "comma separated list of field names")
+	cmdUser2faReset.Flags().StringSliceVar(&formatUser2faReset, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdUser2faReset.Flags().BoolVar(&usePagerUser2faReset, "use-pager", usePagerUser2faReset, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdUser2faReset)
-	var fieldsUpdate string
-	var formatUpdate string
+	var fieldsUpdate []string
+	var formatUpdate []string
 	usePagerUpdate := true
 	updateAvatarDelete := true
 	updateAnnouncementsRead := true
@@ -527,16 +527,16 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
 
-	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Users.AddCommand(cmdUpdate)
-	var fieldsDelete string
-	var formatDelete string
+	var fieldsDelete []string
+	var formatDelete []string
 	usePagerDelete := true
 	paramsUserDelete := files_sdk.UserDeleteParams{}
 
@@ -559,8 +559,8 @@ func Users() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.Id, "id", 0, "User ID.")
 
-	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

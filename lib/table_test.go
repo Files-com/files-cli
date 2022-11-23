@@ -12,7 +12,7 @@ import (
 func TestTableMarshal_Vertical(t *testing.T) {
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	out := strings.Builder{}
-	TableMarshal("", p1, "", true, &out, "vertical")
+	TableMarshal("", p1, []string{}, true, &out, "vertical")
 	assert.Equal(t, strings.TrimSpace(`
 ┌────────────┬─────────┐
 │ FIRST_NAME │ Dustin  │
@@ -27,7 +27,7 @@ func TestTableMarshal_Vertical(t *testing.T) {
 func TestTableMarshal_Horizontal(t *testing.T) {
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
 	out := strings.Builder{}
-	TableMarshal("", p1, "", true, &out, "horizontal")
+	TableMarshal("", p1, []string{}, true, &out, "horizontal")
 	assert.Equal(t, strings.TrimSpace(`
 ┌────────────┬───────────┬─────┐
 │ FIRST_NAME │ LAST_NAME │ AGE │
@@ -45,7 +45,7 @@ func TestTableMarshalIter(t *testing.T) {
 		return true
 	}}
 	out := strings.Builder{}
-	TableMarshalIter(context.Background(), "", it, "", true, &out, nil)
+	TableMarshalIter(context.Background(), "", it, []string{}, true, &out, nil)
 
 	assert.Equal(strings.TrimSpace(`
 ┌────────────┬───────────┬─────┐
@@ -67,7 +67,7 @@ func TestTableMarshalIter_FilterIter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	out := strings.Builder{}
-	TableMarshalIter(context.Background(), "", it, "", true, &out, func(i interface{}) bool {
+	TableMarshalIter(context.Background(), "", it, []string{}, true, &out, func(i interface{}) bool {
 		if i.(Person).FirstName == "Dustin" {
 			return true
 		}

@@ -6,12 +6,12 @@ import (
 	"io"
 )
 
-func CSVMarshal(result interface{}, fields string, out io.Writer) error {
+func CSVMarshal(result interface{}, fields []string, out io.Writer) error {
 	w := csv.NewWriter(out)
 	return csvMarshal(w, result, fields, true)
 }
 
-func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bool) error {
+func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader bool) error {
 	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func csvMarshal(w *csv.Writer, result interface{}, fields string, writeHeader bo
 	return nil
 }
 
-func CSVMarshalIter(it Iter, fields string, skip FilterIter, out io.Writer) error {
+func CSVMarshalIter(it Iter, fields []string, skip FilterIter, out io.Writer) error {
 	spinner := &Spinner{Writer: out}
 	if err := spinner.Start(); err != nil {
 		return err

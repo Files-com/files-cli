@@ -23,8 +23,8 @@ func As2OutgoingMessages() *cobra.Command {
 			return fmt.Errorf("invalid command as2-outgoing-messages\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsAs2OutgoingMessageList := files_sdk.As2OutgoingMessageListParams{}
 	var MaxPagesList int64
@@ -68,8 +68,8 @@ func As2OutgoingMessages() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsAs2OutgoingMessageList.As2PartnerId, "as2-partner-id", 0, "As2 Partner ID.  If provided, will return message specific to that partner.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)

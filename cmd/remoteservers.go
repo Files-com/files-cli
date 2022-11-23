@@ -27,8 +27,8 @@ func RemoteServers() *cobra.Command {
 			return fmt.Errorf("invalid command remote-servers\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
 	var MaxPagesList int64
@@ -71,15 +71,15 @@ func RemoteServers() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsRemoteServerList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	RemoteServers.AddCommand(cmdList)
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsRemoteServerFind := files_sdk.RemoteServerFindParams{}
 
@@ -101,16 +101,16 @@ func RemoteServers() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFind)
-	var fieldsFindConfigurationFile string
-	var formatFindConfigurationFile string
+	var fieldsFindConfigurationFile []string
+	var formatFindConfigurationFile []string
 	usePagerFindConfigurationFile := true
 	paramsRemoteServerFindConfigurationFile := files_sdk.RemoteServerFindConfigurationFileParams{}
 
@@ -132,16 +132,16 @@ func RemoteServers() *cobra.Command {
 	}
 	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
 
-	cmdFindConfigurationFile.Flags().StringVar(&fieldsFindConfigurationFile, "fields", "", "comma separated list of field names")
-	cmdFindConfigurationFile.Flags().StringVar(&formatFindConfigurationFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFindConfigurationFile.Flags().StringSliceVar(&fieldsFindConfigurationFile, "fields", []string{}, "comma separated list of field names")
+	cmdFindConfigurationFile.Flags().StringSliceVar(&formatFindConfigurationFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFindConfigurationFile.Flags().BoolVar(&usePagerFindConfigurationFile, "use-pager", usePagerFindConfigurationFile, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFindConfigurationFile)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createResetAuthentication := true
 	createPinToSiteRegion := true
@@ -256,16 +256,16 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdCreate)
-	var fieldsConfigurationFile string
-	var formatConfigurationFile string
+	var fieldsConfigurationFile []string
+	var formatConfigurationFile []string
 	usePagerConfigurationFile := true
 	paramsRemoteServerConfigurationFile := files_sdk.RemoteServerConfigurationFileParams{}
 
@@ -297,16 +297,16 @@ func RemoteServers() *cobra.Command {
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PublicKey, "public-key", "", "public key")
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ServerHostKey, "server-host-key", "", "")
 
-	cmdConfigurationFile.Flags().StringVar(&fieldsConfigurationFile, "fields", "", "comma separated list of field names")
-	cmdConfigurationFile.Flags().StringVar(&formatConfigurationFile, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdConfigurationFile.Flags().StringSliceVar(&fieldsConfigurationFile, "fields", []string{}, "comma separated list of field names")
+	cmdConfigurationFile.Flags().StringSliceVar(&formatConfigurationFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdConfigurationFile.Flags().BoolVar(&usePagerConfigurationFile, "use-pager", usePagerConfigurationFile, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdConfigurationFile)
-	var fieldsUpdate string
-	var formatUpdate string
+	var fieldsUpdate []string
+	var formatUpdate []string
 	usePagerUpdate := true
 	updateResetAuthentication := true
 	updatePinToSiteRegion := true
@@ -422,16 +422,16 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
 
-	cmdUpdate.Flags().StringVar(&fieldsUpdate, "fields", "", "comma separated list of field names")
-	cmdUpdate.Flags().StringVar(&formatUpdate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdUpdate)
-	var fieldsDelete string
-	var formatDelete string
+	var fieldsDelete []string
+	var formatDelete []string
 	usePagerDelete := true
 	paramsRemoteServerDelete := files_sdk.RemoteServerDeleteParams{}
 
@@ -454,8 +454,8 @@ func RemoteServers() *cobra.Command {
 	}
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerDelete.Id, "id", 0, "Remote Server ID.")
 
-	cmdDelete.Flags().StringVar(&fieldsDelete, "fields", "", "comma separated list of field names")
-	cmdDelete.Flags().StringVar(&formatDelete, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

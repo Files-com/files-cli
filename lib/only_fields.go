@@ -10,7 +10,7 @@ import (
 	"github.com/fatih/structs"
 )
 
-func OnlyFields(commaFields string, structure interface{}) (map[string]interface{}, []string, error) {
+func OnlyFields(unparsedFields []string, structure interface{}) (map[string]interface{}, []string, error) {
 	if reflect.ValueOf(structure).Kind() == reflect.Map {
 		m, _ := structure.(map[string]interface{})
 		var ordered []string
@@ -22,7 +22,6 @@ func OnlyFields(commaFields string, structure interface{}) (map[string]interface
 		})
 		return structure.(map[string]interface{}), ordered, nil
 	}
-	unparsedFields := strings.Split(commaFields, ",")
 	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")
 	intermediateMap := make(map[string]interface{})
 	returnMap := make(map[string]interface{})

@@ -23,8 +23,8 @@ func SsoStrategies() *cobra.Command {
 			return fmt.Errorf("invalid command sso-strategies\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsSsoStrategyList := files_sdk.SsoStrategyListParams{}
 	var MaxPagesList int64
@@ -67,15 +67,15 @@ func SsoStrategies() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsSsoStrategyList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	SsoStrategies.AddCommand(cmdList)
-	var fieldsFind string
-	var formatFind string
+	var fieldsFind []string
+	var formatFind []string
 	usePagerFind := true
 	paramsSsoStrategyFind := files_sdk.SsoStrategyFindParams{}
 
@@ -97,16 +97,16 @@ func SsoStrategies() *cobra.Command {
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
 
-	cmdFind.Flags().StringVar(&fieldsFind, "fields", "", "comma separated list of field names")
-	cmdFind.Flags().StringVar(&formatFind, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	SsoStrategies.AddCommand(cmdFind)
-	var fieldsSync string
-	var formatSync string
+	var fieldsSync []string
+	var formatSync []string
 	usePagerSync := true
 	paramsSsoStrategySync := files_sdk.SsoStrategySyncParams{}
 
@@ -129,8 +129,8 @@ func SsoStrategies() *cobra.Command {
 	}
 	cmdSync.Flags().Int64Var(&paramsSsoStrategySync.Id, "id", 0, "Sso Strategy ID.")
 
-	cmdSync.Flags().StringVar(&fieldsSync, "fields", "", "comma separated list of field names")
-	cmdSync.Flags().StringVar(&formatSync, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdSync.Flags().StringSliceVar(&fieldsSync, "fields", []string{}, "comma separated list of field names")
+	cmdSync.Flags().StringSliceVar(&formatSync, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

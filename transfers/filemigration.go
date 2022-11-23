@@ -14,7 +14,7 @@ import (
 	"github.com/vbauerster/mpb/v7/decor"
 )
 
-func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface{}, block bool, noProgress bool, eventLog bool, format string, out io.Writer) (interface{}, error) {
+func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface{}, block bool, noProgress bool, eventLog bool, format []string, out io.Writer) (interface{}, error) {
 	fileAction, ok := i.(files_sdk.FileAction)
 	if !ok {
 		return i, nil
@@ -66,7 +66,7 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 		if result.LogUrl != "" {
 			client := file_migration.Client{Config: config}
 			it := client.LogIterator(ctx, result)
-			err = lib.FormatIter(ctx, it, format, "", false, func(i interface{}) bool {
+			err = lib.FormatIter(ctx, it, format, []string{}, false, func(i interface{}) bool {
 				return true
 			}, out)
 		}

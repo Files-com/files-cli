@@ -39,7 +39,7 @@ func renderTable(t table.Writer, style string) {
 	}
 }
 
-func TableMarshal(style string, result interface{}, fields string, usePager bool, out io.Writer, direction string) error {
+func TableMarshal(style string, result interface{}, fields []string, usePager bool, out io.Writer, direction string) error {
 	var pager *Pager
 	var err error
 	var t table.Writer
@@ -63,7 +63,7 @@ func TableMarshal(style string, result interface{}, fields string, usePager bool
 	return nil
 }
 
-func tableMarshalVertical(t table.Writer, result interface{}, fields string, writeHeader bool, skipNil bool) error {
+func tableMarshalVertical(t table.Writer, result interface{}, fields []string, writeHeader bool, skipNil bool) error {
 	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func tableMarshalVertical(t table.Writer, result interface{}, fields string, wri
 	return nil
 }
 
-func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader bool, skipNil bool) error {
+func tableMarshal(t table.Writer, result interface{}, fields []string, writeHeader bool, skipNil bool) error {
 	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
@@ -115,7 +115,7 @@ func tableMarshal(t table.Writer, result interface{}, fields string, writeHeader
 	return nil
 }
 
-func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields string, usePager bool, out io.Writer, filter FilterIter) error {
+func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields []string, usePager bool, out io.Writer, filter FilterIter) error {
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 	pager, err := Pager{UsePager: usePager}.Init(it, out)

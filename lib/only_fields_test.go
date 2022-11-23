@@ -16,25 +16,25 @@ func TestOnlyFields(t *testing.T) {
 	assert := assert.New(t)
 	t.Run("it deals with a struct", func(t *testing.T) {
 		a := testStruct{A: "hello", B: "I'm B", C: "I'm C"}
-		result, _, _ := OnlyFields("", a)
+		result, _, _ := OnlyFields([]string{}, a)
 
 		assert.Equal("hello", result["a"])
 		assert.Equal("I'm B", result["b"])
 		assert.Equal("I'm C", result["c"])
 
-		result2, _, _ := OnlyFields("b,C", a)
+		result2, _, _ := OnlyFields([]string{"b", "C"}, a)
 
 		assert.Equal(nil, result2["a"])
 		assert.Equal("I'm B", result2["b"])
 		assert.Equal("I'm C", result2["c"])
 
-		_, _, err1 := OnlyFields("d", a)
+		_, _, err1 := OnlyFields([]string{"d"}, a)
 
 		assert.EqualError(err1, "field: `d` is not valid.")
 
 		b := testStruct{A: "hello", B: "I'm B"}
 
-		result3, _, err3 := OnlyFields("c", b)
+		result3, _, err3 := OnlyFields([]string{"c"}, b)
 
 		assert.NoError(err3)
 
@@ -48,7 +48,7 @@ func TestOnlyFields(t *testing.T) {
 		}
 
 		assert.Equal([]string{}, keys, "returns no keys")
-		result4, _, err4 := OnlyFields("a,c", b)
+		result4, _, err4 := OnlyFields([]string{"a", "c"}, b)
 
 		assert.NoError(err4)
 
@@ -64,7 +64,7 @@ func TestOnlyFields(t *testing.T) {
 	t.Run("it deals with a Map", func(t *testing.T) {
 		m := make(map[string]interface{})
 		m["key"] = "value"
-		results, orderedKeys, err := OnlyFields("", m)
+		results, orderedKeys, err := OnlyFields([]string{}, m)
 		assert.NoError(err)
 		assert.Equal(m, results)
 		assert.Equal([]string{"key"}, orderedKeys)

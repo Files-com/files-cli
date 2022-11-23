@@ -23,8 +23,8 @@ func ActionWebhookFailures() *cobra.Command {
 			return fmt.Errorf("invalid command action-webhook-failures\n\t%v", args[0])
 		},
 	}
-	var fieldsRetry string
-	var formatRetry string
+	var fieldsRetry []string
+	var formatRetry []string
 	usePagerRetry := true
 	paramsActionWebhookFailureRetry := files_sdk.ActionWebhookFailureRetryParams{}
 
@@ -47,8 +47,8 @@ func ActionWebhookFailures() *cobra.Command {
 	}
 	cmdRetry.Flags().Int64Var(&paramsActionWebhookFailureRetry.Id, "id", 0, "Action Webhook Failure ID.")
 
-	cmdRetry.Flags().StringVar(&fieldsRetry, "fields", "", "comma separated list of field names")
-	cmdRetry.Flags().StringVar(&formatRetry, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdRetry.Flags().StringSliceVar(&fieldsRetry, "fields", []string{}, "comma separated list of field names")
+	cmdRetry.Flags().StringSliceVar(&formatRetry, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

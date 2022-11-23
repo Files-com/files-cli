@@ -23,8 +23,8 @@ func IpAddresses() *cobra.Command {
 			return fmt.Errorf("invalid command ip-addresses\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsIpAddressList := files_sdk.IpAddressListParams{}
 	var MaxPagesList int64
@@ -67,15 +67,15 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsIpAddressList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdList)
-	var fieldsGetExavaultReserved string
-	var formatGetExavaultReserved string
+	var fieldsGetExavaultReserved []string
+	var formatGetExavaultReserved []string
 	usePagerGetExavaultReserved := true
 	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
 	var MaxPagesGetExavaultReserved int64
@@ -118,15 +118,15 @@ func IpAddresses() *cobra.Command {
 	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdGetExavaultReserved.Flags().StringVar(&fieldsGetExavaultReserved, "fields", "", "comma separated list of field names to include in response")
-	cmdGetExavaultReserved.Flags().StringVar(&formatGetExavaultReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
-	var fieldsGetReserved string
-	var formatGetReserved string
+	var fieldsGetReserved []string
+	var formatGetReserved []string
 	usePagerGetReserved := true
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
 	var MaxPagesGetReserved int64
@@ -169,8 +169,8 @@ func IpAddresses() *cobra.Command {
 	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 
 	cmdGetReserved.Flags().Int64VarP(&MaxPagesGetReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdGetReserved.Flags().StringVar(&fieldsGetReserved, "fields", "", "comma separated list of field names to include in response")
-	cmdGetReserved.Flags().StringVar(&formatGetReserved, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdGetReserved.Flags().StringSliceVar(&fieldsGetReserved, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdGetReserved.Flags().StringSliceVar(&formatGetReserved, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)

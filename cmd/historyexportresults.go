@@ -23,8 +23,8 @@ func HistoryExportResults() *cobra.Command {
 			return fmt.Errorf("invalid command history-export-results\n\t%v", args[0])
 		},
 	}
-	var fieldsList string
-	var formatList string
+	var fieldsList []string
+	var formatList []string
 	usePagerList := true
 	paramsHistoryExportResultList := files_sdk.HistoryExportResultListParams{}
 	var MaxPagesList int64
@@ -69,8 +69,8 @@ func HistoryExportResults() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsHistoryExportResultList.HistoryExportId, "history-export-id", 0, "ID of the associated history export.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringVar(&fieldsList, "fields", "", "comma separated list of field names to include in response")
-	cmdList.Flags().StringVar(&formatList, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)

@@ -26,8 +26,8 @@ func Folders() *cobra.Command {
 			return fmt.Errorf("invalid command folders\n\t%v", args[0])
 		},
 	}
-	var fieldsListFor string
-	var formatListFor string
+	var fieldsListFor []string
+	var formatListFor []string
 	usePagerListFor := true
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
@@ -105,15 +105,15 @@ func Folders() *cobra.Command {
 	cmdListFor.Flags().BoolVar(&listForWithPriorityColor, "with-priority-color", listForWithPriorityColor, "Include file priority color information?")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdListFor.Flags().StringVar(&fieldsListFor, "fields", "", "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringVar(&formatListFor, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
         `)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Folders.AddCommand(cmdListFor)
-	var fieldsCreate string
-	var formatCreate string
+	var fieldsCreate []string
+	var formatCreate []string
 	usePagerCreate := true
 	createMkdirParents := true
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
@@ -144,8 +144,8 @@ func Folders() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")
 	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
 
-	cmdCreate.Flags().StringVar(&fieldsCreate, "fields", "", "comma separated list of field names")
-	cmdCreate.Flags().StringVar(&formatCreate, "format", "table light", `'{format} {style} {direction}' - formats: {json, csv, table}
+	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
                                                                                                                                                  table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
                                                                                                                                                  json-styles: {raw, pretty}
                                                                                                                                                  `)

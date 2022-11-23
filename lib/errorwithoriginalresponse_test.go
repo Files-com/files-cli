@@ -19,8 +19,8 @@ func TestHandleResponse(t *testing.T) {
 		ctx    context.Context
 		i      interface{}
 		errIn  func() error
-		format string
-		fields string
+		format []string
+		fields []string
 	}
 	tests := []struct {
 		name       string
@@ -38,8 +38,8 @@ func TestHandleResponse(t *testing.T) {
 					var structure map[string]interface{}
 					return lib.ErrorWithOriginalResponse{}.ProcessError([]byte(`{}`), &json.UnmarshalTypeError{Value: "number", Type: reflect.TypeOf("")}, structure)
 				},
-				"table",
-				"",
+				[]string{"table"},
+				[]string{},
 			},
 			wantStdout: "",
 			wantLogger: "Recovering from original error: `json: cannot unmarshal number into Go value of type string`\n",
@@ -54,8 +54,9 @@ func TestHandleResponse(t *testing.T) {
 					var structure map[string]interface{}
 					return lib.ErrorWithOriginalResponse{}.ProcessError([]byte(`{"key":"value"}`), &json.UnmarshalTypeError{Value: "number", Type: reflect.TypeOf("")}, structure)
 				},
-				"json",
-				""},
+				[]string{"json"},
+				[]string{},
+			},
 			wantStdout: "{\n    \"key\": \"value\"\n}\n",
 			wantLogger: "Recovering from original error: `json: cannot unmarshal number into Go value of type string`\n",
 		},
@@ -69,8 +70,9 @@ func TestHandleResponse(t *testing.T) {
 					var structure []map[string]interface{}
 					return lib.ErrorWithOriginalResponse{}.ProcessError([]byte(`[{"key":"value"}]`), &json.UnmarshalTypeError{Value: "number", Type: reflect.TypeOf("")}, structure)
 				},
-				"json",
-				""},
+				[]string{"json"},
+				[]string{},
+			},
 			wantStdout: "[{\n    \"key\": \"value\"\n}]\n",
 			wantLogger: "Recovering from original error: `json: cannot unmarshal number into Go value of type string`\n",
 		},
@@ -80,8 +82,9 @@ func TestHandleResponse(t *testing.T) {
 				context.Background(),
 				nil,
 				func() error { return fmt.Errorf("some other error") },
-				"json",
-				""},
+				[]string{"json"},
+				[]string{},
+			},
 			wantStderr: "some other error\n",
 		},
 		{
@@ -90,8 +93,9 @@ func TestHandleResponse(t *testing.T) {
 				context.Background(),
 				map[string]interface{}{"key": "value"},
 				func() error { return nil },
-				"json",
-				""},
+				[]string{"json"},
+				[]string{},
+			},
 			wantStdout: "{\n    \"key\": \"value\"\n}\n",
 		},
 	}
