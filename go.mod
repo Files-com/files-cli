@@ -23,6 +23,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v7 v7.1.5
+	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	golang.org/x/crypto v0.1.0
 	golang.org/x/sys v0.1.0
 )

@@ -8,6 +8,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	files "github.com/Files-com/files-sdk-go/v2"
 	"github.com/spf13/cobra"
+	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 
 	_ "embed"
 	"fmt"
@@ -122,6 +123,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	RootCmd.SuggestionsMinimumDistance = 1
+	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 }
 
 func Profile(cmd *cobra.Command) *lib.Profiles {
