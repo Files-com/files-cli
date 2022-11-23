@@ -11,11 +11,10 @@ else
 fi
 
 if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
-  if goreleaser build --rm-dist --snapshot; then
-    true
+  if ! command -v goreleaser &> /dev/null; then
+     curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro bash -s -- build --rm-dist --snapshot || exit 1
   else
-    go install github.com/goreleaser/goreleaser@latest
-    $(go env GOPATH)/bin/goreleaser build --rm-dist --snapshot || exit 1
+    goreleaser build --rm-dist --snapshot
   fi
 fi
 ERROR_CODE=$?

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-if GOWORK=off goreleaser release --rm-dist; then
-  true
+if ! command -v goreleaser &> /dev/null; then
+   GOWORK=off curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro bash -s -- release --rm-dist || exit 1
 else
-  go install github.com/goreleaser/goreleaser@latest
-  GOWORK=off $(go env GOPATH)/bin/goreleaser release --rm-dist || exit 1
+  GOWORK=off goreleaser release --rm-dist
 fi
