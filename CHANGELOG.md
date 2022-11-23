@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.25] - 2022/11/23
+### Add
+- flag enum/field values now convert dashed value to underscore values.
+- flag enum can return a did you mean response if value is unknown. 
+
 ## [2.1.17] - 2022/11/18
 ### Fix
 - On create of .config directory use permission `0755` instead of `0600` 

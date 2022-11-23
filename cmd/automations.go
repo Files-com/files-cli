@@ -140,15 +140,15 @@ func Automations() *cobra.Command {
 			}
 			var automation interface{}
 			var err error
-			var AutomationCreateTriggerOk bool
-			paramsAutomationCreate.Trigger, AutomationCreateTriggerOk = paramsAutomationCreate.Trigger.Enum()[AutomationCreateTrigger]
-			if AutomationCreateTrigger != "" && !AutomationCreateTriggerOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "trigger", AutomationCreateTrigger)
+			var AutomationCreateTriggerErr error
+			paramsAutomationCreate.Trigger, AutomationCreateTriggerErr = lib.FetchKey("trigger", paramsAutomationCreate.Trigger.Enum(), AutomationCreateTrigger)
+			if AutomationCreateTrigger != "" && AutomationCreateTriggerErr != nil {
+				return AutomationCreateTriggerErr
 			}
-			var AutomationCreateAutomationOk bool
-			paramsAutomationCreate.Automation, AutomationCreateAutomationOk = paramsAutomationCreate.Automation.Enum()[AutomationCreateAutomation]
-			if AutomationCreateAutomation != "" && !AutomationCreateAutomationOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "automation", AutomationCreateAutomation)
+			var AutomationCreateAutomationErr error
+			paramsAutomationCreate.Automation, AutomationCreateAutomationErr = lib.FetchKey("automation", paramsAutomationCreate.Automation.Enum(), AutomationCreateAutomation)
+			if AutomationCreateAutomation != "" && AutomationCreateAutomationErr != nil {
+				return AutomationCreateAutomationErr
 			}
 			automation, err = client.Create(ctx, paramsAutomationCreate)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -205,15 +205,15 @@ func Automations() *cobra.Command {
 			}
 			var automation interface{}
 			var err error
-			var AutomationUpdateTriggerOk bool
-			paramsAutomationUpdate.Trigger, AutomationUpdateTriggerOk = paramsAutomationUpdate.Trigger.Enum()[AutomationUpdateTrigger]
-			if AutomationUpdateTrigger != "" && !AutomationUpdateTriggerOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "trigger", AutomationUpdateTrigger)
+			var AutomationUpdateTriggerErr error
+			paramsAutomationUpdate.Trigger, AutomationUpdateTriggerErr = lib.FetchKey("trigger", paramsAutomationUpdate.Trigger.Enum(), AutomationUpdateTrigger)
+			if AutomationUpdateTrigger != "" && AutomationUpdateTriggerErr != nil {
+				return AutomationUpdateTriggerErr
 			}
-			var AutomationUpdateAutomationOk bool
-			paramsAutomationUpdate.Automation, AutomationUpdateAutomationOk = paramsAutomationUpdate.Automation.Enum()[AutomationUpdateAutomation]
-			if AutomationUpdateAutomation != "" && !AutomationUpdateAutomationOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "automation", AutomationUpdateAutomation)
+			var AutomationUpdateAutomationErr error
+			paramsAutomationUpdate.Automation, AutomationUpdateAutomationErr = lib.FetchKey("automation", paramsAutomationUpdate.Automation.Enum(), AutomationUpdateAutomation)
+			if AutomationUpdateAutomation != "" && AutomationUpdateAutomationErr != nil {
+				return AutomationUpdateAutomationErr
 			}
 			automation, err = client.Update(ctx, paramsAutomationUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

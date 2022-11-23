@@ -125,20 +125,20 @@ func Clickwraps() *cobra.Command {
 
 			var clickwrap interface{}
 			var err error
-			var ClickwrapCreateUseWithBundlesOk bool
-			paramsClickwrapCreate.UseWithBundles, ClickwrapCreateUseWithBundlesOk = paramsClickwrapCreate.UseWithBundles.Enum()[ClickwrapCreateUseWithBundles]
-			if ClickwrapCreateUseWithBundles != "" && !ClickwrapCreateUseWithBundlesOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-bundles", ClickwrapCreateUseWithBundles)
+			var ClickwrapCreateUseWithBundlesErr error
+			paramsClickwrapCreate.UseWithBundles, ClickwrapCreateUseWithBundlesErr = lib.FetchKey("use-with-bundles", paramsClickwrapCreate.UseWithBundles.Enum(), ClickwrapCreateUseWithBundles)
+			if ClickwrapCreateUseWithBundles != "" && ClickwrapCreateUseWithBundlesErr != nil {
+				return ClickwrapCreateUseWithBundlesErr
 			}
-			var ClickwrapCreateUseWithInboxesOk bool
-			paramsClickwrapCreate.UseWithInboxes, ClickwrapCreateUseWithInboxesOk = paramsClickwrapCreate.UseWithInboxes.Enum()[ClickwrapCreateUseWithInboxes]
-			if ClickwrapCreateUseWithInboxes != "" && !ClickwrapCreateUseWithInboxesOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-inboxes", ClickwrapCreateUseWithInboxes)
+			var ClickwrapCreateUseWithInboxesErr error
+			paramsClickwrapCreate.UseWithInboxes, ClickwrapCreateUseWithInboxesErr = lib.FetchKey("use-with-inboxes", paramsClickwrapCreate.UseWithInboxes.Enum(), ClickwrapCreateUseWithInboxes)
+			if ClickwrapCreateUseWithInboxes != "" && ClickwrapCreateUseWithInboxesErr != nil {
+				return ClickwrapCreateUseWithInboxesErr
 			}
-			var ClickwrapCreateUseWithUsersOk bool
-			paramsClickwrapCreate.UseWithUsers, ClickwrapCreateUseWithUsersOk = paramsClickwrapCreate.UseWithUsers.Enum()[ClickwrapCreateUseWithUsers]
-			if ClickwrapCreateUseWithUsers != "" && !ClickwrapCreateUseWithUsersOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-users", ClickwrapCreateUseWithUsers)
+			var ClickwrapCreateUseWithUsersErr error
+			paramsClickwrapCreate.UseWithUsers, ClickwrapCreateUseWithUsersErr = lib.FetchKey("use-with-users", paramsClickwrapCreate.UseWithUsers.Enum(), ClickwrapCreateUseWithUsers)
+			if ClickwrapCreateUseWithUsers != "" && ClickwrapCreateUseWithUsersErr != nil {
+				return ClickwrapCreateUseWithUsersErr
 			}
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -178,20 +178,20 @@ func Clickwraps() *cobra.Command {
 
 			var clickwrap interface{}
 			var err error
-			var ClickwrapUpdateUseWithBundlesOk bool
-			paramsClickwrapUpdate.UseWithBundles, ClickwrapUpdateUseWithBundlesOk = paramsClickwrapUpdate.UseWithBundles.Enum()[ClickwrapUpdateUseWithBundles]
-			if ClickwrapUpdateUseWithBundles != "" && !ClickwrapUpdateUseWithBundlesOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-bundles", ClickwrapUpdateUseWithBundles)
+			var ClickwrapUpdateUseWithBundlesErr error
+			paramsClickwrapUpdate.UseWithBundles, ClickwrapUpdateUseWithBundlesErr = lib.FetchKey("use-with-bundles", paramsClickwrapUpdate.UseWithBundles.Enum(), ClickwrapUpdateUseWithBundles)
+			if ClickwrapUpdateUseWithBundles != "" && ClickwrapUpdateUseWithBundlesErr != nil {
+				return ClickwrapUpdateUseWithBundlesErr
 			}
-			var ClickwrapUpdateUseWithInboxesOk bool
-			paramsClickwrapUpdate.UseWithInboxes, ClickwrapUpdateUseWithInboxesOk = paramsClickwrapUpdate.UseWithInboxes.Enum()[ClickwrapUpdateUseWithInboxes]
-			if ClickwrapUpdateUseWithInboxes != "" && !ClickwrapUpdateUseWithInboxesOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-inboxes", ClickwrapUpdateUseWithInboxes)
+			var ClickwrapUpdateUseWithInboxesErr error
+			paramsClickwrapUpdate.UseWithInboxes, ClickwrapUpdateUseWithInboxesErr = lib.FetchKey("use-with-inboxes", paramsClickwrapUpdate.UseWithInboxes.Enum(), ClickwrapUpdateUseWithInboxes)
+			if ClickwrapUpdateUseWithInboxes != "" && ClickwrapUpdateUseWithInboxesErr != nil {
+				return ClickwrapUpdateUseWithInboxesErr
 			}
-			var ClickwrapUpdateUseWithUsersOk bool
-			paramsClickwrapUpdate.UseWithUsers, ClickwrapUpdateUseWithUsersOk = paramsClickwrapUpdate.UseWithUsers.Enum()[ClickwrapUpdateUseWithUsers]
-			if ClickwrapUpdateUseWithUsers != "" && !ClickwrapUpdateUseWithUsersOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "use-with-users", ClickwrapUpdateUseWithUsers)
+			var ClickwrapUpdateUseWithUsersErr error
+			paramsClickwrapUpdate.UseWithUsers, ClickwrapUpdateUseWithUsersErr = lib.FetchKey("use-with-users", paramsClickwrapUpdate.UseWithUsers.Enum(), ClickwrapUpdateUseWithUsers)
+			if ClickwrapUpdateUseWithUsers != "" && ClickwrapUpdateUseWithUsersErr != nil {
+				return ClickwrapUpdateUseWithUsersErr
 			}
 			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

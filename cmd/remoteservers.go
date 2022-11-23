@@ -174,30 +174,30 @@ func RemoteServers() *cobra.Command {
 
 			var remoteServer interface{}
 			var err error
-			var RemoteServerCreateServerCertificateOk bool
-			paramsRemoteServerCreate.ServerCertificate, RemoteServerCreateServerCertificateOk = paramsRemoteServerCreate.ServerCertificate.Enum()[RemoteServerCreateServerCertificate]
-			if RemoteServerCreateServerCertificate != "" && !RemoteServerCreateServerCertificateOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "server-certificate", RemoteServerCreateServerCertificate)
+			var RemoteServerCreateServerCertificateErr error
+			paramsRemoteServerCreate.ServerCertificate, RemoteServerCreateServerCertificateErr = lib.FetchKey("server-certificate", paramsRemoteServerCreate.ServerCertificate.Enum(), RemoteServerCreateServerCertificate)
+			if RemoteServerCreateServerCertificate != "" && RemoteServerCreateServerCertificateErr != nil {
+				return RemoteServerCreateServerCertificateErr
 			}
-			var RemoteServerCreateServerTypeOk bool
-			paramsRemoteServerCreate.ServerType, RemoteServerCreateServerTypeOk = paramsRemoteServerCreate.ServerType.Enum()[RemoteServerCreateServerType]
-			if RemoteServerCreateServerType != "" && !RemoteServerCreateServerTypeOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "server-type", RemoteServerCreateServerType)
+			var RemoteServerCreateServerTypeErr error
+			paramsRemoteServerCreate.ServerType, RemoteServerCreateServerTypeErr = lib.FetchKey("server-type", paramsRemoteServerCreate.ServerType.Enum(), RemoteServerCreateServerType)
+			if RemoteServerCreateServerType != "" && RemoteServerCreateServerTypeErr != nil {
+				return RemoteServerCreateServerTypeErr
 			}
-			var RemoteServerCreateSslOk bool
-			paramsRemoteServerCreate.Ssl, RemoteServerCreateSslOk = paramsRemoteServerCreate.Ssl.Enum()[RemoteServerCreateSsl]
-			if RemoteServerCreateSsl != "" && !RemoteServerCreateSslOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "ssl", RemoteServerCreateSsl)
+			var RemoteServerCreateSslErr error
+			paramsRemoteServerCreate.Ssl, RemoteServerCreateSslErr = lib.FetchKey("ssl", paramsRemoteServerCreate.Ssl.Enum(), RemoteServerCreateSsl)
+			if RemoteServerCreateSsl != "" && RemoteServerCreateSslErr != nil {
+				return RemoteServerCreateSslErr
 			}
-			var RemoteServerCreateOneDriveAccountTypeOk bool
-			paramsRemoteServerCreate.OneDriveAccountType, RemoteServerCreateOneDriveAccountTypeOk = paramsRemoteServerCreate.OneDriveAccountType.Enum()[RemoteServerCreateOneDriveAccountType]
-			if RemoteServerCreateOneDriveAccountType != "" && !RemoteServerCreateOneDriveAccountTypeOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerCreateOneDriveAccountType)
+			var RemoteServerCreateOneDriveAccountTypeErr error
+			paramsRemoteServerCreate.OneDriveAccountType, RemoteServerCreateOneDriveAccountTypeErr = lib.FetchKey("one-drive-account-type", paramsRemoteServerCreate.OneDriveAccountType.Enum(), RemoteServerCreateOneDriveAccountType)
+			if RemoteServerCreateOneDriveAccountType != "" && RemoteServerCreateOneDriveAccountTypeErr != nil {
+				return RemoteServerCreateOneDriveAccountTypeErr
 			}
-			var RemoteServerCreateFilesAgentPermissionSetOk bool
-			paramsRemoteServerCreate.FilesAgentPermissionSet, RemoteServerCreateFilesAgentPermissionSetOk = paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()[RemoteServerCreateFilesAgentPermissionSet]
-			if RemoteServerCreateFilesAgentPermissionSet != "" && !RemoteServerCreateFilesAgentPermissionSetOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "files-agent-permission-set", RemoteServerCreateFilesAgentPermissionSet)
+			var RemoteServerCreateFilesAgentPermissionSetErr error
+			paramsRemoteServerCreate.FilesAgentPermissionSet, RemoteServerCreateFilesAgentPermissionSetErr = lib.FetchKey("files-agent-permission-set", paramsRemoteServerCreate.FilesAgentPermissionSet.Enum(), RemoteServerCreateFilesAgentPermissionSet)
+			if RemoteServerCreateFilesAgentPermissionSet != "" && RemoteServerCreateFilesAgentPermissionSetErr != nil {
+				return RemoteServerCreateFilesAgentPermissionSetErr
 			}
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -339,30 +339,30 @@ func RemoteServers() *cobra.Command {
 
 			var remoteServer interface{}
 			var err error
-			var RemoteServerUpdateServerCertificateOk bool
-			paramsRemoteServerUpdate.ServerCertificate, RemoteServerUpdateServerCertificateOk = paramsRemoteServerUpdate.ServerCertificate.Enum()[RemoteServerUpdateServerCertificate]
-			if RemoteServerUpdateServerCertificate != "" && !RemoteServerUpdateServerCertificateOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "server-certificate", RemoteServerUpdateServerCertificate)
+			var RemoteServerUpdateServerCertificateErr error
+			paramsRemoteServerUpdate.ServerCertificate, RemoteServerUpdateServerCertificateErr = lib.FetchKey("server-certificate", paramsRemoteServerUpdate.ServerCertificate.Enum(), RemoteServerUpdateServerCertificate)
+			if RemoteServerUpdateServerCertificate != "" && RemoteServerUpdateServerCertificateErr != nil {
+				return RemoteServerUpdateServerCertificateErr
 			}
-			var RemoteServerUpdateServerTypeOk bool
-			paramsRemoteServerUpdate.ServerType, RemoteServerUpdateServerTypeOk = paramsRemoteServerUpdate.ServerType.Enum()[RemoteServerUpdateServerType]
-			if RemoteServerUpdateServerType != "" && !RemoteServerUpdateServerTypeOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "server-type", RemoteServerUpdateServerType)
+			var RemoteServerUpdateServerTypeErr error
+			paramsRemoteServerUpdate.ServerType, RemoteServerUpdateServerTypeErr = lib.FetchKey("server-type", paramsRemoteServerUpdate.ServerType.Enum(), RemoteServerUpdateServerType)
+			if RemoteServerUpdateServerType != "" && RemoteServerUpdateServerTypeErr != nil {
+				return RemoteServerUpdateServerTypeErr
 			}
-			var RemoteServerUpdateSslOk bool
-			paramsRemoteServerUpdate.Ssl, RemoteServerUpdateSslOk = paramsRemoteServerUpdate.Ssl.Enum()[RemoteServerUpdateSsl]
-			if RemoteServerUpdateSsl != "" && !RemoteServerUpdateSslOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "ssl", RemoteServerUpdateSsl)
+			var RemoteServerUpdateSslErr error
+			paramsRemoteServerUpdate.Ssl, RemoteServerUpdateSslErr = lib.FetchKey("ssl", paramsRemoteServerUpdate.Ssl.Enum(), RemoteServerUpdateSsl)
+			if RemoteServerUpdateSsl != "" && RemoteServerUpdateSslErr != nil {
+				return RemoteServerUpdateSslErr
 			}
-			var RemoteServerUpdateOneDriveAccountTypeOk bool
-			paramsRemoteServerUpdate.OneDriveAccountType, RemoteServerUpdateOneDriveAccountTypeOk = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[RemoteServerUpdateOneDriveAccountType]
-			if RemoteServerUpdateOneDriveAccountType != "" && !RemoteServerUpdateOneDriveAccountTypeOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "one-drive-account-type", RemoteServerUpdateOneDriveAccountType)
+			var RemoteServerUpdateOneDriveAccountTypeErr error
+			paramsRemoteServerUpdate.OneDriveAccountType, RemoteServerUpdateOneDriveAccountTypeErr = lib.FetchKey("one-drive-account-type", paramsRemoteServerUpdate.OneDriveAccountType.Enum(), RemoteServerUpdateOneDriveAccountType)
+			if RemoteServerUpdateOneDriveAccountType != "" && RemoteServerUpdateOneDriveAccountTypeErr != nil {
+				return RemoteServerUpdateOneDriveAccountTypeErr
 			}
-			var RemoteServerUpdateFilesAgentPermissionSetOk bool
-			paramsRemoteServerUpdate.FilesAgentPermissionSet, RemoteServerUpdateFilesAgentPermissionSetOk = paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()[RemoteServerUpdateFilesAgentPermissionSet]
-			if RemoteServerUpdateFilesAgentPermissionSet != "" && !RemoteServerUpdateFilesAgentPermissionSetOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "files-agent-permission-set", RemoteServerUpdateFilesAgentPermissionSet)
+			var RemoteServerUpdateFilesAgentPermissionSetErr error
+			paramsRemoteServerUpdate.FilesAgentPermissionSet, RemoteServerUpdateFilesAgentPermissionSetErr = lib.FetchKey("files-agent-permission-set", paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum(), RemoteServerUpdateFilesAgentPermissionSet)
+			if RemoteServerUpdateFilesAgentPermissionSet != "" && RemoteServerUpdateFilesAgentPermissionSetErr != nil {
+				return RemoteServerUpdateFilesAgentPermissionSetErr
 			}
 			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

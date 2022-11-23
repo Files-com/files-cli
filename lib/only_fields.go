@@ -30,7 +30,7 @@ func OnlyFields(commaFields string, structure interface{}) (map[string]interface
 	orderedKeys := jsonTags(structure)
 	var fields []string
 	for _, key := range unparsedFields {
-		fields = append(fields, strings.ToLower(key))
+		fields = append(fields, strings.ToLower(strings.Replace(key, "-", "_", -1)))
 	}
 
 	if len(fields) > 0 && fields[0] != "" {

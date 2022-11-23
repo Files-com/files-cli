@@ -156,10 +156,10 @@ func ApiKeys() *cobra.Command {
 			}
 			var apiKey interface{}
 			var err error
-			var ApiKeyCreatePermissionSetOk bool
-			paramsApiKeyCreate.PermissionSet, ApiKeyCreatePermissionSetOk = paramsApiKeyCreate.PermissionSet.Enum()[ApiKeyCreatePermissionSet]
-			if ApiKeyCreatePermissionSet != "" && !ApiKeyCreatePermissionSetOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "permission-set", ApiKeyCreatePermissionSet)
+			var ApiKeyCreatePermissionSetErr error
+			paramsApiKeyCreate.PermissionSet, ApiKeyCreatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyCreate.PermissionSet.Enum(), ApiKeyCreatePermissionSet)
+			if ApiKeyCreatePermissionSet != "" && ApiKeyCreatePermissionSetErr != nil {
+				return ApiKeyCreatePermissionSetErr
 			}
 			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -198,10 +198,10 @@ func ApiKeys() *cobra.Command {
 
 			var apiKey interface{}
 			var err error
-			var ApiKeyUpdateCurrentPermissionSetOk bool
-			paramsApiKeyUpdateCurrent.PermissionSet, ApiKeyUpdateCurrentPermissionSetOk = paramsApiKeyUpdateCurrent.PermissionSet.Enum()[ApiKeyUpdateCurrentPermissionSet]
-			if ApiKeyUpdateCurrentPermissionSet != "" && !ApiKeyUpdateCurrentPermissionSetOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "permission-set", ApiKeyUpdateCurrentPermissionSet)
+			var ApiKeyUpdateCurrentPermissionSetErr error
+			paramsApiKeyUpdateCurrent.PermissionSet, ApiKeyUpdateCurrentPermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyUpdateCurrent.PermissionSet.Enum(), ApiKeyUpdateCurrentPermissionSet)
+			if ApiKeyUpdateCurrentPermissionSet != "" && ApiKeyUpdateCurrentPermissionSetErr != nil {
+				return ApiKeyUpdateCurrentPermissionSetErr
 			}
 			apiKey, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -237,10 +237,10 @@ func ApiKeys() *cobra.Command {
 
 			var apiKey interface{}
 			var err error
-			var ApiKeyUpdatePermissionSetOk bool
-			paramsApiKeyUpdate.PermissionSet, ApiKeyUpdatePermissionSetOk = paramsApiKeyUpdate.PermissionSet.Enum()[ApiKeyUpdatePermissionSet]
-			if ApiKeyUpdatePermissionSet != "" && !ApiKeyUpdatePermissionSetOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "permission-set", ApiKeyUpdatePermissionSet)
+			var ApiKeyUpdatePermissionSetErr error
+			paramsApiKeyUpdate.PermissionSet, ApiKeyUpdatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyUpdate.PermissionSet.Enum(), ApiKeyUpdatePermissionSet)
+			if ApiKeyUpdatePermissionSet != "" && ApiKeyUpdatePermissionSetErr != nil {
+				return ApiKeyUpdatePermissionSetErr
 			}
 			apiKey, err = client.Update(ctx, paramsApiKeyUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

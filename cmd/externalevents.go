@@ -124,10 +124,10 @@ func ExternalEvents() *cobra.Command {
 
 			var externalEvent interface{}
 			var err error
-			var ExternalEventCreateStatusOk bool
-			paramsExternalEventCreate.Status, ExternalEventCreateStatusOk = paramsExternalEventCreate.Status.Enum()[ExternalEventCreateStatus]
-			if ExternalEventCreateStatus != "" && !ExternalEventCreateStatusOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "status", ExternalEventCreateStatus)
+			var ExternalEventCreateStatusErr error
+			paramsExternalEventCreate.Status, ExternalEventCreateStatusErr = lib.FetchKey("status", paramsExternalEventCreate.Status.Enum(), ExternalEventCreateStatus)
+			if ExternalEventCreateStatus != "" && ExternalEventCreateStatusErr != nil {
+				return ExternalEventCreateStatusErr
 			}
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
 			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

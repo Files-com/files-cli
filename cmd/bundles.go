@@ -155,10 +155,10 @@ func Bundles() *cobra.Command {
 
 			var bundle interface{}
 			var err error
-			var BundleCreatePermissionsOk bool
-			paramsBundleCreate.Permissions, BundleCreatePermissionsOk = paramsBundleCreate.Permissions.Enum()[BundleCreatePermissions]
-			if BundleCreatePermissions != "" && !BundleCreatePermissionsOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "permissions", BundleCreatePermissions)
+			var BundleCreatePermissionsErr error
+			paramsBundleCreate.Permissions, BundleCreatePermissionsErr = lib.FetchKey("permissions", paramsBundleCreate.Permissions.Enum(), BundleCreatePermissions)
+			if BundleCreatePermissions != "" && BundleCreatePermissionsErr != nil {
+				return BundleCreatePermissionsErr
 			}
 			bundle, err = client.Create(ctx, paramsBundleCreate)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -278,10 +278,10 @@ func Bundles() *cobra.Command {
 
 			var bundle interface{}
 			var err error
-			var BundleUpdatePermissionsOk bool
-			paramsBundleUpdate.Permissions, BundleUpdatePermissionsOk = paramsBundleUpdate.Permissions.Enum()[BundleUpdatePermissions]
-			if BundleUpdatePermissions != "" && !BundleUpdatePermissionsOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "permissions", BundleUpdatePermissions)
+			var BundleUpdatePermissionsErr error
+			paramsBundleUpdate.Permissions, BundleUpdatePermissionsErr = lib.FetchKey("permissions", paramsBundleUpdate.Permissions.Enum(), BundleUpdatePermissions)
+			if BundleUpdatePermissions != "" && BundleUpdatePermissionsErr != nil {
+				return BundleUpdatePermissionsErr
 			}
 			bundle, err = client.Update(ctx, paramsBundleUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())

@@ -202,20 +202,20 @@ func Users() *cobra.Command {
 
 			var user interface{}
 			var err error
-			var UserCreateAuthenticationMethodOk bool
-			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodOk = paramsUserCreate.AuthenticationMethod.Enum()[UserCreateAuthenticationMethod]
-			if UserCreateAuthenticationMethod != "" && !UserCreateAuthenticationMethodOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "authentication-method", UserCreateAuthenticationMethod)
+			var UserCreateAuthenticationMethodErr error
+			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserCreate.AuthenticationMethod.Enum(), UserCreateAuthenticationMethod)
+			if UserCreateAuthenticationMethod != "" && UserCreateAuthenticationMethodErr != nil {
+				return UserCreateAuthenticationMethodErr
 			}
-			var UserCreateSslRequiredOk bool
-			paramsUserCreate.SslRequired, UserCreateSslRequiredOk = paramsUserCreate.SslRequired.Enum()[UserCreateSslRequired]
-			if UserCreateSslRequired != "" && !UserCreateSslRequiredOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "ssl-required", UserCreateSslRequired)
+			var UserCreateSslRequiredErr error
+			paramsUserCreate.SslRequired, UserCreateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserCreate.SslRequired.Enum(), UserCreateSslRequired)
+			if UserCreateSslRequired != "" && UserCreateSslRequiredErr != nil {
+				return UserCreateSslRequiredErr
 			}
-			var UserCreateRequire2faOk bool
-			paramsUserCreate.Require2fa, UserCreateRequire2faOk = paramsUserCreate.Require2fa.Enum()[UserCreateRequire2fa]
-			if UserCreateRequire2fa != "" && !UserCreateRequire2faOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "require-2fa", UserCreateRequire2fa)
+			var UserCreateRequire2faErr error
+			paramsUserCreate.Require2fa, UserCreateRequire2faErr = lib.FetchKey("require-2fa", paramsUserCreate.Require2fa.Enum(), UserCreateRequire2fa)
+			if UserCreateRequire2fa != "" && UserCreateRequire2faErr != nil {
+				return UserCreateRequire2faErr
 			}
 			user, err = client.Create(ctx, paramsUserCreate)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -462,20 +462,20 @@ func Users() *cobra.Command {
 
 			var user interface{}
 			var err error
-			var UserUpdateAuthenticationMethodOk bool
-			paramsUserUpdate.AuthenticationMethod, UserUpdateAuthenticationMethodOk = paramsUserUpdate.AuthenticationMethod.Enum()[UserUpdateAuthenticationMethod]
-			if UserUpdateAuthenticationMethod != "" && !UserUpdateAuthenticationMethodOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "authentication-method", UserUpdateAuthenticationMethod)
+			var UserUpdateAuthenticationMethodErr error
+			paramsUserUpdate.AuthenticationMethod, UserUpdateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserUpdate.AuthenticationMethod.Enum(), UserUpdateAuthenticationMethod)
+			if UserUpdateAuthenticationMethod != "" && UserUpdateAuthenticationMethodErr != nil {
+				return UserUpdateAuthenticationMethodErr
 			}
-			var UserUpdateSslRequiredOk bool
-			paramsUserUpdate.SslRequired, UserUpdateSslRequiredOk = paramsUserUpdate.SslRequired.Enum()[UserUpdateSslRequired]
-			if UserUpdateSslRequired != "" && !UserUpdateSslRequiredOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "ssl-required", UserUpdateSslRequired)
+			var UserUpdateSslRequiredErr error
+			paramsUserUpdate.SslRequired, UserUpdateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserUpdate.SslRequired.Enum(), UserUpdateSslRequired)
+			if UserUpdateSslRequired != "" && UserUpdateSslRequiredErr != nil {
+				return UserUpdateSslRequiredErr
 			}
-			var UserUpdateRequire2faOk bool
-			paramsUserUpdate.Require2fa, UserUpdateRequire2faOk = paramsUserUpdate.Require2fa.Enum()[UserUpdateRequire2fa]
-			if UserUpdateRequire2fa != "" && !UserUpdateRequire2faOk {
-				return fmt.Errorf("invalid %v flag value: '%v'", "require-2fa", UserUpdateRequire2fa)
+			var UserUpdateRequire2faErr error
+			paramsUserUpdate.Require2fa, UserUpdateRequire2faErr = lib.FetchKey("require-2fa", paramsUserUpdate.Require2fa.Enum(), UserUpdateRequire2fa)
+			if UserUpdateRequire2fa != "" && UserUpdateRequire2faErr != nil {
+				return UserUpdateRequire2faErr
 			}
 			user, err = client.Update(ctx, paramsUserUpdate)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
