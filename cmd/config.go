@@ -81,7 +81,7 @@ func Config() *cobra.Command {
 			lib.JsonMarshal(Profile(cmd), []string{fields}, false, "")
 		},
 	}
-
+	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "config")
 	Config.AddCommand(configShow)
 	return Config
 }

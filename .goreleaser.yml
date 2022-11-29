@@ -1,5 +1,8 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    - ./completions.sh
 release:
   github:
     owner: Files-com
@@ -59,6 +62,11 @@ brews:
     description: Files.com command-line interface
     license: "MIT"
     test: system "#{bin}/files-cli --version"
+    install: |-
+      bin.install "files-cli"
+      bash_completion.install "completions/files-cli.bash"
+      zsh_completion.install "completions/files-cli.zsh"
+      fish_completion.install "completions/files-cli.fish"
 nfpms:
   -
     package_name: files-cli
@@ -74,6 +82,7 @@ nfpms:
     maintainer: 'Dustin Zeisler <dustin.zeisler@files.com>'
 #dockers:
 #  -
+#    use: podman
 #    image_templates:
 #      - "gcr.io/files-com/files-cli:{{ .Tag }}"
 #      - "gcr.io/files-com/files-cli:latest"

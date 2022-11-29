@@ -65,7 +65,7 @@ var (
 				return
 			}
 
-			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) {
+			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) || lib.Includes(cmd.Parent().Use, IgnoreCredentialsCheck) {
 				return
 			}
 
@@ -124,6 +124,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
+	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "completion")
 }
 
 func Profile(cmd *cobra.Command) *lib.Profiles {
