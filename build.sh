@@ -11,10 +11,14 @@ else
 fi
 
 if [ -n "${DEVELOPMENT_BUILD}" ] ||  [ -n "${SNAPSHOT}" ]; then
+  buildArgs=("build" "--rm-dist" "--snapshot")
+  if [[ $# -gt 0 ]]; then
+     buildArgs+=($*)
+  fi
   if ! command -v goreleaser &> /dev/null; then
-     curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro bash -s -- build --rm-dist --snapshot || exit 1
+     curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro bash -s -- "${buildArgs[@]}" || exit 1
   else
-    goreleaser build --rm-dist --snapshot
+    goreleaser "${buildArgs[@]}"
   fi
 fi
 ERROR_CODE=$?

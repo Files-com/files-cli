@@ -24,6 +24,7 @@ var (
 	debug                  string
 	ignoreVersionCheck     bool
 	OutputPath             string
+	Reauthentication       bool
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -45,12 +46,14 @@ var (
 				sdkConfig.Debug = &d
 				sdkConfig.SetLogger(log.New(logFile, "", log.LstdFlags))
 			}
+
 			profile := &lib.Profiles{}
 			err := profile.Load(sdkConfig, ProfileValue)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				os.Exit(1)
 			}
+			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			cmd.SetContext(context.WithValue(cmd.Context(), "profile", profile))
 
 			if OutputPath != "" {
@@ -82,9 +85,14 @@ var (
 			}
 
 			if Profile(cmd).ValidSession() {
+				if Reauthentication {
+					err = lib.Reauthenicate(Profile(cmd))
+					if err != nil {
+						return
+					}
+				}
 				return
 			}
-			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
 				err = lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
@@ -122,6 +130,7 @@ func init() {
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
+	RootCmd.PersistentFlags().BoolVarP(&Reauthentication, "reauthentication", "r", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "completion")

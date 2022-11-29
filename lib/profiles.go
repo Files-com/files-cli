@@ -363,6 +363,27 @@ func parseTermInput(text string) string {
 	return text
 }
 
+func Reauthenicate(profile *Profiles) (err error) {
+	if profile.Config.AdditionalHeaders == nil {
+		profile.Config.AdditionalHeaders = make(map[string]string)
+	}
+	fmt.Fprintf(profile.Out, "Password or 2FA Code: ")
+	profile.Config.AdditionalHeaders["X-Files-Reauthentication"], err = passwordPrompt()
+	fmt.Fprintf(profile.Out, "\n")
+	return
+}
+
+func passwordPrompt() (password string, err error) {
+	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return password, err
+	}
+
+	password = parseTermInput(string(bytePassword))
+
+	return password, nil
+}
+
 func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
 	var err error
 	profile.Current().Subdomain, err = PromptUserWithPretext("Subdomain: %s", profile.Current().Subdomain, profile)
@@ -380,13 +401,11 @@ func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, profile *P
 
 	if paramsSessionCreate.Password == "" {
 		fmt.Fprintf(profile.Out, "Password: ")
-		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+		paramsSessionCreate.Password, err = passwordPrompt()
+		fmt.Fprintf(profile.Out, "\n")
 		if err != nil {
 			return err
 		}
-
-		paramsSessionCreate.Password = parseTermInput(string(bytePassword))
-		fmt.Fprintf(profile.Out, "\n")
 	}
 
 	profile.SetOnConfig()
