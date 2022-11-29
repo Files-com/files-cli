@@ -29,7 +29,7 @@ func RemoteMounts() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 	}
 	var mountValue MountValue
-	var path string
+	createParams := files_sdk.BehaviorCreateParams{Behavior: "remote_server_mount"}
 	var createFolder bool
 	var remoteServerName string
 	create := &cobra.Command{
@@ -48,22 +48,18 @@ func RemoteMounts() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			mount := files_sdk.BehaviorCreateParams{
-				Behavior: "remote_server_mount",
-				Path:     path,
-				Value:    string(valueBytes),
-			}
+			createParams.Value = string(valueBytes)
 
 			if createFolder {
 				folderClient := folder.Client{Config: *Profile(cmd).Config}
-				_, err := folderClient.Create(cmd.Context(), files_sdk.FolderCreateParams{Path: path})
+				_, err := folderClient.Create(cmd.Context(), files_sdk.FolderCreateParams{Path: createParams.Path})
 				if err != nil {
 					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				}
 			}
 
 			client := behavior.Client{Config: *Profile(cmd).Config}
-			resource, err := client.Create(cmd.Context(), mount)
+			resource, err := client.Create(cmd.Context(), createParams)
 			if err != nil {
 				return err
 			}
@@ -86,7 +82,9 @@ func RemoteMounts() *cobra.Command {
 	}
 
 	create.Flags().BoolVar(&createFolder, "create-path", false, "create folder for mount")
-	create.Flags().StringVar(&path, "path", path, "")
+	create.Flags().StringVar(&createParams.Name, "name", createParams.Name, "")
+	create.MarkFlagRequired("name")
+	create.Flags().StringVar(&createParams.Path, "path", createParams.Path, "")
 	create.MarkFlagRequired("path")
 	create.Flags().StringVar(&remoteServerName, "remote-server-name", remoteServerName, "")
 	create.Flags().StringVar(&mountValue.RemotePath, "remote-path", mountValue.RemotePath, "")
@@ -215,7 +213,7 @@ func RemoteMounts() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
-	var id int64
+	updateParams := files_sdk.BehaviorUpdateParams{Behavior: "remote_server_mount"}
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -229,14 +227,9 @@ func RemoteMounts() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			mount := files_sdk.BehaviorUpdateParams{
-				Id:       id,
-				Behavior: "remote_server_mount",
-				Path:     path,
-				Value:    string(valueBytes),
-			}
+			updateParams.Value = string(valueBytes)
 
-			resource, err := client.Update(ctx, mount)
+			resource, err := client.Update(ctx, updateParams)
 			if err != nil {
 				return nil
 			}
@@ -245,8 +238,9 @@ func RemoteMounts() *cobra.Command {
 			return nil
 		},
 	}
-	cmdUpdate.Flags().Int64Var(&id, "id", 0, "Behavior ID.")
-	cmdUpdate.Flags().StringVar(&path, "path", path, "")
+	cmdUpdate.Flags().Int64Var(&updateParams.Id, "id", 0, "Behavior ID.")
+	cmdUpdate.Flags().StringVar(&updateParams.Path, "path", updateParams.Path, "")
+	cmdUpdate.Flags().StringVar(&updateParams.Name, "name", updateParams.Name, "")
 	cmdUpdate.Flags().StringVar(&mountValue.RemotePath, "remote-path", mountValue.RemotePath, "")
 	cmdUpdate.Flags().Int64Var(&mountValue.RemoteServerId, "remote-server-id", mountValue.RemoteServerId, "")
 
