@@ -115,7 +115,7 @@ func tableMarshal(t table.Writer, result interface{}, fields []string, writeHead
 	return nil
 }
 
-func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields []string, usePager bool, out io.Writer, filter FilterIter) error {
+func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields []string, usePager bool, out io.Writer, filterIter FilterIter) error {
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 	pager, err := Pager{UsePager: usePager}.Init(it, out)
@@ -136,13 +136,21 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 		if pager.Canceled(ctx) {
 			return nil
 		}
-		if filter == nil || filter(it.Current()) {
-			err := tableMarshal(t, it.Current(), fields, writeHeader, false)
+
+		current := it.Current()
+		filter := true
+		if filterIter != nil {
+			current, filter = filterIter(current)
+		}
+
+		if filter {
+			err := tableMarshal(t, current, fields, writeHeader, false)
 			if err != nil {
 				return err
 			}
 			hasRows = true
 		}
+
 		writeHeader = false
 		if paging && itPaging.EOFPage() {
 			spinner.Stop()

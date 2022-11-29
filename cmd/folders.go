@@ -75,12 +75,12 @@ func Folders() *cobra.Command {
 			}
 			var listFilter lib.FilterIter
 			if listOnlyFolders {
-				listFilter = func(i interface{}) bool {
+				listFilter = func(i interface{}) (interface{}, bool) {
 					f, ok := i.(files_sdk.Folder)
 					if ok && f.Type == "directory" {
-						return true
+						return i, true
 					}
-					return false
+					return i, false
 				}
 			}
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())

@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter FilterIter, usePager bool, format string, out io.Writer) error {
+func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filterIter FilterIter, usePager bool, format string, out io.Writer) error {
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 	pager, err := Pager{UsePager: usePager}.Init(it, out)
@@ -24,10 +24,16 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 		if pager.Canceled(ctx) {
 			return nil
 		}
-		if filter != nil && !filter(it.Current()) {
-			continue
+		current := it.Current()
+		if filterIter != nil {
+			var ok bool
+			current, ok = filterIter(current)
+			if !ok {
+				continue
+			}
 		}
-		recordMap, _, err := OnlyFields(fields, it.Current())
+
+		recordMap, _, err := OnlyFields(fields, current)
 		if err != nil {
 			return err
 		}

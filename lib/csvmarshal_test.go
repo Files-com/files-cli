@@ -98,8 +98,8 @@ func TestCSVMarshalIter_FilterIter(t *testing.T) {
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
-	CSVMarshalIter(&it, []string{}, func(i interface{}) bool {
-		return i.(Person).FirstName == "Dustin"
+	CSVMarshalIter(&it, []string{}, func(i interface{}) (interface{}, bool) {
+		return i, i.(Person).FirstName == "Dustin"
 	}, buf)
 
 	a.Equal(`first_name,last_name,age

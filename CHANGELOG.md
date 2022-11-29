@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.32] - 2022/11/29
+### Add
+- New resource `remote-mounts` for managing Remote Mounts.
+
 ## [2.1.31] - 2022/11/29
 ### Add
 - Protected resources could require reauthenication when using session based authentication. This adds the `reauthentication` flag, which prompts for the users password for protected resources. See doc https://developers.files.com/#reauthentication

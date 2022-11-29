@@ -44,6 +44,10 @@ archives:
       darwin: macOS
       linux: Linux
       windows: Windows
+    files:
+      - README.md
+      - CHANGELOG.md
+      - completions/*
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -64,8 +68,8 @@ brews:
     test: system "#{bin}/files-cli --version"
     install: |-
       bin.install "files-cli"
-      bash_completion.install "completions/files-cli.bash"
-      zsh_completion.install "completions/files-cli.zsh"
+      bash_completion.install "completions/files-cli.bash" => "files-cli"
+      zsh_completion.install "completions/files-cli.zsh" => "_files-cli"
       fish_completion.install "completions/files-cli.fish"
 nfpms:
   -
@@ -80,6 +84,19 @@ nfpms:
       - rpm
     file_name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}{{.Arm}}'
     maintainer: 'Dustin Zeisler <dustin.zeisler@files.com>'
+    contents:
+      - src: ./completions/files-cli.bash
+        dst: /usr/share/bash-completion/completions/files-cli
+        file_info:
+          mode: 0644
+      - src: ./completions/files-cli.fish
+        dst: /usr/share/fish/vendor_completions.d/files-cli.fish
+        file_info:
+          mode: 0644
+      - src: ./completions/files-cli.zsh
+        dst: /usr/share/zsh/vendor-completions/_files-cli
+        file_info:
+          mode: 0644
 #dockers:
 #  -
 #    use: podman

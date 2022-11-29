@@ -21,12 +21,12 @@ type IterPaging interface {
 	GetPage() bool
 }
 
-type FilterIter func(interface{}) bool
+type FilterIter func(interface{}) (interface{}, bool)
 
 func Format(ctx context.Context, result interface{}, format []string, fields []string, usePager bool, out ...io.Writer) error {
 	results, ok := interfaceSlice(result)
 	if ok {
-		return FormatIter(ctx, &SliceIter{Items: results}, format, fields, false, func(i interface{}) bool { return true }, out...)
+		return FormatIter(ctx, &SliceIter{Items: results}, format, fields, false, func(i interface{}) (interface{}, bool) { return i, true }, out...)
 	}
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
