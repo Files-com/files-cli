@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"runtime"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 
@@ -20,7 +21,14 @@ func tableWriter(style string, out io.Writer) table.Writer {
 	case "bright":
 		t.SetStyle(table.StyleColoredBright)
 	default:
-		t.SetStyle(table.StyleLight)
+		os := runtime.GOOS
+		switch os {
+		case "windows":
+			// unicode character don't display with windows `more` command
+			t.SetStyle(table.StyleDefault)
+		default:
+			t.SetStyle(table.StyleLight)
+		}
 	}
 	width, _, err := terminal.GetSize(0)
 	if err == nil {

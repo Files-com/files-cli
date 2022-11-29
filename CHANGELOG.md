@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.33] - 2022/11/29
+### Fix
+- On Windows when listing a resource with pager resulted in garbled text. Changed to use non unicode character for table.
+
 ## [2.1.32] - 2022/11/29
 ### Add
 - New resource `remote-mounts` for managing Remote Mounts.
