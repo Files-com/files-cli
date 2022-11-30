@@ -7,9 +7,9 @@ import (
 	"runtime"
 
 	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/olekukonko/ts"
 
 	"github.com/jedib0t/go-pretty/v6/table"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 func tableWriter(style string, out io.Writer) table.Writer {
@@ -30,9 +30,10 @@ func tableWriter(style string, out io.Writer) table.Writer {
 			t.SetStyle(table.StyleLight)
 		}
 	}
-	width, _, err := terminal.GetSize(0)
+	t.SetAllowedRowLength(1024)
+	size, err := ts.GetSize()
 	if err == nil {
-		t.SetAllowedRowLength(width)
+		t.SetAllowedRowLength(size.Col())
 	}
 
 	return t

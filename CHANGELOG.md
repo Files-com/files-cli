@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.1.35] - 2022/11/30
+### Fix
+- Windows table format would overflow it now clips extra columns to fit screen width.
+
 ## [2.1.34] - 2022/11/29
 ### Fix
 - field `name` was not settable on resource `remote-mounts`
