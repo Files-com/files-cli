@@ -48,6 +48,25 @@ archives:
       - README.md
       - CHANGELOG.md
       - completions/*
+changelog:
+  sort: asc
+  use: github
+  groups:
+    - title: 'New Features'
+      regexp: '^### Add'
+      order: 100
+    - title: 'Bug Fixes'
+      regexp: '^### Fix'
+      order: 200
+    - title: 'Bug Fixes'
+      regexp: '^### Fix'
+      order: 200
+    - title: 'Improvements'
+      regexp: '^### Improvement'
+      order: 300
+    - title: 'Change'
+      regexp: '^### Change'
+      order: 400
 checksum:
   name_template: 'checksums.txt'
 snapshot:
