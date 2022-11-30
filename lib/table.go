@@ -30,6 +30,7 @@ func tableWriter(style string, out io.Writer) table.Writer {
 			t.SetStyle(table.StyleLight)
 		}
 	}
+	t.SuppressEmptyColumns()
 	t.SetAllowedRowLength(1024)
 	size, err := ts.GetSize()
 	if err == nil {

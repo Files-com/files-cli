@@ -11,12 +11,12 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 )
 
-func ClientError(ctx context.Context, profile *Profiles, err error, out ...io.Writer) {
+func ClientError(ctx context.Context, profile *Profiles, err error, out ...io.Writer) error {
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}
 	if err == nil {
-		return
+		return nil
 	}
 	responseError, ok := err.(files_sdk.ResponseError)
 
@@ -30,7 +30,7 @@ func ClientError(ctx context.Context, profile *Profiles, err error, out ...io.Wr
 		filepath.Base(path)
 		fmt.Fprintf(out[0], "\n\t%v %v --reauthentication\n", filepath.Base(path), strings.Join(os.Args[1:len(os.Args)], " "))
 		exit(ctx)
-		return
+		return err
 	}
 
 	if ok && responseError.Type == "not-authorized/authentication-required" && profile.ValidSession() {
@@ -50,6 +50,7 @@ func ClientError(ctx context.Context, profile *Profiles, err error, out ...io.Wr
 	}
 
 	exit(ctx)
+	return err
 }
 
 func exit(ctx context.Context) {

@@ -27,7 +27,7 @@ var (
 	Reauthentication       bool
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			sdkConfig := cmd.Context().Value("config").(*files.Config)
 			if APIKey != "" {
 				sdkConfig.APIKey = APIKey
@@ -51,7 +51,7 @@ var (
 			err := profile.Load(sdkConfig, ProfileValue)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-				os.Exit(1)
+				return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			cmd.SetContext(context.WithValue(cmd.Context(), "profile", profile))
@@ -59,21 +59,21 @@ var (
 			if OutputPath != "" {
 				output, err := os.Create(OutputPath)
 				if err != nil {
-					lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
+					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}
 				cmd.SetOut(output)
 			}
 
 			if lib.Includes(cmd.Use, []string{"login", "logout"}) {
-				return
+				return nil
 			}
 
 			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) || lib.Includes(cmd.Parent().Use, IgnoreCredentialsCheck) {
-				return
+				return nil
 			}
 
 			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], []string{"config-set", "config-reset", "config-show", "version", "agent"}) {
-				return
+				return nil
 			}
 
 			if !ignoreVersionCheck {
@@ -81,36 +81,34 @@ var (
 			}
 
 			if Profile(cmd).Config.GetAPIKey() != "" {
-				return
+				return nil
 			}
 
 			if Profile(cmd).ValidSession() {
 				if Reauthentication {
 					err = lib.Reauthenicate(Profile(cmd))
 					if err != nil {
-						return
+						return err
 					}
 				}
-				return
+				return nil
 			}
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
 				err = lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
 				if err != nil {
-					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-					os.Exit(1)
+					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}
-				return
 			}
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
 				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found. Using session login.\n")
 				err = lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
 				if err != nil {
-					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-					os.Exit(1)
+					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}
 			}
+			return nil
 		},
 	}
 )

@@ -57,12 +57,12 @@ func Requests() *cobra.Command {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -114,12 +114,12 @@ func Requests() *cobra.Command {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatGetFolder, fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -192,7 +192,7 @@ func Requests() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsRequestDelete)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

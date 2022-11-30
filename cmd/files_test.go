@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	cliLib "github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -65,11 +66,14 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	fileClient := file.Client{Config: *config}
 
 	_, err = folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
-	assert.NoError(err)
+	if !strings.Contains(err.Error(), "Destination Exists") {
+		assert.NoError(err)
+	}
 	params := file.UploadIOParams{
-		Reader: strings.NewReader("testing 1"),
-		Size:   int64(9),
-		Path:   filepath.Join("test-dir-files-delete-r", "1.text"),
+		Reader:        strings.NewReader("testing 1"),
+		Size:          int64(9),
+		Path:          filepath.Join("test-dir-files-delete-r", "1.text"),
+		ProvidedMtime: time.Date(2010, 11, 17, 20, 34, 58, 651387237, time.UTC),
 	}
 	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
@@ -99,8 +103,7 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	_, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 
-	out, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
-	assert.Equal("", string(out))
+	_, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
 
 	assert.Contains(string(stderr), "Folder Not Empty - `Folder test-dir-files-delete not empty`")
 }

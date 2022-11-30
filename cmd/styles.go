@@ -110,7 +110,7 @@ func Styles() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsStyleDelete)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

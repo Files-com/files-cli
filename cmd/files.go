@@ -140,7 +140,7 @@ func Files() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsFileDelete)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -230,7 +230,13 @@ func Files() *cobra.Command {
 			var fileAction interface{}
 			var err error
 			fileAction, err = client.Copy(ctx, paramsFileCopy)
+			if err != nil {
+				return err
+			}
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
+			if err != nil {
+				return err
+			}
 			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},
@@ -273,7 +279,13 @@ func Files() *cobra.Command {
 			var fileAction interface{}
 			var err error
 			fileAction, err = client.Move(ctx, paramsFileMove)
+			if err != nil {
+				return err
+			}
 			fileAction, err = transfers.WaitFileMigration(ctx, *config, fileAction, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
+			if err != nil {
+				return err
+			}
 			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

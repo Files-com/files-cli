@@ -71,7 +71,7 @@ func Folders() *cobra.Command {
 				it, err = fileClient.ListFor(ctx, params)
 			}
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if listOnlyFolders {
@@ -85,7 +85,7 @@ func Folders() *cobra.Command {
 			}
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

@@ -52,12 +52,12 @@ func MessageComments() *cobra.Command {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -188,7 +188,7 @@ func MessageComments() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsMessageCommentDelete)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

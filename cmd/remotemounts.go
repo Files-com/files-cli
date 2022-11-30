@@ -119,12 +119,12 @@ func RemoteMounts() *cobra.Command {
 				}
 			}
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -160,11 +160,10 @@ func RemoteMounts() *cobra.Command {
 			var err error
 			resource, err = client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			expandedResource, _ := expandBehavior()(resource)
-			lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
@@ -194,7 +193,7 @@ func RemoteMounts() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsBehaviorDelete)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -233,11 +232,10 @@ func RemoteMounts() *cobra.Command {
 
 			resource, err := client.Update(ctx, updateParams)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			expandedResource, _ := expandBehavior()(resource)
-			lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&updateParams.Id, "id", 0, "Behavior ID.")

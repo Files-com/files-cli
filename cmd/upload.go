@@ -17,7 +17,7 @@ func Upload() *cobra.Command {
 	Upload := &cobra.Command{
 		Use:  "upload [source-path] [remote-path]",
 		Args: cobra.MaximumNArgs(2),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			var sourcePath string
@@ -45,7 +45,7 @@ func Upload() *cobra.Command {
 				},
 			)
 
-			lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
+			return lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
 		}}
 	Upload.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
 	Upload.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only upload files with a more recent modified date")

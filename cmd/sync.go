@@ -25,7 +25,7 @@ func Sync() *cobra.Command {
 	push := &cobra.Command{
 		Use:  "push",
 		Args: cobra.ExactArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
@@ -43,13 +43,13 @@ func Sync() *cobra.Command {
 					RetryPolicy: file.RetryUnfinished,
 				},
 			)
-			lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
+			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
 		},
 	}
 	pull := &cobra.Command{
 		Use:  "pull",
 		Args: cobra.ExactArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
@@ -67,7 +67,7 @@ func Sync() *cobra.Command {
 					RetryPolicy:   file.RetryUnfinished,
 				},
 			)
-			lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
+			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
 		},
 	}
 

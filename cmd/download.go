@@ -17,7 +17,7 @@ func Download() *cobra.Command {
 	Download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			config := cmd.Context().Value("config").(*files_sdk.Config)
 			var remotePath string
 			var localPath string
@@ -44,7 +44,7 @@ func Download() *cobra.Command {
 				},
 			)
 
-			lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
+			return lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
 		},
 	}
 

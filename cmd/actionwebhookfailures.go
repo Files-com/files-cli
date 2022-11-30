@@ -40,7 +40,7 @@ func ActionWebhookFailures() *cobra.Command {
 			var err error
 			err = client.Retry(ctx, paramsActionWebhookFailureRetry)
 			if err != nil {
-				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
