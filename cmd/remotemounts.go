@@ -17,8 +17,8 @@ func init() {
 }
 
 type MountValue struct {
-	RemotePath     string `json:"remote_path"`
-	RemoteServerId int64  `json:"remote_server_id"`
+	RemotePath     string `json:"remote_path,omitempty"`
+	RemoteServerId int64  `json:"remote_server_id,omitempty"`
 }
 
 func RemoteMounts() *cobra.Command {
@@ -160,7 +160,7 @@ func RemoteMounts() *cobra.Command {
 			var err error
 			resource, err = client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
-				return err
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			expandedResource, _ := expandBehavior()(resource)
 			lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
@@ -227,11 +227,13 @@ func RemoteMounts() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			updateParams.Value = string(valueBytes)
+			if len(valueBytes) > 2 { // empty json object `{}`
+				updateParams.Value = string(valueBytes)
+			}
 
 			resource, err := client.Update(ctx, updateParams)
 			if err != nil {
-				return nil
+				lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			expandedResource, _ := expandBehavior()(resource)
 			lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger())
