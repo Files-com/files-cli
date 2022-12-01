@@ -250,9 +250,12 @@ You can configure the output format by using the `--format` option. For example,
 Available output formats are:
 
 - table
-- table-dark
-- table-bright
+- table,dark
+- table,bright
+- table,light,horizontal/vertical
+- table,markdown
 - json
+- json,raw
 - csv
 
 Here are some examples:
@@ -262,11 +265,11 @@ files-cli folders list-for /path/to/folder --format csv
 ```
 
 ``` shell
-files-cli folders create --path “/path/to/folder/to/be/created” --format json
+files-cli folders create --path “/path/to/folder/to/be/created” --format="json,raw"
 ```
 
 ``` shell
-files-cli users list --format table-dark
+files-cli users list --format="table,dark"
 ```
 
 ### Command Help

@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Files-com/files-sdk-go/v2/directory"
+
 	"github.com/Files-com/files-sdk-go/v2/file"
 
 	"github.com/Files-com/files-sdk-go/v2/lib/direction"
@@ -26,36 +28,37 @@ import (
 )
 
 type Transfers struct {
-	scanningBar           *mpb.Bar
-	scanningBarInitOnce   *sync.Once
-	mainBar               *mpb.Bar
-	mainBarInitOnce       *sync.Once
-	fileStatusBar         *mpb.Bar
-	fileStatusBarInitOnce *sync.Once
-	rateUpdaterMutex      *sync.Once
-	lastEndedFile         status.File
-	eventBody             []string
-	eventBodyMutex        *sync.RWMutex
-	eventErrors           []string
-	eventErrorsMutex      *sync.RWMutex
-	pathPadding           int
-	SyncFlag              bool
-	SendLogsToCloud       bool
-	DisableProgressOutput bool
-	PreserveTimes         bool
-	ConcurrentFiles       int
-	AfterMove             string
-	AfterDelete           bool
-	Progress              *mpb.Progress
-	externalEvent         files_sdk.ExternalEventCreateParams
-	start                 time.Time
-	ETA                   ewma.MovingAverage
-	TransferRate          ewma.MovingAverage
-	Ignore                *[]string
-	waitForEndingMessage  chan bool
+	scanningBar               *mpb.Bar
+	scanningBarInitOnce       *sync.Once
+	mainBar                   *mpb.Bar
+	mainBarInitOnce           *sync.Once
+	fileStatusBar             *mpb.Bar
+	fileStatusBarInitOnce     *sync.Once
+	rateUpdaterMutex          *sync.Once
+	lastEndedFile             status.File
+	eventBody                 []string
+	eventBodyMutex            *sync.RWMutex
+	eventErrors               []string
+	eventErrorsMutex          *sync.RWMutex
+	pathPadding               int
+	SyncFlag                  bool
+	SendLogsToCloud           bool
+	DisableProgressOutput     bool
+	PreserveTimes             bool
+	ConcurrentConnectionLimit int
+	AfterMove                 string
+	AfterDelete               bool
+	Progress                  *mpb.Progress
+	externalEvent             files_sdk.ExternalEventCreateParams
+	start                     time.Time
+	ETA                       ewma.MovingAverage
+	TransferRate              ewma.MovingAverage
+	Ignore                    *[]string
+	waitForEndingMessage      chan bool
 	*manager.Manager
-	Stdout io.Writer
-	Stderr io.Writer
+	Stdout             io.Writer
+	Stderr             io.Writer
+	finishedForDisplay bool
 }
 
 func New() *Transfers {
@@ -72,7 +75,6 @@ func New() *Transfers {
 		SyncFlag:              false,
 		SendLogsToCloud:       false,
 		DisableProgressOutput: false,
-		ConcurrentFiles:       manager.ConcurrentFiles,
 		ETA:                   ewma.NewMovingAverage(90),
 		TransferRate:          newTransferRate(),
 		Ignore:                &[]string{},
@@ -94,7 +96,7 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 }
 
 func (t *Transfers) createManager() {
-	t.Manager = manager.New(t.ConcurrentFiles, manager.ConcurrentFileParts)
+	t.Manager = manager.New(manager.ConcurrentFiles, t.ConcurrentConnectionLimit)
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
@@ -221,6 +223,7 @@ func (t *Transfers) SetupSignals(job *status.Job) {
 				t.waitForEndingMessage <- true
 				break
 			case <-subscriptions.Finished:
+				t.finishedForDisplay = true
 				t.Log(fmt.Sprintf("total downloaded: %v", lib.ByteCountSI(job.TransferBytes())), nil)
 				t.Log(fmt.Sprintf("Finished at %v", time.Now()), nil)
 				if !t.DisableProgressOutput {
@@ -247,12 +250,35 @@ func (t *Transfers) logOnEnd(s status.File) {
 	}
 }
 
-func bestPath(status status.File) string {
-	if status.RemotePath != "" {
-		return status.RemotePath
-	} else {
-		return status.LocalPath
+func bestPath(status status.File) (path string) {
+	switch status.Job.Direction {
+	case direction.UploadType:
+		path = status.LocalPath
+		if status.Job.Type == directory.File {
+			_, path = filepath.Split(status.LocalPath)
+		} else {
+			relPath, err := filepath.Rel(status.Job.LocalPath, status.LocalPath)
+			if err == nil {
+				path = relPath
+			}
+		}
+	case direction.DownloadType:
+		path = status.RemotePath
+
+		if status.Job.Type == directory.File {
+			path = status.File.DisplayName
+		} else {
+			relPath, err := filepath.Rel(status.Job.RemotePath, status.RemotePath)
+			if err == nil {
+				path = relPath
+			}
+		}
 	}
+
+	if path == "" {
+		path = status.File.Path
+	}
+	return
 }
 
 func (t *Transfers) UpdateMainTotal(job *status.Job) {
@@ -323,7 +349,7 @@ func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 	t.mainBar = t.Progress.AddBar(job.TotalBytes(),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf("%v", directionFmt(job.Direction))
+				return fmt.Sprintf("%v", directionFmt(job.Direction, t.finishedForDisplay))
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
@@ -362,7 +388,7 @@ func (t *Transfers) buildMainTotalScanning(job *status.Job) {
 		mpb.NewBarFiller(mpb.SpinnerStyle(SpinnerStyle...)),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf("%v", directionFmt(job.Direction))
+				return fmt.Sprintf("%v", directionFmt(job.Direction, t.finishedForDisplay))
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
@@ -459,12 +485,20 @@ func (t *Transfers) createRateUpdaters(job *status.Job) {
 	}()
 }
 
-func directionFmt(p direction.Direction) (str string) {
+func directionFmt(p direction.Direction, finished bool) (str string) {
 	switch p {
 	case direction.DownloadType:
-		str = "Downloading"
+		if finished {
+			str = "Downloaded"
+		} else {
+			str = "Downloading"
+		}
 	case direction.UploadType:
-		str = "Uploading"
+		if finished {
+			str = "Uploaded"
+		} else {
+			str = "Uploading"
+		}
 	default:
 		str = p.Name()
 	}

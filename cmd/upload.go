@@ -5,6 +5,7 @@ import (
 	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	file "github.com/Files-com/files-sdk-go/v2/file"
+	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +48,7 @@ func Upload() *cobra.Command {
 
 			return lib.ClientError(cmd.Context(), Profile(cmd), transfer.ProcessJob(cmd.Context(), job, *config))
 		}}
-	Upload.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-uploads", "c", transfer.ConcurrentFiles, "")
+	Upload.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
 	Upload.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only upload files with a more recent modified date")
 	Upload.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	Upload.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")

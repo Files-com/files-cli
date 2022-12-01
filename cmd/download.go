@@ -5,6 +5,7 @@ import (
 	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	file "github.com/Files-com/files-sdk-go/v2/file"
+	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ func init() {
 
 func Download() *cobra.Command {
 	transfer := transfers.New()
-	Download := &cobra.Command{
+	download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -48,11 +49,11 @@ func Download() *cobra.Command {
 		},
 	}
 
-	Download.Flags().IntVarP(&transfer.ConcurrentFiles, "concurrent-file-downloads", "c", transfer.ConcurrentFiles, "")
-	Download.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only download files with a more recent modified date")
-	Download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
-	Download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
-	Download.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
+	download.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
+	download.Flags().BoolVarP(&transfer.SyncFlag, "sync", "s", false, "Only download files with a more recent modified date")
+	download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
+	download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
+	download.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
 
-	return Download
+	return download
 }

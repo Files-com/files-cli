@@ -104,9 +104,7 @@ by overlapping round-trip times`)
 
 func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
 	a.Context = ctx
-	var d bool
-	d = true
-	a.Config.Debug = &d
+	a.Config.Debug = true
 	a.Config.SetLogger(logger.GetLogger())
 	a.permissions = make(map[string][]string)
 	a.shutdown = make(chan bool)
@@ -144,9 +142,7 @@ func (a *AgentService) InitPaths() error {
 
 func (a *AgentService) LoadConfig(ctx context.Context) error {
 	a.Context = ctx
-	var d bool
-	d = true
-	a.Config.Debug = &d
+	a.Config.Debug = true
 
 	logLevel := zerolog.DebugLevel
 	if !a.LogVerbose {
