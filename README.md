@@ -4,14 +4,51 @@ The Files.com CLI App provides convenient access to the Files.com API.
 
 ## Installation
 
-Download the latest release for Windows, macOS, or Linux [here](https://github.com/Files-com/files-cli/releases)
+Download the latest release for Windows, macOS, or Linux from the [CLI App Releases](https://github.com/Files-com/files-cli/releases) page.
 
 ### Homebrew 
+
+For systems with Homebrew available, use the following commands:
 
 ```shell
 brew tap Files-com/homebrew-tap
 brew install files-cli
 ```
+
+### RPM Package Manager based systems
+
+For Linux systems that support RPM, such as Red Hat Linux, Fedora Linux, CentOS, openSUSE, Oracle Linux, and others, use the RPM Package Manager to install the CLI App:
+
+```shell
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.rpm -O files-cli.rpm
+
+sudo rpm -i ./files-cli.rpm
+```
+
+### Debian based systems
+
+For Debian based systems, such as Ubuntu Linux, use the APT-based Package Manager to install the CLI App:
+
+```shell
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.apk -O files-cli.apk
+
+sudo rpm -i ./files-cli.apk
+```
+
+### Mac
+
+For MacOS (64bit) based systems, download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
+
+```shell
+tar xvfz ./files-cli_macOS_64bit.tar.gz
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_macOS_64bit.tar.gz | tar zxv
+sudo mv ./files-cli /usr/local/bin
+```
+
+### Windows
+**Download** [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_Windows_64bit.zip) [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_Windows_ARM64.zip)
+
+For Windows (64bit) based systems, download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
 
 ## Documentation
 
