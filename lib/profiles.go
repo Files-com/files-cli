@@ -67,7 +67,7 @@ type ResetConfig struct {
 var SessionExpiry = time.Hour * 6
 var CheckVersionEvery = time.Hour * 48
 
-const CLICurrentVersionURL = "https://raw.githubusercontent.com/Files-com/files-cli/master/_VERSION"
+const CLICurrentVersionURL = "https://api.github.com/repos/Files-com/files-cli/releases/latest"
 
 func (p *Profiles) Current() *Profile {
 	env, ok := p.Profiles[p.Profile]
@@ -246,11 +246,24 @@ func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
-		latestVersion, err := version.New(string(data))
+		releases := make(map[string]interface{})
+		err = json.Unmarshal(data, &releases)
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
-		return latestVersion, true
+		tagNameTemp, okKey := releases["tag_name"]
+		tagName, okString := tagNameTemp.(string)
+		if okKey && okString {
+			latestVersion, err := version.New(strings.Replace(tagName, "v", "", 1))
+			if checkingFailed(err) {
+				return version.Version{}, false
+			}
+			config.Logger().Printf("Latest version: %v", latestVersion)
+			return latestVersion, true
+		} else {
+			checkingFailed(fmt.Errorf("failed to parse tag_name from releases - %v", releases))
+			return version.Version{}, false
+		}
 	}
 }
 
