@@ -420,6 +420,12 @@ func (a *AgentService) loadConfig() error {
 	if a.RemoteServerConfigurationFile.Port == 0 {
 		a.RemoteServerConfigurationFile.Port = 58550
 	}
+	if a.Root == "" {
+		a.Root, err = os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+	}
 	a.RemoteServerConfigurationFile.Id = int64(mapForId["id"].(float64))
 	if a.ConfigVersion != "1" {
 		return fmt.Errorf("agent upgrade required - `Your current version of the files-agent incompatible and requires an update.`")

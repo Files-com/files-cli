@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
+## [2.2.3] - 2022/12/01
+### Improvement
+- `agent` defaults to home directory if root is left blank.
+
 ## [2.2.2] - 2022/12/01
 ### Fix
 - Update notifier pulls from releases instead of the latest tag because sometimes a tag is not always released.
