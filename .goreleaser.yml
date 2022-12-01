@@ -67,6 +67,9 @@ changelog:
     - title: 'Change'
       regexp: '^### Change'
       order: 400
+    - title: 'Documentation Change'
+      regexp: '^### Documentation Change'
+      order: 500
 checksum:
   name_template: 'checksums.txt'
 snapshot:

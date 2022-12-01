@@ -40,7 +40,6 @@ sudo rpm -i ./files-cli.apk
 For MacOS (64bit) based systems, download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
 
 ```shell
-tar xvfz ./files-cli_macOS_64bit.tar.gz
 curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_macOS_64bit.tar.gz | tar zxv
 sudo mv ./files-cli /usr/local/bin
 ```
