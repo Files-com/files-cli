@@ -1,3 +1,4 @@
 *.gem
 go.work
 completions/
+go.work.sum
