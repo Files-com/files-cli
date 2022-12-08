@@ -2,8 +2,6 @@
 # Make sure to check the documentation at http://goreleaser.com
 before:
   hooks:
-    - go mod tidy
-    - go mod download
     - ./completions.sh
 release:
   github:
