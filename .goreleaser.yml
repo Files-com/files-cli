@@ -1,8 +1,5 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
-before:
-  hooks:
-    - ./completions.sh
 release:
   github:
     owner: Files-com
@@ -121,9 +118,3 @@ nfpms:
           mode: 0644
 signs:
   - artifacts: checksum
-#dockers:
-#  -
-#    use: podman
-#    image_templates:
-#      - "gcr.io/files-com/files-cli:{{ .Tag }}"
-#      - "gcr.io/files-com/files-cli:latest"
