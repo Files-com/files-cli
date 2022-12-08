@@ -14,6 +14,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.1
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.16
+	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/rs/zerolog v1.28.0
 	github.com/samber/lo v1.33.0
 	github.com/sc0vu/didyoumean v0.0.0-20210223094345-27965c2b1bc9
@@ -104,6 +105,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/itchyny/timefmt-go v0.1.4 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
@@ -135,7 +137,6 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.11.1-0.20220212125758-44cd13922739 // indirect
 	github.com/oklog/run v1.1.0 // indirect
-	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0 // indirect
 	github.com/otiai10/copy v1.7.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
