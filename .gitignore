@@ -1,3 +1,7 @@
-*.gem
 go.work
+go.work.sum
 completions/
+test.sh
+setup.sh
+build.sh
+release.sh
