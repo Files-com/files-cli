@@ -4,29 +4,20 @@ All notable changes to this project will be documented in this file.
 This project gets auto released on every change to the [Files.com API](https://developers.files.com).
 Auto generated releases contain additions and fixes to models and method arguments, theses will not be documented here.
 
-## [2.2.3] - 2022/12/01
-### Improvement
-- `agent` defaults to home directory if root is left blank.
-
-## [2.2.2] - 2022/12/01
-### Fix
-- Update notifier pulls from releases instead of the latest tag because sometimes a tag is not always released.
-
-## [2.2.1] - 2022/12/01
-### Documentation Change
-- Readme fixed for macos install
-
-## [2.2.0] - 2022/12/01
+## [2.2.1] - 2022/12/05
 ### Improvement
 - `download`/`sync pull`
   - now does parallel chunked downloads. This is currently turned off for remote mounts of server type SFTP, FTP, and webdav. Depending on connection speed this can decrease download times upto 3x.
   - verify file integrity with server after download for remote mounts that the content-length is unknown up front.
   - On finish progress bar will change from 'Downloading' to 'Downloaded'
+- `agent` defaults to home directory if root is left blank.
+
+### Documentation Change
+- Readme fixed for macos install
 
 ### Change
 - `upload`/`download`/`sync` flag `concurrent-file-uploads` changed to `concurrent-connection-limit`. The default for this is 75. In slow connection scenarios it may help to lower this value. 
 
-## [2.2.0] - 2022/12/01
 ## Change
 - `concurrent-file-uploads` flag is now `concurrent-connection-limit`
 
@@ -36,6 +27,7 @@ Auto generated releases contain additions and fixes to models and method argumen
 ## Fix
 - For download/upload logs better represent file path from source/destination and relative to requested directory.
 - A completed download/upload displays `downloaded`/`uploaded` vs. still displaying `downloading`/`uploading`
+- Update notifier pulls from releases instead of the latest tag because sometimes a tag is not always released.
 
 ## [2.1.36] - 2022/11/30
 ### Fix
