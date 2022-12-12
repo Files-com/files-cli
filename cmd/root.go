@@ -93,7 +93,7 @@ var (
 			}
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
-				err = lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
+				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
 				if err != nil {
 					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}
@@ -101,7 +101,7 @@ var (
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
 				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found. Using session login.\n")
-				err = lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
+				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
 				if err != nil {
 					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}

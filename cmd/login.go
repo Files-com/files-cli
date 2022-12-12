@@ -19,7 +19,7 @@ func Login() *cobra.Command {
 		Args: cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			Profile(cmd).Overrides = lib.Overrides{Out: cmd.OutOrStdout(), In: cmd.InOrStdin()}.Init()
-			err := lib.CreateSession(files.SessionCreateParams{}, Profile(cmd))
+			err := lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)

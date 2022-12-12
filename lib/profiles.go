@@ -397,18 +397,18 @@ func passwordPrompt() (password string, err error) {
 	return password, nil
 }
 
-func CreateSession(paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
+func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
 	var err error
-	profile.Current().Subdomain, err = PromptUserWithPretext("Subdomain: %s", profile.Current().Subdomain, profile)
+	profile.Current().Subdomain, err = PromptUserWithPretext(ctx, "Subdomain: %s", profile.Current().Subdomain, profile)
 	if err != nil {
 		return err
 	}
 
 	userNameDisplay := "Username: %s"
 	if paramsSessionCreate.Username != "" {
-		profile.Current().Username, err = PromptUserWithPretext(userNameDisplay, paramsSessionCreate.Username, profile)
+		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, paramsSessionCreate.Username, profile)
 	} else {
-		profile.Current().Username, err = PromptUserWithPretext(userNameDisplay, profile.Current().Username, profile)
+		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, profile.Current().Username, profile)
 	}
 	paramsSessionCreate.Username = profile.Current().Username
 

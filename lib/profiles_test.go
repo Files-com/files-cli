@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -201,8 +202,10 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
-	err = CreateSession(files_sdk.SessionCreateParams{Password: "badpassword"}, config)
-
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	err = CreateSession(ctx, files_sdk.SessionCreateParams{Password: "badpassword"}, config)
+	assert.NoError(ctx.Err())
 	assert.Equal("testdomain", config.Current().Subdomain)
 	assert.Equal("testuser", config.Current().Username)
 	assert.Equal("", config.Current().SessionId)
@@ -220,7 +223,10 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}
-	err = CreateSession(files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	err = CreateSession(ctx, files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
+	assert.NoError(ctx.Err())
 	assert.NoError(err)
 	assert.Equal("testdomain", config.Current().Subdomain)
 	assert.Equal("testuser", config.Current().Username)

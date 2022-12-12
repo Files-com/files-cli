@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"context"
 	"fmt"
 
 	//tea "test3/go/pkg/mod/github.com/charmbracelet/bubbletea@v0.20.0"
@@ -54,7 +55,7 @@ func (p PretextInputModel) View() string {
 	return fmt.Sprintf(p.display, p.textInput.View()) + "\n"
 }
 
-func PromptUserWithPretext(display string, pretext string, profile *Profiles) (string, error) {
+func PromptUserWithPretext(ctx context.Context, display string, pretext string, profile *Profiles) (string, error) {
 	var pretextModel PretextInputModel
 	maxInputLength := 156
 	var maxAdditionalCharViewSpace int
@@ -64,7 +65,7 @@ func PromptUserWithPretext(display string, pretext string, profile *Profiles) (s
 		maxAdditionalCharViewSpace = 10
 	}
 	pretextModel.new(display, pretext, maxInputLength, len(pretext)+maxAdditionalCharViewSpace)
-	p := tea.NewProgram(pretextModel, tea.WithOutput(profile.Out), tea.WithInput(profile.In))
-	newModel, err := p.StartReturningModel()
+	p := tea.NewProgram(pretextModel, tea.WithOutput(profile.Out), tea.WithInput(profile.In), tea.WithContext(ctx))
+	newModel, err := p.Run()
 	return newModel.(PretextInputModel).textInput.Value(), err
 }
