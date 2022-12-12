@@ -43,7 +43,6 @@ archives:
       windows: Windows
     files:
       - README.md
-      - CHANGELOG.md
       - completions/*
 changelog:
   sort: asc
