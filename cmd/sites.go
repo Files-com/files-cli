@@ -4,11 +4,9 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
 	"fmt"
 
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/site"
 )
 
@@ -154,190 +152,402 @@ func Sites() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := site.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.SiteUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsSiteUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("subdomain") {
+				lib.FlagUpdate(cmd, "subdomain", paramsSiteUpdate.Subdomain, mapParams)
+			}
+			if cmd.Flags().Changed("domain") {
+				lib.FlagUpdate(cmd, "domain", paramsSiteUpdate.Domain, mapParams)
+			}
 			if cmd.Flags().Changed("domain-hsts-header") {
-				paramsSiteUpdate.DomainHstsHeader = flib.Bool(updateDomainHstsHeader)
+				mapParams["domain_hsts_header"] = updateDomainHstsHeader
+			}
+			if cmd.Flags().Changed("domain-letsencrypt-chain") {
+				lib.FlagUpdate(cmd, "domain_letsencrypt_chain", paramsSiteUpdate.DomainLetsencryptChain, mapParams)
+			}
+			if cmd.Flags().Changed("email") {
+				lib.FlagUpdate(cmd, "email", paramsSiteUpdate.Email, mapParams)
+			}
+			if cmd.Flags().Changed("reply-to-email") {
+				lib.FlagUpdate(cmd, "reply_to_email", paramsSiteUpdate.ReplyToEmail, mapParams)
 			}
 			if cmd.Flags().Changed("allow-bundle-names") {
-				paramsSiteUpdate.AllowBundleNames = flib.Bool(updateAllowBundleNames)
+				mapParams["allow_bundle_names"] = updateAllowBundleNames
+			}
+			if cmd.Flags().Changed("bundle-expiration") {
+				lib.FlagUpdate(cmd, "bundle_expiration", paramsSiteUpdate.BundleExpiration, mapParams)
 			}
 			if cmd.Flags().Changed("overage-notify") {
-				paramsSiteUpdate.OverageNotify = flib.Bool(updateOverageNotify)
+				mapParams["overage_notify"] = updateOverageNotify
 			}
 			if cmd.Flags().Changed("welcome-email-enabled") {
-				paramsSiteUpdate.WelcomeEmailEnabled = flib.Bool(updateWelcomeEmailEnabled)
+				mapParams["welcome_email_enabled"] = updateWelcomeEmailEnabled
 			}
 			if cmd.Flags().Changed("ask-about-overwrites") {
-				paramsSiteUpdate.AskAboutOverwrites = flib.Bool(updateAskAboutOverwrites)
+				mapParams["ask_about_overwrites"] = updateAskAboutOverwrites
 			}
 			if cmd.Flags().Changed("show-request-access-link") {
-				paramsSiteUpdate.ShowRequestAccessLink = flib.Bool(updateShowRequestAccessLink)
+				mapParams["show_request_access_link"] = updateShowRequestAccessLink
+			}
+			if cmd.Flags().Changed("welcome-email-cc") {
+				lib.FlagUpdate(cmd, "welcome_email_cc", paramsSiteUpdate.WelcomeEmailCc, mapParams)
+			}
+			if cmd.Flags().Changed("welcome-email-subject") {
+				lib.FlagUpdate(cmd, "welcome_email_subject", paramsSiteUpdate.WelcomeEmailSubject, mapParams)
+			}
+			if cmd.Flags().Changed("welcome-custom-text") {
+				lib.FlagUpdate(cmd, "welcome_custom_text", paramsSiteUpdate.WelcomeCustomText, mapParams)
+			}
+			if cmd.Flags().Changed("language") {
+				lib.FlagUpdate(cmd, "language", paramsSiteUpdate.Language, mapParams)
 			}
 			if cmd.Flags().Changed("windows-mode-ftp") {
-				paramsSiteUpdate.WindowsModeFtp = flib.Bool(updateWindowsModeFtp)
+				mapParams["windows_mode_ftp"] = updateWindowsModeFtp
+			}
+			if cmd.Flags().Changed("default-time-zone") {
+				lib.FlagUpdate(cmd, "default_time_zone", paramsSiteUpdate.DefaultTimeZone, mapParams)
 			}
 			if cmd.Flags().Changed("desktop-app") {
-				paramsSiteUpdate.DesktopApp = flib.Bool(updateDesktopApp)
+				mapParams["desktop_app"] = updateDesktopApp
 			}
 			if cmd.Flags().Changed("desktop-app-session-ip-pinning") {
-				paramsSiteUpdate.DesktopAppSessionIpPinning = flib.Bool(updateDesktopAppSessionIpPinning)
+				mapParams["desktop_app_session_ip_pinning"] = updateDesktopAppSessionIpPinning
+			}
+			if cmd.Flags().Changed("desktop-app-session-lifetime") {
+				lib.FlagUpdate(cmd, "desktop_app_session_lifetime", paramsSiteUpdate.DesktopAppSessionLifetime, mapParams)
 			}
 			if cmd.Flags().Changed("mobile-app") {
-				paramsSiteUpdate.MobileApp = flib.Bool(updateMobileApp)
+				mapParams["mobile_app"] = updateMobileApp
 			}
 			if cmd.Flags().Changed("mobile-app-session-ip-pinning") {
-				paramsSiteUpdate.MobileAppSessionIpPinning = flib.Bool(updateMobileAppSessionIpPinning)
+				mapParams["mobile_app_session_ip_pinning"] = updateMobileAppSessionIpPinning
+			}
+			if cmd.Flags().Changed("mobile-app-session-lifetime") {
+				lib.FlagUpdate(cmd, "mobile_app_session_lifetime", paramsSiteUpdate.MobileAppSessionLifetime, mapParams)
 			}
 			if cmd.Flags().Changed("folder-permissions-groups-only") {
-				paramsSiteUpdate.FolderPermissionsGroupsOnly = flib.Bool(updateFolderPermissionsGroupsOnly)
+				mapParams["folder_permissions_groups_only"] = updateFolderPermissionsGroupsOnly
+			}
+			if cmd.Flags().Changed("welcome-screen") {
+				lib.FlagUpdate(cmd, "welcome_screen", paramsSiteUpdate.WelcomeScreen, mapParams)
 			}
 			if cmd.Flags().Changed("office-integration-available") {
-				paramsSiteUpdate.OfficeIntegrationAvailable = flib.Bool(updateOfficeIntegrationAvailable)
+				mapParams["office_integration_available"] = updateOfficeIntegrationAvailable
 			}
 			if cmd.Flags().Changed("pin-all-remote-servers-to-site-region") {
-				paramsSiteUpdate.PinAllRemoteServersToSiteRegion = flib.Bool(updatePinAllRemoteServersToSiteRegion)
+				mapParams["pin_all_remote_servers_to_site_region"] = updatePinAllRemoteServersToSiteRegion
+			}
+			if cmd.Flags().Changed("motd-text") {
+				lib.FlagUpdate(cmd, "motd_text", paramsSiteUpdate.MotdText, mapParams)
 			}
 			if cmd.Flags().Changed("motd-use-for-ftp") {
-				paramsSiteUpdate.MotdUseForFtp = flib.Bool(updateMotdUseForFtp)
+				mapParams["motd_use_for_ftp"] = updateMotdUseForFtp
 			}
 			if cmd.Flags().Changed("motd-use-for-sftp") {
-				paramsSiteUpdate.MotdUseForSftp = flib.Bool(updateMotdUseForSftp)
+				mapParams["motd_use_for_sftp"] = updateMotdUseForSftp
+			}
+			if cmd.Flags().Changed("session-expiry") {
+				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
 			}
 			if cmd.Flags().Changed("ssl-required") {
-				paramsSiteUpdate.SslRequired = flib.Bool(updateSslRequired)
+				mapParams["ssl_required"] = updateSslRequired
 			}
 			if cmd.Flags().Changed("tls-disabled") {
-				paramsSiteUpdate.TlsDisabled = flib.Bool(updateTlsDisabled)
+				mapParams["tls_disabled"] = updateTlsDisabled
 			}
 			if cmd.Flags().Changed("sftp-insecure-ciphers") {
-				paramsSiteUpdate.SftpInsecureCiphers = flib.Bool(updateSftpInsecureCiphers)
+				mapParams["sftp_insecure_ciphers"] = updateSftpInsecureCiphers
 			}
 			if cmd.Flags().Changed("disable-files-certificate-generation") {
-				paramsSiteUpdate.DisableFilesCertificateGeneration = flib.Bool(updateDisableFilesCertificateGeneration)
+				mapParams["disable_files_certificate_generation"] = updateDisableFilesCertificateGeneration
 			}
 			if cmd.Flags().Changed("user-lockout") {
-				paramsSiteUpdate.UserLockout = flib.Bool(updateUserLockout)
+				mapParams["user_lockout"] = updateUserLockout
+			}
+			if cmd.Flags().Changed("user-lockout-tries") {
+				lib.FlagUpdate(cmd, "user_lockout_tries", paramsSiteUpdate.UserLockoutTries, mapParams)
+			}
+			if cmd.Flags().Changed("user-lockout-within") {
+				lib.FlagUpdate(cmd, "user_lockout_within", paramsSiteUpdate.UserLockoutWithin, mapParams)
+			}
+			if cmd.Flags().Changed("user-lockout-lock-period") {
+				lib.FlagUpdate(cmd, "user_lockout_lock_period", paramsSiteUpdate.UserLockoutLockPeriod, mapParams)
 			}
 			if cmd.Flags().Changed("include-password-in-welcome-email") {
-				paramsSiteUpdate.IncludePasswordInWelcomeEmail = flib.Bool(updateIncludePasswordInWelcomeEmail)
+				mapParams["include_password_in_welcome_email"] = updateIncludePasswordInWelcomeEmail
+			}
+			if cmd.Flags().Changed("allowed-countries") {
+				lib.FlagUpdate(cmd, "allowed_countries", paramsSiteUpdate.AllowedCountries, mapParams)
+			}
+			if cmd.Flags().Changed("allowed-ips") {
+				lib.FlagUpdate(cmd, "allowed_ips", paramsSiteUpdate.AllowedIps, mapParams)
+			}
+			if cmd.Flags().Changed("disallowed-countries") {
+				lib.FlagUpdate(cmd, "disallowed_countries", paramsSiteUpdate.DisallowedCountries, mapParams)
+			}
+			if cmd.Flags().Changed("days-to-retain-backups") {
+				lib.FlagUpdate(cmd, "days_to_retain_backups", paramsSiteUpdate.DaysToRetainBackups, mapParams)
+			}
+			if cmd.Flags().Changed("max-prior-passwords") {
+				lib.FlagUpdate(cmd, "max_prior_passwords", paramsSiteUpdate.MaxPriorPasswords, mapParams)
+			}
+			if cmd.Flags().Changed("password-validity-days") {
+				lib.FlagUpdate(cmd, "password_validity_days", paramsSiteUpdate.PasswordValidityDays, mapParams)
+			}
+			if cmd.Flags().Changed("password-min-length") {
+				lib.FlagUpdate(cmd, "password_min_length", paramsSiteUpdate.PasswordMinLength, mapParams)
 			}
 			if cmd.Flags().Changed("password-require-letter") {
-				paramsSiteUpdate.PasswordRequireLetter = flib.Bool(updatePasswordRequireLetter)
+				mapParams["password_require_letter"] = updatePasswordRequireLetter
 			}
 			if cmd.Flags().Changed("password-require-mixed") {
-				paramsSiteUpdate.PasswordRequireMixed = flib.Bool(updatePasswordRequireMixed)
+				mapParams["password_require_mixed"] = updatePasswordRequireMixed
 			}
 			if cmd.Flags().Changed("password-require-special") {
-				paramsSiteUpdate.PasswordRequireSpecial = flib.Bool(updatePasswordRequireSpecial)
+				mapParams["password_require_special"] = updatePasswordRequireSpecial
 			}
 			if cmd.Flags().Changed("password-require-number") {
-				paramsSiteUpdate.PasswordRequireNumber = flib.Bool(updatePasswordRequireNumber)
+				mapParams["password_require_number"] = updatePasswordRequireNumber
 			}
 			if cmd.Flags().Changed("password-require-unbreached") {
-				paramsSiteUpdate.PasswordRequireUnbreached = flib.Bool(updatePasswordRequireUnbreached)
+				mapParams["password_require_unbreached"] = updatePasswordRequireUnbreached
 			}
 			if cmd.Flags().Changed("sftp-user-root-enabled") {
-				paramsSiteUpdate.SftpUserRootEnabled = flib.Bool(updateSftpUserRootEnabled)
+				mapParams["sftp_user_root_enabled"] = updateSftpUserRootEnabled
 			}
 			if cmd.Flags().Changed("disable-password-reset") {
-				paramsSiteUpdate.DisablePasswordReset = flib.Bool(updateDisablePasswordReset)
+				mapParams["disable_password_reset"] = updateDisablePasswordReset
 			}
 			if cmd.Flags().Changed("immutable-files") {
-				paramsSiteUpdate.ImmutableFiles = flib.Bool(updateImmutableFiles)
+				mapParams["immutable_files"] = updateImmutableFiles
 			}
 			if cmd.Flags().Changed("session-pinned-by-ip") {
-				paramsSiteUpdate.SessionPinnedByIp = flib.Bool(updateSessionPinnedByIp)
+				mapParams["session_pinned_by_ip"] = updateSessionPinnedByIp
 			}
 			if cmd.Flags().Changed("bundle-password-required") {
-				paramsSiteUpdate.BundlePasswordRequired = flib.Bool(updateBundlePasswordRequired)
+				mapParams["bundle_password_required"] = updateBundlePasswordRequired
 			}
 			if cmd.Flags().Changed("bundle-require-share-recipient") {
-				paramsSiteUpdate.BundleRequireShareRecipient = flib.Bool(updateBundleRequireShareRecipient)
+				mapParams["bundle_require_share_recipient"] = updateBundleRequireShareRecipient
+			}
+			if cmd.Flags().Changed("bundle-registration-notifications") {
+				lib.FlagUpdate(cmd, "bundle_registration_notifications", paramsSiteUpdate.BundleRegistrationNotifications, mapParams)
+			}
+			if cmd.Flags().Changed("bundle-activity-notifications") {
+				lib.FlagUpdate(cmd, "bundle_activity_notifications", paramsSiteUpdate.BundleActivityNotifications, mapParams)
+			}
+			if cmd.Flags().Changed("bundle-upload-receipt-notifications") {
+				lib.FlagUpdate(cmd, "bundle_upload_receipt_notifications", paramsSiteUpdate.BundleUploadReceiptNotifications, mapParams)
 			}
 			if cmd.Flags().Changed("password-requirements-apply-to-bundles") {
-				paramsSiteUpdate.PasswordRequirementsApplyToBundles = flib.Bool(updatePasswordRequirementsApplyToBundles)
+				mapParams["password_requirements_apply_to_bundles"] = updatePasswordRequirementsApplyToBundles
 			}
 			if cmd.Flags().Changed("opt-out-global") {
-				paramsSiteUpdate.OptOutGlobal = flib.Bool(updateOptOutGlobal)
+				mapParams["opt_out_global"] = updateOptOutGlobal
 			}
 			if cmd.Flags().Changed("use-provided-modified-at") {
-				paramsSiteUpdate.UseProvidedModifiedAt = flib.Bool(updateUseProvidedModifiedAt)
+				mapParams["use_provided_modified_at"] = updateUseProvidedModifiedAt
 			}
 			if cmd.Flags().Changed("custom-namespace") {
-				paramsSiteUpdate.CustomNamespace = flib.Bool(updateCustomNamespace)
+				mapParams["custom_namespace"] = updateCustomNamespace
+			}
+			if cmd.Flags().Changed("disable-users-from-inactivity-period-days") {
+				lib.FlagUpdate(cmd, "disable_users_from_inactivity_period_days", paramsSiteUpdate.DisableUsersFromInactivityPeriodDays, mapParams)
 			}
 			if cmd.Flags().Changed("non-sso-groups-allowed") {
-				paramsSiteUpdate.NonSsoGroupsAllowed = flib.Bool(updateNonSsoGroupsAllowed)
+				mapParams["non_sso_groups_allowed"] = updateNonSsoGroupsAllowed
 			}
 			if cmd.Flags().Changed("non-sso-users-allowed") {
-				paramsSiteUpdate.NonSsoUsersAllowed = flib.Bool(updateNonSsoUsersAllowed)
+				mapParams["non_sso_users_allowed"] = updateNonSsoUsersAllowed
 			}
 			if cmd.Flags().Changed("sharing-enabled") {
-				paramsSiteUpdate.SharingEnabled = flib.Bool(updateSharingEnabled)
+				mapParams["sharing_enabled"] = updateSharingEnabled
 			}
 			if cmd.Flags().Changed("user-requests-enabled") {
-				paramsSiteUpdate.UserRequestsEnabled = flib.Bool(updateUserRequestsEnabled)
+				mapParams["user_requests_enabled"] = updateUserRequestsEnabled
 			}
 			if cmd.Flags().Changed("user-requests-notify-admins") {
-				paramsSiteUpdate.UserRequestsNotifyAdmins = flib.Bool(updateUserRequestsNotifyAdmins)
+				mapParams["user_requests_notify_admins"] = updateUserRequestsNotifyAdmins
 			}
 			if cmd.Flags().Changed("ftp-enabled") {
-				paramsSiteUpdate.FtpEnabled = flib.Bool(updateFtpEnabled)
+				mapParams["ftp_enabled"] = updateFtpEnabled
 			}
 			if cmd.Flags().Changed("sftp-enabled") {
-				paramsSiteUpdate.SftpEnabled = flib.Bool(updateSftpEnabled)
+				mapParams["sftp_enabled"] = updateSftpEnabled
+			}
+			if cmd.Flags().Changed("sftp-host-key-type") {
+				lib.FlagUpdate(cmd, "sftp_host_key_type", paramsSiteUpdate.SftpHostKeyType, mapParams)
+			}
+			if cmd.Flags().Changed("active-sftp-host-key-id") {
+				lib.FlagUpdate(cmd, "active_sftp_host_key_id", paramsSiteUpdate.ActiveSftpHostKeyId, mapParams)
+			}
+			if cmd.Flags().Changed("bundle-watermark-value") {
+				lib.FlagUpdateLen(cmd, "bundle_watermark_value", paramsSiteUpdate.BundleWatermarkValue, mapParams)
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-sms") {
-				paramsSiteUpdate.Allowed2faMethodSms = flib.Bool(updateAllowed2faMethodSms)
+				mapParams["allowed_2fa_method_sms"] = updateAllowed2faMethodSms
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-u2f") {
-				paramsSiteUpdate.Allowed2faMethodU2f = flib.Bool(updateAllowed2faMethodU2f)
+				mapParams["allowed_2fa_method_u2f"] = updateAllowed2faMethodU2f
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-totp") {
-				paramsSiteUpdate.Allowed2faMethodTotp = flib.Bool(updateAllowed2faMethodTotp)
+				mapParams["allowed_2fa_method_totp"] = updateAllowed2faMethodTotp
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-webauthn") {
-				paramsSiteUpdate.Allowed2faMethodWebauthn = flib.Bool(updateAllowed2faMethodWebauthn)
+				mapParams["allowed_2fa_method_webauthn"] = updateAllowed2faMethodWebauthn
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-yubi") {
-				paramsSiteUpdate.Allowed2faMethodYubi = flib.Bool(updateAllowed2faMethodYubi)
+				mapParams["allowed_2fa_method_yubi"] = updateAllowed2faMethodYubi
 			}
 			if cmd.Flags().Changed("allowed-2fa-method-bypass-for-ftp-sftp-dav") {
-				paramsSiteUpdate.Allowed2faMethodBypassForFtpSftpDav = flib.Bool(updateAllowed2faMethodBypassForFtpSftpDav)
+				mapParams["allowed_2fa_method_bypass_for_ftp_sftp_dav"] = updateAllowed2faMethodBypassForFtpSftpDav
 			}
 			if cmd.Flags().Changed("require-2fa") {
-				paramsSiteUpdate.Require2fa = flib.Bool(updateRequire2fa)
+				mapParams["require_2fa"] = updateRequire2fa
+			}
+			if cmd.Flags().Changed("require-2fa-user-type") {
+				lib.FlagUpdate(cmd, "require_2fa_user_type", paramsSiteUpdate.Require2faUserType, mapParams)
+			}
+			if cmd.Flags().Changed("color2-top") {
+				lib.FlagUpdate(cmd, "color2_top", paramsSiteUpdate.Color2Top, mapParams)
+			}
+			if cmd.Flags().Changed("color2-left") {
+				lib.FlagUpdate(cmd, "color2_left", paramsSiteUpdate.Color2Left, mapParams)
+			}
+			if cmd.Flags().Changed("color2-link") {
+				lib.FlagUpdate(cmd, "color2_link", paramsSiteUpdate.Color2Link, mapParams)
+			}
+			if cmd.Flags().Changed("color2-text") {
+				lib.FlagUpdate(cmd, "color2_text", paramsSiteUpdate.Color2Text, mapParams)
+			}
+			if cmd.Flags().Changed("color2-top-text") {
+				lib.FlagUpdate(cmd, "color2_top_text", paramsSiteUpdate.Color2TopText, mapParams)
+			}
+			if cmd.Flags().Changed("site-header") {
+				lib.FlagUpdate(cmd, "site_header", paramsSiteUpdate.SiteHeader, mapParams)
+			}
+			if cmd.Flags().Changed("site-footer") {
+				lib.FlagUpdate(cmd, "site_footer", paramsSiteUpdate.SiteFooter, mapParams)
+			}
+			if cmd.Flags().Changed("login-help-text") {
+				lib.FlagUpdate(cmd, "login_help_text", paramsSiteUpdate.LoginHelpText, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-address") {
+				lib.FlagUpdate(cmd, "smtp_address", paramsSiteUpdate.SmtpAddress, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-authentication") {
+				lib.FlagUpdate(cmd, "smtp_authentication", paramsSiteUpdate.SmtpAuthentication, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-from") {
+				lib.FlagUpdate(cmd, "smtp_from", paramsSiteUpdate.SmtpFrom, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-username") {
+				lib.FlagUpdate(cmd, "smtp_username", paramsSiteUpdate.SmtpUsername, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-port") {
+				lib.FlagUpdate(cmd, "smtp_port", paramsSiteUpdate.SmtpPort, mapParams)
 			}
 			if cmd.Flags().Changed("ldap-enabled") {
-				paramsSiteUpdate.LdapEnabled = flib.Bool(updateLdapEnabled)
+				mapParams["ldap_enabled"] = updateLdapEnabled
+			}
+			if cmd.Flags().Changed("ldap-type") {
+				lib.FlagUpdate(cmd, "ldap_type", paramsSiteUpdate.LdapType, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-host") {
+				lib.FlagUpdate(cmd, "ldap_host", paramsSiteUpdate.LdapHost, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-host-2") {
+				lib.FlagUpdate(cmd, "ldap_host_2", paramsSiteUpdate.LdapHost2, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-host-3") {
+				lib.FlagUpdate(cmd, "ldap_host_3", paramsSiteUpdate.LdapHost3, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-port") {
+				lib.FlagUpdate(cmd, "ldap_port", paramsSiteUpdate.LdapPort, mapParams)
 			}
 			if cmd.Flags().Changed("ldap-secure") {
-				paramsSiteUpdate.LdapSecure = flib.Bool(updateLdapSecure)
+				mapParams["ldap_secure"] = updateLdapSecure
+			}
+			if cmd.Flags().Changed("ldap-username") {
+				lib.FlagUpdate(cmd, "ldap_username", paramsSiteUpdate.LdapUsername, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-username-field") {
+				lib.FlagUpdate(cmd, "ldap_username_field", paramsSiteUpdate.LdapUsernameField, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-domain") {
+				lib.FlagUpdate(cmd, "ldap_domain", paramsSiteUpdate.LdapDomain, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-user-action") {
+				lib.FlagUpdate(cmd, "ldap_user_action", paramsSiteUpdate.LdapUserAction, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-group-action") {
+				lib.FlagUpdate(cmd, "ldap_group_action", paramsSiteUpdate.LdapGroupAction, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-user-include-groups") {
+				lib.FlagUpdate(cmd, "ldap_user_include_groups", paramsSiteUpdate.LdapUserIncludeGroups, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-group-exclusion") {
+				lib.FlagUpdate(cmd, "ldap_group_exclusion", paramsSiteUpdate.LdapGroupExclusion, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-group-inclusion") {
+				lib.FlagUpdate(cmd, "ldap_group_inclusion", paramsSiteUpdate.LdapGroupInclusion, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-base-dn") {
+				lib.FlagUpdate(cmd, "ldap_base_dn", paramsSiteUpdate.LdapBaseDn, mapParams)
+			}
+			if cmd.Flags().Changed("icon16-file") {
 			}
 			if cmd.Flags().Changed("icon16-delete") {
-				paramsSiteUpdate.Icon16Delete = flib.Bool(updateIcon16Delete)
+				mapParams["icon16_delete"] = updateIcon16Delete
+			}
+			if cmd.Flags().Changed("icon32-file") {
 			}
 			if cmd.Flags().Changed("icon32-delete") {
-				paramsSiteUpdate.Icon32Delete = flib.Bool(updateIcon32Delete)
+				mapParams["icon32_delete"] = updateIcon32Delete
+			}
+			if cmd.Flags().Changed("icon48-file") {
 			}
 			if cmd.Flags().Changed("icon48-delete") {
-				paramsSiteUpdate.Icon48Delete = flib.Bool(updateIcon48Delete)
+				mapParams["icon48_delete"] = updateIcon48Delete
+			}
+			if cmd.Flags().Changed("icon128-file") {
 			}
 			if cmd.Flags().Changed("icon128-delete") {
-				paramsSiteUpdate.Icon128Delete = flib.Bool(updateIcon128Delete)
+				mapParams["icon128_delete"] = updateIcon128Delete
+			}
+			if cmd.Flags().Changed("logo-file") {
 			}
 			if cmd.Flags().Changed("logo-delete") {
-				paramsSiteUpdate.LogoDelete = flib.Bool(updateLogoDelete)
+				mapParams["logo_delete"] = updateLogoDelete
+			}
+			if cmd.Flags().Changed("bundle-watermark-attachment-file") {
 			}
 			if cmd.Flags().Changed("bundle-watermark-attachment-delete") {
-				paramsSiteUpdate.BundleWatermarkAttachmentDelete = flib.Bool(updateBundleWatermarkAttachmentDelete)
+				mapParams["bundle_watermark_attachment_delete"] = updateBundleWatermarkAttachmentDelete
 			}
 			if cmd.Flags().Changed("disable-2fa-with-delay") {
-				paramsSiteUpdate.Disable2faWithDelay = flib.Bool(updateDisable2faWithDelay)
+				mapParams["disable_2fa_with_delay"] = updateDisable2faWithDelay
+			}
+			if cmd.Flags().Changed("ldap-password-change") {
+				lib.FlagUpdate(cmd, "ldap_password_change", paramsSiteUpdate.LdapPasswordChange, mapParams)
+			}
+			if cmd.Flags().Changed("ldap-password-change-confirmation") {
+				lib.FlagUpdate(cmd, "ldap_password_change_confirmation", paramsSiteUpdate.LdapPasswordChangeConfirmation, mapParams)
+			}
+			if cmd.Flags().Changed("smtp-password") {
+				lib.FlagUpdate(cmd, "smtp_password", paramsSiteUpdate.SmtpPassword, mapParams)
 			}
 
 			var site interface{}
 			var err error
-			site, err = client.Update(ctx, paramsSiteUpdate)
+			site, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

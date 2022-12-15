@@ -127,9 +127,21 @@ func FileComments() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file_comment.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.FileCommentUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsFileCommentUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("body") {
+				lib.FlagUpdate(cmd, "body", paramsFileCommentUpdate.Body, mapParams)
+			}
+
 			var fileComment interface{}
 			var err error
-			fileComment, err = client.Update(ctx, paramsFileCommentUpdate)
+			fileComment, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

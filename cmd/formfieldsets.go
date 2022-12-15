@@ -173,19 +173,33 @@ func FormFieldSets() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := form_field_set.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.FormFieldSetUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsFormFieldSetUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("title") {
+				lib.FlagUpdate(cmd, "title", paramsFormFieldSetUpdate.Title, mapParams)
+			}
 			if cmd.Flags().Changed("skip-email") {
-				paramsFormFieldSetUpdate.SkipEmail = flib.Bool(updateSkipEmail)
+				mapParams["skip_email"] = updateSkipEmail
 			}
 			if cmd.Flags().Changed("skip-name") {
-				paramsFormFieldSetUpdate.SkipName = flib.Bool(updateSkipName)
+				mapParams["skip_name"] = updateSkipName
 			}
 			if cmd.Flags().Changed("skip-company") {
-				paramsFormFieldSetUpdate.SkipCompany = flib.Bool(updateSkipCompany)
+				mapParams["skip_company"] = updateSkipCompany
+			}
+			if cmd.Flags().Changed("form-fields") {
+				lib.FlagUpdateLen(cmd, "form_fields", paramsFormFieldSetUpdate.FormFields, mapParams)
 			}
 
 			var formFieldSet interface{}
 			var err error
-			formFieldSet, err = client.Update(ctx, paramsFormFieldSetUpdate)
+			formFieldSet, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

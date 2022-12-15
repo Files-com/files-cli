@@ -122,13 +122,14 @@ func ExternalEvents() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := external_event.Client{Config: *config}
 
-			var externalEvent interface{}
-			var err error
 			var ExternalEventCreateStatusErr error
 			paramsExternalEventCreate.Status, ExternalEventCreateStatusErr = lib.FetchKey("status", paramsExternalEventCreate.Status.Enum(), ExternalEventCreateStatus)
 			if ExternalEventCreateStatus != "" && ExternalEventCreateStatusErr != nil {
 				return ExternalEventCreateStatusErr
 			}
+
+			var externalEvent interface{}
+			var err error
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
 			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil

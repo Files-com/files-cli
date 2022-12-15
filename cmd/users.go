@@ -145,6 +145,22 @@ func Users() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
+			var UserCreateAuthenticationMethodErr error
+			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserCreate.AuthenticationMethod.Enum(), UserCreateAuthenticationMethod)
+			if UserCreateAuthenticationMethod != "" && UserCreateAuthenticationMethodErr != nil {
+				return UserCreateAuthenticationMethodErr
+			}
+			var UserCreateSslRequiredErr error
+			paramsUserCreate.SslRequired, UserCreateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserCreate.SslRequired.Enum(), UserCreateSslRequired)
+			if UserCreateSslRequired != "" && UserCreateSslRequiredErr != nil {
+				return UserCreateSslRequiredErr
+			}
+			var UserCreateRequire2faErr error
+			paramsUserCreate.Require2fa, UserCreateRequire2faErr = lib.FetchKey("require-2fa", paramsUserCreate.Require2fa.Enum(), UserCreateRequire2fa)
+			if UserCreateRequire2fa != "" && UserCreateRequire2faErr != nil {
+				return UserCreateRequire2faErr
+			}
+
 			if cmd.Flags().Changed("avatar-delete") {
 				paramsUserCreate.AvatarDelete = flib.Bool(createAvatarDelete)
 			}
@@ -202,21 +218,6 @@ func Users() *cobra.Command {
 
 			var user interface{}
 			var err error
-			var UserCreateAuthenticationMethodErr error
-			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserCreate.AuthenticationMethod.Enum(), UserCreateAuthenticationMethod)
-			if UserCreateAuthenticationMethod != "" && UserCreateAuthenticationMethodErr != nil {
-				return UserCreateAuthenticationMethodErr
-			}
-			var UserCreateSslRequiredErr error
-			paramsUserCreate.SslRequired, UserCreateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserCreate.SslRequired.Enum(), UserCreateSslRequired)
-			if UserCreateSslRequired != "" && UserCreateSslRequiredErr != nil {
-				return UserCreateSslRequiredErr
-			}
-			var UserCreateRequire2faErr error
-			paramsUserCreate.Require2fa, UserCreateRequire2faErr = lib.FetchKey("require-2fa", paramsUserCreate.Require2fa.Enum(), UserCreateRequire2fa)
-			if UserCreateRequire2fa != "" && UserCreateRequire2faErr != nil {
-				return UserCreateRequire2faErr
-			}
 			user, err = client.Create(ctx, paramsUserCreate)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -405,63 +406,11 @@ func Users() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := user.Client{Config: *config}
 
-			if cmd.Flags().Changed("avatar-delete") {
-				paramsUserUpdate.AvatarDelete = flib.Bool(updateAvatarDelete)
-			}
-			if cmd.Flags().Changed("announcements-read") {
-				paramsUserUpdate.AnnouncementsRead = flib.Bool(updateAnnouncementsRead)
-			}
-			if cmd.Flags().Changed("attachments-permission") {
-				paramsUserUpdate.AttachmentsPermission = flib.Bool(updateAttachmentsPermission)
-			}
-			if cmd.Flags().Changed("billing-permission") {
-				paramsUserUpdate.BillingPermission = flib.Bool(updateBillingPermission)
-			}
-			if cmd.Flags().Changed("bypass-inactive-disable") {
-				paramsUserUpdate.BypassInactiveDisable = flib.Bool(updateBypassInactiveDisable)
-			}
-			if cmd.Flags().Changed("bypass-site-allowed-ips") {
-				paramsUserUpdate.BypassSiteAllowedIps = flib.Bool(updateBypassSiteAllowedIps)
-			}
-			if cmd.Flags().Changed("dav-permission") {
-				paramsUserUpdate.DavPermission = flib.Bool(updateDavPermission)
-			}
-			if cmd.Flags().Changed("disabled") {
-				paramsUserUpdate.Disabled = flib.Bool(updateDisabled)
-			}
-			if cmd.Flags().Changed("ftp-permission") {
-				paramsUserUpdate.FtpPermission = flib.Bool(updateFtpPermission)
-			}
-			if cmd.Flags().Changed("office-integration-enabled") {
-				paramsUserUpdate.OfficeIntegrationEnabled = flib.Bool(updateOfficeIntegrationEnabled)
-			}
-			if cmd.Flags().Changed("receive-admin-alerts") {
-				paramsUserUpdate.ReceiveAdminAlerts = flib.Bool(updateReceiveAdminAlerts)
-			}
-			if cmd.Flags().Changed("require-password-change") {
-				paramsUserUpdate.RequirePasswordChange = flib.Bool(updateRequirePasswordChange)
-			}
-			if cmd.Flags().Changed("restapi-permission") {
-				paramsUserUpdate.RestapiPermission = flib.Bool(updateRestapiPermission)
-			}
-			if cmd.Flags().Changed("self-managed") {
-				paramsUserUpdate.SelfManaged = flib.Bool(updateSelfManaged)
-			}
-			if cmd.Flags().Changed("sftp-permission") {
-				paramsUserUpdate.SftpPermission = flib.Bool(updateSftpPermission)
-			}
-			if cmd.Flags().Changed("site-admin") {
-				paramsUserUpdate.SiteAdmin = flib.Bool(updateSiteAdmin)
-			}
-			if cmd.Flags().Changed("skip-welcome-screen") {
-				paramsUserUpdate.SkipWelcomeScreen = flib.Bool(updateSkipWelcomeScreen)
-			}
-			if cmd.Flags().Changed("subscribe-to-newsletter") {
-				paramsUserUpdate.SubscribeToNewsletter = flib.Bool(updateSubscribeToNewsletter)
+			mapParams, convertErr := lib.StructToMap(files_sdk.UserUpdateParams{})
+			if convertErr != nil {
+				return convertErr
 			}
 
-			var user interface{}
-			var err error
 			var UserUpdateAuthenticationMethodErr error
 			paramsUserUpdate.AuthenticationMethod, UserUpdateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserUpdate.AuthenticationMethod.Enum(), UserUpdateAuthenticationMethod)
 			if UserUpdateAuthenticationMethod != "" && UserUpdateAuthenticationMethodErr != nil {
@@ -477,7 +426,145 @@ func Users() *cobra.Command {
 			if UserUpdateRequire2fa != "" && UserUpdateRequire2faErr != nil {
 				return UserUpdateRequire2faErr
 			}
-			user, err = client.Update(ctx, paramsUserUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsUserUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("avatar-file") {
+			}
+			if cmd.Flags().Changed("avatar-delete") {
+				mapParams["avatar_delete"] = updateAvatarDelete
+			}
+			if cmd.Flags().Changed("change-password") {
+				lib.FlagUpdate(cmd, "change_password", paramsUserUpdate.ChangePassword, mapParams)
+			}
+			if cmd.Flags().Changed("change-password-confirmation") {
+				lib.FlagUpdate(cmd, "change_password_confirmation", paramsUserUpdate.ChangePasswordConfirmation, mapParams)
+			}
+			if cmd.Flags().Changed("email") {
+				lib.FlagUpdate(cmd, "email", paramsUserUpdate.Email, mapParams)
+			}
+			if cmd.Flags().Changed("grant-permission") {
+				lib.FlagUpdate(cmd, "grant_permission", paramsUserUpdate.GrantPermission, mapParams)
+			}
+			if cmd.Flags().Changed("group-id") {
+				lib.FlagUpdate(cmd, "group_id", paramsUserUpdate.GroupId, mapParams)
+			}
+			if cmd.Flags().Changed("group-ids") {
+				lib.FlagUpdate(cmd, "group_ids", paramsUserUpdate.GroupIds, mapParams)
+			}
+			if cmd.Flags().Changed("imported-password-hash") {
+				lib.FlagUpdate(cmd, "imported_password_hash", paramsUserUpdate.ImportedPasswordHash, mapParams)
+			}
+			if cmd.Flags().Changed("password") {
+				lib.FlagUpdate(cmd, "password", paramsUserUpdate.Password, mapParams)
+			}
+			if cmd.Flags().Changed("password-confirmation") {
+				lib.FlagUpdate(cmd, "password_confirmation", paramsUserUpdate.PasswordConfirmation, mapParams)
+			}
+			if cmd.Flags().Changed("announcements-read") {
+				mapParams["announcements_read"] = updateAnnouncementsRead
+			}
+			if cmd.Flags().Changed("allowed-ips") {
+				lib.FlagUpdate(cmd, "allowed_ips", paramsUserUpdate.AllowedIps, mapParams)
+			}
+			if cmd.Flags().Changed("attachments-permission") {
+				mapParams["attachments_permission"] = updateAttachmentsPermission
+			}
+			if cmd.Flags().Changed("authenticate-until") {
+				lib.FlagUpdate(cmd, "authenticate_until", paramsUserUpdate.AuthenticateUntil, mapParams)
+			}
+			if cmd.Flags().Changed("authentication-method") {
+				lib.FlagUpdate(cmd, "authentication_method", paramsUserUpdate.AuthenticationMethod, mapParams)
+			}
+			if cmd.Flags().Changed("billing-permission") {
+				mapParams["billing_permission"] = updateBillingPermission
+			}
+			if cmd.Flags().Changed("bypass-inactive-disable") {
+				mapParams["bypass_inactive_disable"] = updateBypassInactiveDisable
+			}
+			if cmd.Flags().Changed("bypass-site-allowed-ips") {
+				mapParams["bypass_site_allowed_ips"] = updateBypassSiteAllowedIps
+			}
+			if cmd.Flags().Changed("dav-permission") {
+				mapParams["dav_permission"] = updateDavPermission
+			}
+			if cmd.Flags().Changed("disabled") {
+				mapParams["disabled"] = updateDisabled
+			}
+			if cmd.Flags().Changed("ftp-permission") {
+				mapParams["ftp_permission"] = updateFtpPermission
+			}
+			if cmd.Flags().Changed("header-text") {
+				lib.FlagUpdate(cmd, "header_text", paramsUserUpdate.HeaderText, mapParams)
+			}
+			if cmd.Flags().Changed("language") {
+				lib.FlagUpdate(cmd, "language", paramsUserUpdate.Language, mapParams)
+			}
+			if cmd.Flags().Changed("notification-daily-send-time") {
+				lib.FlagUpdate(cmd, "notification_daily_send_time", paramsUserUpdate.NotificationDailySendTime, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsUserUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("company") {
+				lib.FlagUpdate(cmd, "company", paramsUserUpdate.Company, mapParams)
+			}
+			if cmd.Flags().Changed("notes") {
+				lib.FlagUpdate(cmd, "notes", paramsUserUpdate.Notes, mapParams)
+			}
+			if cmd.Flags().Changed("office-integration-enabled") {
+				mapParams["office_integration_enabled"] = updateOfficeIntegrationEnabled
+			}
+			if cmd.Flags().Changed("password-validity-days") {
+				lib.FlagUpdate(cmd, "password_validity_days", paramsUserUpdate.PasswordValidityDays, mapParams)
+			}
+			if cmd.Flags().Changed("receive-admin-alerts") {
+				mapParams["receive_admin_alerts"] = updateReceiveAdminAlerts
+			}
+			if cmd.Flags().Changed("require-password-change") {
+				mapParams["require_password_change"] = updateRequirePasswordChange
+			}
+			if cmd.Flags().Changed("restapi-permission") {
+				mapParams["restapi_permission"] = updateRestapiPermission
+			}
+			if cmd.Flags().Changed("self-managed") {
+				mapParams["self_managed"] = updateSelfManaged
+			}
+			if cmd.Flags().Changed("sftp-permission") {
+				mapParams["sftp_permission"] = updateSftpPermission
+			}
+			if cmd.Flags().Changed("site-admin") {
+				mapParams["site_admin"] = updateSiteAdmin
+			}
+			if cmd.Flags().Changed("skip-welcome-screen") {
+				mapParams["skip_welcome_screen"] = updateSkipWelcomeScreen
+			}
+			if cmd.Flags().Changed("ssl-required") {
+				lib.FlagUpdate(cmd, "ssl_required", paramsUserUpdate.SslRequired, mapParams)
+			}
+			if cmd.Flags().Changed("sso-strategy-id") {
+				lib.FlagUpdate(cmd, "sso_strategy_id", paramsUserUpdate.SsoStrategyId, mapParams)
+			}
+			if cmd.Flags().Changed("subscribe-to-newsletter") {
+				mapParams["subscribe_to_newsletter"] = updateSubscribeToNewsletter
+			}
+			if cmd.Flags().Changed("require-2fa") {
+				lib.FlagUpdate(cmd, "require_2fa", paramsUserUpdate.Require2fa, mapParams)
+			}
+			if cmd.Flags().Changed("time-zone") {
+				lib.FlagUpdate(cmd, "time_zone", paramsUserUpdate.TimeZone, mapParams)
+			}
+			if cmd.Flags().Changed("user-root") {
+				lib.FlagUpdate(cmd, "user_root", paramsUserUpdate.UserRoot, mapParams)
+			}
+			if cmd.Flags().Changed("username") {
+				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
+			}
+
+			var user interface{}
+			var err error
+			user, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

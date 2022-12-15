@@ -131,6 +131,12 @@ func Bundles() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
+			var BundleCreatePermissionsErr error
+			paramsBundleCreate.Permissions, BundleCreatePermissionsErr = lib.FetchKey("permissions", paramsBundleCreate.Permissions.Enum(), BundleCreatePermissions)
+			if BundleCreatePermissions != "" && BundleCreatePermissionsErr != nil {
+				return BundleCreatePermissionsErr
+			}
+
 			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
 				paramsBundleCreate.DontSeparateSubmissionsByFolder = flib.Bool(createDontSeparateSubmissionsByFolder)
 			}
@@ -155,11 +161,6 @@ func Bundles() *cobra.Command {
 
 			var bundle interface{}
 			var err error
-			var BundleCreatePermissionsErr error
-			paramsBundleCreate.Permissions, BundleCreatePermissionsErr = lib.FetchKey("permissions", paramsBundleCreate.Permissions.Enum(), BundleCreatePermissions)
-			if BundleCreatePermissions != "" && BundleCreatePermissionsErr != nil {
-				return BundleCreatePermissionsErr
-			}
 			bundle, err = client.Create(ctx, paramsBundleCreate)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -251,39 +252,86 @@ func Bundles() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := bundle.Client{Config: *config}
 
-			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
-				paramsBundleUpdate.DontSeparateSubmissionsByFolder = flib.Bool(updateDontSeparateSubmissionsByFolder)
-			}
-			if cmd.Flags().Changed("preview-only") {
-				paramsBundleUpdate.PreviewOnly = flib.Bool(updatePreviewOnly)
-			}
-			if cmd.Flags().Changed("require-registration") {
-				paramsBundleUpdate.RequireRegistration = flib.Bool(updateRequireRegistration)
-			}
-			if cmd.Flags().Changed("require-share-recipient") {
-				paramsBundleUpdate.RequireShareRecipient = flib.Bool(updateRequireShareRecipient)
-			}
-			if cmd.Flags().Changed("skip-email") {
-				paramsBundleUpdate.SkipEmail = flib.Bool(updateSkipEmail)
-			}
-			if cmd.Flags().Changed("skip-name") {
-				paramsBundleUpdate.SkipName = flib.Bool(updateSkipName)
-			}
-			if cmd.Flags().Changed("skip-company") {
-				paramsBundleUpdate.SkipCompany = flib.Bool(updateSkipCompany)
-			}
-			if cmd.Flags().Changed("watermark-attachment-delete") {
-				paramsBundleUpdate.WatermarkAttachmentDelete = flib.Bool(updateWatermarkAttachmentDelete)
+			mapParams, convertErr := lib.StructToMap(files_sdk.BundleUpdateParams{})
+			if convertErr != nil {
+				return convertErr
 			}
 
-			var bundle interface{}
-			var err error
 			var BundleUpdatePermissionsErr error
 			paramsBundleUpdate.Permissions, BundleUpdatePermissionsErr = lib.FetchKey("permissions", paramsBundleUpdate.Permissions.Enum(), BundleUpdatePermissions)
 			if BundleUpdatePermissions != "" && BundleUpdatePermissionsErr != nil {
 				return BundleUpdatePermissionsErr
 			}
-			bundle, err = client.Update(ctx, paramsBundleUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsBundleUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("paths") {
+				lib.FlagUpdateLen(cmd, "paths", paramsBundleUpdate.Paths, mapParams)
+			}
+			if cmd.Flags().Changed("password") {
+				lib.FlagUpdate(cmd, "password", paramsBundleUpdate.Password, mapParams)
+			}
+			if cmd.Flags().Changed("form-field-set-id") {
+				lib.FlagUpdate(cmd, "form_field_set_id", paramsBundleUpdate.FormFieldSetId, mapParams)
+			}
+			if cmd.Flags().Changed("clickwrap-id") {
+				lib.FlagUpdate(cmd, "clickwrap_id", paramsBundleUpdate.ClickwrapId, mapParams)
+			}
+			if cmd.Flags().Changed("code") {
+				lib.FlagUpdate(cmd, "code", paramsBundleUpdate.Code, mapParams)
+			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsBundleUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
+				mapParams["dont_separate_submissions_by_folder"] = updateDontSeparateSubmissionsByFolder
+			}
+			if cmd.Flags().Changed("expires-at") {
+				lib.FlagUpdate(cmd, "expires_at", paramsBundleUpdate.ExpiresAt, mapParams)
+			}
+			if cmd.Flags().Changed("inbox-id") {
+				lib.FlagUpdate(cmd, "inbox_id", paramsBundleUpdate.InboxId, mapParams)
+			}
+			if cmd.Flags().Changed("max-uses") {
+				lib.FlagUpdate(cmd, "max_uses", paramsBundleUpdate.MaxUses, mapParams)
+			}
+			if cmd.Flags().Changed("note") {
+				lib.FlagUpdate(cmd, "note", paramsBundleUpdate.Note, mapParams)
+			}
+			if cmd.Flags().Changed("path-template") {
+				lib.FlagUpdate(cmd, "path_template", paramsBundleUpdate.PathTemplate, mapParams)
+			}
+			if cmd.Flags().Changed("permissions") {
+				lib.FlagUpdate(cmd, "permissions", paramsBundleUpdate.Permissions, mapParams)
+			}
+			if cmd.Flags().Changed("preview-only") {
+				mapParams["preview_only"] = updatePreviewOnly
+			}
+			if cmd.Flags().Changed("require-registration") {
+				mapParams["require_registration"] = updateRequireRegistration
+			}
+			if cmd.Flags().Changed("require-share-recipient") {
+				mapParams["require_share_recipient"] = updateRequireShareRecipient
+			}
+			if cmd.Flags().Changed("skip-email") {
+				mapParams["skip_email"] = updateSkipEmail
+			}
+			if cmd.Flags().Changed("skip-name") {
+				mapParams["skip_name"] = updateSkipName
+			}
+			if cmd.Flags().Changed("skip-company") {
+				mapParams["skip_company"] = updateSkipCompany
+			}
+			if cmd.Flags().Changed("watermark-attachment-delete") {
+				mapParams["watermark_attachment_delete"] = updateWatermarkAttachmentDelete
+			}
+			if cmd.Flags().Changed("watermark-attachment-file") {
+			}
+
+			var bundle interface{}
+			var err error
+			bundle, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

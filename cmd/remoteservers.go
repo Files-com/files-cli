@@ -162,18 +162,6 @@ func RemoteServers() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			if cmd.Flags().Changed("reset-authentication") {
-				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(createResetAuthentication)
-			}
-			if cmd.Flags().Changed("pin-to-site-region") {
-				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(createPinToSiteRegion)
-			}
-			if cmd.Flags().Changed("enable-dedicated-ips") {
-				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
-			}
-
-			var remoteServer interface{}
-			var err error
 			var RemoteServerCreateServerCertificateErr error
 			paramsRemoteServerCreate.ServerCertificate, RemoteServerCreateServerCertificateErr = lib.FetchKey("server-certificate", paramsRemoteServerCreate.ServerCertificate.Enum(), RemoteServerCreateServerCertificate)
 			if RemoteServerCreateServerCertificate != "" && RemoteServerCreateServerCertificateErr != nil {
@@ -199,6 +187,19 @@ func RemoteServers() *cobra.Command {
 			if RemoteServerCreateFilesAgentPermissionSet != "" && RemoteServerCreateFilesAgentPermissionSetErr != nil {
 				return RemoteServerCreateFilesAgentPermissionSetErr
 			}
+
+			if cmd.Flags().Changed("reset-authentication") {
+				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(createResetAuthentication)
+			}
+			if cmd.Flags().Changed("pin-to-site-region") {
+				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(createPinToSiteRegion)
+			}
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
+			}
+
+			var remoteServer interface{}
+			var err error
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -327,18 +328,11 @@ func RemoteServers() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := remote_server.Client{Config: *config}
 
-			if cmd.Flags().Changed("reset-authentication") {
-				paramsRemoteServerUpdate.ResetAuthentication = flib.Bool(updateResetAuthentication)
-			}
-			if cmd.Flags().Changed("pin-to-site-region") {
-				paramsRemoteServerUpdate.PinToSiteRegion = flib.Bool(updatePinToSiteRegion)
-			}
-			if cmd.Flags().Changed("enable-dedicated-ips") {
-				paramsRemoteServerUpdate.EnableDedicatedIps = flib.Bool(updateEnableDedicatedIps)
+			mapParams, convertErr := lib.StructToMap(files_sdk.RemoteServerUpdateParams{})
+			if convertErr != nil {
+				return convertErr
 			}
 
-			var remoteServer interface{}
-			var err error
 			var RemoteServerUpdateServerCertificateErr error
 			paramsRemoteServerUpdate.ServerCertificate, RemoteServerUpdateServerCertificateErr = lib.FetchKey("server-certificate", paramsRemoteServerUpdate.ServerCertificate.Enum(), RemoteServerUpdateServerCertificate)
 			if RemoteServerUpdateServerCertificate != "" && RemoteServerUpdateServerCertificateErr != nil {
@@ -364,7 +358,167 @@ func RemoteServers() *cobra.Command {
 			if RemoteServerUpdateFilesAgentPermissionSet != "" && RemoteServerUpdateFilesAgentPermissionSetErr != nil {
 				return RemoteServerUpdateFilesAgentPermissionSetErr
 			}
-			remoteServer, err = client.Update(ctx, paramsRemoteServerUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsRemoteServerUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("aws-access-key") {
+				lib.FlagUpdate(cmd, "aws_access_key", paramsRemoteServerUpdate.AwsAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("aws-secret-key") {
+				lib.FlagUpdate(cmd, "aws_secret_key", paramsRemoteServerUpdate.AwsSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("password") {
+				lib.FlagUpdate(cmd, "password", paramsRemoteServerUpdate.Password, mapParams)
+			}
+			if cmd.Flags().Changed("private-key") {
+				lib.FlagUpdate(cmd, "private_key", paramsRemoteServerUpdate.PrivateKey, mapParams)
+			}
+			if cmd.Flags().Changed("private-key-passphrase") {
+				lib.FlagUpdate(cmd, "private_key_passphrase", paramsRemoteServerUpdate.PrivateKeyPassphrase, mapParams)
+			}
+			if cmd.Flags().Changed("ssl-certificate") {
+				lib.FlagUpdate(cmd, "ssl_certificate", paramsRemoteServerUpdate.SslCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("google-cloud-storage-credentials-json") {
+				lib.FlagUpdate(cmd, "google_cloud_storage_credentials_json", paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson, mapParams)
+			}
+			if cmd.Flags().Changed("wasabi-access-key") {
+				lib.FlagUpdate(cmd, "wasabi_access_key", paramsRemoteServerUpdate.WasabiAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("wasabi-secret-key") {
+				lib.FlagUpdate(cmd, "wasabi_secret_key", paramsRemoteServerUpdate.WasabiSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("backblaze-b2-key-id") {
+				lib.FlagUpdate(cmd, "backblaze_b2_key_id", paramsRemoteServerUpdate.BackblazeB2KeyId, mapParams)
+			}
+			if cmd.Flags().Changed("backblaze-b2-application-key") {
+				lib.FlagUpdate(cmd, "backblaze_b2_application_key", paramsRemoteServerUpdate.BackblazeB2ApplicationKey, mapParams)
+			}
+			if cmd.Flags().Changed("rackspace-api-key") {
+				lib.FlagUpdate(cmd, "rackspace_api_key", paramsRemoteServerUpdate.RackspaceApiKey, mapParams)
+			}
+			if cmd.Flags().Changed("reset-authentication") {
+				mapParams["reset_authentication"] = updateResetAuthentication
+			}
+			if cmd.Flags().Changed("azure-blob-storage-access-key") {
+				lib.FlagUpdate(cmd, "azure_blob_storage_access_key", paramsRemoteServerUpdate.AzureBlobStorageAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("azure-files-storage-access-key") {
+				lib.FlagUpdate(cmd, "azure_files_storage_access_key", paramsRemoteServerUpdate.AzureFilesStorageAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("hostname") {
+				lib.FlagUpdate(cmd, "hostname", paramsRemoteServerUpdate.Hostname, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsRemoteServerUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("max-connections") {
+				lib.FlagUpdate(cmd, "max_connections", paramsRemoteServerUpdate.MaxConnections, mapParams)
+			}
+			if cmd.Flags().Changed("pin-to-site-region") {
+				mapParams["pin_to_site_region"] = updatePinToSiteRegion
+			}
+			if cmd.Flags().Changed("port") {
+				lib.FlagUpdate(cmd, "port", paramsRemoteServerUpdate.Port, mapParams)
+			}
+			if cmd.Flags().Changed("s3-bucket") {
+				lib.FlagUpdate(cmd, "s3_bucket", paramsRemoteServerUpdate.S3Bucket, mapParams)
+			}
+			if cmd.Flags().Changed("s3-region") {
+				lib.FlagUpdate(cmd, "s3_region", paramsRemoteServerUpdate.S3Region, mapParams)
+			}
+			if cmd.Flags().Changed("server-certificate") {
+				lib.FlagUpdate(cmd, "server_certificate", paramsRemoteServerUpdate.ServerCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("server-host-key") {
+				lib.FlagUpdate(cmd, "server_host_key", paramsRemoteServerUpdate.ServerHostKey, mapParams)
+			}
+			if cmd.Flags().Changed("server-type") {
+				lib.FlagUpdate(cmd, "server_type", paramsRemoteServerUpdate.ServerType, mapParams)
+			}
+			if cmd.Flags().Changed("ssl") {
+				lib.FlagUpdate(cmd, "ssl", paramsRemoteServerUpdate.Ssl, mapParams)
+			}
+			if cmd.Flags().Changed("username") {
+				lib.FlagUpdate(cmd, "username", paramsRemoteServerUpdate.Username, mapParams)
+			}
+			if cmd.Flags().Changed("google-cloud-storage-bucket") {
+				lib.FlagUpdate(cmd, "google_cloud_storage_bucket", paramsRemoteServerUpdate.GoogleCloudStorageBucket, mapParams)
+			}
+			if cmd.Flags().Changed("google-cloud-storage-project-id") {
+				lib.FlagUpdate(cmd, "google_cloud_storage_project_id", paramsRemoteServerUpdate.GoogleCloudStorageProjectId, mapParams)
+			}
+			if cmd.Flags().Changed("backblaze-b2-bucket") {
+				lib.FlagUpdate(cmd, "backblaze_b2_bucket", paramsRemoteServerUpdate.BackblazeB2Bucket, mapParams)
+			}
+			if cmd.Flags().Changed("backblaze-b2-s3-endpoint") {
+				lib.FlagUpdate(cmd, "backblaze_b2_s3_endpoint", paramsRemoteServerUpdate.BackblazeB2S3Endpoint, mapParams)
+			}
+			if cmd.Flags().Changed("wasabi-bucket") {
+				lib.FlagUpdate(cmd, "wasabi_bucket", paramsRemoteServerUpdate.WasabiBucket, mapParams)
+			}
+			if cmd.Flags().Changed("wasabi-region") {
+				lib.FlagUpdate(cmd, "wasabi_region", paramsRemoteServerUpdate.WasabiRegion, mapParams)
+			}
+			if cmd.Flags().Changed("rackspace-username") {
+				lib.FlagUpdate(cmd, "rackspace_username", paramsRemoteServerUpdate.RackspaceUsername, mapParams)
+			}
+			if cmd.Flags().Changed("rackspace-region") {
+				lib.FlagUpdate(cmd, "rackspace_region", paramsRemoteServerUpdate.RackspaceRegion, mapParams)
+			}
+			if cmd.Flags().Changed("rackspace-container") {
+				lib.FlagUpdate(cmd, "rackspace_container", paramsRemoteServerUpdate.RackspaceContainer, mapParams)
+			}
+			if cmd.Flags().Changed("one-drive-account-type") {
+				lib.FlagUpdate(cmd, "one_drive_account_type", paramsRemoteServerUpdate.OneDriveAccountType, mapParams)
+			}
+			if cmd.Flags().Changed("azure-blob-storage-account") {
+				lib.FlagUpdate(cmd, "azure_blob_storage_account", paramsRemoteServerUpdate.AzureBlobStorageAccount, mapParams)
+			}
+			if cmd.Flags().Changed("azure-blob-storage-container") {
+				lib.FlagUpdate(cmd, "azure_blob_storage_container", paramsRemoteServerUpdate.AzureBlobStorageContainer, mapParams)
+			}
+			if cmd.Flags().Changed("azure-blob-storage-sas-token") {
+				lib.FlagUpdate(cmd, "azure_blob_storage_sas_token", paramsRemoteServerUpdate.AzureBlobStorageSasToken, mapParams)
+			}
+			if cmd.Flags().Changed("azure-files-storage-account") {
+				lib.FlagUpdate(cmd, "azure_files_storage_account", paramsRemoteServerUpdate.AzureFilesStorageAccount, mapParams)
+			}
+			if cmd.Flags().Changed("azure-files-storage-share-name") {
+				lib.FlagUpdate(cmd, "azure_files_storage_share_name", paramsRemoteServerUpdate.AzureFilesStorageShareName, mapParams)
+			}
+			if cmd.Flags().Changed("azure-files-storage-sas-token") {
+				lib.FlagUpdate(cmd, "azure_files_storage_sas_token", paramsRemoteServerUpdate.AzureFilesStorageSasToken, mapParams)
+			}
+			if cmd.Flags().Changed("s3-compatible-bucket") {
+				lib.FlagUpdate(cmd, "s3_compatible_bucket", paramsRemoteServerUpdate.S3CompatibleBucket, mapParams)
+			}
+			if cmd.Flags().Changed("s3-compatible-endpoint") {
+				lib.FlagUpdate(cmd, "s3_compatible_endpoint", paramsRemoteServerUpdate.S3CompatibleEndpoint, mapParams)
+			}
+			if cmd.Flags().Changed("s3-compatible-region") {
+				lib.FlagUpdate(cmd, "s3_compatible_region", paramsRemoteServerUpdate.S3CompatibleRegion, mapParams)
+			}
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				mapParams["enable_dedicated_ips"] = updateEnableDedicatedIps
+			}
+			if cmd.Flags().Changed("s3-compatible-access-key") {
+				lib.FlagUpdate(cmd, "s3_compatible_access_key", paramsRemoteServerUpdate.S3CompatibleAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("s3-compatible-secret-key") {
+				lib.FlagUpdate(cmd, "s3_compatible_secret_key", paramsRemoteServerUpdate.S3CompatibleSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("files-agent-root") {
+				lib.FlagUpdate(cmd, "files_agent_root", paramsRemoteServerUpdate.FilesAgentRoot, mapParams)
+			}
+			if cmd.Flags().Changed("files-agent-permission-set") {
+				lib.FlagUpdate(cmd, "files_agent_permission_set", paramsRemoteServerUpdate.FilesAgentPermissionSet, mapParams)
+			}
+
+			var remoteServer interface{}
+			var err error
+			remoteServer, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

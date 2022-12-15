@@ -131,13 +131,27 @@ func GroupUsers() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group_user.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.GroupUserUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsGroupUserUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("group-id") {
+				lib.FlagUpdate(cmd, "group_id", paramsGroupUserUpdate.GroupId, mapParams)
+			}
+			if cmd.Flags().Changed("user-id") {
+				lib.FlagUpdate(cmd, "user_id", paramsGroupUserUpdate.UserId, mapParams)
+			}
 			if cmd.Flags().Changed("admin") {
-				paramsGroupUserUpdate.Admin = flib.Bool(updateAdmin)
+				mapParams["admin"] = updateAdmin
 			}
 
 			var groupUser interface{}
 			var err error
-			groupUser, err = client.Update(ctx, paramsGroupUserUpdate)
+			groupUser, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

@@ -154,9 +154,27 @@ func Messages() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.MessageUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsMessageUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("project-id") {
+				lib.FlagUpdate(cmd, "project_id", paramsMessageUpdate.ProjectId, mapParams)
+			}
+			if cmd.Flags().Changed("subject") {
+				lib.FlagUpdate(cmd, "subject", paramsMessageUpdate.Subject, mapParams)
+			}
+			if cmd.Flags().Changed("body") {
+				lib.FlagUpdate(cmd, "body", paramsMessageUpdate.Body, mapParams)
+			}
+
 			var message interface{}
 			var err error
-			message, err = client.Update(ctx, paramsMessageUpdate)
+			message, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

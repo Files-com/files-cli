@@ -217,34 +217,57 @@ func Notifications() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := notification.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.NotificationUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsNotificationUpdate.Id, mapParams)
+			}
 			if cmd.Flags().Changed("notify-on-copy") {
-				paramsNotificationUpdate.NotifyOnCopy = flib.Bool(updateNotifyOnCopy)
+				mapParams["notify_on_copy"] = updateNotifyOnCopy
 			}
 			if cmd.Flags().Changed("notify-on-delete") {
-				paramsNotificationUpdate.NotifyOnDelete = flib.Bool(updateNotifyOnDelete)
+				mapParams["notify_on_delete"] = updateNotifyOnDelete
 			}
 			if cmd.Flags().Changed("notify-on-download") {
-				paramsNotificationUpdate.NotifyOnDownload = flib.Bool(updateNotifyOnDownload)
+				mapParams["notify_on_download"] = updateNotifyOnDownload
 			}
 			if cmd.Flags().Changed("notify-on-move") {
-				paramsNotificationUpdate.NotifyOnMove = flib.Bool(updateNotifyOnMove)
+				mapParams["notify_on_move"] = updateNotifyOnMove
 			}
 			if cmd.Flags().Changed("notify-on-upload") {
-				paramsNotificationUpdate.NotifyOnUpload = flib.Bool(updateNotifyOnUpload)
+				mapParams["notify_on_upload"] = updateNotifyOnUpload
 			}
 			if cmd.Flags().Changed("notify-user-actions") {
-				paramsNotificationUpdate.NotifyUserActions = flib.Bool(updateNotifyUserActions)
+				mapParams["notify_user_actions"] = updateNotifyUserActions
 			}
 			if cmd.Flags().Changed("recursive") {
-				paramsNotificationUpdate.Recursive = flib.Bool(updateRecursive)
+				mapParams["recursive"] = updateRecursive
+			}
+			if cmd.Flags().Changed("send-interval") {
+				lib.FlagUpdate(cmd, "send_interval", paramsNotificationUpdate.SendInterval, mapParams)
+			}
+			if cmd.Flags().Changed("message") {
+				lib.FlagUpdate(cmd, "message", paramsNotificationUpdate.Message, mapParams)
+			}
+			if cmd.Flags().Changed("triggering-filenames") {
+				lib.FlagUpdateLen(cmd, "triggering_filenames", paramsNotificationUpdate.TriggeringFilenames, mapParams)
+			}
+			if cmd.Flags().Changed("triggering-group-ids") {
+				lib.FlagUpdateLen(cmd, "triggering_group_ids", paramsNotificationUpdate.TriggeringGroupIds, mapParams)
+			}
+			if cmd.Flags().Changed("triggering-user-ids") {
+				lib.FlagUpdateLen(cmd, "triggering_user_ids", paramsNotificationUpdate.TriggeringUserIds, mapParams)
 			}
 			if cmd.Flags().Changed("trigger-by-share-recipients") {
-				paramsNotificationUpdate.TriggerByShareRecipients = flib.Bool(updateTriggerByShareRecipients)
+				mapParams["trigger_by_share_recipients"] = updateTriggerByShareRecipients
 			}
 
 			var notification interface{}
 			var err error
-			notification, err = client.Update(ctx, paramsNotificationUpdate)
+			notification, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

@@ -4,12 +4,10 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
 	"fmt"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/behavior"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 func init() {
@@ -252,16 +250,41 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := behavior.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.BehaviorUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsBehaviorUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("value") {
+				lib.FlagUpdate(cmd, "value", paramsBehaviorUpdate.Value, mapParams)
+			}
+			if cmd.Flags().Changed("attachment-file") {
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsBehaviorUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsBehaviorUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("behavior") {
+				lib.FlagUpdate(cmd, "behavior", paramsBehaviorUpdate.Behavior, mapParams)
+			}
+			if cmd.Flags().Changed("path") {
+				lib.FlagUpdate(cmd, "path", paramsBehaviorUpdate.Path, mapParams)
+			}
 			if cmd.Flags().Changed("attachment-delete") {
-				paramsBehaviorUpdate.AttachmentDelete = flib.Bool(updateAttachmentDelete)
+				mapParams["attachment_delete"] = updateAttachmentDelete
 			}
 
 			if len(args) > 0 && args[0] != "" {
-				paramsBehaviorUpdate.Path = args[0]
+				mapParams["path"] = args[0]
 			}
 			var behavior interface{}
 			var err error
-			behavior, err = client.Update(ctx, paramsBehaviorUpdate)
+			behavior, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

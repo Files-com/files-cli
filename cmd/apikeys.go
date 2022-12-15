@@ -151,16 +151,17 @@ func ApiKeys() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			if len(args) > 0 && args[0] != "" {
-				paramsApiKeyCreate.Path = args[0]
-			}
-			var apiKey interface{}
-			var err error
 			var ApiKeyCreatePermissionSetErr error
 			paramsApiKeyCreate.PermissionSet, ApiKeyCreatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyCreate.PermissionSet.Enum(), ApiKeyCreatePermissionSet)
 			if ApiKeyCreatePermissionSet != "" && ApiKeyCreatePermissionSetErr != nil {
 				return ApiKeyCreatePermissionSetErr
 			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsApiKeyCreate.Path = args[0]
+			}
+			var apiKey interface{}
+			var err error
 			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -196,14 +197,30 @@ func ApiKeys() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var apiKey interface{}
-			var err error
+			mapParams, convertErr := lib.StructToMap(files_sdk.ApiKeyUpdateCurrentParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
 			var ApiKeyUpdateCurrentPermissionSetErr error
 			paramsApiKeyUpdateCurrent.PermissionSet, ApiKeyUpdateCurrentPermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyUpdateCurrent.PermissionSet.Enum(), ApiKeyUpdateCurrentPermissionSet)
 			if ApiKeyUpdateCurrentPermissionSet != "" && ApiKeyUpdateCurrentPermissionSetErr != nil {
 				return ApiKeyUpdateCurrentPermissionSetErr
 			}
-			apiKey, err = client.UpdateCurrent(ctx, paramsApiKeyUpdateCurrent)
+
+			if cmd.Flags().Changed("expires-at") {
+				lib.FlagUpdate(cmd, "expires_at", paramsApiKeyUpdateCurrent.ExpiresAt, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsApiKeyUpdateCurrent.Name, mapParams)
+			}
+			if cmd.Flags().Changed("permission-set") {
+				lib.FlagUpdate(cmd, "permission_set", paramsApiKeyUpdateCurrent.PermissionSet, mapParams)
+			}
+
+			var apiKey interface{}
+			var err error
+			apiKey, err = client.UpdateCurrentWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},
@@ -235,14 +252,36 @@ func ApiKeys() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := api_key.Client{Config: *config}
 
-			var apiKey interface{}
-			var err error
+			mapParams, convertErr := lib.StructToMap(files_sdk.ApiKeyUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
 			var ApiKeyUpdatePermissionSetErr error
 			paramsApiKeyUpdate.PermissionSet, ApiKeyUpdatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyUpdate.PermissionSet.Enum(), ApiKeyUpdatePermissionSet)
 			if ApiKeyUpdatePermissionSet != "" && ApiKeyUpdatePermissionSetErr != nil {
 				return ApiKeyUpdatePermissionSetErr
 			}
-			apiKey, err = client.Update(ctx, paramsApiKeyUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsApiKeyUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsApiKeyUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsApiKeyUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("expires-at") {
+				lib.FlagUpdate(cmd, "expires_at", paramsApiKeyUpdate.ExpiresAt, mapParams)
+			}
+			if cmd.Flags().Changed("permission-set") {
+				lib.FlagUpdate(cmd, "permission_set", paramsApiKeyUpdate.PermissionSet, mapParams)
+			}
+
+			var apiKey interface{}
+			var err error
+			apiKey, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

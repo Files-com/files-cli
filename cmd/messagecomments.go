@@ -153,9 +153,21 @@ func MessageComments() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := message_comment.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.MessageCommentUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsMessageCommentUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("body") {
+				lib.FlagUpdate(cmd, "body", paramsMessageCommentUpdate.Body, mapParams)
+			}
+
 			var messageComment interface{}
 			var err error
-			messageComment, err = client.Update(ctx, paramsMessageCommentUpdate)
+			messageComment, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

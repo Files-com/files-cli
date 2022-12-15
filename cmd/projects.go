@@ -149,9 +149,21 @@ func Projects() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := project.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.ProjectUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsProjectUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("global-access") {
+				lib.FlagUpdate(cmd, "global_access", paramsProjectUpdate.GlobalAccess, mapParams)
+			}
+
 			var project interface{}
 			var err error
-			project, err = client.Update(ctx, paramsProjectUpdate)
+			project, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

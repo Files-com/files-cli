@@ -151,9 +151,24 @@ func SftpHostKeys() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := sftp_host_key.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.SftpHostKeyUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsSftpHostKeyUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsSftpHostKeyUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("private-key") {
+				lib.FlagUpdate(cmd, "private_key", paramsSftpHostKeyUpdate.PrivateKey, mapParams)
+			}
+
 			var sftpHostKey interface{}
 			var err error
-			sftpHostKey, err = client.Update(ctx, paramsSftpHostKeyUpdate)
+			sftpHostKey, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

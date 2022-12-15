@@ -70,12 +70,23 @@ func Styles() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := style.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.StyleUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("path") {
+				lib.FlagUpdate(cmd, "path", paramsStyleUpdate.Path, mapParams)
+			}
+			if cmd.Flags().Changed("file") {
+			}
+
 			if len(args) > 0 && args[0] != "" {
-				paramsStyleUpdate.Path = args[0]
+				mapParams["path"] = args[0]
 			}
 			var style interface{}
 			var err error
-			style, err = client.Update(ctx, paramsStyleUpdate)
+			style, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

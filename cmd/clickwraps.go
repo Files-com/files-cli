@@ -123,8 +123,6 @@ func Clickwraps() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var clickwrap interface{}
-			var err error
 			var ClickwrapCreateUseWithBundlesErr error
 			paramsClickwrapCreate.UseWithBundles, ClickwrapCreateUseWithBundlesErr = lib.FetchKey("use-with-bundles", paramsClickwrapCreate.UseWithBundles.Enum(), ClickwrapCreateUseWithBundles)
 			if ClickwrapCreateUseWithBundles != "" && ClickwrapCreateUseWithBundlesErr != nil {
@@ -140,6 +138,9 @@ func Clickwraps() *cobra.Command {
 			if ClickwrapCreateUseWithUsers != "" && ClickwrapCreateUseWithUsersErr != nil {
 				return ClickwrapCreateUseWithUsersErr
 			}
+
+			var clickwrap interface{}
+			var err error
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -176,8 +177,11 @@ func Clickwraps() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := clickwrap.Client{Config: *config}
 
-			var clickwrap interface{}
-			var err error
+			mapParams, convertErr := lib.StructToMap(files_sdk.ClickwrapUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
 			var ClickwrapUpdateUseWithBundlesErr error
 			paramsClickwrapUpdate.UseWithBundles, ClickwrapUpdateUseWithBundlesErr = lib.FetchKey("use-with-bundles", paramsClickwrapUpdate.UseWithBundles.Enum(), ClickwrapUpdateUseWithBundles)
 			if ClickwrapUpdateUseWithBundles != "" && ClickwrapUpdateUseWithBundlesErr != nil {
@@ -193,7 +197,29 @@ func Clickwraps() *cobra.Command {
 			if ClickwrapUpdateUseWithUsers != "" && ClickwrapUpdateUseWithUsersErr != nil {
 				return ClickwrapUpdateUseWithUsersErr
 			}
-			clickwrap, err = client.Update(ctx, paramsClickwrapUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsClickwrapUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsClickwrapUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("body") {
+				lib.FlagUpdate(cmd, "body", paramsClickwrapUpdate.Body, mapParams)
+			}
+			if cmd.Flags().Changed("use-with-bundles") {
+				lib.FlagUpdate(cmd, "use_with_bundles", paramsClickwrapUpdate.UseWithBundles, mapParams)
+			}
+			if cmd.Flags().Changed("use-with-inboxes") {
+				lib.FlagUpdate(cmd, "use_with_inboxes", paramsClickwrapUpdate.UseWithInboxes, mapParams)
+			}
+			if cmd.Flags().Changed("use-with-users") {
+				lib.FlagUpdate(cmd, "use_with_users", paramsClickwrapUpdate.UseWithUsers, mapParams)
+			}
+
+			var clickwrap interface{}
+			var err error
+			clickwrap, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

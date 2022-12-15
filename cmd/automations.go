@@ -131,15 +131,6 @@ func Automations() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			if cmd.Flags().Changed("disabled") {
-				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
-			}
-
-			if len(args) > 0 && args[0] != "" {
-				paramsAutomationCreate.Path = args[0]
-			}
-			var automation interface{}
-			var err error
 			var AutomationCreateTriggerErr error
 			paramsAutomationCreate.Trigger, AutomationCreateTriggerErr = lib.FetchKey("trigger", paramsAutomationCreate.Trigger.Enum(), AutomationCreateTrigger)
 			if AutomationCreateTrigger != "" && AutomationCreateTriggerErr != nil {
@@ -150,6 +141,16 @@ func Automations() *cobra.Command {
 			if AutomationCreateAutomation != "" && AutomationCreateAutomationErr != nil {
 				return AutomationCreateAutomationErr
 			}
+
+			if cmd.Flags().Changed("disabled") {
+				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsAutomationCreate.Path = args[0]
+			}
+			var automation interface{}
+			var err error
 			automation, err = client.Create(ctx, paramsAutomationCreate)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
@@ -196,15 +197,11 @@ func Automations() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := automation.Client{Config: *config}
 
-			if cmd.Flags().Changed("disabled") {
-				paramsAutomationUpdate.Disabled = flib.Bool(updateDisabled)
+			mapParams, convertErr := lib.StructToMap(files_sdk.AutomationUpdateParams{})
+			if convertErr != nil {
+				return convertErr
 			}
 
-			if len(args) > 0 && args[0] != "" {
-				paramsAutomationUpdate.Path = args[0]
-			}
-			var automation interface{}
-			var err error
 			var AutomationUpdateTriggerErr error
 			paramsAutomationUpdate.Trigger, AutomationUpdateTriggerErr = lib.FetchKey("trigger", paramsAutomationUpdate.Trigger.Enum(), AutomationUpdateTrigger)
 			if AutomationUpdateTrigger != "" && AutomationUpdateTriggerErr != nil {
@@ -215,7 +212,68 @@ func Automations() *cobra.Command {
 			if AutomationUpdateAutomation != "" && AutomationUpdateAutomationErr != nil {
 				return AutomationUpdateAutomationErr
 			}
-			automation, err = client.Update(ctx, paramsAutomationUpdate)
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsAutomationUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("source") {
+				lib.FlagUpdate(cmd, "source", paramsAutomationUpdate.Source, mapParams)
+			}
+			if cmd.Flags().Changed("destination") {
+				lib.FlagUpdate(cmd, "destination", paramsAutomationUpdate.Destination, mapParams)
+			}
+			if cmd.Flags().Changed("destinations") {
+				lib.FlagUpdateLen(cmd, "destinations", paramsAutomationUpdate.Destinations, mapParams)
+			}
+			if cmd.Flags().Changed("destination-replace-from") {
+				lib.FlagUpdate(cmd, "destination_replace_from", paramsAutomationUpdate.DestinationReplaceFrom, mapParams)
+			}
+			if cmd.Flags().Changed("destination-replace-to") {
+				lib.FlagUpdate(cmd, "destination_replace_to", paramsAutomationUpdate.DestinationReplaceTo, mapParams)
+			}
+			if cmd.Flags().Changed("interval") {
+				lib.FlagUpdate(cmd, "interval", paramsAutomationUpdate.Interval, mapParams)
+			}
+			if cmd.Flags().Changed("path") {
+				lib.FlagUpdate(cmd, "path", paramsAutomationUpdate.Path, mapParams)
+			}
+			if cmd.Flags().Changed("user-ids") {
+				lib.FlagUpdate(cmd, "user_ids", paramsAutomationUpdate.UserIds, mapParams)
+			}
+			if cmd.Flags().Changed("group-ids") {
+				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
+			}
+			if cmd.Flags().Changed("schedule") {
+				lib.FlagUpdateLen(cmd, "schedule", paramsAutomationUpdate.Schedule, mapParams)
+			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsAutomationUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("disabled") {
+				mapParams["disabled"] = updateDisabled
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsAutomationUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("trigger") {
+				lib.FlagUpdate(cmd, "trigger", paramsAutomationUpdate.Trigger, mapParams)
+			}
+			if cmd.Flags().Changed("trigger-actions") {
+				lib.FlagUpdateLen(cmd, "trigger_actions", paramsAutomationUpdate.TriggerActions, mapParams)
+			}
+			if cmd.Flags().Changed("value") {
+				lib.FlagUpdateLen(cmd, "value", paramsAutomationUpdate.Value, mapParams)
+			}
+			if cmd.Flags().Changed("automation") {
+				lib.FlagUpdate(cmd, "automation", paramsAutomationUpdate.Automation, mapParams)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				mapParams["path"] = args[0]
+			}
+			var automation interface{}
+			var err error
+			automation, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

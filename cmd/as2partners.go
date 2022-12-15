@@ -154,9 +154,30 @@ func As2Partners() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.As2PartnerUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsAs2PartnerUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsAs2PartnerUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("uri") {
+				lib.FlagUpdate(cmd, "uri", paramsAs2PartnerUpdate.Uri, mapParams)
+			}
+			if cmd.Flags().Changed("server-certificate") {
+				lib.FlagUpdate(cmd, "server_certificate", paramsAs2PartnerUpdate.ServerCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("public-certificate") {
+				lib.FlagUpdate(cmd, "public_certificate", paramsAs2PartnerUpdate.PublicCertificate, mapParams)
+			}
+
 			var as2Partner interface{}
 			var err error
-			as2Partner, err = client.Update(ctx, paramsAs2PartnerUpdate)
+			as2Partner, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

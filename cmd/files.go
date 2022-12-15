@@ -93,12 +93,27 @@ func Files() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := file.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.FileUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("path") {
+				lib.FlagUpdate(cmd, "path", paramsFileUpdate.Path, mapParams)
+			}
+			if cmd.Flags().Changed("provided-mtime") {
+				lib.FlagUpdate(cmd, "provided_mtime", paramsFileUpdate.ProvidedMtime, mapParams)
+			}
+			if cmd.Flags().Changed("priority-color") {
+				lib.FlagUpdate(cmd, "priority_color", paramsFileUpdate.PriorityColor, mapParams)
+			}
+
 			if len(args) > 0 && args[0] != "" {
-				paramsFileUpdate.Path = args[0]
+				mapParams["path"] = args[0]
 			}
 			var file interface{}
 			var err error
-			file, err = client.Update(ctx, paramsFileUpdate)
+			file, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

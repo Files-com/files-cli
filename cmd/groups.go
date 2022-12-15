@@ -153,9 +153,30 @@ func Groups() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := group.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.GroupUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsGroupUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("notes") {
+				lib.FlagUpdate(cmd, "notes", paramsGroupUpdate.Notes, mapParams)
+			}
+			if cmd.Flags().Changed("user-ids") {
+				lib.FlagUpdate(cmd, "user_ids", paramsGroupUpdate.UserIds, mapParams)
+			}
+			if cmd.Flags().Changed("admin-ids") {
+				lib.FlagUpdate(cmd, "admin_ids", paramsGroupUpdate.AdminIds, mapParams)
+			}
+
 			var group interface{}
 			var err error
-			group, err = client.Update(ctx, paramsGroupUpdate)
+			group, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

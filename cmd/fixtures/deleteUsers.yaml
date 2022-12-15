@@ -1,0 +1,35 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/users/642111
+    method: DELETE
+  response:
+    body: '{"error":"Not Found","http-code":404,"instance":"81e4b63e-d778-49f0-8ccf-6fca35dd3af1","title":"Not
+      Found","type":"not-found"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 15 Dec 2022 00:20:54 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 81e4b63e-d778-49f0-8ccf-6fca35dd3af1
+      - 70dd82903cf9eec50f94b785f9f79873
+    status: 404 Not Found
+    code: 404
+    duration: ""

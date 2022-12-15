@@ -153,9 +153,21 @@ func PublicKeys() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := public_key.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.PublicKeyUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsPublicKeyUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("title") {
+				lib.FlagUpdate(cmd, "title", paramsPublicKeyUpdate.Title, mapParams)
+			}
+
 			var publicKey interface{}
 			var err error
-			publicKey, err = client.Update(ctx, paramsPublicKeyUpdate)
+			publicKey, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},

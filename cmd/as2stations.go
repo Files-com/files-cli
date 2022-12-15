@@ -153,9 +153,30 @@ func As2Stations() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_station.Client{Config: *config}
 
+			mapParams, convertErr := lib.StructToMap(files_sdk.As2StationUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsAs2StationUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsAs2StationUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("public-certificate") {
+				lib.FlagUpdate(cmd, "public_certificate", paramsAs2StationUpdate.PublicCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("private-key") {
+				lib.FlagUpdate(cmd, "private_key", paramsAs2StationUpdate.PrivateKey, mapParams)
+			}
+			if cmd.Flags().Changed("private-key-password") {
+				lib.FlagUpdate(cmd, "private_key_password", paramsAs2StationUpdate.PrivateKeyPassword, mapParams)
+			}
+
 			var as2Station interface{}
 			var err error
-			as2Station, err = client.Update(ctx, paramsAs2StationUpdate)
+			as2Station, err = client.UpdateWithMap(ctx, mapParams)
 			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 			return nil
 		},
