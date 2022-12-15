@@ -16,6 +16,8 @@ import (
 )
 
 var (
+	commit                 string
+	date                   string
 	IgnoreCredentialsCheck []string
 	Version                string
 	ProfileValue           string
@@ -111,7 +113,9 @@ var (
 	}
 )
 
-func Init(version string, config *files.Config) {
+func Init(version string, _commit string, _date string, config *files.Config) {
+	commit = _commit
+	date = _date
 	Version = version
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
 	config.UserAgent = "Files.com CLI" + " " + strings.TrimSpace(Version)

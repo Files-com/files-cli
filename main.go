@@ -7,9 +7,12 @@ import (
 	files "github.com/Files-com/files-sdk-go/v2"
 )
 
-//go:embed _VERSION
-var VERSION string
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
 func main() {
-	cmd.Init(VERSION, &files.GlobalConfig)
+	cmd.Init(version, commit, date, &files.GlobalConfig)
 }
