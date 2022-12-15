@@ -99,6 +99,7 @@ var (
 				if err != nil {
 					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
 				}
+				return nil
 			}
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
