@@ -223,10 +223,22 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	parentCtx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
-	err = CreateSession(ctx, files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
-	assert.NoError(ctx.Err())
+	for {
+		ctx, cancel := context.WithTimeout(parentCtx, time.Second*5)
+		err = CreateSession(ctx, files_sdk.SessionCreateParams{Password: "goodpassword"}, config)
+		if ctx.Err() == nil {
+			cancel()
+			break
+		}
+		if parentCtx.Err() != nil {
+			cancel()
+			break
+		}
+	}
+
+	assert.NoError(parentCtx.Err())
 	assert.NoError(err)
 	assert.Equal("testdomain", config.Current().Subdomain)
 	assert.Equal("testuser", config.Current().Username)

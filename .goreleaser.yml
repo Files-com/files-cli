@@ -89,6 +89,8 @@ brews:
       bash_completion.install "completions/files-cli.bash" => "files-cli"
       zsh_completion.install "completions/files-cli.zsh" => "_files-cli"
       fish_completion.install "completions/files-cli.fish"
+    post_install: |
+      files-cli changelog "$(files-cli -v)" --ignore-version-check
 nfpms:
   -
     package_name: files-cli

@@ -7,7 +7,7 @@ import (
 )
 
 func New(v string) (Version, error) {
-	parts := strings.Split(strings.TrimSpace(v), ".")
+	parts := strings.Split(strings.TrimSpace(strings.Replace(v, "v", "", 1)), ".")
 	var err error
 	var major int64
 	if len(parts) >= 1 {
@@ -58,8 +58,14 @@ func (v Version) Greater(o Version) bool {
 	if o.Major > v.Major {
 		return true
 	}
+	if o.Major < v.Major {
+		return false
+	}
 	if o.Minor > v.Minor {
 		return true
+	}
+	if o.Minor < v.Minor {
+		return false
 	}
 	if o.Patch > v.Patch {
 		return true
