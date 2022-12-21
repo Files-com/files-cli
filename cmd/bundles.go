@@ -116,6 +116,7 @@ func Bundles() *cobra.Command {
 	createPreviewOnly := true
 	createRequireRegistration := true
 	createRequireShareRecipient := true
+	createSendEmailReceiptToUploader := true
 	createSkipEmail := true
 	createSkipName := true
 	createSkipCompany := true
@@ -148,6 +149,9 @@ func Bundles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("require-share-recipient") {
 				paramsBundleCreate.RequireShareRecipient = flib.Bool(createRequireShareRecipient)
+			}
+			if cmd.Flags().Changed("send-email-receipt-to-uploader") {
+				paramsBundleCreate.SendEmailReceiptToUploader = flib.Bool(createSendEmailReceiptToUploader)
 			}
 			if cmd.Flags().Changed("skip-email") {
 				paramsBundleCreate.SkipEmail = flib.Bool(createSkipEmail)
@@ -183,6 +187,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdCreate.Flags().BoolVar(&createRequireShareRecipient, "require-share-recipient", createRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
+	cmdCreate.Flags().BoolVar(&createSendEmailReceiptToUploader, "send-email-receipt-to-uploader", createSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "BundleRegistrations can be saved without providing name?")
 	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "BundleRegistrations can be saved without providing company?")
@@ -236,9 +241,10 @@ func Bundles() *cobra.Command {
 	updatePreviewOnly := true
 	updateRequireRegistration := true
 	updateRequireShareRecipient := true
+	updateSendEmailReceiptToUploader := true
+	updateSkipCompany := true
 	updateSkipEmail := true
 	updateSkipName := true
-	updateSkipCompany := true
 	updateWatermarkAttachmentDelete := true
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 	BundleUpdatePermissions := ""
@@ -314,14 +320,17 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("require-share-recipient") {
 				mapParams["require_share_recipient"] = updateRequireShareRecipient
 			}
+			if cmd.Flags().Changed("send-email-receipt-to-uploader") {
+				mapParams["send_email_receipt_to_uploader"] = updateSendEmailReceiptToUploader
+			}
+			if cmd.Flags().Changed("skip-company") {
+				mapParams["skip_company"] = updateSkipCompany
+			}
 			if cmd.Flags().Changed("skip-email") {
 				mapParams["skip_email"] = updateSkipEmail
 			}
 			if cmd.Flags().Changed("skip-name") {
 				mapParams["skip_name"] = updateSkipName
-			}
-			if cmd.Flags().Changed("skip-company") {
-				mapParams["skip_company"] = updateSkipCompany
 			}
 			if cmd.Flags().Changed("watermark-attachment-delete") {
 				mapParams["watermark_attachment_delete"] = updateWatermarkAttachmentDelete
@@ -353,9 +362,10 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "Restrict users to previewing files only?")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
+	cmdUpdate.Flags().BoolVar(&updateSendEmailReceiptToUploader, "send-email-receipt-to-uploader", updateSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
+	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "BundleRegistrations can be saved without providing company?")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
-	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "BundleRegistrations can be saved without providing company?")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
