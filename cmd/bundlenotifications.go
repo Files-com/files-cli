@@ -113,6 +113,7 @@ func BundleNotifications() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createNotifyOnRegistration := true
+	createNotifyOnUpload := true
 	paramsBundleNotificationCreate := files_sdk.BundleNotificationCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -127,6 +128,9 @@ func BundleNotifications() *cobra.Command {
 			if cmd.Flags().Changed("notify-on-registration") {
 				paramsBundleNotificationCreate.NotifyOnRegistration = flib.Bool(createNotifyOnRegistration)
 			}
+			if cmd.Flags().Changed("notify-on-upload") {
+				paramsBundleNotificationCreate.NotifyOnUpload = flib.Bool(createNotifyOnUpload)
+			}
 
 			var bundleNotification interface{}
 			var err error
@@ -137,6 +141,7 @@ func BundleNotifications() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.UserId, "user-id", 0, "The id of the user to notify.")
 	cmdCreate.Flags().BoolVar(&createNotifyOnRegistration, "notify-on-registration", createNotifyOnRegistration, "Triggers bundle notification when a registration action occurs for it.")
+	cmdCreate.Flags().BoolVar(&createNotifyOnUpload, "notify-on-upload", createNotifyOnUpload, "Triggers bundle notification when a upload action occurs for it.")
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.BundleId, "bundle-id", 0, "Bundle ID to notify on")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -147,6 +152,56 @@ func BundleNotifications() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	BundleNotifications.AddCommand(cmdCreate)
+	var fieldsUpdate []string
+	var formatUpdate []string
+	usePagerUpdate := true
+	updateNotifyOnRegistration := true
+	updateNotifyOnUpload := true
+	paramsBundleNotificationUpdate := files_sdk.BundleNotificationUpdateParams{}
+
+	cmdUpdate := &cobra.Command{
+		Use:   "update",
+		Short: `Update Bundle Notification`,
+		Long:  `Update Bundle Notification`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := bundle_notification.Client{Config: *config}
+
+			mapParams, convertErr := lib.StructToMap(files_sdk.BundleNotificationUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsBundleNotificationUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("notify-on-registration") {
+				mapParams["notify_on_registration"] = updateNotifyOnRegistration
+			}
+			if cmd.Flags().Changed("notify-on-upload") {
+				mapParams["notify_on_upload"] = updateNotifyOnUpload
+			}
+
+			var bundleNotification interface{}
+			var err error
+			bundleNotification, err = client.UpdateWithMap(ctx, mapParams)
+			lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return nil
+		},
+	}
+	cmdUpdate.Flags().Int64Var(&paramsBundleNotificationUpdate.Id, "id", 0, "Bundle Notification ID.")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnRegistration, "notify-on-registration", updateNotifyOnRegistration, "Triggers bundle notification when a registration action occurs for it.")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnUpload, "notify-on-upload", updateNotifyOnUpload, "Triggers bundle notification when a upload action occurs for it.")
+
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
+                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+                                                                                                                                                 json-styles: {raw, pretty}
+                                                                                                                                                 `)
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
+	BundleNotifications.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
 	usePagerDelete := true
