@@ -131,7 +131,7 @@ func init() {
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
-	RootCmd.PersistentFlags().BoolVarP(&Reauthentication, "reauthentication", "r", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
+	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "completion")
