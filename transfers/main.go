@@ -36,6 +36,7 @@ type Transfers struct {
 	fileStatusBarInitOnce     *sync.Once
 	rateUpdaterMutex          *sync.Once
 	lastEndedFile             status.File
+	lastEndedFileTime         time.Time
 	eventBody                 []string
 	eventBodyMutex            *sync.RWMutex
 	eventErrors               []string
@@ -147,6 +148,7 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, job *status.Job, con
 	}, status.Running...)
 
 	job.RegisterFileEvent(func(file status.File) {
+		t.lastEndedFileTime = time.Now()
 		t.lastEndedFile = file
 		t.logOnEnd(file)
 		t.UpdateMainTotal(file.Job)
@@ -419,6 +421,17 @@ func (t *Transfers) buildStatusTransfer(job *status.Job) {
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, reqWidth int, st decor.Statistics) {
 				endedFile := t.lastEndedFile
+				if time.Now().Sub(t.lastEndedFileTime) > time.Second*3 {
+					d, ok := job.Find(status.Downloading)
+					if ok {
+						endedFile = status.ToStatusFile(d)
+					}
+					u, ok := job.Find(status.Uploading)
+					if ok {
+						endedFile = status.ToStatusFile(u)
+					}
+				}
+
 				width, _, terminalWidthErr := terminal.GetSize(0)
 				nonFilePathLen := len(fileCounts(job)) + len(statusWithColor(endedFile.Status))
 				remainingWidth := width - nonFilePathLen
@@ -459,7 +472,7 @@ func displayName(path string, terminalWidth int) string {
 
 func fileCounts(job *status.Job) string {
 	if job.Sync {
-		return fmt.Sprintf("Syncing [%v/%v Files]", job.Count(status.Complete), job.Count(append(status.Included, status.Skipped)...))
+		return fmt.Sprintf("Synced [%v/%v Files]", job.Count(status.Complete), job.Count(append(status.Included, status.Skipped)...))
 	} else {
 		return fmt.Sprintf("[%v/%v Files]", job.Count(status.Complete), job.Count(status.Included...))
 	}
@@ -524,6 +537,8 @@ func statusWithColor(s status.Status) string {
 	switch s {
 	case status.Errored:
 		return fmt.Sprintf("\u001b[31m%v\u001b[0m", s.Name)
+	case status.Uploading, status.Downloading:
+		return fmt.Sprintf("\u001b[32m%v\u001b[0m", s.Name)
 	default:
 		return s.String()
 	}
