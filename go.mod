@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.19
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.132-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.133-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
@@ -24,7 +24,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.0
 	github.com/theckman/yacspin v0.13.12
-	github.com/vbauerster/mpb/v7 v7.1.5
+	github.com/vbauerster/mpb/v7 v7.3.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	golang.org/x/crypto v0.1.0
 	golang.org/x/sys v0.1.0

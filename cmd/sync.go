@@ -23,6 +23,7 @@ func Sync() *cobra.Command {
 	transfer.SyncFlag = true
 	var localPath string
 	var remotePath string
+	var retryCount int
 	push := &cobra.Command{
 		Use:  "push",
 		Args: cobra.ExactArgs(0),
@@ -41,7 +42,8 @@ func Sync() *cobra.Command {
 					Sync:        transfer.SyncFlag,
 					Manager:     transfer.Manager,
 					Ignore:      *transfer.Ignore,
-					RetryPolicy: file.RetryUnfinished,
+					RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
+					Config:      *config,
 				},
 			)
 			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
@@ -65,7 +67,8 @@ func Sync() *cobra.Command {
 					Sync:          transfer.SyncFlag,
 					Manager:       transfer.Manager,
 					PreserveTimes: transfer.PreserveTimes,
-					RetryPolicy:   file.RetryUnfinished,
+					RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
+					Config:        *config,
 				},
 			)
 			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
@@ -77,6 +80,7 @@ func Sync() *cobra.Command {
 	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
 	sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
 	sync.PersistentFlags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
+	sync.PersistentFlags().IntVar(&retryCount, "retry-count", 2, "On transfer failure retry number of times.")
 	sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 	sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Pulled files to include the original modification time")

@@ -47,7 +47,7 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 	if Version == "" {
 		Version = "10.0.0"
 	}
-	if config.APIKey == "" {
+	if config.GetAPIKey() == "" {
 		config.APIKey = "test"
 	}
 
@@ -75,7 +75,7 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 		Path:          filepath.Join("test-dir-files-delete-r", "1.text"),
 		ProvidedMtime: time.Date(2010, 11, 17, 20, 34, 58, 651387237, time.UTC),
 	}
-	_, _, _, err = fileClient.UploadIO(context.Background(), params)
+	_, _, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 	out, stdErr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
 	assert.Equal("", string(stdErr))
@@ -100,7 +100,7 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 		Size:   int64(9),
 		Path:   filepath.Join("test-dir-files-delete", "1.text"),
 	}
-	_, _, _, err = fileClient.UploadIO(context.Background(), params)
+	_, _, _, _, err = fileClient.UploadIO(context.Background(), params)
 	assert.NoError(err)
 
 	_, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})

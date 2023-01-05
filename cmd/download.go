@@ -15,6 +15,7 @@ func init() {
 
 func Download() *cobra.Command {
 	transfer := transfers.New()
+	var retryCount int
 	download := &cobra.Command{
 		Use:  "download [remote-path] [local-path]",
 		Args: cobra.MinimumNArgs(1),
@@ -40,8 +41,9 @@ func Download() *cobra.Command {
 					LocalPath:     localPath,
 					Sync:          transfer.SyncFlag,
 					Manager:       transfer.Manager,
-					RetryPolicy:   file.RetryErroredIfSomeCompleted,
+					RetryPolicy:   file.RetryPolicy{Type: file.RetryErroredIfSomeCompleted, RetryCount: retryCount},
 					PreserveTimes: transfer.PreserveTimes,
+					Config:        *config,
 				},
 			)
 
@@ -54,6 +56,6 @@ func Download() *cobra.Command {
 	download.Flags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	download.Flags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 	download.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
-
+	download.PersistentFlags().IntVar(&retryCount, "retry-count", 2, "On transfer failure retry number of times.")
 	return download
 }
