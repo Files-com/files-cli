@@ -111,7 +111,14 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 }
 
 func (t *Transfers) createManager() {
-	t.Manager = manager.New(manager.ConcurrentFiles, t.ConcurrentConnectionLimit)
+	concurrentFiles := manager.ConcurrentFiles
+	if manager.ConcurrentFiles > t.ConcurrentConnectionLimit {
+		concurrentFiles = t.ConcurrentConnectionLimit
+	}
+	if concurrentFiles*4 < t.ConcurrentConnectionLimit {
+		concurrentFiles = t.ConcurrentConnectionLimit / 4
+	}
+	t.Manager = manager.New(concurrentFiles, t.ConcurrentConnectionLimit)
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
