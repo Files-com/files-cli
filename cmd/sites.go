@@ -544,6 +544,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("smtp-password") {
 				lib.FlagUpdate(cmd, "smtp_password", paramsSiteUpdate.SmtpPassword, mapParams)
 			}
+			if cmd.Flags().Changed("session-expiry-minutes") {
+				lib.FlagUpdate(cmd, "session_expiry_minutes", paramsSiteUpdate.SessionExpiryMinutes, mapParams)
+			}
 
 			var site interface{}
 			var err error
@@ -676,6 +679,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
