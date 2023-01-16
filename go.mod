@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.19
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.141-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.142-beta
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0
@@ -113,7 +113,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/itchyny/timefmt-go v0.1.4 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.2 // indirect
 	github.com/kr/fs v0.1.0 // indirect
