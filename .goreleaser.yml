@@ -66,12 +66,13 @@ brews:
     license: "MIT"
     test: system "#{bin}/files-cli --version"
     install: |-
+      @last_version = JSON.parse(`brew info files-cli --json`, symbolize_names: true).first[:linked_keg] rescue nil
       bin.install "files-cli"
       bash_completion.install "completions/files-cli.bash" => "files-cli"
       zsh_completion.install "completions/files-cli.zsh" => "_files-cli"
       fish_completion.install "completions/files-cli.fish"
     post_install: |
-      puts `#{bin}/files-cli changelog "$(#{bin}/files-cli -v)" --ignore-version-check`
+      puts `#{bin}/files-cli changelog #{@last_version ? @last_version + '...' : ''}"$(#{bin}/files-cli -v)" --ignore-version-check`
 nfpms:
   -
     package_name: files-cli
