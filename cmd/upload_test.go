@@ -19,12 +19,11 @@ func TestUploadCmd(t *testing.T) {
 	}
 	defer r.Stop()
 
-	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "-d"})
+	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "--format", "text"})
 	assert.Equal("", string(stdErr))
 	assert.ElementsMatch([]string{
-		"upload sync: false",
 		"upload_test.go complete size 1.6 kB",
-	}, strings.Split(string(stdOut), "\n")[1:3])
+	}, strings.Split(string(stdOut), "\n")[0:1])
 }
 
 func TestUploadCmdCloudLog(t *testing.T) {
@@ -44,13 +43,11 @@ func TestUploadCmdCloudLog(t *testing.T) {
 	assert.NoError(err)
 	file.Write([]byte("hello how are you doing?"))
 	file.Close()
-	out, stdErr := callCmd(Upload(), config, []string{file.Name(), "-d", "-l"})
+	out, stdErr := callCmd(Upload(), config, []string{file.Name(), "--format", "text", "-l"})
 	assert.Equal("", string(stdErr))
 	assert.ElementsMatch([]string{
-		"upload sync: false",
 		"upload_test.text complete size 24 B",
-		"total downloaded: 24 B",
-	}, strings.Split(string(out), "\n")[1:4])
+	}, strings.Split(string(out), "\n")[0:1])
 }
 
 func TestUploadCmdBadPath(t *testing.T) {
@@ -61,6 +58,6 @@ func TestUploadCmdBadPath(t *testing.T) {
 	}
 	defer r.Stop()
 
-	out, _ := callCmd(Upload(), config, []string{"bad-path", "-d"})
-	assert.Contains(strings.Split(string(out), "\n")[2], "bad-path errored size 0 B")
+	out, _ := callCmd(Upload(), config, []string{"bad-path", "--format", "text"})
+	assert.Contains(strings.Split(string(out), "\n")[0], "bad-path errored stat")
 }

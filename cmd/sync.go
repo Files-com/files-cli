@@ -24,6 +24,8 @@ func Sync() *cobra.Command {
 	var localPath string
 	var remotePath string
 	var retryCount int
+	var dryRun bool
+	var fields []string
 	push := &cobra.Command{
 		Use:  "push",
 		Args: cobra.ExactArgs(0),
@@ -44,9 +46,19 @@ func Sync() *cobra.Command {
 					Ignore:      *transfer.Ignore,
 					RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
 					Config:      *config,
+					DryRun:      dryRun,
 				},
 			)
-			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
+
+			if err := transfer.ArgsCheck(cmd); err != nil {
+				return err
+			}
+
+			return lib.ClientError(
+				ctx,
+				Profile(cmd),
+				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
+			)
 		},
 	}
 	pull := &cobra.Command{
@@ -69,9 +81,19 @@ func Sync() *cobra.Command {
 					PreserveTimes: transfer.PreserveTimes,
 					RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
 					Config:        *config,
+					DryRun:        dryRun,
 				},
 			)
-			return lib.ClientError(ctx, Profile(cmd), transfer.ProcessJob(ctx, job, *config))
+
+			if err := transfer.ArgsCheck(cmd); err != nil {
+				return err
+			}
+
+			return lib.ClientError(
+				ctx,
+				Profile(cmd),
+				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
+			)
 		},
 	}
 
@@ -83,8 +105,16 @@ func Sync() *cobra.Command {
 	sync.PersistentFlags().IntVar(&retryCount, "retry-count", 2, "On transfer failure retry number of times.")
 	sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
+	sync.PersistentFlags().MarkDeprecated("disable-progress-output", "Use `--format` to disable progress bar.")
 	sync.PersistentFlags().BoolVarP(&transfer.PreserveTimes, "times", "t", false, "Pulled files to include the original modification time")
 	sync.PersistentFlags().StringSliceVarP(transfer.Ignore, "ignore", "i", *transfer.Ignore, "ignore files. See https://git-scm.com/docs/gitignore#_pattern_format")
+	sync.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "Index files and compare with destination but don't transfer files.")
+	sync.PersistentFlags().StringSliceVar(&fields, "fields", []string{}, "comma separated list of field names to include in response")
+	sync.PersistentFlags().StringSliceVar(&transfer.Format, "format", []string{"progress"}, `formats: {progress, text, json, csv, none}`)
+	sync.PersistentFlags().StringSliceVar(&transfer.OutFormat, "output-format", []string{"csv"}, `For use with '--output'. formats: {text, json, csv}`)
+	sync.PersistentFlags().BoolVar(&transfer.UsePager, "use-pager", transfer.UsePager, "Use $PAGER (.ie less, more, etc)")
+	sync.PersistentFlags().StringVar(&transfer.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing")
+	sync.PersistentFlags().MarkHidden("test-progress-bar-out")
 
 	sync.AddCommand(push)
 	sync.AddCommand(pull)

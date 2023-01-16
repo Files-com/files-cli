@@ -51,7 +51,7 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 		out = append(out, os.Stdout)
 	}
 
-	format = merge(format, []string{"table", "light", ""})
+	format = merge(format, []string{"", "", ""})
 
 	switch format[0] {
 	case "json":
@@ -60,6 +60,12 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 		return CSVMarshalIter(it, fields, filter, out[0])
 	case "table":
 		return TableMarshalIter(ctx, format[1], it, fields, usePager, out[0], filter)
+	case "text":
+		return TextMarshalIter(ctx, it, usePager, out[0], filter)
+	case "none":
+		return NoneMarshalIter(ctx, it)
+	case "":
+		return nil
 	default:
 		return fmt.Errorf("Unknown format `" + format[0] + "`")
 	}

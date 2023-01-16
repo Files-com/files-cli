@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -109,8 +108,19 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 }
 
 func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([]byte, []byte) {
-	errOut := bytes.NewBufferString("")
-	stdOut := bytes.NewBufferString("")
+	command.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
+	command.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		if OutputPath != "" {
+			output, err := os.Create(OutputPath)
+			if err != nil {
+				return cliLib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			cmd.SetOut(output)
+		}
+		return nil
+	}
+	errOut := &cliLib.Buffer{}
+	stdOut := &cliLib.Buffer{}
 	command.SetArgs(args)
 	ctx := context.WithValue(context.Background(), "config", config)
 	ctx = context.WithValue(ctx, "testing", true)

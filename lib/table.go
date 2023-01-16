@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"runtime"
+
+	"github.com/Files-com/files-sdk-go/v2/lib"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/olekukonko/ts"
@@ -88,10 +91,10 @@ func tableMarshalVertical(t table.Writer, result interface{}, fields []string, w
 		if record[key] != nil || !skipNil {
 			if i == 0 {
 				headers = append(headers, text.FormatUpper.Apply(key))
-				headers = append(headers, fmt.Sprintf("%v", formatValues(key, record[key])))
+				headers = append(headers, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
 			} else {
 				values = append(values, text.FormatUpper.Apply(key))
-				values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
+				values = append(values, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
 				t.AppendRow(values)
 				values = table.Row{}
 			}
@@ -114,7 +117,7 @@ func tableMarshal(t table.Writer, result interface{}, fields []string, writeHead
 	var values table.Row
 	for _, key := range orderedKeys {
 		if record[key] != nil || !skipNil {
-			values = append(values, fmt.Sprintf("%v", formatValues(key, record[key])))
+			values = append(values, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
 			headers = append(headers, key)
 		}
 	}
@@ -126,6 +129,13 @@ func tableMarshal(t table.Writer, result interface{}, fields []string, writeHead
 }
 
 func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields []string, usePager bool, out io.Writer, filterIter FilterIter) error {
+	warningText := func() {
+		_, ok := it.(*lib.IterChan)
+		if ok {
+			fmt.Fprintf(os.Stderr, "\u001b[33m%v\u001b[0m", "Table format for this resource only renders once all rows are complete.\n")
+		}
+	}
+
 	ctx, cancel := context.WithCancel(parentCtx)
 	defer cancel()
 	pager, err := Pager{UsePager: usePager}.Init(it, out)
@@ -138,7 +148,7 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 
 	itPaging, paging := it.(IterPaging)
 	spinner := &Spinner{Writer: out}
-	if err := spinner.Start(); err != nil {
+	if err := spinner.Start(warningText); err != nil {
 		return err
 	}
 	hasRows := false

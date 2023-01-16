@@ -149,6 +149,8 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Files-com/files-sdk-go/v2 v2.0.143-beta h1:Z0gmWEY9ex5kKh8HR+6OhEHrMsIkQGtVbV4Ox3htyAA=
 github.com/Files-com/files-sdk-go/v2 v2.0.143-beta/go.mod h1:8rc5wyAf0XBE2WP9NxH1dKVBxdvZ99KxtvARsByyThY=
+github.com/Files-com/files-sdk-go/v2 v2.0.144-beta h1:N7jnHlEUGev4nURQBHn91aLpygAbtGK0dY73KmfwjQw=
+github.com/Files-com/files-sdk-go/v2 v2.0.144-beta/go.mod h1:8rc5wyAf0XBE2WP9NxH1dKVBxdvZ99KxtvARsByyThY=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962 h1:KeNholpO2xKjgaaSyd+DyQRrsQjhbSeS7qe4nEw8aQw=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962/go.mod h1:kC29dT1vFpj7py2OvG1khBdQpo3kInWP+6QipLbdngo=
 github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.2/go.mod h1:qR6jVnZTKDCW3j+fC9mOEPHm++1nKDMkqbbkD6KNsfo=

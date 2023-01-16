@@ -16,7 +16,7 @@ type Spinner struct {
 	io.Writer
 }
 
-func (s *Spinner) Start() error {
+func (s *Spinner) Start(afterClearScreen ...func()) error {
 	cfg := yacspin.Config{
 		Frequency:       100 * time.Millisecond,
 		CharSet:         yacspin.CharSets[59],
@@ -30,14 +30,21 @@ func (s *Spinner) Start() error {
 	}
 	if isTerminal(s.Writer) {
 		s.clearScreen()
+		for _, c := range afterClearScreen {
+			c()
+		}
 		return s.Spinner.Start()
 	}
 	return nil
 }
 
 func (s *Spinner) Stop() {
+	if s.Spinner.Status() == yacspin.SpinnerStopped {
+		return
+	}
 	if isTerminal(s.Writer) {
 		s.Spinner.Stop()
+		s.clearScreen()
 	}
 }
 

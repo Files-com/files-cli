@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func formatValues(key string, value interface{}) interface{} {
+func formatValue(value interface{}) interface{} {
 	if value == nil {
 		value = ""
 	}
@@ -18,13 +18,19 @@ func formatValues(key string, value interface{}) interface{} {
 		}
 	}
 
-	switch key {
-	case "size":
-		value = formatSize(value)
-	default:
-		return value
+	switch value.(type) {
+	case float64:
+		value = int64(value.(float64))
 	}
 	return value
+}
+
+func formatValuePretty(key string, value interface{}) interface{} {
+	if key == "size" {
+		return formatSize(value)
+	}
+
+	return formatValue(value)
 }
 
 func formatSize(value interface{}) interface{} {

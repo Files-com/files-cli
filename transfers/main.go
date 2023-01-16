@@ -4,11 +4,16 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/spf13/cobra"
+
+	"github.com/samber/lo"
 
 	"github.com/vbauerster/mpb/v7"
 
@@ -25,6 +30,7 @@ import (
 	external_event "github.com/Files-com/files-sdk-go/v2/externalevent"
 	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/Files-com/files-sdk-go/v2/file/status"
+	sdklib "github.com/Files-com/files-sdk-go/v2/lib"
 	"github.com/aquilax/truncate"
 	"github.com/vbauerster/mpb/v7/decor"
 )
@@ -60,9 +66,15 @@ type Transfers struct {
 	*manager.Manager
 	Stdout             io.Writer
 	Stderr             io.Writer
+	TestProgressBarOut string
 	finishedForDisplay bool
 	lastEndedFile
 	lastEndedFileMutex *sync.RWMutex
+	it                 *sdklib.IterChan
+	IteratorErrorOnly  bool
+	Format             []string
+	OutFormat          []string
+	UsePager           bool
 }
 
 type lastEndedFile struct {
@@ -94,6 +106,7 @@ func New() *Transfers {
 		Ignore:                &[]string{},
 		waitForEndingMessage:  make(chan bool),
 		scanningBar:           &atomic.Value{},
+		it:                    sdklib.IterChan{}.Init(),
 	}
 }
 
@@ -124,6 +137,12 @@ func (t *Transfers) createManager() {
 func (t *Transfers) createProgress(ctx context.Context) {
 	if t.DisableProgressOutput {
 		t.Progress = mpb.NewWithContext(ctx, mpb.WithWidth(64), mpb.WithOutput(nil))
+	} else if t.TestProgressBarOut != "" {
+		out, err := os.Create(t.TestProgressBarOut)
+		if err != nil {
+			panic(err)
+		}
+		t.Progress = mpb.NewWithContext(ctx, mpb.WithWidth(64), mpb.WithOutput(out))
 	} else {
 		t.Progress = mpb.NewWithContext(ctx, mpb.WithWidth(64))
 	}
@@ -144,24 +163,17 @@ func (t *Transfers) clearError(key string) {
 }
 
 func (t *Transfers) Log(key string, str string, err error) {
+	t.eventBodyMutex.Lock()
+	t.eventBody = append(t.eventBody, str)
+	t.eventBodyMutex.Unlock()
+
 	if err != nil {
-		if t.DisableProgressOutput {
-			fmt.Fprintf(t.Stderr, "%v\n", str)
-		}
 		t.eventErrorsMutex.Lock()
 		t.eventErrors[key] = str
 		t.eventErrorsMutex.Unlock()
 
 		t.eventBodyMutex.Lock()
-		t.eventBody = append(t.eventBody, str)
 		t.externalEvent.Status = t.externalEvent.Status.Enum()["partial_failure"]
-		t.eventBodyMutex.Unlock()
-	} else {
-		if t.DisableProgressOutput {
-			fmt.Fprintf(t.Stdout, "%v\n", str)
-		}
-		t.eventBodyMutex.Lock()
-		t.eventBody = append(t.eventBody, str)
 		t.eventBodyMutex.Unlock()
 	}
 }
@@ -186,6 +198,12 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, job *status.Job, con
 	job.RegisterFileEvent(func(file status.File) {
 		t.afterActions(ctx, file, config)
 	}, status.Complete, status.Skipped)
+
+	job.RegisterFileEvent(func(file status.File) {
+		if !t.IteratorErrorOnly {
+			t.it.Send <- file
+		}
+	}, append(status.Excluded, status.Complete)...)
 }
 
 func (t *Transfers) afterActions(ctx context.Context, f status.File, config files_sdk.Config) {
@@ -206,7 +224,64 @@ func (t *Transfers) afterActionLog(log status.Log, err error) {
 	}
 }
 
-func (t *Transfers) ProcessJob(ctx context.Context, job *status.Job, config files_sdk.Config) error {
+func (t *Transfers) Iter(ctx context.Context, job *status.Job, config files_sdk.Config) lib.Iter {
+	go t.ProcessJob(ctx, job, config)
+	return t.it
+}
+
+func (t *Transfers) TextFilterFormat() lib.FilterIter {
+	var filter lib.FilterIter
+	if lo.Contains(t.Format, "text") {
+		filter = func(i interface{}) (interface{}, bool) {
+			return t.Text(i.(status.File)), true
+		}
+	}
+
+	return filter
+}
+
+func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
+	switch t.OutFormat[0] {
+	case "none", "progress":
+		return fmt.Errorf("''--output-format %v' unsupported", t.OutFormat[0])
+	}
+
+	// Deprecated fallback
+	if t.DisableProgressOutput {
+		t.Format[0] = "none"
+	}
+
+	switch t.Format[0] {
+	case "none":
+		t.Format[0] = "text"
+		t.DisableProgressOutput = true
+	case "progress":
+		t.UsePager = false
+		t.DisableProgressOutput = false
+		if cmd.Flags().Changed("output") {
+			t.Format = t.OutFormat
+		} else {
+			t.IteratorErrorOnly = true
+			t.Format[0] = "text"
+		}
+	default:
+		if !cmd.Flags().Changed("use-pager") {
+			t.UsePager = true
+		}
+
+		t.DisableProgressOutput = true
+		if !cmd.Flags().Changed("output") {
+			t.OutFormat[0] = ""
+		}
+		if t.OutFormat[0] != "" {
+			return fmt.Errorf("'--format %v' with '--output-format %v' unsupported", t.Format[0], t.OutFormat[0])
+		}
+	}
+
+	return nil
+}
+
+func (t *Transfers) ProcessJob(ctx context.Context, job *status.Job, config files_sdk.Config) {
 	t.RegisterFileEvents(ctx, job, config)
 	t.SetupSignals(job)
 	job.Start()
@@ -219,9 +294,10 @@ func (t *Transfers) ProcessJob(ctx context.Context, job *status.Job, config file
 	<-t.waitForEndingMessage
 
 	err := t.SendLogs(ctx, config)
-	t.EndingStatusErrors()
-
-	return err
+	if err != nil {
+		t.it.SendError <- err
+	}
+	t.it.Stop <- true
 }
 
 func (t *Transfers) SetupSignals(job *status.Job) {
@@ -253,6 +329,7 @@ func (t *Transfers) SetupSignals(job *status.Job) {
 				if !t.DisableProgressOutput {
 					t.FinishMainTotal(job)
 				}
+				t.iterateOverErrored()
 				t.waitForEndingMessage <- true
 				break
 			case <-subscriptions.Finished:
@@ -263,6 +340,7 @@ func (t *Transfers) SetupSignals(job *status.Job) {
 					t.UpdateMainTotal(job)
 					t.FinishMainTotal(job)
 				}
+				t.iterateOverErrored()
 				t.waitForEndingMessage <- true
 				break
 			}
@@ -271,17 +349,28 @@ func (t *Transfers) SetupSignals(job *status.Job) {
 	}()
 }
 
+func (t *Transfers) iterateOverErrored() {
+	for _, s := range t.Job.Sub(status.Errored, status.Canceled).Statuses {
+		t.it.Send <- status.ToStatusFile(s)
+	}
+}
+
 func (t *Transfers) logOnEnd(s status.File) {
-	if s.Status.Is(status.Skipped) {
-		t.Log(bestPath(s), fmt.Sprintf("%v %v", bestPath(s), s.String()), nil)
-	} else {
-		t.Log(bestPath(s), fmt.Sprintf("%v %v size %v", bestPath(s), s.String(), lib.ByteCountSI(s.TransferBytes)), nil)
+	t.Log(bestPath(s), t.Text(s), s.Err)
+	if s.Err == nil {
+		t.clearError(bestPath(s))
+	}
+}
+
+func (t *Transfers) Text(s status.File) string {
+	if s.Err != nil {
+		return fmt.Sprintf("%v %v %v", bestPath(s), s.String(), s.Err.Error())
 	}
 
-	if s.Err != nil {
-		t.Log(bestPath(s), fmt.Sprintf("%v %v %v", bestPath(s), s.String(), s.Err.Error()), s.Err)
+	if s.Status.Is(status.Skipped) {
+		return fmt.Sprintf("%v %v", bestPath(s), s.String())
 	} else {
-		t.clearError(bestPath(s))
+		return fmt.Sprintf("%v %v size %v", bestPath(s), s.String(), lib.ByteCountSI(s.TransferBytes))
 	}
 }
 
@@ -396,13 +485,7 @@ func (t *Transfers) LogJobError(err error, path string) {
 }
 
 func (t *Transfers) EndingStatusErrors() {
-	if len(t.eventErrors) > 0 && !t.DisableProgressOutput {
-		var errorLines []string
-		for _, v := range t.eventErrors {
-			errorLines = append(errorLines, v)
-		}
-		fmt.Fprintf(t.Stderr, "%v\n", strings.Join(errorLines, "\n")) // show errors
-	}
+	t.it.Stop <- true
 }
 
 func (t *Transfers) FinishMainTotal(job *status.Job) {

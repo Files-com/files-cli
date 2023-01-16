@@ -22,7 +22,10 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 		})
 		return structure.(map[string]interface{}), ordered, nil
 	}
-	jsonStructure, _ := json.MarshalIndent(structure, "", "    ")
+	jsonStructure, err := json.MarshalIndent(structure, "", "    ")
+	if err != nil {
+		return structure.(map[string]interface{}), []string{}, err
+	}
 	intermediateMap := make(map[string]interface{})
 	returnMap := make(map[string]interface{})
 	json.Unmarshal(jsonStructure, &intermediateMap)
@@ -58,7 +61,11 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 func jsonTags(structure interface{}) []string {
 	var tags []string
 	for _, field := range structs.New(structure).Fields() {
-		tags = append(tags, strings.Split(field.Tag("json"), ",")[0])
+		tag := strings.Split(field.Tag("json"), ",")[0]
+		if tag == "-" {
+			continue
+		}
+		tags = append(tags, tag)
 	}
 	return tags
 }
