@@ -27,10 +27,16 @@ var (
 	ignoreVersionCheck     bool
 	OutputPath             string
 	Reauthentication       bool
+	featureFlags           []string
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			sdkConfig := cmd.Context().Value("config").(*files.Config)
+			sdkConfig.FeatureFlags = files.FeatureFlags()
+			for _, flag := range featureFlags {
+				sdkConfig.FeatureFlag(flag) // panic unknown flag
+				sdkConfig.FeatureFlags[flag] = true
+			}
 			if APIKey != "" {
 				sdkConfig.APIKey = APIKey
 			}
@@ -132,6 +138,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
+	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "completion")
