@@ -147,8 +147,6 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.2.0 h1:Rt8g24XnyGTyglgET/PRUNlrUeu9F5L+7FilkXfZgs0=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/Files-com/files-sdk-go/v2 v2.0.146-beta h1:kXCl3YHMYfMLrZ3RduxX6Ah487elgclxurcbKDPuF9M=
-github.com/Files-com/files-sdk-go/v2 v2.0.146-beta/go.mod h1:8rc5wyAf0XBE2WP9NxH1dKVBxdvZ99KxtvARsByyThY=
 github.com/Files-com/files-sdk-go/v2 v2.0.147-beta h1:BlG0uJNAeZGph6UU3aC5X/SJi2lzeFE8//Gw3yDnEBg=
 github.com/Files-com/files-sdk-go/v2 v2.0.147-beta/go.mod h1:8rc5wyAf0XBE2WP9NxH1dKVBxdvZ99KxtvARsByyThY=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962 h1:KeNholpO2xKjgaaSyd+DyQRrsQjhbSeS7qe4nEw8aQw=
