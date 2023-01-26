@@ -57,7 +57,7 @@ var (
 			err := profile.Load(sdkConfig, ProfileValue)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-				return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			cmd.SetContext(context.WithValue(cmd.Context(), "profile", profile))
@@ -65,7 +65,7 @@ var (
 			if OutputPath != "" {
 				output, err := os.Create(OutputPath)
 				if err != nil {
-					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
+					return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 				}
 				cmd.SetOut(output)
 			}
@@ -102,18 +102,13 @@ var (
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
-				if err != nil {
-					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
-				}
-				return nil
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
 				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found. Using session login.\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
-				if err != nil {
-					return lib.ClientError(cmd.Context(), Profile(cmd), err, cmd.ErrOrStderr())
-				}
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

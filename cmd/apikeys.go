@@ -28,6 +28,7 @@ func ApiKeys() *cobra.Command {
 	var fieldsList []string
 	var formatList []string
 	usePagerList := true
+	filterbyList := make(map[string]string)
 	paramsApiKeyList := files_sdk.ApiKeyListParams{}
 	var MaxPagesList int64
 
@@ -54,16 +55,21 @@ func ApiKeys() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			if len(filterbyList) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyList, i)
+					return i, matchOk, err
+				}
 			}
-			return nil
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
+
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdList.Flags().Int64Var(&paramsApiKeyList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsApiKeyList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -315,7 +321,7 @@ func ApiKeys() *cobra.Command {
 			var err error
 			err = client.DeleteCurrent(ctx)
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -346,7 +352,7 @@ func ApiKeys() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsApiKeyDelete)
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

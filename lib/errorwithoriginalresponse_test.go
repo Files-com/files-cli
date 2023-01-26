@@ -85,7 +85,7 @@ func TestHandleResponse(t *testing.T) {
 				[]string{"json"},
 				[]string{},
 			},
-			wantStderr: "some other error\n",
+			wantStderr: "some other error",
 		},
 		{
 			name: "prints interface",
@@ -105,9 +105,11 @@ func TestHandleResponse(t *testing.T) {
 			stderr := &bytes.Buffer{}
 			logger := &bytes.Buffer{}
 
-			HandleResponse(tt.args.ctx, &Profiles{}, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, false, stdout, stderr, log.New(logger, "", 0))
+			err := HandleResponse(tt.args.ctx, &Profiles{}, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, false, stdout, stderr, log.New(logger, "", 0))
 			assert.Equalf(t, tt.wantStdout, stdout.String(), "stdout HandleResponse(%v, %v, %v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, stdout, stderr, logger)
-			assert.Equalf(t, tt.wantStderr, stderr.String(), "stderr HandleResponse(%v, %v, %v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, stdout, stderr, logger)
+			if tt.wantStderr != "" {
+				assert.ErrorContains(t, err, tt.wantStderr, "stderr HandleResponse(%v, %v, %v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, stdout, stderr, logger)
+			}
 			assert.Equalf(t, tt.wantLogger, logger.String(), "logger HandleResponse(%v, %v, %v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.i, tt.args.errIn(), tt.args.format, tt.args.fields, stdout, stderr, logger)
 		})
 	}

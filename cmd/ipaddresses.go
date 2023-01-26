@@ -26,6 +26,7 @@ func IpAddresses() *cobra.Command {
 	var fieldsList []string
 	var formatList []string
 	usePagerList := true
+	filterbyList := make(map[string]string)
 	paramsIpAddressList := files_sdk.IpAddressListParams{}
 	var MaxPagesList int64
 
@@ -52,16 +53,21 @@ func IpAddresses() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			if len(filterbyList) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyList, i)
+					return i, matchOk, err
+				}
 			}
-			return nil
+			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
+
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdList.Flags().StringVar(&paramsIpAddressList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdList.Flags().Int64Var(&paramsIpAddressList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -77,6 +83,7 @@ func IpAddresses() *cobra.Command {
 	var fieldsGetExavaultReserved []string
 	var formatGetExavaultReserved []string
 	usePagerGetExavaultReserved := true
+	filterbyGetExavaultReserved := make(map[string]string)
 	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
 	var MaxPagesGetExavaultReserved int64
 
@@ -103,16 +110,21 @@ func IpAddresses() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(ctx, it, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			if len(filterbyGetExavaultReserved) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyGetExavaultReserved, i)
+					return i, matchOk, err
+				}
 			}
-			return nil
+			err = lib.FormatIter(ctx, it, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
+
+	cmdGetExavaultReserved.Flags().StringToStringVar(&filterbyGetExavaultReserved, "filter-by", filterbyGetExavaultReserved, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -128,6 +140,7 @@ func IpAddresses() *cobra.Command {
 	var fieldsGetReserved []string
 	var formatGetReserved []string
 	usePagerGetReserved := true
+	filterbyGetReserved := make(map[string]string)
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
 	var MaxPagesGetReserved int64
 
@@ -154,16 +167,21 @@ func IpAddresses() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(ctx, it, formatGetReserved, fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			if len(filterbyGetReserved) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyGetReserved, i)
+					return i, matchOk, err
+				}
 			}
-			return nil
+			err = lib.FormatIter(ctx, it, formatGetReserved, fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
+
+	cmdGetReserved.Flags().StringToStringVar(&filterbyGetReserved, "filter-by", filterbyGetReserved, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

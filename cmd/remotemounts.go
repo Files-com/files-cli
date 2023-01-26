@@ -63,7 +63,7 @@ func RemoteMounts() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			expandedResource, _ := expandBehavior()(resource)
+			expandedResource, _, _ := expandBehavior()(resource)
 			lib.HandleResponse(
 				cmd.Context(),
 				Profile(cmd),
@@ -119,14 +119,11 @@ func RemoteMounts() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
 			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -160,9 +157,10 @@ func RemoteMounts() *cobra.Command {
 			var err error
 			resource, err = client.Find(ctx, paramsBehaviorFind)
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
-			expandedResource, _ := expandBehavior()(resource)
+			var expandedResource interface{}
+			expandedResource, _, err = expandBehavior()(resource)
 			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -192,10 +190,7 @@ func RemoteMounts() *cobra.Command {
 
 			var err error
 			err = client.Delete(ctx, paramsBehaviorDelete)
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
@@ -232,9 +227,10 @@ func RemoteMounts() *cobra.Command {
 
 			resource, err := client.Update(ctx, updateParams)
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
-			expandedResource, _ := expandBehavior()(resource)
+			var expandedResource interface{}
+			expandedResource, _, err = expandBehavior()(resource)
 			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger())
 		},
 	}
@@ -275,17 +271,17 @@ func findRemoteServer(cmd *cobra.Command, remoteServerName string) (int64, error
 	return 0, fmt.Errorf("no remote server found '%v", remoteServerName)
 }
 
-func expandBehavior() func(i interface{}) (interface{}, bool) {
-	return func(i interface{}) (interface{}, bool) {
+func expandBehavior() func(i interface{}) (interface{}, bool, error) {
+	return func(i interface{}) (interface{}, bool, error) {
 		resource := make(map[string]interface{})
 		j, err := json.Marshal(&i)
 		if err != nil {
-			return i, true
+			return i, true, nil
 		}
 
 		err = json.Unmarshal(j, &resource)
 		if err != nil {
-			return i, true
+			return i, true, nil
 		}
 
 		value := resource["value"].(map[string]interface{})
@@ -295,6 +291,6 @@ func expandBehavior() func(i interface{}) (interface{}, bool) {
 			resource[k] = v
 		}
 
-		return resource, true
+		return resource, true, nil
 	}
 }

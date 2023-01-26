@@ -38,13 +38,15 @@ func (s *Spinner) Start(afterClearScreen ...func()) error {
 	return nil
 }
 
-func (s *Spinner) Stop() {
+func (s *Spinner) Stop(clearScreen bool) {
 	if s.Spinner.Status() == yacspin.SpinnerStopped {
 		return
 	}
 	if isTerminal(s.Writer) {
 		s.Spinner.Stop()
-		s.clearScreen()
+		if clearScreen {
+			s.clearScreen()
+		}
 	}
 }
 

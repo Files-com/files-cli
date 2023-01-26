@@ -31,8 +31,13 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 	json.Unmarshal(jsonStructure, &intermediateMap)
 	orderedKeys := jsonTags(structure)
 	var fields []string
+	var subtractFields []string
 	for _, key := range unparsedFields {
-		fields = append(fields, strings.ToLower(strings.Replace(key, "-", "_", -1)))
+		if strings.HasPrefix(key, "-") {
+			subtractFields = append(subtractFields, strings.ToLower(strings.Replace(strings.TrimPrefix(key, "-"), "-", "_", -1)))
+		} else {
+			fields = append(fields, strings.ToLower(strings.Replace(key, "-", "_", -1)))
+		}
 	}
 
 	if len(fields) > 0 && fields[0] != "" {
@@ -55,7 +60,20 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 		}
 	}
 
+	for _, key := range subtractFields {
+		delete(returnMap, key)
+		for i, orderedKey := range orderedKeys {
+			if orderedKey == key {
+				orderedKeys = remove(orderedKeys, i)
+			}
+		}
+	}
+
 	return returnMap, orderedKeys, nil
+}
+
+func remove(slice []string, s int) []string {
+	return append(slice[:s], slice[s+1:]...)
 }
 
 func jsonTags(structure interface{}) []string {

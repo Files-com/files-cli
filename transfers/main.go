@@ -232,8 +232,8 @@ func (t *Transfers) Iter(ctx context.Context, job *status.Job, config files_sdk.
 func (t *Transfers) TextFilterFormat() lib.FilterIter {
 	var filter lib.FilterIter
 	if lo.Contains(t.Format, "text") {
-		filter = func(i interface{}) (interface{}, bool) {
-			return t.Text(i.(status.File)), true
+		filter = func(i interface{}) (interface{}, bool, error) {
+			return t.Text(i.(status.File)), true, nil
 		}
 	}
 

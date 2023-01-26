@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Files-com/files-sdk-go/v2 v2.0.147-beta
+	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
 	github.com/charmbracelet/bubbles v0.11.0

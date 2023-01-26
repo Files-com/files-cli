@@ -21,12 +21,12 @@ type IterPaging interface {
 	GetPage() bool
 }
 
-type FilterIter func(interface{}) (interface{}, bool)
+type FilterIter func(interface{}) (interface{}, bool, error)
 
 func Format(ctx context.Context, result interface{}, format []string, fields []string, usePager bool, out ...io.Writer) error {
 	results, ok := interfaceSlice(result)
 	if ok {
-		return FormatIter(ctx, &SliceIter{Items: results}, format, fields, false, func(i interface{}) (interface{}, bool) { return i, true }, out...)
+		return FormatIter(ctx, &SliceIter{Items: results}, format, fields, false, func(i interface{}) (interface{}, bool, error) { return i, true, nil }, out...)
 	}
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
@@ -38,7 +38,7 @@ func Format(ctx context.Context, result interface{}, format []string, fields []s
 	case "json":
 		return JsonMarshal(result, fields, usePager, format[1], out[0])
 	case "csv":
-		return CSVMarshal(result, fields, out[0])
+		return CSVMarshal(result, fields, out[0], format[1])
 	case "table":
 		return TableMarshal(format[1], result, fields, usePager, out[0], format[2])
 	default:
@@ -57,7 +57,7 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 	case "json":
 		return JsonMarshalIter(ctx, it, fields, filter, usePager, format[1], out[0])
 	case "csv":
-		return CSVMarshalIter(it, fields, filter, out[0])
+		return CSVMarshalIter(it, fields, filter, out[0], format[1])
 	case "table":
 		return TableMarshalIter(ctx, format[1], it, fields, usePager, out[0], filter)
 	case "text":

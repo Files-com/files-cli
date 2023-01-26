@@ -55,7 +55,6 @@ func Sync() *cobra.Command {
 			}
 
 			return lib.ClientError(
-				ctx,
 				Profile(cmd),
 				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)
@@ -90,7 +89,6 @@ func Sync() *cobra.Command {
 			}
 
 			return lib.ClientError(
-				ctx,
 				Profile(cmd),
 				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)

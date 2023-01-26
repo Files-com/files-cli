@@ -29,6 +29,7 @@ func Folders() *cobra.Command {
 	var fieldsListFor []string
 	var formatListFor []string
 	usePagerListFor := true
+	filterbyListFor := make(map[string]string)
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
 	listForSearchAll := true
@@ -71,28 +72,40 @@ func Folders() *cobra.Command {
 				it, err = fileClient.ListFor(ctx, params)
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			if listOnlyFolders {
-				listFilter = func(i interface{}) (interface{}, bool) {
-					f, ok := i.(files_sdk.Folder)
-					if ok && f.Type == "directory" {
-						return i, true
+			listOnlyFoldersFilter := func(i interface{}) bool {
+				f, ok := i.(files_sdk.Folder)
+				if ok && f.Type == "directory" {
+					return true
+				}
+				return false
+			}
+			if listOnlyFolders || len(filterbyListFor) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					if listOnlyFolders && len(filterbyListFor) > 0 {
+						matchOk, err := lib.MatchFilter(filterbyListFor, i)
+
+						return i, listOnlyFoldersFilter(i) && matchOk, err
 					}
-					return i, false
+					if listOnlyFolders {
+						return i, listOnlyFoldersFilter(i), nil
+					} else {
+						matchOk, err := lib.MatchFilter(filterbyListFor, i)
+
+						return i, matchOk, err
+					}
 				}
 			}
 			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
 	cmdListFor.Flags().BoolVar(&listRecursively, "recursive", listOnlyFolders, "list folders/files recursively")
+	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsFolderListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

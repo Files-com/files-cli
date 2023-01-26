@@ -67,8 +67,8 @@ func TestTableMarshalIter_FilterIter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := &MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	out := strings.Builder{}
-	TableMarshalIter(context.Background(), "", it, []string{}, true, &out, func(i interface{}) (interface{}, bool) {
-		return i, i.(Person).FirstName == "Dustin"
+	TableMarshalIter(context.Background(), "", it, []string{}, true, &out, func(i interface{}) (interface{}, bool, error) {
+		return i, i.(Person).FirstName == "Dustin", nil
 	})
 
 	assert.Equal(strings.TrimSpace(`

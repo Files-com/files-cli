@@ -69,4 +69,12 @@ func TestOnlyFields(t *testing.T) {
 		assert.Equal(m, results)
 		assert.Equal([]string{"key"}, orderedKeys)
 	})
+
+	t.Run("it subtracts a field", func(t *testing.T) {
+		a := testStruct{A: "hello", B: "I'm B", C: "I'm C"}
+		results, orderedKeys, err := OnlyFields([]string{"-a"}, a)
+		assert.NoError(err)
+		assert.Equal(map[string]interface{}{"b": "I'm B", "c": "I'm C"}, results)
+		assert.Equal([]string{"b", "c"}, orderedKeys)
+	})
 }

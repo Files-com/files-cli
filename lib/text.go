@@ -15,7 +15,11 @@ func TextMarshalIter(_ context.Context, it Iter, _usePager bool, out io.Writer, 
 		current := it.Current()
 		filter := true
 		if filterIter != nil {
-			current, filter = filterIter(current)
+			var err error
+			current, filter, err = filterIter(current)
+			if err != nil {
+				return err
+			}
 		}
 
 		if filter {

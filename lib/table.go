@@ -151,6 +151,7 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 	if err := spinner.Start(warningText); err != nil {
 		return err
 	}
+	defer spinner.Stop(false)
 	hasRows := false
 	for it.Next() {
 		if pager.Canceled(ctx) {
@@ -160,7 +161,10 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 		current := it.Current()
 		filter := true
 		if filterIter != nil {
-			current, filter = filterIter(current)
+			current, filter, err = filterIter(current)
+			if err != nil {
+				return err
+			}
 		}
 
 		if filter {
@@ -169,18 +173,18 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 				return err
 			}
 			hasRows = true
+			writeHeader = false
 		}
 
-		writeHeader = false
 		if paging && itPaging.EOFPage() {
-			spinner.Stop()
+			spinner.Stop(true)
 			pager.Start(cancel)
 			renderTable(t, style)
 			t = tableWriter(style, pager)
 			writeHeader = true
 		}
 	}
-	spinner.Stop()
+
 	if hasRows {
 		pager.Start(cancel)
 	}

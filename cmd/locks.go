@@ -27,6 +27,7 @@ func Locks() *cobra.Command {
 	var fieldsListFor []string
 	var formatListFor []string
 	usePagerListFor := true
+	filterbyListFor := make(map[string]string)
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
 	listForIncludeChildren := true
@@ -60,16 +61,21 @@ func Locks() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
-			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
-			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+			if len(filterbyListFor) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyListFor, i)
+					return i, matchOk, err
+				}
 			}
-			return nil
+			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
+
+	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdListFor.Flags().StringVar(&paramsLockListFor.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsLockListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -151,7 +157,7 @@ func Locks() *cobra.Command {
 			var err error
 			err = client.Delete(ctx, paramsLockDelete)
 			if err != nil {
-				return lib.ClientError(ctx, Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

@@ -6,9 +6,13 @@ import (
 	"io"
 )
 
-func CSVMarshal(result interface{}, fields []string, out io.Writer) error {
+func CSVMarshal(result interface{}, fields []string, out io.Writer, settings string) error {
 	w := csv.NewWriter(out)
-	return csvMarshal(w, result, fields, true)
+	writeHeader := true
+	if settings == "no-headers" {
+		writeHeader = false
+	}
+	return csvMarshal(w, result, fields, writeHeader)
 }
 
 func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader bool) error {
@@ -45,29 +49,33 @@ func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader 
 	return nil
 }
 
-func CSVMarshalIter(it Iter, fields []string, filterIter FilterIter, out io.Writer) error {
+func CSVMarshalIter(it Iter, fields []string, filterIter FilterIter, out io.Writer, settings string) error {
 	spinner := &Spinner{Writer: out}
 	if err := spinner.Start(); err != nil {
 		return err
 	}
+	defer spinner.Stop(false)
 	w := csv.NewWriter(out)
 	writeHeader := true
+	if settings == "no-headers" {
+		writeHeader = false
+	}
 	for it.Next() {
 		current := it.Current()
 		if filterIter != nil {
 			var ok bool
-			current, ok = filterIter(current)
+			var err error
+			current, ok, err = filterIter(current)
+			if err != nil {
+				return err
+			}
 			if !ok {
 				continue
 			}
 		}
-		spinner.Stop()
+		spinner.Stop(true)
 		csvMarshal(w, current, fields, writeHeader)
 		writeHeader = false
 	}
-	spinner.Stop()
-	if it.Err() != nil {
-		return it.Err()
-	}
-	return nil
+	return it.Err()
 }

@@ -93,8 +93,8 @@ func TestJsonMarshalIter_Filter(t *testing.T) {
 	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
-	JsonMarshalIter(context.Background(), &it, []string{}, func(i interface{}) (interface{}, bool) {
-		return i, i.(Person).FirstName == "Dustin"
+	JsonMarshalIter(context.Background(), &it, []string{}, func(i interface{}) (interface{}, bool, error) {
+		return i, i.(Person).FirstName == "Dustin", nil
 	}, false, "", buf)
 
 	a.Equal(`[{

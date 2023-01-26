@@ -19,6 +19,7 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 	if err = spinner.Start(); err != nil {
 		return err
 	}
+	defer spinner.Stop(false)
 	firstObject := true
 	for it.Next() {
 		if pager.Canceled(ctx) {
@@ -27,7 +28,10 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 		current := it.Current()
 		if filterIter != nil {
 			var ok bool
-			current, ok = filterIter(current)
+			current, ok, err = filterIter(current)
+			if err != nil {
+				return err
+			}
 			if !ok {
 				continue
 			}
@@ -47,7 +51,7 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 			return err
 		}
 		if firstObject {
-			spinner.Stop()
+			spinner.Stop(true)
 			pager.Start(cancel)
 
 			fmt.Fprintf(pager, "[%s", string(jsonObject))
@@ -61,8 +65,9 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 
 		firstObject = false
 	}
-	spinner.Stop()
+
 	if firstObject {
+		spinner.Stop(true)
 		fmt.Fprintf(out, "[]\n")
 	} else {
 		fmt.Fprintf(pager, "]\n")

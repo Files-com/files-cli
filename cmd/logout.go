@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/session"
 	"github.com/spf13/cobra"
-
-	"fmt"
-	"os"
 )
 
 func init() {
@@ -20,14 +20,19 @@ func LogOut() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := session.Client{Config: *ctx.Value("config").(*files_sdk.Config)}
-			err := client.Delete(cmd.Context())
+			deleteErr := client.Delete(cmd.Context())
+			if deleteErr != nil {
+				fmt.Println(deleteErr)
+			}
+			Profile(cmd).Current().SessionId = ""
+			err := Profile(cmd).Save()
 			if err != nil {
 				fmt.Println(err)
-				os.Exit(1)
 			}
 
-			Profile(cmd).Current().SessionId = ""
-			Profile(cmd).Save()
+			if deleteErr != nil || err != nil {
+				os.Exit(1)
+			}
 		},
 	}
 }
