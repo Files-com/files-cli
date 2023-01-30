@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.19
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.149-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.150-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -181,7 +181,7 @@ require (
 	github.com/yuin/goldmark v1.5.2 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	github.com/zenthangplus/goccm v0.0.0-20200608171100-39e9e08b694a // indirect
+	github.com/zenthangplus/goccm v1.1.3 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	gocloud.dev v0.27.0 // indirect

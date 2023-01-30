@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
@@ -68,7 +70,9 @@ func Histories() *cobra.Command {
 
 	cmdListForFile.Flags().StringToStringVar(&filterbyListForFile, "filter-by", filterbyListForFile, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	paramsHistoryListForFile.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
+	paramsHistoryListForFile.EndAt = &time.Time{}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.EndAt, "end-at", "Leave blank or set to a date/time to filter later entries.")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -129,7 +133,9 @@ func Histories() *cobra.Command {
 
 	cmdListForFolder.Flags().StringToStringVar(&filterbyListForFolder, "filter-by", filterbyListForFolder, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	paramsHistoryListForFolder.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
+	paramsHistoryListForFolder.EndAt = &time.Time{}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.EndAt, "end-at", "Leave blank or set to a date/time to filter later entries.")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -190,7 +196,9 @@ func Histories() *cobra.Command {
 
 	cmdListForUser.Flags().StringToStringVar(&filterbyListForUser, "filter-by", filterbyListForUser, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	paramsHistoryListForUser.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
+	paramsHistoryListForUser.EndAt = &time.Time{}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.EndAt, "end-at", "Leave blank or set to a date/time to filter later entries.")
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -251,7 +259,9 @@ func Histories() *cobra.Command {
 
 	cmdListLogins.Flags().StringToStringVar(&filterbyListLogins, "filter-by", filterbyListLogins, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	paramsHistoryListLogins.StartAt = &time.Time{}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
+	paramsHistoryListLogins.EndAt = &time.Time{}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.EndAt, "end-at", "Leave blank or set to a date/time to filter later entries.")
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
@@ -311,7 +321,9 @@ func Histories() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	paramsHistoryList.StartAt = &time.Time{}
 	lib.TimeVar(cmdList.Flags(), paramsHistoryList.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
+	paramsHistoryList.EndAt = &time.Time{}
 	lib.TimeVar(cmdList.Flags(), paramsHistoryList.EndAt, "end-at", "Leave blank or set to a date/time to filter later entries.")
 	cmdList.Flags().StringVar(&paramsHistoryList.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdList.Flags().StringVar(&paramsHistoryList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")

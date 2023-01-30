@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
@@ -156,6 +158,7 @@ func Folders() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")
 	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
+	paramsFolderCreate.ProvidedMtime = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsFolderCreate.ProvidedMtime, "provided-mtime", "User provided modification time.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")

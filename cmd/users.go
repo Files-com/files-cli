@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
@@ -242,6 +243,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAnnouncementsRead, "announcements-read", createAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdCreate.Flags().BoolVar(&createAttachmentsPermission, "attachments-permission", createAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
+	paramsUserCreate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdCreate.Flags().StringVar(&UserCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createBillingPermission, "billing-permission", createBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
@@ -589,6 +591,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAnnouncementsRead, "announcements-read", updateAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdUpdate.Flags().BoolVar(&updateAttachmentsPermission, "attachments-permission", updateAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
+	paramsUserUpdate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdUpdate.Flags().StringVar(&UserUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateBillingPermission, "billing-permission", updateBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")

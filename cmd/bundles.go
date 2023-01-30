@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
@@ -181,6 +182,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Password, "password", "", "Password for this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
 	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
+	paramsBundleCreate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Bundle expiration date/time")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
@@ -359,6 +361,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Description, "description", "", "Public description")
 	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
+	paramsBundleUpdate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Bundle expiration date/time")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")

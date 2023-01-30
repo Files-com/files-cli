@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 
@@ -76,7 +78,9 @@ func HistoryExports() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	paramsHistoryExportCreate.StartAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsHistoryExportCreate.StartAt, "start-at", "Start date/time of export range.")
+	paramsHistoryExportCreate.EndAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsHistoryExportCreate.EndAt, "end-at", "End date/time of export range.")
 	cmdCreate.Flags().StringVar(&paramsHistoryExportCreate.QueryAction, "query-action", "", "Filter results by this this action type. Valid values: `create`, `read`, `update`, `destroy`, `move`, `login`, `failedlogin`, `copy`, `user_create`, `user_update`, `user_destroy`, `group_create`, `group_update`, `group_destroy`, `permission_create`, `permission_destroy`, `api_key_create`, `api_key_update`, `api_key_destroy`")
 	cmdCreate.Flags().StringVar(&paramsHistoryExportCreate.QueryInterface, "query-interface", "", "Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`, `mobile`, `as2`, `inbound_email`, `remote`")

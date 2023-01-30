@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/Files-com/files-sdk-go/v2/lib"
 
@@ -87,6 +88,7 @@ func tableMarshalVertical(t table.Writer, result interface{}, fields []string, w
 	t.SetStyle(*custom)
 	var headers table.Row
 	var values table.Row
+	orderedKeys = padTableWithDefaultRow(orderedKeys, result, record)
 	for i, key := range orderedKeys {
 		if record[key] != nil || !skipNil {
 			if i == 0 {
@@ -199,4 +201,18 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 		return it.Err()
 	}
 	return nil
+}
+
+func padTableWithDefaultRow(orderedKeys []string, result interface{}, record map[string]interface{}) []string {
+	if len(orderedKeys) == 1 {
+		// files_sdk.Model
+		resourceWithPackage := strings.Split(fmt.Sprintf("%T", result), ".")
+		if len(resourceWithPackage) > 1 {
+			record["Resource"] = resourceWithPackage[1]
+		} else {
+			record["Resource"] = "" // might just be a map
+		}
+		orderedKeys = append([]string{"Resource"}, orderedKeys...)
+	}
+	return orderedKeys
 }

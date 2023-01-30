@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -64,6 +66,7 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Part, "part", 0, "Part if uploading a part.")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Parts, "parts", 0, "How many parts to fetch?")
+	paramsFileCreate.ProvidedMtime = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsFileCreate.ProvidedMtime, "provided-mtime", "User provided modification time.")
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Ref, "ref", "", "")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Restart, "restart", 0, "File byte offset to restart from.")
@@ -119,6 +122,7 @@ func Files() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
+	paramsFileUpdate.ProvidedMtime = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsFileUpdate.ProvidedMtime, "provided-mtime", "Modified time of file.")
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.PriorityColor, "priority-color", "", "Priority/Bookmark color of file.")
 
