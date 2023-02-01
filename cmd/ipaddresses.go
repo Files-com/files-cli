@@ -31,10 +31,11 @@ func IpAddresses() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List IP Addresses associated with the current site",
-		Long:  `List IP Addresses associated with the current site`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List IP Addresses associated with the current site",
+		Long:    `List IP Addresses associated with the current site`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -33,15 +33,20 @@ func Permissions() *cobra.Command {
 	listIncludeGroups := true
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Permissions",
-		Long:  `List Permissions`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Permissions",
+		Long:    `List Permissions`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
 			if cmd.Flags().Changed("include-groups") {
 				paramsPermissionList.IncludeGroups = flib.Bool(listIncludeGroups)
 			}

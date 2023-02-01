@@ -31,10 +31,11 @@ func As2Stations() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List As2 Stations",
-		Long:  `List As2 Stations`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List As2 Stations",
+		Long:    `List As2 Stations`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

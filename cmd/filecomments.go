@@ -31,10 +31,11 @@ func FileComments() *cobra.Command {
 	var MaxPagesListFor int64
 
 	cmdListFor := &cobra.Command{
-		Use:   "list-for [path]",
-		Short: "List File Comments by path",
-		Long:  `List File Comments by path`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list-for [path]",
+		Short:   "List File Comments by path",
+		Long:    `List File Comments by path`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

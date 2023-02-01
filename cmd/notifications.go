@@ -33,15 +33,20 @@ func Notifications() *cobra.Command {
 	listIncludeAncestors := true
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Notifications",
-		Long:  `List Notifications`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Notifications",
+		Long:    `List Notifications`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsNotificationList
 			params.MaxPages = MaxPagesList
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
 			if cmd.Flags().Changed("include-ancestors") {
 				paramsNotificationList.IncludeAncestors = flib.Bool(listIncludeAncestors)
 			}

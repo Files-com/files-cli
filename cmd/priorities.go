@@ -30,15 +30,19 @@ func Priorities() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Priorities",
-		Long:  `List Priorities`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Priorities",
+		Long:    `List Priorities`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsPriorityList
 			params.MaxPages = MaxPagesList
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
 
 			client := priority.Client{Config: *config}
 			it, err := client.List(ctx, params)

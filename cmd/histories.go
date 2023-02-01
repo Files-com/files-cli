@@ -41,6 +41,16 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryListForFile
 			params.MaxPages = MaxPagesListForFile
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
+			if params.StartAt.IsZero() {
+				params.StartAt = nil
+			}
+			if params.EndAt.IsZero() {
+				params.EndAt = nil
+			}
 
 			client := history.Client{Config: *config}
 			it, err := client.ListForFile(ctx, params)
@@ -104,6 +114,16 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryListForFolder
 			params.MaxPages = MaxPagesListForFolder
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
+			if params.StartAt.IsZero() {
+				params.StartAt = nil
+			}
+			if params.EndAt.IsZero() {
+				params.EndAt = nil
+			}
 
 			client := history.Client{Config: *config}
 			it, err := client.ListForFolder(ctx, params)
@@ -168,6 +188,13 @@ func Histories() *cobra.Command {
 			params := paramsHistoryListForUser
 			params.MaxPages = MaxPagesListForUser
 
+			if params.StartAt.IsZero() {
+				params.StartAt = nil
+			}
+			if params.EndAt.IsZero() {
+				params.EndAt = nil
+			}
+
 			client := history.Client{Config: *config}
 			it, err := client.ListForUser(ctx, params)
 			it.OnPageError = func(err error) (*[]interface{}, error) {
@@ -231,6 +258,13 @@ func Histories() *cobra.Command {
 			params := paramsHistoryListLogins
 			params.MaxPages = MaxPagesListLogins
 
+			if params.StartAt.IsZero() {
+				params.StartAt = nil
+			}
+			if params.EndAt.IsZero() {
+				params.EndAt = nil
+			}
+
 			client := history.Client{Config: *config}
 			it, err := client.ListLogins(ctx, params)
 			it.OnPageError = func(err error) (*[]interface{}, error) {
@@ -283,15 +317,23 @@ func Histories() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List site full action history",
-		Long:  `List site full action history`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List site full action history",
+		Long:    `List site full action history`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
+
+			if params.StartAt.IsZero() {
+				params.StartAt = nil
+			}
+			if params.EndAt.IsZero() {
+				params.EndAt = nil
+			}
 
 			client := history.Client{Config: *config}
 			it, err := client.List(ctx, params)

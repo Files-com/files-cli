@@ -35,15 +35,17 @@ func Automations() *cobra.Command {
 	listWithDeleted := true
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Automations",
-		Long:  `List Automations`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Automations",
+		Long:    `List Automations`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
+
 			if cmd.Flags().Changed("with-deleted") {
 				paramsAutomationList.WithDeleted = flib.Bool(listWithDeleted)
 			}

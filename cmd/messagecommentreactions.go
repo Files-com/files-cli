@@ -31,10 +31,11 @@ func MessageCommentReactions() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Message Comment Reactions",
-		Long:  `List Message Comment Reactions`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Message Comment Reactions",
+		Long:    `List Message Comment Reactions`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

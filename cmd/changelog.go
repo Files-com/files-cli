@@ -12,7 +12,9 @@ import (
 )
 
 func init() {
-	RootCmd.AddCommand(Changelog())
+	changeLog := Changelog()
+	RootCmd.AddCommand(changeLog)
+	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, changeLog.Use)
 }
 
 func Changelog() *cobra.Command {

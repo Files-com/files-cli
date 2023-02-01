@@ -55,6 +55,7 @@ func Folders() *cobra.Command {
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
+
 			if cmd.Flags().Changed("search-all") {
 				paramsFolderListFor.SearchAll = flib.Bool(listForSearchAll)
 			}

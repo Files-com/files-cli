@@ -33,15 +33,20 @@ func Requests() *cobra.Command {
 	listMine := true
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Requests",
-		Long:  `List Requests`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Requests",
+		Long:    `List Requests`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRequestList
 			params.MaxPages = MaxPagesList
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
 			if cmd.Flags().Changed("mine") {
 				paramsRequestList.Mine = flib.Bool(listMine)
 			}
@@ -105,6 +110,10 @@ func Requests() *cobra.Command {
 			config := ctx.Value("config").(*files_sdk.Config)
 			params := paramsRequestGetFolder
 			params.MaxPages = MaxPagesGetFolder
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
 			if cmd.Flags().Changed("mine") {
 				paramsRequestGetFolder.Mine = flib.Bool(getFolderMine)
 			}

@@ -30,10 +30,11 @@ func Behaviors() *cobra.Command {
 	var MaxPagesList int64
 
 	cmdList := &cobra.Command{
-		Use:   "list",
-		Short: "List Behaviors",
-		Long:  `List Behaviors`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list",
+		Short:   "List Behaviors",
+		Long:    `List Behaviors`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,10 +120,11 @@ func Behaviors() *cobra.Command {
 	var MaxPagesListFor int64
 
 	cmdListFor := &cobra.Command{
-		Use:   "list-for [path]",
-		Short: "List Behaviors by path",
-		Long:  `List Behaviors by path`,
-		Args:  cobra.MinimumNArgs(0),
+		Use:     "list-for [path]",
+		Short:   "List Behaviors by path",
+		Long:    `List Behaviors by path`,
+		Args:    cobra.MinimumNArgs(0),
+		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
