@@ -241,6 +241,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("office-integration-available") {
 				mapParams["office_integration_available"] = updateOfficeIntegrationAvailable
 			}
+			if cmd.Flags().Changed("office-integration-type") {
+				lib.FlagUpdate(cmd, "office_integration_type", paramsSiteUpdate.OfficeIntegrationType, mapParams)
+			}
 			if cmd.Flags().Changed("pin-all-remote-servers-to-site-region") {
 				mapParams["pin_all_remote_servers_to_site_region"] = updatePinAllRemoteServersToSiteRegion
 			}
@@ -583,6 +586,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "Does the welcome screen appear?")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationAvailable, "office-integration-available", updateOfficeIntegrationAvailable, "Allow users to use Office for the web?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.OfficeIntegrationType, "office-integration-type", "", "Office integration application used to edit and view the MS Office documents")
 	cmdUpdate.Flags().BoolVar(&updatePinAllRemoteServersToSiteRegion, "pin-all-remote-servers-to-site-region", updatePinAllRemoteServersToSiteRegion, "If true, we will ensure that all internal communications with any remote server are made through the primary region of the site. This setting overrides individual remote server settings.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.MotdText, "motd-text", "", "A message to show users when they connect via FTP or SFTP.")
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForFtp, "motd-use-for-ftp", updateMotdUseForFtp, "Show message to users connecting via FTP")
