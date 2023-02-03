@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -254,7 +255,7 @@ func (a *AgentService) Start(_ bool) error {
 	}
 	logger.Debug("files-cli", "", "AgentService.Start")
 	a.Config.SetLogger(logger.GetLogger())
-	err = a.Service.StartPortableMode(int(a.Port), 0, 0, []string{}, false,
+	err = a.Service.StartPortableMode(int(a.Port), -1, -1, []string{}, false,
 		false, "", "", "", "")
 	if err == nil {
 		go a.afterStart()
@@ -468,7 +469,12 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 
 	if a.Config.Subdomain != "" {
 		a.Config.RootPath()
-		ips, err := net.LookupIP(a.Config.Endpoint)
+		url, err := url.Parse(a.Config.Endpoint)
+		if err != nil {
+			logger.Debug("files-cli", "", "Unable to parse url %v", a.Config.Endpoint)
+			return err
+		}
+		ips, err := net.LookupIP(url.Hostname())
 		if err != nil {
 			return err
 		}
