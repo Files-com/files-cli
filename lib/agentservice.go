@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 	"path"
 	"path/filepath"
@@ -66,10 +67,12 @@ type AgentService struct {
 	ipWhitelist                        map[string]bool
 	appendedIpWhitelist                []string
 	sftpGoConfigPath                   string
+	subdomain                          string
 	context.Context
 }
 
 func (a *AgentService) AddFlags(flags *pflag.FlagSet) {
+	flags.StringVar(&a.subdomain, "subdomain", "", "")
 	flags.StringVar(&a.ConfigPath, "config", "./files-agent-config.json", "")
 	flags.StringVarP(&a.PortableLogFile, logFilePathFlag, "l", "files-agent.log", "Leave empty to disable logging")
 	flags.BoolVarP(&a.PortableLogVerbose, logVerboseFlag, "v", false, "Enable verbose logs")
@@ -106,12 +109,21 @@ func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
 	a.Context = ctx
 	a.Config.Debug = true
 	a.Config.SetLogger(logger.GetLogger())
+	a.Config.Subdomain = a.subdomain
+	profile := &Profiles{}
+	err := profile.Load(&files_sdk.Config{}, "default")
+	if err != nil {
+		return err
+	}
+	if a.Config.Subdomain == "" && profile.Subdomain != "" {
+		a.Config.Subdomain = profile.Subdomain
+	}
 	a.permissions = make(map[string][]string)
 	a.shutdown = make(chan bool)
 	a.ipWhitelist = make(map[string]bool)
 	a.Service.PortableMode = 1
 
-	err := a.InitPaths()
+	err = a.InitPaths()
 	if requirePaths {
 		return err
 	}
@@ -448,6 +460,22 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 			return iter.Err()
 		}
 		a.ipWhitelist[iter.PublicIpAddress().IpAddress] = true
+	}
+
+	if iter.Err() != nil {
+		return iter.Err()
+	}
+
+	if a.Config.Subdomain != "" {
+		a.Config.RootPath()
+		ips, err := net.LookupIP(a.Config.Endpoint)
+		if err != nil {
+			return err
+		}
+
+		for _, ip := range ips {
+			a.ipWhitelist[ip.String()] = true
+		}
 	}
 
 	return
