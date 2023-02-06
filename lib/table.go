@@ -132,7 +132,7 @@ func tableMarshal(t table.Writer, result interface{}, fields []string, writeHead
 
 func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields []string, usePager bool, out io.Writer, filterIter FilterIter) error {
 	warningText := func() {
-		_, ok := it.(*lib.IterChan)
+		_, ok := it.(*lib.IterChan[interface{}])
 		if ok {
 			fmt.Fprintf(os.Stderr, "\u001b[33m%v\u001b[0m", "Table format for this resource only renders once all rows are complete.\n")
 		}

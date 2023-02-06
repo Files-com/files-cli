@@ -172,16 +172,36 @@ func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([
 		}
 		return nil
 	}
+	cmd := Cmd(config, command, args, []string{})
 	errOut := &cliLib.Buffer{}
 	stdOut := &cliLib.Buffer{}
-	command.SetArgs(args)
+	cmd.SetOut(stdOut)
+	cmd.SetErr(errOut)
+	cmd.Run()
+	return stdOut.Bytes(), errOut.Bytes()
+}
+
+func Cmd(config *files_sdk.Config, command *cobra.Command, displayArgs []string, hiddenArgs []string) lib.Cmd {
 	ctx := context.WithValue(context.Background(), "config", config)
 	ctx = context.WithValue(ctx, "testing", true)
 	profile := &cliLib.Profiles{Config: config}
 	profile.Init()
 	ctx = context.WithValue(ctx, "profile", profile)
-	command.SetOut(stdOut)
-	command.SetErr(errOut)
-	command.ExecuteContext(ctx)
-	return stdOut.Bytes(), errOut.Bytes()
+	command.SetArgs(append(displayArgs, hiddenArgs...))
+
+	return CobraCommand{Command: command, args: append([]string{command.Name()}, displayArgs...), Context: ctx}
+}
+
+type CobraCommand struct {
+	*cobra.Command
+	args []string
+	context.Context
+}
+
+func (c CobraCommand) Run() error {
+	return c.Command.ExecuteContext(c.Context)
+}
+
+func (c CobraCommand) Args() []string {
+	return c.args
 }

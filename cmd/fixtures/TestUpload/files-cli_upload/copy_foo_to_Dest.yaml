@@ -1,0 +1,680 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"09453b14-c07d-4c0c-a611-091ed25fd2cf","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:29 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - 09453b14-c07d-4c0c-a611-091ed25fd2cf
+      - 2c571d259ac97908dd1524dceb228772
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest
+    method: POST
+  response:
+    body: '{"display_name":"TestUpload-files-cli_upload-copy_foo_to_Dest","type":"directory","size":null,"created_at":"2023-02-06T16:52:30Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "199"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:30 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - a134d314-90d6-4b75-9887-008dcd263c5d
+      - cfffd14d16d968d2154f172fee4ae3a2
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"1c955b30-ae6c-4abb-8d02-57f65db21961","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:30 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - 1c955b30-ae6c-4abb-8d02-57f65db21961
+      - c8df641c5eb66fa9ab07c884698db900
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"bb307dc0-a5eb-483d-8bc0-5d7326cff881","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:31 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - bb307dc0-a5eb-483d-8bc0-5d7326cff881
+      - 5554ff97c241b17089054e3a3e74fd79
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root
+    method: POST
+  response:
+    body: '{"display_name":"dest-root","type":"directory","size":null,"created_at":"2023-02-06T16:52:31Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "164"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:31 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 9c899cd6-3a8c-4c27-9380-715f160bd7a9
+      - 90f3958ed9aedc9205d64f7943bf734e
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"a57248f6-f489-4943-a96f-65aeb49057d9","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:31 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - a57248f6-f489-4943-a96f-65aeb49057d9
+      - 062dcb4a4a493e8e2fc95236164d94b3
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"c0f83857-2aca-40ae-ab33-f2670d03bb6a","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:32 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - c0f83857-2aca-40ae-ab33-f2670d03bb6a
+      - 28e60af722ef49c5a1f179496d211d26
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root
+    method: POST
+  response:
+    body: '{"error":"The destination exists.","http-code":422,"instance":"988e9014-2ffe-4c3a-b4d4-f322ec57c933","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:32 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Request-Id:
+      - 988e9014-2ffe-4c3a-b4d4-f322ec57c933
+      - 182b9c7f2f39e1883590c7a24db9a531
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
+- request:
+    body: '{}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest
+    method: POST
+  response:
+    body: '{"display_name":"Dest","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "159"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:33 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - db2de853-35e7-47de-9d1e-419149405929
+      - 25bbfbdcb0b268a1cdf1935abba54fb5
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{"mkdir_parents":true}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt
+    method: POST
+  response:
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2023-02-06T17:07:33Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-4118333541","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/da447911-b58f-4a59-aee0-248ce00a088c?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230206%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20230206T165233Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=J8RzeNgG8r1gSBz6o10X_Dj8CW99N.DjbdfN4LnURD3kEBFQ7kUIYW17dC9f6AZUlbHuylCqwe9dzgm1jQPWQrM0kR40SJlzsWC2d_l.u1T2f2HgWr0eh2objJ6U_1hK\u0026X-Amz-Signature=fbe4f0d9f27a14a2f90bafc641b25ee505258defa5daf0d128a83d5e698b7c70"}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:33 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 884d6450-e59d-4d76-ab90-ea4dd5320ffc
+      - a43733ccc0b0d21e7c3622422929a2c3
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - "0"
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/da447911-b58f-4a59-aee0-248ce00a088c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230206%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230206T165233Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=J8RzeNgG8r1gSBz6o10X_Dj8CW99N.DjbdfN4LnURD3kEBFQ7kUIYW17dC9f6AZUlbHuylCqwe9dzgm1jQPWQrM0kR40SJlzsWC2d_l.u1T2f2HgWr0eh2objJ6U_1hK&X-Amz-Signature=fbe4f0d9f27a14a2f90bafc641b25ee505258defa5daf0d128a83d5e698b7c70
+    method: PUT
+  response:
+    body: ""
+    headers:
+      Content-Length:
+      - "0"
+      Date:
+      - Mon, 06 Feb 2023 16:52:34 GMT
+      Etag:
+      - '"d41d8cd98f00b204e9800998ecf8427e"'
+      Server:
+      - AmazonS3
+      X-Amz-Id-2:
+      - BiSqeHvDDHND4157Zc5fovJ15UW+jxQ/xTXwu4FbcJm+ZkyRfEgWwu9tBIXMCVfGA7i94U25EQs=
+      X-Amz-Request-Id:
+      - Y44KH1C84VMDDKMQ
+      X-Amz-Server-Side-Encryption:
+      - AES256
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"action":"end","etags":[{"etag":"d41d8cd98f00b204e9800998ecf8427e","part":"1"}],"mkdir_parents":true,"provided_mtime":"2023-02-06T08:52:31.503080193-08:00","ref":"put-4118333541"}'
+    form: {}
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/files/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt
+    method: POST
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:52:34Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":"2023-02-06T16:52:31Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "332"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:34 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 5cb63ca5-07bf-4f05-bcf9-a0e916725733
+      - 50c39c01a3c239b4468fadc5090196e7
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest
+    method: GET
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest","display_name":"Dest","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:34 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - f9aae80f-b332-48cb-b08d-fc5cf713ca5e
+      - 9a33c9d69d66f45dfb04148a65d106e1
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest
+    method: GET
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest","display_name":"Dest","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:35 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 5f8bc20f-2820-463e-b300-2909c277acaf
+      - ab0337960575870b6dd2f19d2c6e6e8c
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest?page=1
+    method: GET
+  response:
+    body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo","display_name":"foo","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:35 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - ce700134-55d8-467b-846b-53c1cef5bf73
+      - 60cefb9b30d3b642f34fca8aca1af504
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo?page=1
+    method: GET
+  response:
+    body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:52:34Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":"2023-02-06T16:52:31Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:36 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 381ed2df-e78c-4cbb-8eec-af49b75308c6
+      - 167369716e9a064037c7aad4c5d20674
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest
+    method: GET
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest","display_name":"Dest","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:36 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 515f7273-7d39-4f31-866c-b1d65da588a3
+      - 2c2dd8d05c13ef454c016dbe68c6c115
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo
+    method: GET
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo","display_name":"foo","type":"directory","size":null,"created_at":"2023-02-06T16:52:33Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:36 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - 0fbe4007-dcbd-4de0-90bd-497b4b96c052
+      - 0dee319815020452f492337d69c4d0cd
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt
+    method: GET
+  response:
+    body: '{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root/Dest/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:52:34Z","mtime":"2023-02-06T16:52:34Z","provided_mtime":"2023-02-06T16:52:31Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Feb 2023 16:52:37 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - f24fadfe-2eae-437b-8500-f15891e7de35
+      - 184caa36b3f3350af2958be5141c06bc
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/files/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest/dest-root?recursive=true
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 06 Feb 2023 16:52:37 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Request-Id:
+      - e5206d9f-c5a2-4758-bd1e-501a570a79e3
+      - 57c37b5bea05240db549898a838a5051
+    status: 204 No Content
+    code: 204
+    duration: ""

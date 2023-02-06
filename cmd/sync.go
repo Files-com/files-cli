@@ -32,31 +32,30 @@ func Sync() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
-			var job *status.Job
-			transfer.StartLog("upload")
 			client := file.Client{Config: *config}
-			job = client.Uploader(
-				ctx,
-				file.UploaderParams{
-					LocalPath:   localPath,
-					RemotePath:  remotePath,
-					Sync:        transfer.SyncFlag,
-					Manager:     transfer.Manager,
-					Ignore:      *transfer.Ignore,
-					RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
-					Config:      *config,
-					DryRun:      dryRun,
-				},
-			)
-
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
+			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
+				transfer.StartLog("upload")
+				return client.Uploader(
+					ctx,
+					file.UploaderParams{
+						LocalPath:   localPath,
+						RemotePath:  remotePath,
+						Sync:        transfer.SyncFlag,
+						Manager:     transfer.Manager,
+						Ignore:      *transfer.Ignore,
+						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
+						Config:      *config,
+						DryRun:      dryRun,
+					},
+				)
+			})
 
 			return lib.ClientError(
 				Profile(cmd),
-				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
+				lib.FormatIter(ctx, transfer.Iter(ctx, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)
 		},
 	}
@@ -66,31 +65,30 @@ func Sync() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
-			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr())
-			var job *status.Job
-			transfer.StartLog("download")
 			client := file.Client{Config: *config}
-			job = client.Downloader(
-				cmd.Context(),
-				file.DownloaderParams{
-					RemotePath:    remotePath,
-					LocalPath:     localPath,
-					Sync:          transfer.SyncFlag,
-					Manager:       transfer.Manager,
-					PreserveTimes: transfer.PreserveTimes,
-					RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
-					Config:        *config,
-					DryRun:        dryRun,
-				},
-			)
-
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
+			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
+				transfer.StartLog("download")
+				return client.Downloader(
+					cmd.Context(),
+					file.DownloaderParams{
+						RemotePath:    remotePath,
+						LocalPath:     localPath,
+						Sync:          transfer.SyncFlag,
+						Manager:       transfer.Manager,
+						PreserveTimes: transfer.PreserveTimes,
+						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: retryCount},
+						Config:        *config,
+						DryRun:        dryRun,
+					},
+				)
+			})
 
 			return lib.ClientError(
 				Profile(cmd),
-				lib.FormatIter(ctx, transfer.Iter(ctx, job, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
+				lib.FormatIter(ctx, transfer.Iter(ctx, *config), transfer.Format, fields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)
 		},
 	}
@@ -99,7 +97,13 @@ func Sync() *cobra.Command {
 	sync.PersistentFlags().StringVarP(&remotePath, "remote-path", "r", remotePath, "{remote path}")
 	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
 	sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
-	sync.PersistentFlags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
+	pull.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
+	pull.Flags().IntVar(&transfer.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentFileParts, "Limit the concurrent directory listings of remote server.")
+	pull.MarkFlagsMutuallyExclusive("concurrent-connection-limit", "concurrent-directory-list-limit") // These do the same thing.
+
+	push.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
+	push.Flags().IntVar(&transfer.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
+
 	sync.PersistentFlags().IntVar(&retryCount, "retry-count", 2, "On transfer failure retry number of times.")
 	sync.PersistentFlags().BoolVarP(&transfer.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event")
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")

@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.19
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.153-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.154-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -18,15 +18,16 @@ require (
 	github.com/mattn/go-isatty v0.0.16
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/rs/zerolog v1.28.0
-	github.com/samber/lo v1.33.0
+	github.com/samber/lo v1.37.0
 	github.com/sc0vu/didyoumean v0.0.0-20210223094345-27965c2b1bc9
 	github.com/sftpgo/sdk v0.1.1
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/theckman/yacspin v0.13.12
-	github.com/vbauerster/mpb/v7 v7.3.2
+	github.com/vbauerster/mpb/v8 v8.1.4
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
+	github.com/zenthangplus/goccm v1.1.3
 	golang.org/x/crypto v0.1.0
 	golang.org/x/sys v0.1.0
 )
@@ -181,18 +182,17 @@ require (
 	github.com/yuin/goldmark v1.5.2 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	github.com/zenthangplus/goccm v1.1.3 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	gocloud.dev v0.27.0 // indirect
-	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
+	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
+	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
-	golang.org/x/tools v0.1.12 // indirect
+	golang.org/x/tools v0.2.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.98.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

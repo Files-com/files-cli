@@ -5,6 +5,7 @@ import (
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
+	"github.com/zenthangplus/goccm"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
@@ -13,6 +14,7 @@ import (
 	"fmt"
 
 	file "github.com/Files-com/files-sdk-go/v2/file"
+	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/Files-com/files-sdk-go/v2/folder"
 )
 
@@ -40,6 +42,7 @@ func Folders() *cobra.Command {
 
 	var listOnlyFolders bool
 	var listRecursively bool
+	var concurrentDirectoryScanning int
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
@@ -70,6 +73,7 @@ func Folders() *cobra.Command {
 			var err error
 			fileClient := file.Client{Config: *config}
 			if listRecursively {
+				params.ConcurrencyManager = goccm.New(concurrentDirectoryScanning)
 				it, err = fileClient.ListForRecursive(ctx, params)
 			} else {
 				it, err = fileClient.ListFor(ctx, params)
@@ -108,6 +112,7 @@ func Folders() *cobra.Command {
 
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
 	cmdListFor.Flags().BoolVar(&listRecursively, "recursive", listOnlyFolders, "list folders/files recursively")
+	cmdListFor.Flags().IntVar(&concurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentFileParts, "Limit the concurrent directory listings of remote directories.")
 	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")

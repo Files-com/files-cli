@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,11 +12,11 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/vbauerster/mpb/v8"
+
 	"github.com/spf13/cobra"
 
 	"github.com/samber/lo"
-
-	"github.com/vbauerster/mpb/v7"
 
 	"github.com/Files-com/files-sdk-go/v2/directory"
 
@@ -32,49 +33,47 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/file/status"
 	sdklib "github.com/Files-com/files-sdk-go/v2/lib"
 	"github.com/aquilax/truncate"
-	"github.com/vbauerster/mpb/v7/decor"
+	"github.com/vbauerster/mpb/v8/decor"
 )
 
 type Transfers struct {
-	scanningBar               *atomic.Value
-	mainBar                   *atomic.Value
-	mainBarInitOnce           *sync.Once
-	fileStatusBar             *mpb.Bar
-	fileStatusBarInitOnce     *sync.Once
-	rateUpdaterMutex          *sync.Once
-	eventBody                 []string
-	eventBodyMutex            *sync.RWMutex
-	eventErrors               map[string]string
-	eventErrorsMutex          *sync.RWMutex
-	pathPadding               int
-	SyncFlag                  bool
-	SendLogsToCloud           bool
-	DisableProgressOutput     bool
-	PreserveTimes             bool
-	ConcurrentConnectionLimit int
-	AfterMove                 string
-	AfterDelete               bool
-	Progress                  *mpb.Progress
-	externalEvent             files_sdk.ExternalEventCreateParams
-	start                     time.Time
-	ETA                       ewma.MovingAverage
-	ETAMutex                  *sync.RWMutex
-	transferRate              *atomic.Value
-	transferRateMutex         *sync.RWMutex
-	Ignore                    *[]string
-	waitForEndingMessage      chan bool
+	scanningBar                 *mpb.Bar
+	mainBar                     *mpb.Bar
+	fileStatusBar               *mpb.Bar
+	eventBody                   []string
+	eventBodyMutex              *sync.RWMutex
+	eventErrors                 map[string]string
+	eventErrorsMutex            *sync.RWMutex
+	pathPadding                 int
+	SyncFlag                    bool
+	SendLogsToCloud             bool
+	DisableProgressOutput       bool
+	PreserveTimes               bool
+	ConcurrentConnectionLimit   int
+	ConcurrentDirectoryScanning int
+	AfterMove                   string
+	AfterDelete                 bool
+	Progress                    *mpb.Progress
+	externalEvent               files_sdk.ExternalEventCreateParams
+	start                       time.Time
+	ETA                         ewma.MovingAverage
+	ETAMutex                    *sync.RWMutex
+	transferRate                *atomic.Value
+	transferRateMutex           *sync.RWMutex
+	Ignore                      *[]string
+	waitForEndingMessage        chan bool
 	*manager.Manager
 	Stdout             io.Writer
 	Stderr             io.Writer
 	TestProgressBarOut string
-	finishedForDisplay bool
-	lastEndedFile
-	lastEndedFileMutex *sync.RWMutex
-	it                 *sdklib.IterChan
+	finishedForDisplay *atomic.Bool
+	lastEndedFile      *atomic.Value
+	it                 *sdklib.IterChan[interface{}]
 	IteratorErrorOnly  bool
 	Format             []string
 	OutFormat          []string
 	UsePager           bool
+	*status.Job
 }
 
 type lastEndedFile struct {
@@ -85,17 +84,14 @@ type lastEndedFile struct {
 func New() *Transfers {
 	transferRate := &atomic.Value{}
 	transferRate.Store(newTransferRate())
+	endedFile := &atomic.Value{}
+	endedFile.Store(lastEndedFile{})
 	return &Transfers{
 		eventBody:             []string{},
 		eventErrors:           map[string]string{},
 		eventBodyMutex:        &sync.RWMutex{},
 		eventErrorsMutex:      &sync.RWMutex{},
 		pathPadding:           40,
-		mainBar:               &atomic.Value{},
-		mainBarInitOnce:       &sync.Once{},
-		fileStatusBarInitOnce: &sync.Once{},
-		rateUpdaterMutex:      &sync.Once{},
-		lastEndedFileMutex:    &sync.RWMutex{},
 		SyncFlag:              false,
 		SendLogsToCloud:       false,
 		DisableProgressOutput: false,
@@ -105,8 +101,9 @@ func New() *Transfers {
 		transferRateMutex:     &sync.RWMutex{},
 		Ignore:                &[]string{},
 		waitForEndingMessage:  make(chan bool),
-		scanningBar:           &atomic.Value{},
-		it:                    sdklib.IterChan{}.Init(),
+		it:                    (&sdklib.IterChan[interface{}]{}).Init(),
+		lastEndedFile:         endedFile,
+		finishedForDisplay:    &atomic.Bool{},
 	}
 }
 
@@ -114,24 +111,18 @@ func newTransferRate() ewma.MovingAverage {
 	return ewma.NewMovingAverage(30)
 }
 
-func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer) *Transfers {
+func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer, jobCaller func() *status.Job) *Transfers {
 	t.createManager()
 	t.createProgress(ctx)
 	t.start = time.Now()
 	t.Stderr = stderr
 	t.Stdout = stdout
+	t.Job = jobCaller()
 	return t
 }
 
 func (t *Transfers) createManager() {
-	concurrentFiles := manager.ConcurrentFiles
-	if manager.ConcurrentFiles > t.ConcurrentConnectionLimit {
-		concurrentFiles = t.ConcurrentConnectionLimit
-	}
-	if concurrentFiles*4 < t.ConcurrentConnectionLimit {
-		concurrentFiles = t.ConcurrentConnectionLimit / 4
-	}
-	t.Manager = manager.New(concurrentFiles, t.ConcurrentConnectionLimit)
+	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning)
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
@@ -178,28 +169,17 @@ func (t *Transfers) Log(key string, str string, err error) {
 	}
 }
 
-func (t *Transfers) RegisterFileEvents(ctx context.Context, job *status.Job, config files_sdk.Config) {
-	job.RegisterFileEvent(func(file status.File) {
-		t.UpdateMainTotal(file.Job)
-	}, status.Queued)
-
-	job.RegisterFileEvent(func(file status.File) {
-		t.UpdateMainTotal(file.Job)
-	}, status.Running...)
-
-	job.RegisterFileEvent(func(file status.File) {
-		t.lastEndedFileMutex.Lock()
-		t.lastEndedFile = lastEndedFile{Time: time.Now(), File: file}
-		t.lastEndedFileMutex.Unlock()
+func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Config) {
+	t.Job.RegisterFileEvent(func(file status.File) {
+		t.lastEndedFile.Store(lastEndedFile{Time: time.Now(), File: file})
 		t.logOnEnd(file)
-		t.UpdateMainTotal(file.Job)
 	}, append(status.Ended, status.Excluded...)...)
 
-	job.RegisterFileEvent(func(file status.File) {
+	t.Job.RegisterFileEvent(func(file status.File) {
 		t.afterActions(ctx, file, config)
 	}, status.Complete, status.Skipped)
 
-	job.RegisterFileEvent(func(file status.File) {
+	t.Job.RegisterFileEvent(func(file status.File) {
 		if !t.IteratorErrorOnly {
 			t.it.Send <- file
 		}
@@ -224,8 +204,8 @@ func (t *Transfers) afterActionLog(log status.Log, err error) {
 	}
 }
 
-func (t *Transfers) Iter(ctx context.Context, job *status.Job, config files_sdk.Config) lib.Iter {
-	go t.ProcessJob(ctx, job, config)
+func (t *Transfers) Iter(ctx context.Context, config files_sdk.Config) lib.Iter {
+	go t.ProcessJob(ctx, config)
 	return t.it
 }
 
@@ -281,11 +261,11 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	return nil
 }
 
-func (t *Transfers) ProcessJob(ctx context.Context, job *status.Job, config files_sdk.Config) {
-	t.RegisterFileEvents(ctx, job, config)
-	t.SetupSignals(job)
-	job.Start()
-	job.Wait()
+func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
+	t.RegisterFileEvents(ctx, config)
+	t.SetupSignals()
+	t.Job.Start()
+	t.Job.Wait()
 
 	if !t.DisableProgressOutput {
 		t.Progress.Wait()
@@ -300,53 +280,56 @@ func (t *Transfers) ProcessJob(ctx context.Context, job *status.Job, config file
 	t.it.Stop <- true
 }
 
-func (t *Transfers) SetupSignals(job *status.Job) {
-	subscriptions := job.SubscribeAll()
+func (t *Transfers) SetupSignals() {
+	jobCanceled := t.Job.Canceled.Subscribe()
+	jobFinished := t.Job.Finished.Subscribe()
 	go func() {
-		t.rateUpdaterMutex.Do(func() {
-			t.createRateUpdaters(job)
-		})
-		for {
-			select {
-			case <-subscriptions.Started:
-				if !t.DisableProgressOutput {
-					t.buildStatusTransfer(job)
-				}
+		t.buildMainTotalTransfer()
+		t.buildStatusTransfer()
+		updateStatusTick := time.NewTicker(time.Millisecond * 250)
+		defer updateStatusTick.Stop()
+		func() {
+			for {
+				select {
+				case <-jobCanceled:
+					t.updateStatus()
+					t.mainBar.Abort(false)
 
-			case <-subscriptions.Scanning:
-				if !t.DisableProgressOutput {
-					t.buildMainTotalScanning(job)
+					t.Log("transfer-canceled", fmt.Sprintf("Canceled at %v", time.Now()), nil)
+
+					return
+				case <-jobFinished:
+					t.updateStatus()
+					t.mainBar.Abort(false)
+
+					t.finishedForDisplay.Store(true)
+					t.Log("transfer-finished-bytes", fmt.Sprintf("total downloaded: %v", lib.ByteCountSI(t.Job.TransferBytes())), nil)
+					t.Log("transfer-finished-time", fmt.Sprintf("Finished at %v", time.Now()), nil)
+
+					return
+				case <-updateStatusTick.C:
+					t.updateStatus()
 				}
-			case <-subscriptions.EndScanning:
-				if !t.DisableProgressOutput {
-					t.ScanningBar(func(bar *mpb.Bar) {
-						bar.Abort(true)
-					})
-					t.buildMainTotalTransfer(job)
-				}
-			case <-subscriptions.Canceled:
-				t.Log("transfer-canceled", fmt.Sprintf("Canceled at %v", time.Now()), nil)
-				if !t.DisableProgressOutput {
-					t.FinishMainTotal(job)
-				}
-				t.iterateOverErrored()
-				t.waitForEndingMessage <- true
-				break
-			case <-subscriptions.Finished:
-				t.finishedForDisplay = true
-				t.Log("transfer-finished-bytes", fmt.Sprintf("total downloaded: %v", lib.ByteCountSI(job.TransferBytes())), nil)
-				t.Log("transfer-finished-time", fmt.Sprintf("Finished at %v", time.Now()), nil)
-				if !t.DisableProgressOutput {
-					t.UpdateMainTotal(job)
-					t.FinishMainTotal(job)
-				}
-				t.iterateOverErrored()
-				t.waitForEndingMessage <- true
-				break
 			}
-		}
+		}()
 
+		t.iterateOverErrored()
+		t.waitForEndingMessage <- true
 	}()
+}
+
+func (t *Transfers) updateStatus() {
+	t.UpdateMainTotal()
+	t.ETAMutex.Lock()
+	t.ETA.Add(float64(t.Job.ETA()))
+	t.ETAMutex.Unlock()
+	if t.Job.Idle(status.Running...) {
+		t.transferRate.Store(newTransferRate())
+	} else {
+		t.transferRateMutex.Lock()
+		t.TransferRate().Add(float64(t.Job.TransferRate()))
+		t.transferRateMutex.Unlock()
+	}
 }
 
 func (t *Transfers) iterateOverErrored() {
@@ -421,47 +404,18 @@ func (t *Transfers) TransferRateValue() float64 {
 	return t.TransferRate().Value()
 }
 
-func (t *Transfers) ScanningBar(callers ...func(*mpb.Bar)) *mpb.Bar {
-	i := t.scanningBar.Load()
-
-	b, ok := i.(*mpb.Bar)
-	if ok {
-		for _, caller := range callers {
-			caller(b)
-		}
-		return b
-	}
-	return nil
-}
-
-func (t *Transfers) MainBar(callers ...func(*mpb.Bar)) *mpb.Bar {
-	i := t.mainBar.Load()
-
-	b, ok := i.(*mpb.Bar)
-	if ok {
-		for _, caller := range callers {
-			caller(b)
-		}
-		return b
-	}
-	return nil
-}
-
-func (t *Transfers) UpdateMainTotal(job *status.Job) {
+func (t *Transfers) UpdateMainTotal() {
 	if t.DisableProgressOutput {
 		return
 	}
-	t.ScanningBar(func(bar *mpb.Bar) {
-		if !bar.Completed() {
-			bar.SetTotal(job.TotalBytes(status.Included...), false)
-			bar.SetCurrent(job.TransferBytes(status.Included...))
-		}
-	})
 
-	t.MainBar(func(bar *mpb.Bar) {
-		bar.SetTotal(job.TotalBytes(status.Included...), false)
-		bar.SetCurrent(job.TransferBytes(status.Included...))
-	})
+	t.mainBar.SetCurrent(t.Job.TransferBytes(status.Included...))
+	t.mainBar.SetTotal(t.Job.TotalBytes(status.Included...), false)
+
+	if t.fileStatusBar != nil && t.Job.Finished.Called() {
+		t.fileStatusBar.SetCurrent(1)
+		t.fileStatusBar.SetTotal(1, true)
+	}
 }
 
 func (t *Transfers) SendLogs(ctx context.Context, config files_sdk.Config) error {
@@ -488,42 +442,19 @@ func (t *Transfers) EndingStatusErrors() {
 	t.it.Stop <- true
 }
 
-func (t *Transfers) FinishMainTotal(job *status.Job) {
-	if t.DisableProgressOutput {
-		return
-	}
+var ScanningBarStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"}
 
-	t.MainBar(func(bar *mpb.Bar) {
-		bar.SetTotal(job.TotalBytes(status.Included...), true)
-		bar.SetCurrent(job.TransferBytes(status.Included...))
-	})
-
-	t.ScanningBar(func(bar *mpb.Bar) {
-		if !bar.Completed() {
-			bar.SetTotal(job.TotalBytes(status.Included...), true)
-			bar.SetCurrent(job.TransferBytes(status.Included...))
-		}
-	})
-
-	if t.fileStatusBar != nil && !t.fileStatusBar.Completed() {
-		t.fileStatusBar.SetTotal(1, true)
-		t.fileStatusBar.SetCurrent(1)
-	}
-}
-
-var SpinnerStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"}
-
-func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
-	t.mainBar.Store(t.Progress.AddBar(job.TotalBytes(),
+func (t *Transfers) buildMainTotalTransfer() {
+	t.mainBar = t.Progress.AddBar(t.Job.TotalBytes(),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf("%v%v", directionFmt(job.Direction, t.finishedForDisplay), indexing(job))
+				return directionFmt(t.Job.Direction, t.finishedForDisplay.Load())
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
 			decor.Counters(decor.UnitKB, " (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
 			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf(" %v/s %v", lib.ByteCountSIFloat64(t.TransferRateValue()), directionSymbolFmt(job.Direction))
+				return fmt.Sprintf(" %v/s %v", lib.ByteCountSIFloat64(t.TransferRateValue()), directionSymbolFmt(t.Job.Direction))
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
@@ -532,14 +463,14 @@ func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 			decor.Percentage(decor.WCSyncSpace),
 			decor.Any(func(d decor.Statistics) string {
 				value := time.Duration(t.ETAValue()).Round(time.Second)
-				if value.String() == "0s" && !job.Sub(status.Valid...).All(status.Ended...) {
+				if value.String() == "0s" && !t.Job.Sub(status.Valid...).All(status.Ended...) {
 					return " ETA ~"
 				}
-				if job.Finished.Called() {
-					return fmt.Sprintf(" Elapsed %v", job.ElapsedTime().Round(time.Second).String())
+				if t.Job.Finished.Called() {
+					return fmt.Sprintf(" Elapsed %v", t.Job.ElapsedTime().Round(time.Second).String())
 				}
 
-				if job.Idle(status.Running...) {
+				if t.Job.Idle(status.Running...) {
 					return " ETA ∞"
 				}
 				return " ETA " + value.String()
@@ -547,8 +478,24 @@ func (t *Transfers) buildMainTotalTransfer(job *status.Job) {
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
 		),
-	))
-	t.MainBar().SetPriority(2)
+		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
+			return &BarFilter{Job: t.Job, scanner: mpb.SpinnerStyle(ScanningBarStyle...).Build(), progress: mpb.BarStyle().Build()}
+		}),
+	)
+}
+
+type BarFilter struct {
+	scanner  mpb.BarFiller
+	progress mpb.BarFiller
+	*status.Job
+}
+
+func (b *BarFilter) Fill(w io.Writer, d decor.Statistics) error {
+	if b.Job.EndScanning.Called() {
+		return b.progress.Fill(w, d)
+	}
+
+	return b.scanner.Fill(w, d)
 }
 
 func (t *Transfers) ETAValue() float64 {
@@ -557,88 +504,58 @@ func (t *Transfers) ETAValue() float64 {
 	return t.ETA.Value()
 }
 
-func (t *Transfers) buildMainTotalScanning(job *status.Job) {
-	t.scanningBar.Store(t.Progress.Add(job.TotalBytes(),
-		mpb.NewBarFiller(mpb.SpinnerStyle(SpinnerStyle...)),
-		mpb.PrependDecorators(
-			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf("%v%v", directionFmt(job.Direction, t.finishedForDisplay), indexing(job))
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
-			),
-			decor.Counters(decor.UnitKB, " (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
-			decor.Any(func(d decor.Statistics) string {
-				return fmt.Sprintf(" %v/s %v", lib.ByteCountSIFloat64(t.TransferRate().Value()), directionSymbolFmt(job.Direction))
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
-			),
-		),
-		mpb.AppendDecorators(
-			decor.Any(func(d decor.Statistics) string {
-				if !job.EndScanning.Called() {
-					return " ~ % ETA ~"
-				}
-				return decor.Percentage(decor.WCSyncSpace).Decor(d)
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidth},
-			),
-		),
-	))
-	t.ScanningBar().SetPriority(1)
-}
-
 func (t *Transfers) LastEndedFile() lastEndedFile {
-	t.lastEndedFileMutex.RLock()
-	defer t.lastEndedFileMutex.RUnlock()
-
-	return t.lastEndedFile
+	return t.lastEndedFile.Load().(lastEndedFile)
 }
 
-func (t *Transfers) buildStatusTransfer(job *status.Job) {
+func (t *Transfers) buildStatusTransfer() {
 	t.fileStatusBar = t.Progress.AddBar(
-		int64(job.Count()),
+		int64(t.Job.Count()),
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
-			return mpb.BarFillerFunc(func(w io.Writer, reqWidth int, st decor.Statistics) {
+			return mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
 				lastEndedFile := t.LastEndedFile()
 				endedFile := lastEndedFile.File
 				if time.Now().Sub(lastEndedFile.Time) > time.Second*3 {
-					d, ok := job.Find(status.Downloading)
+					d, ok := t.Job.Find(status.Downloading)
 					if ok && time.Now().Sub(status.ToStatusFile(d).LastByte) > time.Second*1 {
 						endedFile = status.ToStatusFile(d)
 					}
-					u, ok := job.Find(status.Uploading)
+					u, ok := t.Job.Find(status.Uploading)
 					if ok && time.Now().Sub(status.ToStatusFile(u).LastByte) > time.Second*1 {
 						endedFile = status.ToStatusFile(u)
 					}
 				}
 
 				width, _, terminalWidthErr := terminal.GetSize(0)
-				nonFilePathLen := len(fileCounts(job)) + len(statusWithColor(endedFile.Status))
+				nonFilePathLen := len(fileCounts(t.Job)) + len(statusWithColor(endedFile.Status))
 				remainingWidth := width - nonFilePathLen
 				if endedFile.Status.Is(status.Complete, status.Queued) {
 					io.WriteString(w, fmt.Sprintf("%v", displayName(endedFile.Path, remainingWidth)))
-				} else if endedFile.Has(status.Errored) {
+				} else if endedFile.Has(status.Errored) && endedFile.Err != nil {
 					tw := 50
 
 					if terminalWidthErr == nil {
-						tw = width - len(fmt.Sprint(fileCounts(job), displayName(endedFile.Path, remainingWidth), "-", statusWithColor(endedFile.Status)))
+						tw = int(math.Max(float64(width-len(fmt.Sprint(fileCounts(t.Job), displayName(endedFile.Path, remainingWidth), "-", statusWithColor(endedFile.Status)))), float64(width)))
 					}
-					io.WriteString(w, fmt.Sprintf("%v %v - %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
+					if tw > 0 {
+						io.WriteString(w, fmt.Sprintf("%v %v - %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
+					}
 				} else {
 					io.WriteString(w, fmt.Sprintf("%v %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status)))
 				}
+
+				return nil
 			})
 		}),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fileCounts(job)
+				return fileCounts(t.Job)
 			},
 				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
 			),
 		),
+		mpb.BarPriority(3),
 	)
-
-	t.fileStatusBar.SetPriority(3)
 }
 
 func displayName(path string, terminalWidth int) string {
@@ -656,38 +573,6 @@ func fileCounts(job *status.Job) string {
 	} else {
 		return fmt.Sprintf("[%v/%v Files]", job.Count(status.Complete), job.Count(status.Included...))
 	}
-}
-
-func (t *Transfers) createRateUpdaters(job *status.Job) {
-	go func() {
-		for {
-			t.ETAMutex.Lock()
-			t.ETA.Add(float64(job.ETA()))
-			t.ETAMutex.Unlock()
-			time.Sleep(500 * time.Millisecond)
-		}
-	}()
-
-	go func() {
-		for {
-			if job.Idle(status.Running...) {
-				t.transferRate.Store(newTransferRate())
-			} else {
-				t.transferRateMutex.Lock()
-				t.TransferRate().Add(float64(job.TransferRate()))
-				t.transferRateMutex.Unlock()
-			}
-			time.Sleep(200 * time.Millisecond)
-		}
-	}()
-}
-
-func indexing(job *status.Job) string {
-	if job.EndScanning.Called() {
-		return ""
-	}
-
-	return " (indexing) "
 }
 
 func directionFmt(p direction.Direction, finished bool) (str string) {

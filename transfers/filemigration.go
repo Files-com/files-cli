@@ -10,8 +10,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	file_migration "github.com/Files-com/files-sdk-go/v2/filemigration"
-	"github.com/vbauerster/mpb/v7"
-	"github.com/vbauerster/mpb/v7/decor"
+	"github.com/vbauerster/mpb/v8"
+	"github.com/vbauerster/mpb/v8/decor"
 )
 
 func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface{}, block bool, noProgress bool, eventLog bool, format []string, out io.Writer) (interface{}, error) {
@@ -36,8 +36,8 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 		if !noProgress {
 			progressOnce.Do(func() {
 				progress = mpb.NewWithContext(ctx, mpb.WithWidth(64))
-				bar = progress.Add(migration.FilesTotal,
-					mpb.NewBarFiller(mpb.SpinnerStyle(SpinnerStyle...)),
+				bar = progress.New(migration.FilesTotal,
+					mpb.SpinnerStyle(ScanningBarStyle...),
 					mpb.PrependDecorators(
 						decor.Any(func(d decor.Statistics) string {
 							return fmt.Sprintf("%v - %v", migration.Operation, migration.Status)
