@@ -38,6 +38,7 @@ const (
 	logVerboseFlag          = "log-verbose"
 	logUTCTimeFlag          = "log-utc-time"
 	appendToIpWhitelistFlag = "append-to-ip-whitelist"
+	noSourceIpCheckFlag     = "no-source-ip-check"
 
 	defaultLogMaxSize   = 10
 	defaultLogMaxBackup = 5
@@ -69,6 +70,7 @@ type AgentService struct {
 	appendedIpWhitelist                []string
 	sftpGoConfigPath                   string
 	subdomain                          string
+	NoSourceIpCheck                    bool
 	context.Context
 }
 
@@ -104,6 +106,7 @@ allows data to be transferred at a
 faster rate, over high latency networks,
 by overlapping round-trip times`)
 	flags.StringSliceVar(&a.appendedIpWhitelist, "append-to-ip-whitelist", []string{"127.0.0.1"}, "Add additional IPs to whitelist")
+	flags.BoolVar(&a.NoSourceIpCheck, "no-source-ip-check", false, "Disable source IP check")
 }
 
 func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
@@ -291,6 +294,7 @@ func (a *AgentService) ServiceArgs() []string {
 		fmt.Sprintf("--%v", logVerboseFlag), fmt.Sprintf("%v", a.PortableLogVerbose),
 		fmt.Sprintf("--%v", logUTCTimeFlag), fmt.Sprintf("%v", a.PortableLogUTCTime),
 		fmt.Sprintf("--%v", appendToIpWhitelistFlag), strings.Join(a.appendedIpWhitelist, ","),
+		fmt.Sprintf("--%v", noSourceIpCheckFlag), fmt.Sprintf("%v", a.NoSourceIpCheck),
 	}
 
 	if len(a.PortableAllowedPatterns) > 0 {
@@ -369,6 +373,9 @@ func (a *AgentService) mapPermissions() ([]string, error) {
 
 func (a *AgentService) afterStart() {
 	a.pingServer()
+	if a.NoSourceIpCheck {
+		return
+	}
 	for range time.Tick(24 * time.Hour) {
 		err := a.whitelistRefresh()
 		if err != nil {
@@ -447,6 +454,9 @@ func (a *AgentService) loadConfig() error {
 }
 
 func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
+	if a.NoSourceIpCheck {
+		return
+	}
 	for _, ip := range a.appendedIpWhitelist {
 		a.ipWhitelist[ip] = true
 	}
@@ -520,12 +530,14 @@ func (a *AgentService) saveWhitelist(file *os.File) error {
 }
 
 func (a *AgentService) createServerTempConfig() (string, string, error) {
-	whiteList, err := a.whitelistFile()
-	if err != nil {
-		return "", "", err
-	}
 	tmpConfig := make(map[string]interface{})
-	tmpConfig["common"] = map[string]string{"whitelist_file": whiteList.Name()}
+	if !a.NoSourceIpCheck {
+		whiteList, err := a.whitelistFile()
+		if err != nil {
+			return "", "", err
+		}
+		tmpConfig["common"] = map[string]string{"whitelist_file": whiteList.Name()}
+	}
 	configTempFile, err := os.CreateTemp("", "config-*.json")
 
 	if err != nil {
