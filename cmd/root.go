@@ -125,13 +125,13 @@ func Init(version string, _commit string, _date string, config *files.Config) {
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "verbose logging")
-	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "API Key")
-	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "setup a connection profile")
+	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Verbose logging")
+	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
+	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
 	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
-	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
+	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "File path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
 	RootCmd.SuggestionsMinimumDistance = 1

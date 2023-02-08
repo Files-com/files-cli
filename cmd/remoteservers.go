@@ -263,6 +263,9 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -523,6 +526,15 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("files-agent-permission-set") {
 				lib.FlagUpdate(cmd, "files_agent_permission_set", paramsRemoteServerUpdate.FilesAgentPermissionSet, mapParams)
 			}
+			if cmd.Flags().Changed("filebase-access-key") {
+				lib.FlagUpdate(cmd, "filebase_access_key", paramsRemoteServerUpdate.FilebaseAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("filebase-secret-key") {
+				lib.FlagUpdate(cmd, "filebase_secret_key", paramsRemoteServerUpdate.FilebaseSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("filebase-bucket") {
+				lib.FlagUpdate(cmd, "filebase_bucket", paramsRemoteServerUpdate.FilebaseBucket, mapParams)
+			}
 
 			var remoteServer interface{}
 			var err error
@@ -583,6 +595,9 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible secret key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
