@@ -477,6 +477,10 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 		return iter.Err()
 	}
 
+	if a.RemoteServerConfigurationFile.Subdomain != "" {
+		a.Config.Subdomain = a.RemoteServerConfigurationFile.Subdomain
+	}
+
 	if a.Config.Subdomain != "" {
 		a.Config.RootPath()
 		url, err := url.Parse(a.Config.Endpoint)
