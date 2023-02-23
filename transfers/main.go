@@ -76,7 +76,7 @@ type Transfers struct {
 	*status.Job
 }
 
-type lastEndedFile struct {
+type LastEndedFile struct {
 	status.File
 	time.Time
 }
@@ -85,7 +85,7 @@ func New() *Transfers {
 	transferRate := &atomic.Value{}
 	transferRate.Store(newTransferRate())
 	endedFile := &atomic.Value{}
-	endedFile.Store(lastEndedFile{})
+	endedFile.Store(LastEndedFile{})
 	return &Transfers{
 		eventBody:             []string{},
 		eventErrors:           map[string]string{},
@@ -171,7 +171,7 @@ func (t *Transfers) Log(key string, str string, err error) {
 
 func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Config) {
 	t.Job.RegisterFileEvent(func(file status.File) {
-		t.lastEndedFile.Store(lastEndedFile{Time: time.Now(), File: file})
+		t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), File: file})
 		t.logOnEnd(file)
 	}, append(status.Ended, status.Excluded...)...)
 
@@ -299,6 +299,9 @@ func (t *Transfers) SetupSignals() {
 
 					return
 				case <-jobFinished:
+					if t.Job.Count(status.Errored) == 0 {
+						t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), File: status.File{}})
+					}
 					t.updateStatus()
 					t.mainBar.Abort(false)
 
@@ -323,7 +326,7 @@ func (t *Transfers) updateStatus() {
 	t.ETAMutex.Lock()
 	t.ETA.Add(float64(t.Job.ETA()))
 	t.ETAMutex.Unlock()
-	if t.Job.Idle(status.Running...) {
+	if t.Job.Idle() {
 		t.transferRate.Store(newTransferRate())
 	} else {
 		t.transferRateMutex.Lock()
@@ -470,7 +473,7 @@ func (t *Transfers) buildMainTotalTransfer() {
 					return fmt.Sprintf(" Elapsed %v", t.Job.ElapsedTime().Round(time.Second).String())
 				}
 
-				if t.Job.Idle(status.Running...) {
+				if t.Job.Idle() {
 					return " ETA ∞"
 				}
 				return " ETA " + value.String()
@@ -504,8 +507,8 @@ func (t *Transfers) ETAValue() float64 {
 	return t.ETA.Value()
 }
 
-func (t *Transfers) LastEndedFile() lastEndedFile {
-	return t.lastEndedFile.Load().(lastEndedFile)
+func (t *Transfers) LastEndedFile() LastEndedFile {
+	return t.lastEndedFile.Load().(LastEndedFile)
 }
 
 func (t *Transfers) buildStatusTransfer() {
@@ -513,24 +516,13 @@ func (t *Transfers) buildStatusTransfer() {
 		int64(t.Job.Count()),
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
-				lastEndedFile := t.LastEndedFile()
-				endedFile := lastEndedFile.File
-				if time.Now().Sub(lastEndedFile.Time) > time.Second*3 {
-					d, ok := t.Job.Find(status.Downloading)
-					if ok && time.Now().Sub(status.ToStatusFile(d).LastByte) > time.Second*1 {
-						endedFile = status.ToStatusFile(d)
-					}
-					u, ok := t.Job.Find(status.Uploading)
-					if ok && time.Now().Sub(status.ToStatusFile(u).LastByte) > time.Second*1 {
-						endedFile = status.ToStatusFile(u)
-					}
-				}
+				endedFile := t.findActiveFile()
 
 				width, _, terminalWidthErr := terminal.GetSize(0)
 				nonFilePathLen := len(fileCounts(t.Job)) + len(statusWithColor(endedFile.Status))
 				remainingWidth := width - nonFilePathLen
-				if endedFile.Status.Is(status.Complete, status.Queued) {
-					io.WriteString(w, fmt.Sprintf("%v", displayName(endedFile.Path, remainingWidth)))
+				if endedFile.Status.Is(status.Complete, status.Queued, status.Indexed) {
+					io.WriteString(w, fmt.Sprintf("%v %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status)))
 				} else if endedFile.Has(status.Errored) && endedFile.Err != nil {
 					tw := 50
 
@@ -541,7 +533,7 @@ func (t *Transfers) buildStatusTransfer() {
 						io.WriteString(w, fmt.Sprintf("%v %v - %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
 					}
 				} else {
-					io.WriteString(w, fmt.Sprintf("%v %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status)))
+					io.WriteString(w, fmt.Sprintf("%v%v %v", displayName(endedFile.Path, remainingWidth), t.transferProgress(endedFile), statusWithColor(endedFile.Status)))
 				}
 
 				return nil
@@ -556,6 +548,33 @@ func (t *Transfers) buildStatusTransfer() {
 		),
 		mpb.BarPriority(3),
 	)
+}
+
+func (t *Transfers) findActiveFile() status.File {
+	lastEndedFile := t.LastEndedFile()
+
+	endedFile := lastEndedFile.File
+	now := time.Now()
+	if lastEndedFile.Time.IsZero() || now.Sub(lastEndedFile.Time) > time.Second*2 {
+		for _, s := range []status.Status{status.Uploading, status.Downloading, status.Queued, status.Indexed} {
+			for _, d := range t.Job.Sub(s).Statuses {
+				var statusChange status.Change
+				for _, change := range d.StatusChanges() {
+					if change.Status == s {
+						statusChange = change
+						break
+					}
+				}
+				diff := now.Sub(status.ToStatusFile(d).LastByte)
+				statusDiff := now.Sub(statusChange.Time)
+				if diff < time.Millisecond*500 || statusDiff < time.Millisecond*500 || len(t.Job.Statuses) == 1 {
+					t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), File: status.ToStatusFile(d)})
+					return status.ToStatusFile(d)
+				}
+			}
+		}
+	}
+	return endedFile
 }
 
 func displayName(path string, terminalWidth int) string {
@@ -623,4 +642,12 @@ func statusWithColor(s status.Status) string {
 	default:
 		return s.String()
 	}
+}
+
+func (t *Transfers) transferProgress(file status.File) string {
+	if file.Status.Is(status.Uploading, status.Downloading) && len(t.Statuses) != 1 && file.Size > int64(t.TransferRateValue()) {
+		return fmt.Sprintf(" (% .1f/% .1f)", decor.SizeB1000(file.TransferBytes), decor.SizeB1000(file.Size))
+	}
+
+	return ""
 }
