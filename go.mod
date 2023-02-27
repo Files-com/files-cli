@@ -23,7 +23,7 @@ require (
 	github.com/sftpgo/sdk v0.1.1
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v8 v8.1.4
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
