@@ -134,6 +134,7 @@ func Sites() *cobra.Command {
 	updateRequire2fa := true
 	updateLdapEnabled := true
 	updateLdapSecure := true
+	updateUploadsViaEmailAuthentication := true
 	updateIcon16Delete := true
 	updateIcon32Delete := true
 	updateIcon48Delete := true
@@ -505,6 +506,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("ldap-base-dn") {
 				lib.FlagUpdate(cmd, "ldap_base_dn", paramsSiteUpdate.LdapBaseDn, mapParams)
 			}
+			if cmd.Flags().Changed("uploads-via-email-authentication") {
+				mapParams["uploads_via_email_authentication"] = updateUploadsViaEmailAuthentication
+			}
 			if cmd.Flags().Changed("icon16-file") {
 			}
 			if cmd.Flags().Changed("icon16-delete") {
@@ -673,6 +677,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupExclusion, "ldap-group-exclusion", "", "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupInclusion, "ldap-group-inclusion", "", "Comma or newline separated list of group names (with optional wildcards) to include when syncing.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapBaseDn, "ldap-base-dn", "", "Base DN for looking up users in LDAP server")
+	cmdUpdate.Flags().BoolVar(&updateUploadsViaEmailAuthentication, "uploads-via-email-authentication", updateUploadsViaEmailAuthentication, "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?")
 	cmdUpdate.Flags().BoolVar(&updateIcon16Delete, "icon16-delete", updateIcon16Delete, "If true, will delete the file stored in icon16")
 	cmdUpdate.Flags().BoolVar(&updateIcon32Delete, "icon32-delete", updateIcon32Delete, "If true, will delete the file stored in icon32")
 	cmdUpdate.Flags().BoolVar(&updateIcon48Delete, "icon48-delete", updateIcon48Delete, "If true, will delete the file stored in icon48")
