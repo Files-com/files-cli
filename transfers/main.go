@@ -281,8 +281,6 @@ func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 }
 
 func (t *Transfers) SetupSignals() {
-	jobCanceled := t.Job.Canceled.Subscribe()
-	jobFinished := t.Job.Finished.Subscribe()
 	go func() {
 		t.buildMainTotalTransfer()
 		t.buildStatusTransfer()
@@ -291,14 +289,14 @@ func (t *Transfers) SetupSignals() {
 		func() {
 			for {
 				select {
-				case <-jobCanceled:
+				case <-t.Job.Canceled.C:
 					t.updateStatus()
 					t.mainBar.Abort(false)
 
 					t.Log("transfer-canceled", fmt.Sprintf("Canceled at %v", time.Now()), nil)
 
 					return
-				case <-jobFinished:
+				case <-t.Job.Finished.C:
 					if t.Job.Count(status.Errored) == 0 {
 						t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), File: status.File{}})
 					}
