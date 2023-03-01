@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"runtime"
 	runtimeDebug "runtime/debug"
 
 	"github.com/spf13/cobra"
@@ -33,6 +34,7 @@ func init() {
 					}
 				}
 			}
+			fmt.Printf("SDK       version %v\n", runtime.Version())
 		},
 	}
 	VersionCmd.Flags().BoolVar(&sdkVersion, "verbose", sdkVersion, "list other dependencies")
