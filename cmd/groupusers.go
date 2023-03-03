@@ -73,7 +73,7 @@ func GroupUsers() *cobra.Command {
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
 	cmdList.Flags().Int64Var(&paramsGroupUserList.UserId, "user-id", 0, "User ID.  If provided, will return group_users of this user.")
-	cmdList.Flags().StringVar(&paramsGroupUserList.Cursor, "cursor", "", "Used for pagination.  Send a cursor value to resume an existing list from the point at which you left off.  Get a cursor from an existing list via either the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
+	cmdList.Flags().StringVar(&paramsGroupUserList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsGroupUserList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsGroupUserList.GroupId, "group-id", 0, "Group ID.  If provided, will return group_users of this group.")
 
