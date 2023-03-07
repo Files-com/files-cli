@@ -6,6 +6,8 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+
 	"fmt"
 
 	as2_partner "github.com/Files-com/files-sdk-go/v2/as2partner"
@@ -115,6 +117,7 @@ func As2Partners() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createEnableDedicatedIps := true
 	paramsAs2PartnerCreate := files_sdk.As2PartnerCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -125,6 +128,10 @@ func As2Partners() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := as2_partner.Client{Config: *config}
+
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				paramsAs2PartnerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
+			}
 
 			var as2Partner interface{}
 			var err error
@@ -138,6 +145,7 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.PublicCertificate, "public-certificate", "", "")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "Id of As2Station for this partner")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.ServerCertificate, "server-certificate", "", "Remote server certificate security setting")
+	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -150,6 +158,7 @@ func As2Partners() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateEnableDedicatedIps := true
 	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -181,6 +190,9 @@ func As2Partners() *cobra.Command {
 			if cmd.Flags().Changed("public-certificate") {
 				lib.FlagUpdate(cmd, "public_certificate", paramsAs2PartnerUpdate.PublicCertificate, mapParams)
 			}
+			if cmd.Flags().Changed("enable-dedicated-ips") {
+				mapParams["enable_dedicated_ips"] = updateEnableDedicatedIps
+			}
 
 			var as2Partner interface{}
 			var err error
@@ -194,6 +206,7 @@ func As2Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Uri, "uri", "", "URL base for AS2 responses")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.ServerCertificate, "server-certificate", "", "Remote server certificate security setting")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.PublicCertificate, "public-certificate", "", "")
+	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
