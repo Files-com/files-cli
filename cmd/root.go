@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/Files-com/files-cli/lib"
 	files "github.com/Files-com/files-sdk-go/v2"
@@ -44,6 +45,9 @@ var (
 			sdkConfig.Environment = files.NewEnvironment(Environment)
 			debugFlag := cmd.Flag("debug")
 			if debugFlag.Changed {
+				if debug == "none" {
+					debug = fmt.Sprintf("files-cli_%v-%v.log", cmd.CalledAs(), time.Now().Format(time.DateTime))
+				}
 				logFile, err := os.Create(debug)
 				if err != nil {
 					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
@@ -125,7 +129,8 @@ func Init(version string, _commit string, _date string, config *files.Config) {
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Verbose logging")
+	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Verbose logging. --debug=[OPTIONAL LOG NAME]")
+	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "none"
 	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
 	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
 	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")
