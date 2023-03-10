@@ -100,6 +100,7 @@ func Sync() *cobra.Command {
 	pull.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
 	pull.Flags().IntVar(&transfer.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentFileParts, "Limit the concurrent directory listings of remote server.")
 	pull.MarkFlagsMutuallyExclusive("concurrent-connection-limit", "concurrent-directory-list-limit") // These do the same thing.
+	pull.Flags().BoolVarP(&transfer.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", transfer.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
 
 	push.Flags().IntVarP(&transfer.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "")
 	push.Flags().IntVar(&transfer.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")

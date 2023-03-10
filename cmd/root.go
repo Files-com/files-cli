@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"context"
+	_ "embed"
+	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -10,10 +13,6 @@ import (
 	files "github.com/Files-com/files-sdk-go/v2"
 	"github.com/spf13/cobra"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
-
-	_ "embed"
-	"fmt"
-	"os"
 )
 
 var (
@@ -45,8 +44,8 @@ var (
 			sdkConfig.Environment = files.NewEnvironment(Environment)
 			debugFlag := cmd.Flag("debug")
 			if debugFlag.Changed {
-				if debug == "none" {
-					debug = fmt.Sprintf("files-cli_%v-%v.log", cmd.CalledAs(), time.Now().Format(time.DateTime))
+				if debug == "files-cli_[command]_[timestamp].log" {
+					debug = fmt.Sprintf("files-cli_%v_%v.log", cmd.CalledAs(), time.Now().Format(time.DateTime))
 				}
 				logFile, err := os.Create(debug)
 				if err != nil {
@@ -130,7 +129,7 @@ func Init(version string, _commit string, _date string, config *files.Config) {
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Verbose logging. --debug=[OPTIONAL LOG NAME]")
-	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "none"
+	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "files-cli_[command]_[timestamp].log"
 	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
 	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
 	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")

@@ -49,6 +49,7 @@ type Transfers struct {
 	SendLogsToCloud             bool
 	DisableProgressOutput       bool
 	PreserveTimes               bool
+	DownloadFilesAsSingleStream bool
 	ConcurrentConnectionLimit   int
 	ConcurrentDirectoryScanning int
 	AfterMove                   string
@@ -122,7 +123,7 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 }
 
 func (t *Transfers) createManager() {
-	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning)
+	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning, t.DownloadFilesAsSingleStream)
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
