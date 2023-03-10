@@ -1,0 +1,71 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/you%20will%20never%20find%20me
+    method: GET
+  response:
+    body: '{"error":"Not Found","http-code":404,"instance":"44a92484-81e8-4e29-bfe2-5bc8f67e36cf","title":"Not
+      Found","type":"not-found"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 10 Mar 2023 23:05:47 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - not-found
+      X-Request-Id:
+      - 44a92484-81e8-4e29-bfe2-5bc8f67e36cf
+      - 5f8b3f3b0455a3262f0c06ced7199ee9
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Connection:
+      - close
+      User-Agent:
+      - Files.com Go SDK 2.0.0-beta
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/you%20will%20never%20find%20me
+    method: GET
+  response:
+    body: '{"error":"Not Found","http-code":404,"instance":"f909e302-fa42-4aba-bc8e-802155efb981","title":"Not
+      Found","type":"not-found"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 10 Mar 2023 23:05:47 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - nginx
+      X-Files-Error-Class:
+      - not-found
+      X-Request-Id:
+      - f909e302-fa42-4aba-bc8e-802155efb981
+      - 29522273d5f088631bedf01246e93fed
+    status: 404 Not Found
+    code: 404
+    duration: ""
