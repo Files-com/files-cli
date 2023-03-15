@@ -69,6 +69,13 @@ json-styles: {raw, pretty}`)
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := history_export.Client{Config: *config}
 
+			if paramsHistoryExportCreate.StartAt.IsZero() {
+				paramsHistoryExportCreate.StartAt = nil
+			}
+			if paramsHistoryExportCreate.EndAt.IsZero() {
+				paramsHistoryExportCreate.EndAt = nil
+			}
+
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)

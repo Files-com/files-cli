@@ -25,11 +25,11 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.2
 	github.com/theckman/yacspin v0.13.12
-	github.com/vbauerster/mpb/v8 v8.1.4
+	github.com/vbauerster/mpb/v8 v8.3.0
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zenthangplus/goccm v1.1.3
-	golang.org/x/crypto v0.5.0
-	golang.org/x/sys v0.5.0
+	golang.org/x/crypto v0.7.0
+	golang.org/x/sys v0.6.0
 )
 
 require (
@@ -172,7 +172,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
-	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/rs/xid v1.4.0 // indirect
@@ -204,7 +204,7 @@ require (
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1 // indirect
-	golang.org/x/term v0.1.0 // indirect
+	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
 	golang.org/x/tools v0.2.0 // indirect

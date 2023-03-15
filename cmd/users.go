@@ -223,6 +223,10 @@ json-styles: {raw, pretty}`)
 				paramsUserCreate.SubscribeToNewsletter = flib.Bool(createSubscribeToNewsletter)
 			}
 
+			if paramsUserCreate.AuthenticateUntil.IsZero() {
+				paramsUserCreate.AuthenticateUntil = nil
+			}
+
 			var user interface{}
 			var err error
 			user, err = client.Create(ctx, paramsUserCreate)
@@ -564,6 +568,10 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
+			}
+
+			if paramsUserUpdate.AuthenticateUntil.IsZero() {
+				paramsUserUpdate.AuthenticateUntil = nil
 			}
 
 			var user interface{}

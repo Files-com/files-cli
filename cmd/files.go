@@ -5,9 +5,8 @@ import (
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/transfers"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/spf13/cobra"
 
 	"fmt"
 
@@ -49,6 +48,10 @@ func Files() *cobra.Command {
 			}
 			if cmd.Flags().Changed("with-rename") {
 				paramsFileCreate.WithRename = flib.Bool(createWithRename)
+			}
+
+			if paramsFileCreate.ProvidedMtime.IsZero() {
+				paramsFileCreate.ProvidedMtime = nil
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -109,6 +112,10 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("priority-color") {
 				lib.FlagUpdate(cmd, "priority_color", paramsFileUpdate.PriorityColor, mapParams)
+			}
+
+			if paramsFileUpdate.ProvidedMtime.IsZero() {
+				paramsFileUpdate.ProvidedMtime = nil
 			}
 
 			if len(args) > 0 && args[0] != "" {

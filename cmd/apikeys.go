@@ -163,6 +163,10 @@ json-styles: {raw, pretty}`)
 				return ApiKeyCreatePermissionSetErr
 			}
 
+			if paramsApiKeyCreate.ExpiresAt.IsZero() {
+				paramsApiKeyCreate.ExpiresAt = nil
+			}
+
 			if len(args) > 0 && args[0] != "" {
 				paramsApiKeyCreate.Path = args[0]
 			}
@@ -224,6 +228,10 @@ json-styles: {raw, pretty}`)
 				lib.FlagUpdate(cmd, "permission_set", paramsApiKeyUpdateCurrent.PermissionSet, mapParams)
 			}
 
+			if paramsApiKeyUpdateCurrent.ExpiresAt.IsZero() {
+				paramsApiKeyUpdateCurrent.ExpiresAt = nil
+			}
+
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.UpdateCurrentWithMap(ctx, mapParams)
@@ -283,6 +291,10 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("permission-set") {
 				lib.FlagUpdate(cmd, "permission_set", paramsApiKeyUpdate.PermissionSet, mapParams)
+			}
+
+			if paramsApiKeyUpdate.ExpiresAt.IsZero() {
+				paramsApiKeyUpdate.ExpiresAt = nil
 			}
 
 			var apiKey interface{}

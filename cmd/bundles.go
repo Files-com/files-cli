@@ -170,6 +170,10 @@ json-styles: {raw, pretty}`)
 				paramsBundleCreate.SkipCompany = flib.Bool(createSkipCompany)
 			}
 
+			if paramsBundleCreate.ExpiresAt.IsZero() {
+				paramsBundleCreate.ExpiresAt = nil
+			}
+
 			var bundle interface{}
 			var err error
 			bundle, err = client.Create(ctx, paramsBundleCreate)
@@ -342,6 +346,10 @@ json-styles: {raw, pretty}`)
 				mapParams["watermark_attachment_delete"] = updateWatermarkAttachmentDelete
 			}
 			if cmd.Flags().Changed("watermark-attachment-file") {
+			}
+
+			if paramsBundleUpdate.ExpiresAt.IsZero() {
+				paramsBundleUpdate.ExpiresAt = nil
 			}
 
 			var bundle interface{}

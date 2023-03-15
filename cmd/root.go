@@ -45,7 +45,7 @@ var (
 			debugFlag := cmd.Flag("debug")
 			if debugFlag.Changed {
 				if debug == "files-cli_[command]_[timestamp].log" {
-					debug = fmt.Sprintf("files-cli_%v_%v.log", cmd.CalledAs(), time.Now().Format(time.DateTime))
+					debug = fmt.Sprintf("files-cli_%v_%v.log", cmd.CalledAs(), strings.Replace(time.Now().Format(time.DateTime), " ", "_", 1))
 				}
 				logFile, err := os.Create(debug)
 				if err != nil {

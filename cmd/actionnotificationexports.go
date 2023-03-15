@@ -76,6 +76,13 @@ json-styles: {raw, pretty}`)
 				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(createQuerySuccess)
 			}
 
+			if paramsActionNotificationExportCreate.StartAt.IsZero() {
+				paramsActionNotificationExportCreate.StartAt = nil
+			}
+			if paramsActionNotificationExportCreate.EndAt.IsZero() {
+				paramsActionNotificationExportCreate.EndAt = nil
+			}
+
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)

@@ -152,6 +152,10 @@ json-styles: {raw, pretty}
 				paramsFolderCreate.MkdirParents = flib.Bool(createMkdirParents)
 			}
 
+			if paramsFolderCreate.ProvidedMtime.IsZero() {
+				paramsFolderCreate.ProvidedMtime = nil
+			}
+
 			if len(args) > 0 && args[0] != "" {
 				paramsFolderCreate.Path = args[0]
 			}
