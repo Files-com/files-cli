@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var automationRun interface{}
 			var err error
 			automationRun, err = client.Find(ctx, paramsAutomationRunFind)
-			lib.HandleResponse(ctx, Profile(cmd), automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")

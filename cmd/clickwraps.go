@@ -99,8 +99,7 @@ json-styles: {raw, pretty}
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
-			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsClickwrapFind.Id, "id", 0, "Clickwrap ID.")
@@ -148,8 +147,7 @@ json-styles: {raw, pretty}`)
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
-			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsClickwrapCreate.Name, "name", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -225,8 +223,7 @@ json-styles: {raw, pretty}`)
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsClickwrapUpdate.Id, "id", 0, "Clickwrap ID.")

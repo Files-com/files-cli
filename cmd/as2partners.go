@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
-			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
@@ -135,8 +134,7 @@ json-styles: {raw, pretty}`)
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
-			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "AS2 Name")
@@ -195,8 +193,7 @@ json-styles: {raw, pretty}`)
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")

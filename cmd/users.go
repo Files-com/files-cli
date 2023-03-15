@@ -104,8 +104,7 @@ json-styles: {raw, pretty}
 			var user interface{}
 			var err error
 			user, err = client.Find(ctx, paramsUserFind)
-			lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
@@ -230,8 +229,7 @@ json-styles: {raw, pretty}`)
 			var user interface{}
 			var err error
 			user, err = client.Create(ctx, paramsUserCreate)
-			lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -577,8 +575,7 @@ json-styles: {raw, pretty}`)
 			var user interface{}
 			var err error
 			user, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")

@@ -162,8 +162,7 @@ json-styles: {raw, pretty}
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFolderCreate)
-			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")

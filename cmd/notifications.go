@@ -82,7 +82,7 @@ func Notifications() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsNotificationList.UserId, "user-id", 0, "DEPRECATED: Show notifications for this User ID. Use `filter[user_id]` instead.")
 	cmdList.Flags().StringVar(&paramsNotificationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsNotificationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().Int64Var(&paramsNotificationList.GroupId, "group-id", 0, "DEPRECATED: Show notifications for this Group ID. Use `filter[group_id]` instead.")
+	cmdList.Flags().StringVar(&paramsNotificationList.GroupId, "group-id", "", "If set, return records where the specified field is equal to the supplied value.")
 	cmdList.Flags().StringVar(&paramsNotificationList.Path, "path", "", "Show notifications for this Path.")
 	cmdList.Flags().BoolVar(&listIncludeAncestors, "include-ancestors", listIncludeAncestors, "If `include_ancestors` is `true` and `path` is specified, include notifications for any parent paths. Ignored if `path` is not specified.")
 
@@ -111,8 +111,7 @@ json-styles: {raw, pretty}
 			var notification interface{}
 			var err error
 			notification, err = client.Find(ctx, paramsNotificationFind)
-			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsNotificationFind.Id, "id", 0, "Notification ID.")
@@ -177,8 +176,7 @@ json-styles: {raw, pretty}`)
 			var notification interface{}
 			var err error
 			notification, err = client.Create(ctx, paramsNotificationCreate)
-			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.UserId, "user-id", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
@@ -277,8 +275,7 @@ json-styles: {raw, pretty}`)
 			var notification interface{}
 			var err error
 			notification, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.Id, "id", 0, "Notification ID.")

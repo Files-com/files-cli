@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.FindCurrent(ctx)
-			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -129,8 +128,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Find(ctx, paramsApiKeyFind)
-			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsApiKeyFind.Id, "id", 0, "Api Key ID.")
@@ -173,8 +171,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
-			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsApiKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -235,8 +232,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.UpdateCurrentWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	paramsApiKeyUpdateCurrent.ExpiresAt = &time.Time{}
@@ -300,8 +296,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsApiKeyUpdate.Id, "id", 0, "Api Key ID.")

@@ -98,8 +98,7 @@ json-styles: {raw, pretty}
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Find(ctx, paramsAs2StationFind)
-			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2StationFind.Id, "id", 0, "As2 Station ID.")
@@ -128,8 +127,7 @@ json-styles: {raw, pretty}`)
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
-			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "AS2 Name")
@@ -182,8 +180,7 @@ json-styles: {raw, pretty}`)
 			var as2Station interface{}
 			var err error
 			as2Station, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")

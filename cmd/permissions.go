@@ -119,8 +119,7 @@ json-styles: {raw, pretty}
 			var permission interface{}
 			var err error
 			permission, err = client.Create(ctx, paramsPermissionCreate)
-			lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")

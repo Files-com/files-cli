@@ -37,8 +37,7 @@ func Sites() *cobra.Command {
 			var site interface{}
 			var err error
 			site, err = client.Get(ctx)
-			lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -64,8 +63,7 @@ json-styles: {raw, pretty}`)
 			var usageSnapshot interface{}
 			var err error
 			usageSnapshot, err = client.GetUsage(ctx)
-			lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -556,8 +554,7 @@ json-styles: {raw, pretty}`)
 			var site interface{}
 			var err error
 			site, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")

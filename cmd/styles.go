@@ -42,8 +42,7 @@ func Styles() *cobra.Command {
 			var style interface{}
 			var err error
 			style, err = client.Find(ctx, paramsStyleFind)
-			lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
@@ -86,8 +85,7 @@ json-styles: {raw, pretty}`)
 			var style interface{}
 			var err error
 			style, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")

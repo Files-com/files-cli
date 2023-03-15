@@ -40,8 +40,7 @@ func FileCommentReactions() *cobra.Command {
 			var fileCommentReaction interface{}
 			var err error
 			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
-			lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

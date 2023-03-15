@@ -98,8 +98,7 @@ json-styles: {raw, pretty}
 			var group interface{}
 			var err error
 			group, err = client.Find(ctx, paramsGroupFind)
-			lib.HandleResponse(ctx, Profile(cmd), group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsGroupFind.Id, "id", 0, "Group ID.")
@@ -128,8 +127,7 @@ json-styles: {raw, pretty}`)
 			var group interface{}
 			var err error
 			group, err = client.Create(ctx, paramsGroupCreate)
-			lib.HandleResponse(ctx, Profile(cmd), group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
@@ -182,8 +180,7 @@ json-styles: {raw, pretty}`)
 			var group interface{}
 			var err error
 			group, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.Id, "id", 0, "Group ID.")

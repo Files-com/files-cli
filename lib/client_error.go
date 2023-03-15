@@ -1,12 +1,13 @@
 package lib
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/Files-com/files-sdk-go/v2/lib/errors"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
 )
@@ -18,7 +19,7 @@ func ClientError(profile *Profiles, err error, out ...io.Writer) error {
 	if err == nil {
 		return nil
 	}
-	responseError, ok := errors.Unwrap(err).(files_sdk.ResponseError)
+	responseError, ok := errors.As[files_sdk.ResponseError](err, files_sdk.ResponseError{})
 
 	if ok && responseError.Type == "not-authorized/reauthentication-needed-action" {
 		fmt.Fprintf(out[0], "You are authenicated via a session ID (as opposed to an API key), we require that you provide the session user’s password/2FA again for certain types of requests where we want to add an additional level of security. We call this process Reauthentication. \n")

@@ -101,8 +101,7 @@ json-styles: {raw, pretty}
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
-			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
@@ -144,8 +143,7 @@ json-styles: {raw, pretty}`)
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
-			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -205,8 +203,7 @@ json-styles: {raw, pretty}`)
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")

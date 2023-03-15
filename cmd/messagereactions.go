@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
-			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageReactionFind.Id, "id", 0, "Message Reaction ID.")
@@ -130,8 +129,7 @@ json-styles: {raw, pretty}`)
 			var messageReaction interface{}
 			var err error
 			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
-			lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

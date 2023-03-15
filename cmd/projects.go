@@ -97,8 +97,7 @@ json-styles: {raw, pretty}
 			var project interface{}
 			var err error
 			project, err = client.Find(ctx, paramsProjectFind)
-			lib.HandleResponse(ctx, Profile(cmd), project, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), project, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsProjectFind.Id, "id", 0, "Project ID.")
@@ -127,8 +126,7 @@ json-styles: {raw, pretty}`)
 			var project interface{}
 			var err error
 			project, err = client.Create(ctx, paramsProjectCreate)
-			lib.HandleResponse(ctx, Profile(cmd), project, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), project, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsProjectCreate.GlobalAccess, "global-access", "", "Global permissions.  Can be: `none`, `anyone_with_read`, `anyone_with_full`.")
@@ -169,8 +167,7 @@ json-styles: {raw, pretty}`)
 			var project interface{}
 			var err error
 			project, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), project, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsProjectUpdate.Id, "id", 0, "Project ID.")

@@ -107,8 +107,7 @@ json-styles: {raw, pretty}
 			var bundleRecipient interface{}
 			var err error
 			bundleRecipient, err = client.Create(ctx, paramsBundleRecipientCreate)
-			lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

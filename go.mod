@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.172-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.173-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -13,6 +13,7 @@ require (
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/drakkan/sftpgo/v2 v2.3.6
 	github.com/fatih/structs v1.1.0
+	github.com/gin-gonic/gin v1.9.0
 	github.com/hashicorp/go-retryablehttp v0.7.2
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.17
@@ -93,7 +94,6 @@ require (
 	github.com/fclairamb/go-log v0.4.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.9.0 // indirect
 	github.com/go-acme/lego/v4 v4.9.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.8-0.20220512131524-9e71a0d4b3d6 // indirect
 	github.com/go-chi/jwtauth/v5 v5.0.2 // indirect

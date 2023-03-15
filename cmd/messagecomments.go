@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.Find(ctx, paramsMessageCommentFind)
-			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentFind.Id, "id", 0, "Message Comment ID.")
@@ -130,8 +129,7 @@ json-styles: {raw, pretty}`)
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.Create(ctx, paramsMessageCommentCreate)
-			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -173,8 +171,7 @@ json-styles: {raw, pretty}`)
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageCommentUpdate.Id, "id", 0, "Message Comment ID.")

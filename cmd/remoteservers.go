@@ -102,8 +102,7 @@ json-styles: {raw, pretty}
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
-			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
@@ -132,8 +131,7 @@ json-styles: {raw, pretty}`)
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.FindConfigurationFile(ctx, paramsRemoteServerFindConfigurationFile)
-			lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
@@ -206,8 +204,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
-			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -289,8 +286,7 @@ json-styles: {raw, pretty}`)
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.ConfigurationFile(ctx, paramsRemoteServerConfigurationFile)
-			lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Id, "id", 0, "Remote Server ID.")
@@ -535,8 +531,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")

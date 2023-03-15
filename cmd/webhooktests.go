@@ -46,8 +46,7 @@ func WebhookTests() *cobra.Command {
 			var webhookTest interface{}
 			var err error
 			webhookTest, err = client.Create(ctx, paramsWebhookTestCreate)
-			lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")

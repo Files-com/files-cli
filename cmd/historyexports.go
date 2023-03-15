@@ -42,8 +42,7 @@ func HistoryExports() *cobra.Command {
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
-			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
@@ -79,8 +78,7 @@ json-styles: {raw, pretty}`)
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
-			lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

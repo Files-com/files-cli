@@ -39,8 +39,7 @@ func Sessions() *cobra.Command {
 			var session interface{}
 			var err error
 			session, err = client.Create(ctx, paramsSessionCreate)
-			lib.HandleResponse(ctx, Profile(cmd), session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSessionCreate.Username, "username", "", "Username to sign in as")

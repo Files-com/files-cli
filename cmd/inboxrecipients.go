@@ -107,8 +107,7 @@ json-styles: {raw, pretty}
 			var inboxRecipient interface{}
 			var err error
 			inboxRecipient, err = client.Create(ctx, paramsInboxRecipientCreate)
-			lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

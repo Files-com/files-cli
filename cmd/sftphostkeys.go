@@ -98,8 +98,7 @@ json-styles: {raw, pretty}
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Find(ctx, paramsSftpHostKeyFind)
-			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSftpHostKeyFind.Id, "id", 0, "Sftp Host Key ID.")
@@ -128,8 +127,7 @@ json-styles: {raw, pretty}`)
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Create(ctx, paramsSftpHostKeyCreate)
-			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
@@ -174,8 +172,7 @@ json-styles: {raw, pretty}`)
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")

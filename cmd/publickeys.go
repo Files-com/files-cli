@@ -99,8 +99,7 @@ json-styles: {raw, pretty}
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
-			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
@@ -129,8 +128,7 @@ json-styles: {raw, pretty}`)
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
-			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -173,8 +171,7 @@ json-styles: {raw, pretty}`)
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")

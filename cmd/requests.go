@@ -179,8 +179,7 @@ json-styles: {raw, pretty}
 			var request interface{}
 			var err error
 			request, err = client.Create(ctx, paramsRequestCreate)
-			lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")

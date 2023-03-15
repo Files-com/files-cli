@@ -97,8 +97,7 @@ json-styles: {raw, pretty}
 			var accountLineItem interface{}
 			var err error
 			accountLineItem, err = client.Find(ctx, paramsInvoiceFind)
-			lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsInvoiceFind.Id, "id", 0, "Invoice ID.")

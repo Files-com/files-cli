@@ -40,8 +40,7 @@ func FileMigrations() *cobra.Command {
 			var fileMigration interface{}
 			var err error
 			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
-			lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")

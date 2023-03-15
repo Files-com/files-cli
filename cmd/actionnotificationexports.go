@@ -44,8 +44,7 @@ func ActionNotificationExports() *cobra.Command {
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
-			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
@@ -86,8 +85,7 @@ json-styles: {raw, pretty}`)
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
-			lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

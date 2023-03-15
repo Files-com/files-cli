@@ -100,8 +100,7 @@ json-styles: {raw, pretty}
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
-			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
@@ -137,8 +136,7 @@ json-styles: {raw, pretty}`)
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
-			lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))

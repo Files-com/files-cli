@@ -121,8 +121,7 @@ json-styles: {raw, pretty}
 			var lock interface{}
 			var err error
 			lock, err = client.Create(ctx, paramsLockCreate)
-			lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")

@@ -98,8 +98,7 @@ json-styles: {raw, pretty}
 			var userRequest interface{}
 			var err error
 			userRequest, err = client.Find(ctx, paramsUserRequestFind)
-			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserRequestFind.Id, "id", 0, "User Request ID.")
@@ -128,8 +127,7 @@ json-styles: {raw, pretty}`)
 			var userRequest interface{}
 			var err error
 			userRequest, err = client.Create(ctx, paramsUserRequestCreate)
-			lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), userRequest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Name, "name", "", "Name of user requested")

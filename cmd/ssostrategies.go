@@ -98,8 +98,7 @@ json-styles: {raw, pretty}
 			var ssoStrategy interface{}
 			var err error
 			ssoStrategy, err = client.Find(ctx, paramsSsoStrategyFind)
-			lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")

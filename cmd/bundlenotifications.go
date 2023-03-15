@@ -75,7 +75,7 @@ func BundleNotifications() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsBundleNotificationList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsBundleNotificationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBundleNotificationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().Int64Var(&paramsBundleNotificationList.BundleId, "bundle-id", 0, "Bundle ID to notify on")
+	cmdList.Flags().StringVar(&paramsBundleNotificationList.BundleId, "bundle-id", "", "If set, return records where the specified field is equal to the supplied value.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
@@ -102,8 +102,7 @@ json-styles: {raw, pretty}
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.Find(ctx, paramsBundleNotificationFind)
-			lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleNotificationFind.Id, "id", 0, "Bundle Notification ID.")
@@ -141,8 +140,7 @@ json-styles: {raw, pretty}`)
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.Create(ctx, paramsBundleNotificationCreate)
-			lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.UserId, "user-id", 0, "The id of the user to notify.")
@@ -191,8 +189,7 @@ json-styles: {raw, pretty}`)
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleNotificationUpdate.Id, "id", 0, "Bundle Notification ID.")

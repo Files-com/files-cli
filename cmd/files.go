@@ -5,9 +5,8 @@ import (
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/transfers"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/spf13/cobra"
 
 	"fmt"
 
@@ -61,8 +60,7 @@ func Files() *cobra.Command {
 			var file interface{}
 			var err error
 			file, err = client.Create(ctx, paramsFileCreate)
-			lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
@@ -125,8 +123,7 @@ json-styles: {raw, pretty}`)
 			var file interface{}
 			var err error
 			file, err = client.UpdateWithMap(ctx, mapParams)
-			lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
@@ -210,8 +207,7 @@ json-styles: {raw, pretty}`)
 			var file interface{}
 			var err error
 			file, err = client.Find(ctx, paramsFileFind)
-			lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsFileFind.Path, "path", "", "Path to operate on.")
@@ -261,8 +257,7 @@ json-styles: {raw, pretty}`)
 			if err != nil {
 				return err
 			}
-			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
@@ -309,8 +304,7 @@ json-styles: {raw, pretty}`)
 			if err != nil {
 				return err
 			}
-			lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
@@ -355,8 +349,7 @@ json-styles: {raw, pretty}`)
 			var fileUploadPartCollection interface{}
 			var err error
 			fileUploadPartCollection, err = client.BeginUpload(ctx, paramsFileBeginUpload)
-			lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
-			return nil
+			return lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Path, "path", "", "Path to operate on.")
