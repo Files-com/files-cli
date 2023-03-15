@@ -76,8 +76,8 @@ func SettingsChanges() *cobra.Command {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	SettingsChanges.AddCommand(cmdList)

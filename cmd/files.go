@@ -77,9 +77,8 @@ func Files() *cobra.Command {
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdCreate)
@@ -129,9 +128,8 @@ func Files() *cobra.Command {
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdUpdate)
@@ -170,9 +168,8 @@ func Files() *cobra.Command {
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdDelete)
@@ -216,9 +213,8 @@ func Files() *cobra.Command {
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdFind)
@@ -267,9 +263,8 @@ func Files() *cobra.Command {
 
 	cmdCopy.Flags().StringSliceVar(&fieldsCopy, "fields", []string{}, "comma separated list of field names")
 	cmdCopy.Flags().StringSliceVar(&formatCopy, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdCopy.Flags().BoolVar(&usePagerCopy, "use-pager", usePagerCopy, "Use $PAGER (.ie less, more, etc)")
 
 	cmdCopy.Flags().BoolVarP(&blockCopy, "block", "b", blockCopy, "Wait on response for async copy with final status")
@@ -315,9 +310,8 @@ func Files() *cobra.Command {
 
 	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
 	cmdMove.Flags().StringSliceVar(&formatMove, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdMove.Flags().BoolVar(&usePagerMove, "use-pager", usePagerMove, "Use $PAGER (.ie less, more, etc)")
 
 	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
@@ -368,9 +362,8 @@ func Files() *cobra.Command {
 
 	cmdBeginUpload.Flags().StringSliceVar(&fieldsBeginUpload, "fields", []string{}, "comma separated list of field names")
 	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdBeginUpload.Flags().BoolVar(&usePagerBeginUpload, "use-pager", usePagerBeginUpload, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdBeginUpload)

@@ -76,8 +76,8 @@ func Groups() *cobra.Command {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Groups.AddCommand(cmdList)
@@ -106,9 +106,8 @@ func Groups() *cobra.Command {
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Groups.AddCommand(cmdFind)
@@ -140,9 +139,8 @@ func Groups() *cobra.Command {
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Groups.AddCommand(cmdCreate)
@@ -196,9 +194,8 @@ func Groups() *cobra.Command {
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Groups.AddCommand(cmdUpdate)
@@ -228,9 +225,8 @@ func Groups() *cobra.Command {
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Groups.AddCommand(cmdDelete)

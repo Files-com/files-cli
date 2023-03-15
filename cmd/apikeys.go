@@ -80,8 +80,8 @@ func ApiKeys() *cobra.Command {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	ApiKeys.AddCommand(cmdList)
@@ -107,9 +107,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdFindCurrent.Flags().StringSliceVar(&fieldsFindCurrent, "fields", []string{}, "comma separated list of field names")
 	cmdFindCurrent.Flags().StringSliceVar(&formatFindCurrent, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdFindCurrent.Flags().BoolVar(&usePagerFindCurrent, "use-pager", usePagerFindCurrent, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdFindCurrent)
@@ -138,9 +137,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdFind)
@@ -185,9 +183,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdCreate)
@@ -241,9 +238,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdUpdateCurrent.Flags().StringSliceVar(&fieldsUpdateCurrent, "fields", []string{}, "comma separated list of field names")
 	cmdUpdateCurrent.Flags().StringSliceVar(&formatUpdateCurrent, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdUpdateCurrent.Flags().BoolVar(&usePagerUpdateCurrent, "use-pager", usePagerUpdateCurrent, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdUpdateCurrent)
@@ -305,9 +301,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdUpdate)
@@ -334,9 +329,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdDeleteCurrent.Flags().StringSliceVar(&fieldsDeleteCurrent, "fields", []string{}, "comma separated list of field names")
 	cmdDeleteCurrent.Flags().StringSliceVar(&formatDeleteCurrent, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdDeleteCurrent.Flags().BoolVar(&usePagerDeleteCurrent, "use-pager", usePagerDeleteCurrent, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdDeleteCurrent)
@@ -366,9 +360,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	ApiKeys.AddCommand(cmdDelete)

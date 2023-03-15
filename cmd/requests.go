@@ -87,8 +87,8 @@ func Requests() *cobra.Command {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdList)
@@ -154,8 +154,8 @@ func Requests() *cobra.Command {
 	cmdGetFolder.Flags().Int64VarP(&MaxPagesGetFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetFolder.Flags().StringSliceVar(&fieldsGetFolder, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetFolder.Flags().StringSliceVar(&formatGetFolder, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdGetFolder)
@@ -190,9 +190,8 @@ func Requests() *cobra.Command {
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdCreate)
@@ -222,9 +221,8 @@ func Requests() *cobra.Command {
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdDelete)

@@ -92,8 +92,8 @@ func Histories() *cobra.Command {
 	cmdListForFile.Flags().Int64VarP(&MaxPagesListForFile, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForFile.Flags().StringSliceVar(&fieldsListForFile, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForFile.Flags().StringSliceVar(&formatListForFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForFile)
@@ -165,8 +165,8 @@ func Histories() *cobra.Command {
 	cmdListForFolder.Flags().Int64VarP(&MaxPagesListForFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForFolder.Flags().StringSliceVar(&fieldsListForFolder, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForFolder.Flags().StringSliceVar(&formatListForFolder, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForFolder)
@@ -235,8 +235,8 @@ func Histories() *cobra.Command {
 	cmdListForUser.Flags().Int64VarP(&MaxPagesListForUser, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForUser.Flags().StringSliceVar(&fieldsListForUser, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForUser.Flags().StringSliceVar(&formatListForUser, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForUser)
@@ -304,8 +304,8 @@ func Histories() *cobra.Command {
 	cmdListLogins.Flags().Int64VarP(&MaxPagesListLogins, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListLogins.Flags().StringSliceVar(&fieldsListLogins, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListLogins.Flags().StringSliceVar(&formatListLogins, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListLogins)
@@ -374,8 +374,8 @@ func Histories() *cobra.Command {
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}
         `)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdList)

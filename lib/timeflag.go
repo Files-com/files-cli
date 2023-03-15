@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -30,11 +31,15 @@ func (s *timeValue) String() string {
 	if s == nil {
 		return ""
 	}
+	if time.Time(*s).IsZero() {
+		return ""
+	}
+
 	return time.Time(*s).Format(time.RFC3339)
 }
 
 func usageWithFormat(usage string) string {
-	return usage + " - format: " + string(time.RFC3339)
+	return fmt.Sprintf("%v (format %v)", usage, time.Now().Format(time.RFC3339))
 }
 
 func TimeVar(f *pflag.FlagSet, p *time.Time, name string, usage string) {
