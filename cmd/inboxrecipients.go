@@ -72,7 +72,6 @@ func InboxRecipients() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
-	cmdList.Flags().Int64Var(&paramsInboxRecipientList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsInboxRecipientList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsInboxRecipientList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsInboxRecipientList.InboxId, "inbox-id", 0, "List recipients for the inbox with this ID.")
@@ -110,7 +109,6 @@ json-styles: {raw, pretty}
 			return lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
-	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.InboxId, "inbox-id", 0, "Inbox to share.")
 	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Recipient, "recipient", "", "Email address to share this inbox with.")
 	cmdCreate.Flags().StringVar(&paramsInboxRecipientCreate.Name, "name", "", "Name of recipient.")
