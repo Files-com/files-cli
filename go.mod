@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.175-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.176-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -201,13 +201,13 @@ require (
 	gocloud.dev v0.27.0 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
-	golang.org/x/mod v0.6.0 // indirect
+	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1 // indirect
 	golang.org/x/term v0.6.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
-	golang.org/x/tools v0.2.0 // indirect
+	golang.org/x/tools v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.98.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
