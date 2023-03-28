@@ -132,7 +132,7 @@ func RemoteMounts() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsBehaviorList.Page, "page", 0, "Current page number.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{"id", "path", "value"}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
         table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
         json-styles: {raw, pretty}
@@ -271,6 +271,14 @@ func findRemoteServer(cmd *cobra.Command, remoteServerName string) (int64, error
 	return 0, fmt.Errorf("no remote server found '%v", remoteServerName)
 }
 
+type RemoteMount struct {
+	Id             int64  `json:"id"`
+	Path           string `json:"path"`
+	RemoteServerId int64  `json:"remote_server_id"`
+	RemotePath     string `json:"remote_path"`
+	Description    string `json:"description"`
+}
+
 func expandBehavior() func(i interface{}) (interface{}, bool, error) {
 	return func(i interface{}) (interface{}, bool, error) {
 		resource := make(map[string]interface{})
@@ -291,6 +299,16 @@ func expandBehavior() func(i interface{}) (interface{}, bool, error) {
 			resource[k] = v
 		}
 
-		return resource, true, nil
+		j, err = json.Marshal(resource)
+		if err != nil {
+			return i, true, nil
+		}
+		var remoteMount RemoteMount
+		err = json.Unmarshal(j, &remoteMount)
+		if err != nil {
+			return i, true, nil
+		}
+
+		return remoteMount, true, nil
 	}
 }
