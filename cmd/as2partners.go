@@ -1,16 +1,13 @@
 package cmd
 
 import (
-	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-
 	"fmt"
 
+	"github.com/Files-com/files-cli/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	as2_partner "github.com/Files-com/files-sdk-go/v2/as2partner"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/spf13/cobra"
 )
 
 func init() {

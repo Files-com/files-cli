@@ -1,17 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
-	"fmt"
-
 	api_key "github.com/Files-com/files-sdk-go/v2/apikey"
+	"github.com/spf13/cobra"
 )
 
 func init() {

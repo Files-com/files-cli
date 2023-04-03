@@ -1,21 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-	"github.com/zenthangplus/goccm"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-
-	"fmt"
-
 	file "github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/Files-com/files-sdk-go/v2/folder"
+	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/spf13/cobra"
+	"github.com/zenthangplus/goccm"
 )
 
 func init() {

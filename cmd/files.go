@@ -1,18 +1,15 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/transfers"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
-	"fmt"
-
 	"github.com/Files-com/files-sdk-go/v2/file"
 	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/spf13/cobra"
 )
 
 func init() {

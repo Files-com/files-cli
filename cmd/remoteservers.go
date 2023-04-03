@@ -1,18 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	"github.com/spf13/cobra"
-
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
 	flib "github.com/Files-com/files-sdk-go/v2/lib"
-
-	"fmt"
-
 	remote_server "github.com/Files-com/files-sdk-go/v2/remoteserver"
+	"github.com/spf13/cobra"
 )
 
 func init() {
