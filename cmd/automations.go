@@ -44,7 +44,7 @@ func Automations() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			if cmd.Flags().Changed("with-deleted") {
-				paramsAutomationList.WithDeleted = flib.Bool(listWithDeleted)
+				params.WithDeleted = flib.Bool(listWithDeleted)
 			}
 
 			client := automation.Client{Config: *config}

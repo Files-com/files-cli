@@ -46,7 +46,7 @@ func Permissions() *cobra.Command {
 			}
 
 			if cmd.Flags().Changed("include-groups") {
-				paramsPermissionList.IncludeGroups = flib.Bool(listIncludeGroups)
+				params.IncludeGroups = flib.Bool(listIncludeGroups)
 			}
 
 			client := permission.Client{Config: *config}

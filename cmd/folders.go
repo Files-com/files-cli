@@ -56,13 +56,13 @@ func Folders() *cobra.Command {
 			}
 
 			if cmd.Flags().Changed("search-all") {
-				paramsFolderListFor.SearchAll = flib.Bool(listForSearchAll)
+				params.SearchAll = flib.Bool(listForSearchAll)
 			}
 			if cmd.Flags().Changed("with-previews") {
-				paramsFolderListFor.WithPreviews = flib.Bool(listForWithPreviews)
+				params.WithPreviews = flib.Bool(listForWithPreviews)
 			}
 			if cmd.Flags().Changed("with-priority-color") {
-				paramsFolderListFor.WithPriorityColor = flib.Bool(listForWithPriorityColor)
+				params.WithPriorityColor = flib.Bool(listForWithPriorityColor)
 			}
 
 			var it lib.Iter

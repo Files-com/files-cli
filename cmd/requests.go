@@ -46,7 +46,7 @@ func Requests() *cobra.Command {
 			}
 
 			if cmd.Flags().Changed("mine") {
-				paramsRequestList.Mine = flib.Bool(listMine)
+				params.Mine = flib.Bool(listMine)
 			}
 
 			client := request.Client{Config: *config}
@@ -113,7 +113,7 @@ json-styles: {raw, pretty}
 			}
 
 			if cmd.Flags().Changed("mine") {
-				paramsRequestGetFolder.Mine = flib.Bool(getFolderMine)
+				params.Mine = flib.Bool(getFolderMine)
 			}
 
 			client := request.Client{Config: *config}

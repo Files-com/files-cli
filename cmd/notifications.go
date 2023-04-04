@@ -46,7 +46,7 @@ func Notifications() *cobra.Command {
 			}
 
 			if cmd.Flags().Changed("include-ancestors") {
-				paramsNotificationList.IncludeAncestors = flib.Bool(listIncludeAncestors)
+				params.IncludeAncestors = flib.Bool(listIncludeAncestors)
 			}
 
 			client := notification.Client{Config: *config}

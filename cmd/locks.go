@@ -46,7 +46,7 @@ func Locks() *cobra.Command {
 			}
 
 			if cmd.Flags().Changed("include-children") {
-				paramsLockListFor.IncludeChildren = flib.Bool(listForIncludeChildren)
+				params.IncludeChildren = flib.Bool(listForIncludeChildren)
 			}
 
 			client := lock.Client{Config: *config}
