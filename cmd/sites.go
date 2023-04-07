@@ -78,7 +78,6 @@ json-styles: {raw, pretty}`)
 	usePagerUpdate := true
 	updateDomainHstsHeader := true
 	updateAllowBundleNames := true
-	updateOverageNotify := true
 	updateWelcomeEmailEnabled := true
 	updateAskAboutOverwrites := true
 	updateShowRequestAccessLink := true
@@ -179,9 +178,6 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("bundle-expiration") {
 				lib.FlagUpdate(cmd, "bundle_expiration", paramsSiteUpdate.BundleExpiration, mapParams)
-			}
-			if cmd.Flags().Changed("overage-notify") {
-				mapParams["overage_notify"] = updateOverageNotify
 			}
 			if cmd.Flags().Changed("welcome-email-enabled") {
 				mapParams["welcome_email_enabled"] = updateWelcomeEmailEnabled
@@ -565,7 +561,6 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.ReplyToEmail, "reply-to-email", "", "Reply-to email for this site")
 	cmdUpdate.Flags().BoolVar(&updateAllowBundleNames, "allow-bundle-names", updateAllowBundleNames, "Are manual Bundle names allowed?")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.BundleExpiration, "bundle-expiration", 0, "Site-wide Bundle expiration in days")
-	cmdUpdate.Flags().BoolVar(&updateOverageNotify, "overage-notify", updateOverageNotify, "Notify site email of overages?")
 	cmdUpdate.Flags().BoolVar(&updateWelcomeEmailEnabled, "welcome-email-enabled", updateWelcomeEmailEnabled, "Will the welcome email be sent to new users?")
 	cmdUpdate.Flags().BoolVar(&updateAskAboutOverwrites, "ask-about-overwrites", updateAskAboutOverwrites, "If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.")
 	cmdUpdate.Flags().BoolVar(&updateShowRequestAccessLink, "show-request-access-link", updateShowRequestAccessLink, "Show request access link for users without access?  Currently unused.")
