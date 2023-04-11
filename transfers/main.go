@@ -6,10 +6,12 @@ import (
 	"io"
 	"math"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/vbauerster/mpb/v8"
@@ -119,6 +121,14 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 	t.Stderr = stderr
 	t.Stdout = stdout
 	t.Job = jobCaller()
+	go func() {
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+		<-sigCh
+		t.Job.Cancel()
+		t.Progress.Shutdown()
+	}()
 	return t
 }
 
