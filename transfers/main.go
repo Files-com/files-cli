@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -115,20 +116,39 @@ func newTransferRate() ewma.MovingAverage {
 }
 
 func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer, jobCaller func() *status.Job) *Transfers {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		called := false
+		for signal := range sigCh {
+			switch signal {
+			case syscall.SIGQUIT:
+				buf := make([]byte, 1<<20)
+				stack := runtime.Stack(buf, true)
+				fmt.Printf("=== received SIGQUIT ===\n*** goroutine dump...\n%s\n*** end\n", buf[:stack])
+				err := os.WriteFile("files-cli_dump.txt", buf[:stack], 0644)
+				if err != nil {
+					fmt.Printf("Failed to write goroutine dump to file: %v\n", err)
+				}
+			case os.Interrupt, syscall.SIGTERM:
+				if called {
+					os.Exit(1)
+				}
+				called = true
+				go func() {
+					t.Progress.Shutdown()
+					t.Job.Cancel()
+					os.Exit(0)
+				}()
+			}
+		}
+	}()
 	t.createManager()
 	t.createProgress(ctx)
 	t.start = time.Now()
 	t.Stderr = stderr
 	t.Stdout = stdout
 	t.Job = jobCaller()
-	go func() {
-		sigCh := make(chan os.Signal, 1)
-		signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
-
-		<-sigCh
-		t.Job.Cancel()
-		t.Progress.Shutdown()
-	}()
 	return t
 }
 
