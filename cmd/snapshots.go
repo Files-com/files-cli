@@ -93,12 +93,10 @@ json-styles: {raw, pretty}
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := snapshot.Client{Config: *config}
 
+			var snapshot interface{}
 			var err error
-			err = client.Find(ctx, paramsSnapshotFind)
-			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			snapshot, err = client.Find(ctx, paramsSnapshotFind)
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSnapshotFind.Id, "id", 0, "Snapshot ID.")
@@ -122,12 +120,10 @@ json-styles: {raw, pretty}`)
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := snapshot.Client{Config: *config}
 
+			var snapshot interface{}
 			var err error
-			err = client.Create(ctx)
-			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			snapshot, err = client.Create(ctx)
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 
@@ -161,12 +157,10 @@ json-styles: {raw, pretty}`)
 				lib.FlagUpdate(cmd, "id", paramsSnapshotUpdate.Id, mapParams)
 			}
 
+			var snapshot interface{}
 			var err error
-			err = client.UpdateWithMap(ctx, mapParams)
-			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
+			snapshot, err = client.UpdateWithMap(ctx, mapParams)
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSnapshotUpdate.Id, "id", 0, "Snapshot ID.")
