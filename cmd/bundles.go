@@ -115,7 +115,9 @@ json-styles: {raw, pretty}`)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createCreateSnapshot := true
 	createDontSeparateSubmissionsByFolder := true
+	createFinalizeSnapshot := true
 	createPreviewOnly := true
 	createRequireRegistration := true
 	createRequireShareRecipient := true
@@ -141,8 +143,14 @@ json-styles: {raw, pretty}`)
 				return BundleCreatePermissionsErr
 			}
 
+			if cmd.Flags().Changed("create-snapshot") {
+				paramsBundleCreate.CreateSnapshot = flib.Bool(createCreateSnapshot)
+			}
 			if cmd.Flags().Changed("dont-separate-submissions-by-folder") {
 				paramsBundleCreate.DontSeparateSubmissionsByFolder = flib.Bool(createDontSeparateSubmissionsByFolder)
+			}
+			if cmd.Flags().Changed("finalize-snapshot") {
+				paramsBundleCreate.FinalizeSnapshot = flib.Bool(createFinalizeSnapshot)
 			}
 			if cmd.Flags().Changed("preview-only") {
 				paramsBundleCreate.PreviewOnly = flib.Bool(createPreviewOnly)
@@ -180,9 +188,11 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().StringSliceVar(&paramsBundleCreate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Password, "password", "", "Password for this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
+	cmdCreate.Flags().BoolVar(&createCreateSnapshot, "create-snapshot", createCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
 	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleCreate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Bundle expiration date/time")
+	cmdCreate.Flags().BoolVar(&createFinalizeSnapshot, "finalize-snapshot", createFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Note, "note", "", "Bundle internal note")
@@ -242,7 +252,9 @@ json-styles: {raw, pretty}`)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateCreateSnapshot := true
 	updateDontSeparateSubmissionsByFolder := true
+	updateFinalizeSnapshot := true
 	updatePreviewOnly := true
 	updateRequireRegistration := true
 	updateRequireShareRecipient := true
@@ -292,6 +304,9 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("code") {
 				lib.FlagUpdate(cmd, "code", paramsBundleUpdate.Code, mapParams)
 			}
+			if cmd.Flags().Changed("create-snapshot") {
+				mapParams["create_snapshot"] = updateCreateSnapshot
+			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsBundleUpdate.Description, mapParams)
 			}
@@ -300,6 +315,9 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("expires-at") {
 				lib.FlagUpdate(cmd, "expires_at", paramsBundleUpdate.ExpiresAt, mapParams)
+			}
+			if cmd.Flags().Changed("finalize-snapshot") {
+				mapParams["finalize_snapshot"] = updateFinalizeSnapshot
 			}
 			if cmd.Flags().Changed("inbox-id") {
 				lib.FlagUpdate(cmd, "inbox_id", paramsBundleUpdate.InboxId, mapParams)
@@ -359,10 +377,12 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
+	cmdUpdate.Flags().BoolVar(&updateCreateSnapshot, "create-snapshot", updateCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Description, "description", "", "Public description")
 	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleUpdate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Bundle expiration date/time")
+	cmdUpdate.Flags().BoolVar(&updateFinalizeSnapshot, "finalize-snapshot", updateFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
