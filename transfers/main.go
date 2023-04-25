@@ -105,7 +105,6 @@ func New() *Transfers {
 		transferRateMutex:     &sync.RWMutex{},
 		Ignore:                &[]string{},
 		waitForEndingMessage:  make(chan bool),
-		it:                    (&sdklib.IterChan[interface{}]{}).Init(),
 		lastEndedFile:         endedFile,
 		finishedForDisplay:    &atomic.Bool{},
 	}
@@ -116,6 +115,8 @@ func newTransferRate() ewma.MovingAverage {
 }
 
 func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer, jobCaller func() *status.Job) *Transfers {
+	t.it = (&sdklib.IterChan[interface{}]{}).Init(ctx)
+
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
@@ -308,7 +309,7 @@ func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 	if err != nil {
 		t.it.SendError <- err
 	}
-	t.it.Stop <- true
+	t.it.Stop()
 }
 
 func (t *Transfers) SetupSignals() {
@@ -471,7 +472,7 @@ func (t *Transfers) LogJobError(err error, path string) {
 }
 
 func (t *Transfers) EndingStatusErrors() {
-	t.it.Stop <- true
+	t.it.Stop()
 }
 
 var ScanningBarStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"}
@@ -556,7 +557,7 @@ func (t *Transfers) buildStatusTransfer() {
 					tw := 50
 
 					if terminalWidthErr == nil {
-						tw = int(math.Max(float64(width-len(fmt.Sprint(fileCounts(t.Job), displayName(endedFile.Path, remainingWidth), "-", statusWithColor(endedFile.Status)))), float64(width)))
+						tw = int(math.Min(float64(width-len(fmt.Sprint(fileCounts(t.Job), displayName(endedFile.Path, remainingWidth), "-", statusWithColor(endedFile.Status)))), float64(width)))
 					}
 					if tw > 0 {
 						io.WriteString(w, fmt.Sprintf("%v %v - %v", displayName(endedFile.Path, remainingWidth), statusWithColor(endedFile.Status), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))

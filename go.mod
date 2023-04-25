@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.189-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.190-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -28,7 +28,6 @@ require (
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v8 v8.3.0
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
-	github.com/zenthangplus/goccm v1.1.3
 	golang.org/x/crypto v0.7.0
 	golang.org/x/sys v0.6.0
 )

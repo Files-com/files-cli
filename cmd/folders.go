@@ -11,7 +11,6 @@ import (
 	"github.com/Files-com/files-sdk-go/v2/folder"
 	flib "github.com/Files-com/files-sdk-go/v2/lib"
 	"github.com/spf13/cobra"
-	"github.com/zenthangplus/goccm"
 )
 
 func init() {
@@ -69,7 +68,7 @@ func Folders() *cobra.Command {
 			var err error
 			fileClient := file.Client{Config: *config}
 			if listRecursively {
-				params.ConcurrencyManager = goccm.New(concurrentDirectoryScanning)
+				params.ConcurrencyManager = flib.NewConstrainedWorkGroup(concurrentDirectoryScanning)
 				it, err = fileClient.ListForRecursive(ctx, params)
 			} else {
 				it, err = fileClient.ListFor(ctx, params)
