@@ -42,6 +42,8 @@ func formatSize(value interface{}) interface{} {
 		if err == nil {
 			value = ByteCountSI(v)
 		}
+	case nil:
+		value = ""
 	}
 	return value
 }

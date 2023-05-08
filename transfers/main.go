@@ -380,13 +380,13 @@ func (t *Transfers) logOnEnd(s status.File) {
 
 func (t *Transfers) Text(s status.File) string {
 	if s.Err != nil {
-		return fmt.Sprintf("%v %v %v", bestPath(s), s.String(), s.Err.Error())
+		return fmt.Sprintf("%v %v %v", bestPath(s), s.StatusName, s.Err.Error())
 	}
 
 	if s.Status.Is(status.Skipped) {
-		return fmt.Sprintf("%v %v", bestPath(s), s.String())
+		return fmt.Sprintf("%v %v", bestPath(s), s.StatusName)
 	} else {
-		return fmt.Sprintf("%v %v size %v", bestPath(s), s.String(), lib.ByteCountSI(s.TransferBytes))
+		return fmt.Sprintf("%v %v size %v", bestPath(s), s.StatusName, lib.ByteCountSI(s.TransferBytes))
 	}
 }
 

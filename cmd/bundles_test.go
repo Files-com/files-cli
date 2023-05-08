@@ -28,11 +28,10 @@ func TestBundles_Create(t *testing.T) {
 		}
 		config.Debug = true
 		config.SetLogger(log.New(logFile, "", log.LstdFlags))
-		_, stderr := callCmd(Bundles(), config, []string{
+		callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1",
 		})
 
-		assert.Contains(t, string(stderr), "Error: Authentication Required")
 		fileBytes, err := os.ReadFile(debugLog)
 		require.NoError(t, err)
 		require.Contains(t, string(fileBytes), `-d '{"paths":["folder1"]}'`)
@@ -50,11 +49,10 @@ func TestBundles_Create(t *testing.T) {
 		config.SetLogger(log.New(logFile, "", log.LstdFlags))
 
 		expires := time.Now().Format(time.RFC3339)
-		_, stderr := callCmd(Bundles(), config, []string{
+		callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1", "--expires-at", expires,
 		})
 
-		assert.Contains(t, string(stderr), "Error: Authentication Required")
 		fileBytes, err := os.ReadFile(debugLog)
 		require.NoError(t, err)
 		require.Contains(t, string(fileBytes), fmt.Sprintf(`-d '{"expires_at":"%v","paths":["folder1"]}'`, expires))

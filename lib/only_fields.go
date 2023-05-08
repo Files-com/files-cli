@@ -78,9 +78,16 @@ func remove(slice []string, s int) []string {
 
 func jsonTags(structure interface{}) []string {
 	var tags []string
-	for _, field := range structs.New(structure).Fields() {
+	return jsonTagsByFields(structs.New(structure).Fields(), tags)
+}
+
+func jsonTagsByFields(fields []*structs.Field, tags []string) []string {
+	for _, field := range fields {
+		if field.IsEmbedded() && field.Kind() == reflect.Struct {
+			tags = jsonTagsByFields(field.Fields(), tags)
+		}
 		tag := strings.Split(field.Tag("json"), ",")[0]
-		if tag == "-" {
+		if tag == "-" || tag == "" {
 			continue
 		}
 		tags = append(tags, tag)

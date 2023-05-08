@@ -3,15 +3,19 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v2 v2.0.194-beta
+	github.com/Files-com/files-sdk-go/v2 v2.0.195-beta
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
-	github.com/charmbracelet/bubbles v0.11.0
+	github.com/atotto/clipboard v0.1.4
+	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
+	github.com/charmbracelet/bubbles v0.15.0
 	github.com/charmbracelet/bubbletea v0.23.1
 	github.com/charmbracelet/glamour v0.6.0
+	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/drakkan/sftpgo/v2 v2.3.6
+	github.com/evertras/bubble-table v0.15.2
 	github.com/fatih/structs v1.1.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/hashicorp/go-retryablehttp v0.7.2
@@ -46,7 +50,6 @@ require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387 // indirect
 	github.com/appscode/go-querystring v0.0.0-20170504095604-0126cfb3f1dc // indirect
-	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.16 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.8 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.17.8 // indirect
@@ -72,12 +75,10 @@ require (
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
-	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 // indirect
 	github.com/bytedance/sonic v1.8.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/charmbracelet/lipgloss v0.5.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/chilts/sid v0.0.0-20190607042430-660e94789ec9 // indirect
 	github.com/cockroachdb/cockroach-go/v2 v2.2.16 // indirect

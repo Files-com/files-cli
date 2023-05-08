@@ -41,6 +41,8 @@ func Format(ctx context.Context, result interface{}, format []string, fields []s
 		return CSVMarshal(result, fields, out[0], format[1])
 	case "table":
 		return TableMarshal(format[1], result, fields, usePager, out[0], format[2])
+	case "table-v2":
+		return TableMarshalV2(format[1], result, fields, usePager, out[0], format[2])
 	default:
 		return fmt.Errorf("Unknown format `" + format[0] + "`")
 	}
@@ -60,6 +62,8 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 		return CSVMarshalIter(it, fields, filter, out[0], format[1])
 	case "table":
 		return TableMarshalIter(ctx, format[1], it, fields, usePager, out[0], filter)
+	case "table-v2":
+		return TableMarshalV2Iter(ctx, format[1], it, fields, usePager, out[0], filter)
 	case "text":
 		return TextMarshalIter(ctx, it, usePager, out[0], filter)
 	case "none":
