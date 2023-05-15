@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
@@ -111,6 +112,8 @@ json-styles: {raw, pretty}`)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	paramsSnapshotCreate := files_sdk.SnapshotCreateParams{}
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Snapshot`,
@@ -120,12 +123,20 @@ json-styles: {raw, pretty}`)
 			config := ctx.Value("config").(*files_sdk.Config)
 			client := snapshot.Client{Config: *config}
 
+			if paramsSnapshotCreate.ExpiresAt.IsZero() {
+				paramsSnapshotCreate.ExpiresAt = nil
+			}
+
 			var snapshot interface{}
 			var err error
-			snapshot, err = client.Create(ctx)
+			snapshot, err = client.Create(ctx, paramsSnapshotCreate)
 			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
+	paramsSnapshotCreate.ExpiresAt = &time.Time{}
+	lib.TimeVar(cmdCreate.Flags(), paramsSnapshotCreate.ExpiresAt, "expires-at", "When the snapshot expires.")
+	cmdCreate.Flags().StringVar(&paramsSnapshotCreate.Name, "name", "", "A name for the snapshot.")
+	cmdCreate.Flags().StringSliceVar(&paramsSnapshotCreate.Paths, "paths", []string{}, "An array of paths to add to the snapshot.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -156,6 +167,19 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsSnapshotUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("expires-at") {
+				lib.FlagUpdate(cmd, "expires_at", paramsSnapshotUpdate.ExpiresAt, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsSnapshotUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("paths") {
+				lib.FlagUpdateLen(cmd, "paths", paramsSnapshotUpdate.Paths, mapParams)
+			}
+
+			if paramsSnapshotUpdate.ExpiresAt.IsZero() {
+				paramsSnapshotUpdate.ExpiresAt = nil
+			}
 
 			var snapshot interface{}
 			var err error
@@ -164,6 +188,10 @@ json-styles: {raw, pretty}`)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSnapshotUpdate.Id, "id", 0, "Snapshot ID.")
+	paramsSnapshotUpdate.ExpiresAt = &time.Time{}
+	lib.TimeVar(cmdUpdate.Flags(), paramsSnapshotUpdate.ExpiresAt, "expires-at", "When the snapshot expires.")
+	cmdUpdate.Flags().StringVar(&paramsSnapshotUpdate.Name, "name", "", "A name for the snapshot.")
+	cmdUpdate.Flags().StringSliceVar(&paramsSnapshotUpdate.Paths, "paths", []string{}, "An array of paths to add to the snapshot.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
