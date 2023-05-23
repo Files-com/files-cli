@@ -109,6 +109,7 @@ json-styles: {raw, pretty}`)
 	updateBundlePasswordRequired := true
 	updateBundleRequireShareRecipient := true
 	updatePasswordRequirementsApplyToBundles := true
+	updatePreventRootPermissionsForNonSiteAdmins := true
 	updateOptOutGlobal := true
 	updateUseProvidedModifiedAt := true
 	updateCustomNamespace := true
@@ -344,6 +345,9 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("password-requirements-apply-to-bundles") {
 				mapParams["password_requirements_apply_to_bundles"] = updatePasswordRequirementsApplyToBundles
+			}
+			if cmd.Flags().Changed("prevent-root-permissions-for-non-site-admins") {
+				mapParams["prevent_root_permissions_for_non_site_admins"] = updatePreventRootPermissionsForNonSiteAdmins
 			}
 			if cmd.Flags().Changed("opt-out-global") {
 				mapParams["opt_out_global"] = updateOptOutGlobal
@@ -620,6 +624,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleActivityNotifications, "bundle-activity-notifications", "", "Do Bundle owners receive activity notifications?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleUploadReceiptNotifications, "bundle-upload-receipt-notifications", "", "Do Bundle uploaders receive upload confirmation notifications?")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
+	cmdUpdate.Flags().BoolVar(&updatePreventRootPermissionsForNonSiteAdmins, "prevent-root-permissions-for-non-site-admins", updatePreventRootPermissionsForNonSiteAdmins, "If true, we will prevent non-administrators from receiving any permissions directly on the root folder.  This is commonly used to prevent the accidental application of permissions.")
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")
 	cmdUpdate.Flags().BoolVar(&updateUseProvidedModifiedAt, "use-provided-modified-at", updateUseProvidedModifiedAt, "Allow uploaders to set `provided_modified_at` for uploaded files?")
 	cmdUpdate.Flags().BoolVar(&updateCustomNamespace, "custom-namespace", updateCustomNamespace, "Is this site using a custom namespace for users?")
