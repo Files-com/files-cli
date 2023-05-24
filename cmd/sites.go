@@ -102,6 +102,7 @@ json-styles: {raw, pretty}`)
 	updatePasswordRequireSpecial := true
 	updatePasswordRequireNumber := true
 	updatePasswordRequireUnbreached := true
+	updateRequireLogoutFromBundlesAndInboxes := true
 	updateSftpUserRootEnabled := true
 	updateDisablePasswordReset := true
 	updateImmutableFiles := true
@@ -315,6 +316,9 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("password-require-unbreached") {
 				mapParams["password_require_unbreached"] = updatePasswordRequireUnbreached
+			}
+			if cmd.Flags().Changed("require-logout-from-bundles-and-inboxes") {
+				mapParams["require_logout_from_bundles_and_inboxes"] = updateRequireLogoutFromBundlesAndInboxes
 			}
 			if cmd.Flags().Changed("sftp-user-root-enabled") {
 				mapParams["sftp_user_root_enabled"] = updateSftpUserRootEnabled
@@ -614,6 +618,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequireSpecial, "password-require-special", updatePasswordRequireSpecial, "Require special characters in password?")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequireNumber, "password-require-number", updatePasswordRequireNumber, "Require a number in passwords?")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequireUnbreached, "password-require-unbreached", updatePasswordRequireUnbreached, "Require passwords that have not been previously breached? (see https://haveibeenpwned.com/)")
+	cmdUpdate.Flags().BoolVar(&updateRequireLogoutFromBundlesAndInboxes, "require-logout-from-bundles-and-inboxes", updateRequireLogoutFromBundlesAndInboxes, "If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.")
 	cmdUpdate.Flags().BoolVar(&updateSftpUserRootEnabled, "sftp-user-root-enabled", updateSftpUserRootEnabled, "Use user FTP roots also for SFTP?")
 	cmdUpdate.Flags().BoolVar(&updateDisablePasswordReset, "disable-password-reset", updateDisablePasswordReset, "Is password reset disabled?")
 	cmdUpdate.Flags().BoolVar(&updateImmutableFiles, "immutable-files", updateImmutableFiles, "Are files protected from modification?")
