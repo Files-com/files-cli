@@ -145,6 +145,7 @@ json-styles: {raw, pretty}`)
 	createResetAuthentication := true
 	createPinToSiteRegion := true
 	createEnableDedicatedIps := true
+	createDropboxTeams := true
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateServerCertificate := ""
 	RemoteServerCreateServerType := ""
@@ -195,6 +196,9 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("enable-dedicated-ips") {
 				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
+			}
+			if cmd.Flags().Changed("dropbox-teams") {
+				paramsRemoteServerCreate.DropboxTeams = flib.Bool(createDropboxTeams)
 			}
 
 			var remoteServer interface{}
@@ -257,6 +261,7 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
+	cmdCreate.Flags().BoolVar(&createDropboxTeams, "dropbox-teams", createDropboxTeams, "List Team folders in root")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -311,6 +316,7 @@ json-styles: {raw, pretty}`)
 	updateResetAuthentication := true
 	updatePinToSiteRegion := true
 	updateEnableDedicatedIps := true
+	updateDropboxTeams := true
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateServerCertificate := ""
 	RemoteServerUpdateServerType := ""
@@ -523,6 +529,9 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("filebase-bucket") {
 				lib.FlagUpdate(cmd, "filebase_bucket", paramsRemoteServerUpdate.FilebaseBucket, mapParams)
 			}
+			if cmd.Flags().Changed("dropbox-teams") {
+				mapParams["dropbox_teams"] = updateDropboxTeams
+			}
 
 			var remoteServer interface{}
 			var err error
@@ -585,6 +594,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
+	cmdUpdate.Flags().BoolVar(&updateDropboxTeams, "dropbox-teams", updateDropboxTeams, "List Team folders in root")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
