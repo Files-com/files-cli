@@ -261,6 +261,10 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare Access Key.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareSecretKey, "cloudflare-secret-key", "", "Cloudflare secret key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare Bucket name")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare endpoint")
 	cmdCreate.Flags().BoolVar(&createDropboxTeams, "dropbox-teams", createDropboxTeams, "List Team folders in root")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -529,6 +533,18 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("filebase-bucket") {
 				lib.FlagUpdate(cmd, "filebase_bucket", paramsRemoteServerUpdate.FilebaseBucket, mapParams)
 			}
+			if cmd.Flags().Changed("cloudflare-access-key") {
+				lib.FlagUpdate(cmd, "cloudflare_access_key", paramsRemoteServerUpdate.CloudflareAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("cloudflare-secret-key") {
+				lib.FlagUpdate(cmd, "cloudflare_secret_key", paramsRemoteServerUpdate.CloudflareSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("cloudflare-bucket") {
+				lib.FlagUpdate(cmd, "cloudflare_bucket", paramsRemoteServerUpdate.CloudflareBucket, mapParams)
+			}
+			if cmd.Flags().Changed("cloudflare-endpoint") {
+				lib.FlagUpdate(cmd, "cloudflare_endpoint", paramsRemoteServerUpdate.CloudflareEndpoint, mapParams)
+			}
 			if cmd.Flags().Changed("dropbox-teams") {
 				mapParams["dropbox_teams"] = updateDropboxTeams
 			}
@@ -594,6 +610,10 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseSecretKey, "filebase-secret-key", "", "Filebase secret key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseBucket, "filebase-bucket", "", "Filebase Bucket name")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare Access Key.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareSecretKey, "cloudflare-secret-key", "", "Cloudflare secret key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare Bucket name")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare endpoint")
 	cmdUpdate.Flags().BoolVar(&updateDropboxTeams, "dropbox-teams", updateDropboxTeams, "List Team folders in root")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
