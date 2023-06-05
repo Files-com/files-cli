@@ -29,6 +29,7 @@ type tableModel struct {
 	filterTextInput textinput.Model
 	out             io.Writer
 	maxColumnWidth  map[string]int
+	FilterIter
 }
 
 var tableBoarder = table.Border{
@@ -198,6 +199,18 @@ func (t *tableModel) Load() (*tea.Program, error) {
 }
 
 func (t *tableModel) addRow(result interface{}, rows []table.Row) ([]table.Row, error) {
+	filter := true
+	if t.FilterIter != nil {
+		var err error
+		result, filter, err = t.FilterIter(result)
+		if err != nil {
+			return rows, err
+		}
+	}
+	if !filter {
+		return rows, nil
+	}
+
 	var columns []table.Column
 	record, orderedKeys, err := OnlyFields(t.fields, result)
 	if err != nil {

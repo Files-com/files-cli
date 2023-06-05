@@ -174,6 +174,19 @@ func (t *tableLoaderIter) LoadRest(model *tableModel) {
 }
 
 func (t *tableLoaderIter) addRow(model *tableModel, result interface{}) error {
+	filter := true
+	if model.FilterIter != nil {
+		var err error
+		result, filter, err = model.FilterIter(result)
+		if err != nil {
+			return err
+		}
+	}
+
+	if !filter {
+		return nil
+	}
+
 	var columns []table.Column
 	record, orderedKeys, err := OnlyFields(model.fields, result)
 	if err != nil {

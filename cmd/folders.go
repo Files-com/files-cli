@@ -78,9 +78,9 @@ func Folders() *cobra.Command {
 			}
 			var listFilter lib.FilterIter
 			listOnlyFoldersFilter := func(i interface{}) bool {
-				f, ok := i.(files_sdk.Folder)
-				if ok && f.Type == "directory" {
-					return true
+				isDir, ok := i.(flib.IsDir)
+				if ok {
+					return isDir.IsDir()
 				}
 				return false
 			}

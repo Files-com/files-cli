@@ -21,7 +21,7 @@ func TableMarshalV2(_ string, result interface{}, fields []string, _ bool, out i
 }
 
 func TableMarshalV2Iter(parentCtx context.Context, _ string, it Iter, fields []string, _ bool, out io.Writer, filterIter FilterIter) error {
-	model := &tableModel{fields: fields, out: out}
+	model := &tableModel{fields: fields, out: out, FilterIter: filterIter}
 	model.Init()
 	model.tableLoader, _ = (&tableLoaderIter{}).Init(parentCtx, "", func(ctx context.Context) (Iter, error) {
 		return it, nil
