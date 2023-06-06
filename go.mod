@@ -18,7 +18,7 @@ require (
 	github.com/evertras/bubble-table v0.15.2
 	github.com/fatih/structs v1.1.0
 	github.com/gin-gonic/gin v1.9.0
-	github.com/hashicorp/go-retryablehttp v0.7.2
+	github.com/hashicorp/go-retryablehttp v0.7.4
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.17
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
