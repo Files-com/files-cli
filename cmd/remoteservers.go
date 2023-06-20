@@ -266,6 +266,10 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare endpoint")
 	cmdCreate.Flags().BoolVar(&createDropboxTeams, "dropbox-teams", createDropboxTeams, "List Team folders in root")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeAccessKey, "linode-access-key", "", "Linode Access Key.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeSecretKey, "linode-secret-key", "", "Linode secret key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeBucket, "linode-bucket", "", "Linode Bucket name")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeRegion, "linode-region", "", "Linode region")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -548,6 +552,18 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("dropbox-teams") {
 				mapParams["dropbox_teams"] = updateDropboxTeams
 			}
+			if cmd.Flags().Changed("linode-access-key") {
+				lib.FlagUpdate(cmd, "linode_access_key", paramsRemoteServerUpdate.LinodeAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("linode-secret-key") {
+				lib.FlagUpdate(cmd, "linode_secret_key", paramsRemoteServerUpdate.LinodeSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("linode-bucket") {
+				lib.FlagUpdate(cmd, "linode_bucket", paramsRemoteServerUpdate.LinodeBucket, mapParams)
+			}
+			if cmd.Flags().Changed("linode-region") {
+				lib.FlagUpdate(cmd, "linode_region", paramsRemoteServerUpdate.LinodeRegion, mapParams)
+			}
 
 			var remoteServer interface{}
 			var err error
@@ -615,6 +631,10 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare endpoint")
 	cmdUpdate.Flags().BoolVar(&updateDropboxTeams, "dropbox-teams", updateDropboxTeams, "List Team folders in root")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeAccessKey, "linode-access-key", "", "Linode Access Key.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeSecretKey, "linode-secret-key", "", "Linode secret key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeBucket, "linode-bucket", "", "Linode Bucket name")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeRegion, "linode-region", "", "Linode region")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}

@@ -393,7 +393,6 @@ json-styles: {raw, pretty}`)
 				lib.FlagUpdate(cmd, "active_sftp_host_key_id", paramsSiteUpdate.ActiveSftpHostKeyId, mapParams)
 			}
 			if cmd.Flags().Changed("bundle-watermark-value") {
-				lib.FlagUpdateLen(cmd, "bundle_watermark_value", paramsSiteUpdate.BundleWatermarkValue, mapParams)
 			}
 			if cmd.Flags().Changed("group-admins-can-set-user-password") {
 				mapParams["group_admins_can_set_user_password"] = updateGroupAdminsCanSetUserPassword

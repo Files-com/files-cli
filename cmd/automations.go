@@ -77,7 +77,6 @@ func Automations() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsAutomationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAutomationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVar(&paramsAutomationList.Automation, "automation", "", "If set, return records where the specified field is equal to the supplied value.")
 	cmdList.Flags().BoolVar(&listWithDeleted, "with-deleted", listWithDeleted, "Set to true to include deleted automations in the results.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -250,7 +249,6 @@ json-styles: {raw, pretty}`)
 				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
 			}
 			if cmd.Flags().Changed("schedule") {
-				lib.FlagUpdateLen(cmd, "schedule", paramsAutomationUpdate.Schedule, mapParams)
 			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsAutomationUpdate.Description, mapParams)
@@ -268,7 +266,6 @@ json-styles: {raw, pretty}`)
 				lib.FlagUpdateLen(cmd, "trigger_actions", paramsAutomationUpdate.TriggerActions, mapParams)
 			}
 			if cmd.Flags().Changed("value") {
-				lib.FlagUpdateLen(cmd, "value", paramsAutomationUpdate.Value, mapParams)
 			}
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsAutomationUpdate.RecurringDay, mapParams)

@@ -94,7 +94,7 @@ func RemoteMounts() *cobra.Command {
 	var fieldsList []string
 	var formatList []string
 	usePagerList := true
-	paramsBehaviorList := files_sdk.BehaviorListParams{Behavior: "remote_server_mount"}
+	paramsBehaviorList := files_sdk.BehaviorListParams{Filter: files_sdk.Behavior{Behavior: "remote_server_mount"}}
 	var MaxPagesList int64
 	cmdList := &cobra.Command{
 		Use:   "list",
