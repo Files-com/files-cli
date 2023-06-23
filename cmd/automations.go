@@ -182,6 +182,37 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Automations.AddCommand(cmdCreate)
+	var fieldsManualRun []string
+	var formatManualRun []string
+	usePagerManualRun := true
+	paramsAutomationManualRun := files_sdk.AutomationManualRunParams{}
+
+	cmdManualRun := &cobra.Command{
+		Use:   "manual-run",
+		Short: `Manually run automation`,
+		Long:  `Manually run automation`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(*files_sdk.Config)
+			client := automation.Client{Config: *config}
+
+			var err error
+			err = client.ManualRun(ctx, paramsAutomationManualRun)
+			if err != nil {
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdManualRun.Flags().Int64Var(&paramsAutomationManualRun.Id, "id", 0, "Automation ID.")
+
+	cmdManualRun.Flags().StringSliceVar(&fieldsManualRun, "fields", []string{}, "comma separated list of field names")
+	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
+table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
+json-styles: {raw, pretty}`)
+	cmdManualRun.Flags().BoolVar(&usePagerManualRun, "use-pager", usePagerManualRun, "Use $PAGER (.ie less, more, etc)")
+
+	Automations.AddCommand(cmdManualRun)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
