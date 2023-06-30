@@ -31,16 +31,12 @@ archives:
       - goos: windows
         format: zip
     # Just the naming convention for tarballs... Example: msconsole_1.0.0_darwin_64bit
-    name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}{{.Arm}}'
-    # Replace the cryptic arch's with readable human naming conventions
-    replacements:
-      amd64: 64bit
-      386: 32bit
-      arm: ARM
-      arm64: ARM64
-      darwin: macOS
-      linux: Linux
-      windows: Windows
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}32bit
+      {{- else }}{{ .Arch }}{{ end }}
     files:
       - README.md
       - completions/*
@@ -54,7 +50,7 @@ snapshot:
 brews:
   -
     name: files-cli
-    tap:
+    repository:
       owner: Files-com
       name: homebrew-tap
     commit_author:
