@@ -222,6 +222,9 @@ json-styles: {raw, pretty}`)
 			if paramsUserCreate.AuthenticateUntil.IsZero() {
 				paramsUserCreate.AuthenticateUntil = nil
 			}
+			if paramsUserCreate.RequireLoginBy.IsZero() {
+				paramsUserCreate.RequireLoginBy = nil
+			}
 
 			var user interface{}
 			var err error
@@ -260,6 +263,8 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&createOfficeIntegrationEnabled, "office-integration-enabled", createOfficeIntegrationEnabled, "Enable integration with Office for the web?")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
+	paramsUserCreate.RequireLoginBy = &time.Time{}
+	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdCreate.Flags().BoolVar(&createRequirePasswordChange, "require-password-change", createRequirePasswordChange, "Is a password change required upon next user login?")
 	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "Can this user access the REST API?")
 	cmdCreate.Flags().BoolVar(&createSelfManaged, "self-managed", createSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
@@ -525,6 +530,9 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("receive-admin-alerts") {
 				mapParams["receive_admin_alerts"] = updateReceiveAdminAlerts
 			}
+			if cmd.Flags().Changed("require-login-by") {
+				lib.FlagUpdate(cmd, "require_login_by", paramsUserUpdate.RequireLoginBy, mapParams)
+			}
 			if cmd.Flags().Changed("require-password-change") {
 				mapParams["require_password_change"] = updateRequirePasswordChange
 			}
@@ -568,6 +576,9 @@ json-styles: {raw, pretty}`)
 			if paramsUserUpdate.AuthenticateUntil.IsZero() {
 				paramsUserUpdate.AuthenticateUntil = nil
 			}
+			if paramsUserUpdate.RequireLoginBy.IsZero() {
+				paramsUserUpdate.RequireLoginBy = nil
+			}
 
 			var user interface{}
 			var err error
@@ -607,6 +618,8 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationEnabled, "office-integration-enabled", updateOfficeIntegrationEnabled, "Enable integration with Office for the web?")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
+	paramsUserUpdate.RequireLoginBy = &time.Time{}
+	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdUpdate.Flags().BoolVar(&updateRequirePasswordChange, "require-password-change", updateRequirePasswordChange, "Is a password change required upon next user login?")
 	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "Can this user access the REST API?")
 	cmdUpdate.Flags().BoolVar(&updateSelfManaged, "self-managed", updateSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
