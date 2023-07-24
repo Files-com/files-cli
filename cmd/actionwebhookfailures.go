@@ -36,7 +36,7 @@ func ActionWebhookFailures() *cobra.Command {
 			client := action_webhook_failure.Client{Config: *config}
 
 			var err error
-			err = client.Retry(ctx, paramsActionWebhookFailureRetry)
+			err = client.Retry(paramsActionWebhookFailureRetry, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

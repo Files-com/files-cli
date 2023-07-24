@@ -41,7 +41,7 @@ func MessageCommentReactions() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := message_comment_reaction.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var messageCommentReaction interface{}
 			var err error
-			messageCommentReaction, err = client.Find(ctx, paramsMessageCommentReactionFind)
+			messageCommentReaction, err = client.Find(paramsMessageCommentReactionFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -126,7 +126,7 @@ json-styles: {raw, pretty}`)
 
 			var messageCommentReaction interface{}
 			var err error
-			messageCommentReaction, err = client.Create(ctx, paramsMessageCommentReactionCreate)
+			messageCommentReaction, err = client.Create(paramsMessageCommentReactionCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -155,7 +155,7 @@ json-styles: {raw, pretty}`)
 			client := message_comment_reaction.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsMessageCommentReactionDelete)
+			err = client.Delete(paramsMessageCommentReactionDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

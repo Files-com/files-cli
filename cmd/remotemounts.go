@@ -52,14 +52,14 @@ func RemoteMounts() *cobra.Command {
 
 			if createFolder {
 				folderClient := folder.Client{Config: *Profile(cmd).Config}
-				_, err := folderClient.Create(cmd.Context(), files_sdk.FolderCreateParams{Path: createParams.Path})
+				_, err := folderClient.Create(files_sdk.FolderCreateParams{Path: createParams.Path}, files_sdk.WithContext(cmd.Context()))
 				if err != nil {
 					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				}
 			}
 
 			client := behavior.Client{Config: *Profile(cmd).Config}
-			resource, err := client.Create(cmd.Context(), createParams)
+			resource, err := client.Create(createParams, files_sdk.WithContext(cmd.Context()))
 			if err != nil {
 				return err
 			}
@@ -108,7 +108,7 @@ func RemoteMounts() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := behavior.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -155,7 +155,7 @@ func RemoteMounts() *cobra.Command {
 
 			var resource interface{}
 			var err error
-			resource, err = client.Find(ctx, paramsBehaviorFind)
+			resource, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -189,7 +189,7 @@ func RemoteMounts() *cobra.Command {
 			client := behavior.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsBehaviorDelete)
+			err = client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -225,7 +225,7 @@ func RemoteMounts() *cobra.Command {
 				updateParams.Value = string(valueBytes)
 			}
 
-			resource, err := client.Update(ctx, updateParams)
+			resource, err := client.Update(updateParams, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -254,7 +254,7 @@ func RemoteMounts() *cobra.Command {
 
 func findRemoteServer(cmd *cobra.Command, remoteServerName string) (int64, error) {
 	remoteServerClient := remote_server.Client{Config: *Profile(cmd).Config}
-	it, err := remoteServerClient.List(cmd.Context(), files_sdk.RemoteServerListParams{})
+	it, err := remoteServerClient.List(files_sdk.RemoteServerListParams{}, files_sdk.WithContext(cmd.Context()))
 	if err != nil {
 		return 0, err
 	}

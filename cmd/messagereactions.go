@@ -41,7 +41,7 @@ func MessageReactions() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := message_reaction.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var messageReaction interface{}
 			var err error
-			messageReaction, err = client.Find(ctx, paramsMessageReactionFind)
+			messageReaction, err = client.Find(paramsMessageReactionFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -126,7 +126,7 @@ json-styles: {raw, pretty}`)
 
 			var messageReaction interface{}
 			var err error
-			messageReaction, err = client.Create(ctx, paramsMessageReactionCreate)
+			messageReaction, err = client.Create(paramsMessageReactionCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -155,7 +155,7 @@ json-styles: {raw, pretty}`)
 			client := message_reaction.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsMessageReactionDelete)
+			err = client.Delete(paramsMessageReactionDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

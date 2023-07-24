@@ -42,7 +42,7 @@ func As2Partners() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := as2_partner.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var as2Partner interface{}
 			var err error
-			as2Partner, err = client.Find(ctx, paramsAs2PartnerFind)
+			as2Partner, err = client.Find(paramsAs2PartnerFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -130,7 +130,7 @@ json-styles: {raw, pretty}`)
 
 			var as2Partner interface{}
 			var err error
-			as2Partner, err = client.Create(ctx, paramsAs2PartnerCreate)
+			as2Partner, err = client.Create(paramsAs2PartnerCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -189,7 +189,7 @@ json-styles: {raw, pretty}`)
 
 			var as2Partner interface{}
 			var err error
-			as2Partner, err = client.UpdateWithMap(ctx, mapParams)
+			as2Partner, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -222,7 +222,7 @@ json-styles: {raw, pretty}`)
 			client := as2_partner.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsAs2PartnerDelete)
+			err = client.Delete(paramsAs2PartnerDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

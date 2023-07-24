@@ -69,7 +69,7 @@ func TestBundles_Create(t *testing.T) {
 	})
 
 	t.Run("it returns an API error", func(t *testing.T) {
-		server := file.FakeDownloadServer{T: t}.Do()
+		server := (&file.FakeDownloadServer{T: t}).Do()
 		defer server.Shutdown()
 		config := &server.Client().Config
 		server.GetRouter().POST("/api/rest/v1/bundles", func(context *gin.Context) {

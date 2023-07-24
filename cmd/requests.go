@@ -50,7 +50,7 @@ func Requests() *cobra.Command {
 			}
 
 			client := request.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -117,7 +117,7 @@ json-styles: {raw, pretty}
 			}
 
 			client := request.Client{Config: *config}
-			it, err := client.GetFolder(ctx, params)
+			it, err := client.GetFolder(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -176,7 +176,7 @@ json-styles: {raw, pretty}
 			}
 			var request interface{}
 			var err error
-			request, err = client.Create(ctx, paramsRequestCreate)
+			request, err = client.Create(paramsRequestCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -207,7 +207,7 @@ json-styles: {raw, pretty}`)
 			client := request.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsRequestDelete)
+			err = client.Delete(paramsRequestDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

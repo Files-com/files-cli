@@ -48,7 +48,7 @@ func Automations() *cobra.Command {
 			}
 
 			client := automation.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -103,7 +103,7 @@ json-styles: {raw, pretty}
 
 			var automation interface{}
 			var err error
-			automation, err = client.Find(ctx, paramsAutomationFind)
+			automation, err = client.Find(paramsAutomationFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -153,7 +153,7 @@ json-styles: {raw, pretty}`)
 			}
 			var automation interface{}
 			var err error
-			automation, err = client.Create(ctx, paramsAutomationCreate)
+			automation, err = client.Create(paramsAutomationCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -197,7 +197,7 @@ json-styles: {raw, pretty}`)
 			client := automation.Client{Config: *config}
 
 			var err error
-			err = client.ManualRun(ctx, paramsAutomationManualRun)
+			err = client.ManualRun(paramsAutomationManualRun, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -310,7 +310,7 @@ json-styles: {raw, pretty}`)
 			}
 			var automation interface{}
 			var err error
-			automation, err = client.UpdateWithMap(ctx, mapParams)
+			automation, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -355,7 +355,7 @@ json-styles: {raw, pretty}`)
 			client := automation.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsAutomationDelete)
+			err = client.Delete(paramsAutomationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

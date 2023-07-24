@@ -425,12 +425,12 @@ func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCre
 	profile.SessionId = ""
 	client := session.Client{Config: *profile.Config}
 
-	result, err := client.Create(context.TODO(), paramsSessionCreate)
+	result, err := client.Create(paramsSessionCreate)
 
 	if err != nil {
 		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, profile)
 		if err == nil {
-			result, err = client.Create(context.TODO(), otpSessionCreate)
+			result, err = client.Create(otpSessionCreate)
 		}
 
 		if err != nil {

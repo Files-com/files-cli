@@ -41,7 +41,7 @@ func Messages() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := message.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var message interface{}
 			var err error
-			message, err = client.Find(ctx, paramsMessageFind)
+			message, err = client.Find(paramsMessageFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), message, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -126,7 +126,7 @@ json-styles: {raw, pretty}`)
 
 			var message interface{}
 			var err error
-			message, err = client.Create(ctx, paramsMessageCreate)
+			message, err = client.Create(paramsMessageCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), message, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -176,7 +176,7 @@ json-styles: {raw, pretty}`)
 
 			var message interface{}
 			var err error
-			message, err = client.UpdateWithMap(ctx, mapParams)
+			message, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), message, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -207,7 +207,7 @@ json-styles: {raw, pretty}`)
 			client := message.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsMessageDelete)
+			err = client.Delete(paramsMessageDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

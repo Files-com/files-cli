@@ -42,7 +42,7 @@ func BundleRecipients() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := bundle_recipient.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -103,7 +103,7 @@ json-styles: {raw, pretty}
 
 			var bundleRecipient interface{}
 			var err error
-			bundleRecipient, err = client.Create(ctx, paramsBundleRecipientCreate)
+			bundleRecipient, err = client.Create(paramsBundleRecipientCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

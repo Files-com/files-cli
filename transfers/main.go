@@ -220,11 +220,11 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Con
 
 func (t *Transfers) afterActions(ctx context.Context, f status.File, config files_sdk.Config) {
 	if t.AfterDelete {
-		t.afterActionLog(file.DeleteSource{Direction: f.Direction, Config: config}.Call(ctx, f))
+		t.afterActionLog(file.DeleteSource{Direction: f.Direction, Config: config}.Call(f, files_sdk.WithContext(ctx)))
 	}
 
 	if t.AfterMove != "" {
-		t.afterActionLog(file.MoveSource{Direction: f.Direction, Config: config, Path: t.AfterMove}.Call(ctx, f))
+		t.afterActionLog(file.MoveSource{Direction: f.Direction, Config: config, Path: t.AfterMove}.Call(f, files_sdk.WithContext(ctx)))
 	}
 }
 
@@ -457,7 +457,7 @@ func (t *Transfers) SendLogs(ctx context.Context, config files_sdk.Config) error
 		t.eventBodyMutex.Lock()
 		t.externalEvent.Body = strings.Join(t.eventBody, "\n")
 		t.eventBodyMutex.Unlock()
-		event, err := eventClient.Create(ctx, t.externalEvent)
+		event, err := eventClient.Create(t.externalEvent, files_sdk.WithContext(ctx))
 		fmt.Fprintf(t.Stdout, "External Event Created: %v\n", event.CreatedAt)
 		return err
 	}

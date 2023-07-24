@@ -57,7 +57,7 @@ func Files() *cobra.Command {
 			}
 			var file interface{}
 			var err error
-			file, err = client.Create(ctx, paramsFileCreate)
+			file, err = client.Create(paramsFileCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -120,7 +120,7 @@ json-styles: {raw, pretty}`)
 			}
 			var file interface{}
 			var err error
-			file, err = client.UpdateWithMap(ctx, mapParams)
+			file, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -159,7 +159,7 @@ json-styles: {raw, pretty}`)
 				paramsFileDelete.Path = args[0]
 			}
 			var err error
-			err = client.Delete(ctx, paramsFileDelete)
+			err = client.Delete(paramsFileDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -204,7 +204,7 @@ json-styles: {raw, pretty}`)
 			}
 			var file interface{}
 			var err error
-			file, err = client.Find(ctx, paramsFileFind)
+			file, err = client.Find(paramsFileFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -247,7 +247,7 @@ json-styles: {raw, pretty}`)
 			}
 			var fileAction interface{}
 			var err error
-			fileAction, err = client.Copy(ctx, paramsFileCopy)
+			fileAction, err = client.Copy(paramsFileCopy, files_sdk.WithContext(ctx))
 			if err != nil {
 				return err
 			}
@@ -294,7 +294,7 @@ json-styles: {raw, pretty}`)
 			}
 			var fileAction interface{}
 			var err error
-			fileAction, err = client.Move(ctx, paramsFileMove)
+			fileAction, err = client.Move(paramsFileMove, files_sdk.WithContext(ctx))
 			if err != nil {
 				return err
 			}
@@ -346,7 +346,7 @@ json-styles: {raw, pretty}`)
 			}
 			var fileUploadPartCollection interface{}
 			var err error
-			fileUploadPartCollection, err = client.BeginUpload(ctx, paramsFileBeginUpload)
+			fileUploadPartCollection, err = client.BeginUpload(paramsFileBeginUpload, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

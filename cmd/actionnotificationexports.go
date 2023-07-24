@@ -39,7 +39,7 @@ func ActionNotificationExports() *cobra.Command {
 
 			var actionNotificationExport interface{}
 			var err error
-			actionNotificationExport, err = client.Find(ctx, paramsActionNotificationExportFind)
+			actionNotificationExport, err = client.Find(paramsActionNotificationExportFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -80,7 +80,7 @@ json-styles: {raw, pretty}`)
 
 			var actionNotificationExport interface{}
 			var err error
-			actionNotificationExport, err = client.Create(ctx, paramsActionNotificationExportCreate)
+			actionNotificationExport, err = client.Create(paramsActionNotificationExportCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

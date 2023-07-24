@@ -41,7 +41,7 @@ func IpAddresses() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := ip_address.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -98,7 +98,7 @@ json-styles: {raw, pretty}
 			params.MaxPages = MaxPagesGetExavaultReserved
 
 			client := ip_address.Client{Config: *config}
-			it, err := client.GetExavaultReserved(ctx, params)
+			it, err := client.GetExavaultReserved(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -155,7 +155,7 @@ json-styles: {raw, pretty}
 			params.MaxPages = MaxPagesGetReserved
 
 			client := ip_address.Client{Config: *config}
-			it, err := client.GetReserved(ctx, params)
+			it, err := client.GetReserved(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})

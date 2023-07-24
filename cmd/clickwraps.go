@@ -42,7 +42,7 @@ func Clickwraps() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := clickwrap.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var clickwrap interface{}
 			var err error
-			clickwrap, err = client.Find(ctx, paramsClickwrapFind)
+			clickwrap, err = client.Find(paramsClickwrapFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -144,7 +144,7 @@ json-styles: {raw, pretty}`)
 
 			var clickwrap interface{}
 			var err error
-			clickwrap, err = client.Create(ctx, paramsClickwrapCreate)
+			clickwrap, err = client.Create(paramsClickwrapCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -220,7 +220,7 @@ json-styles: {raw, pretty}`)
 
 			var clickwrap interface{}
 			var err error
-			clickwrap, err = client.UpdateWithMap(ctx, mapParams)
+			clickwrap, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -253,7 +253,7 @@ json-styles: {raw, pretty}`)
 			client := clickwrap.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsClickwrapDelete)
+			err = client.Delete(paramsClickwrapDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

@@ -43,7 +43,6 @@ func Upload() *cobra.Command {
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
 				transfer.StartLog("upload")
 				return client.Uploader(
-					ctx,
 					file.UploaderParams{
 						LocalPath:   sourcePath,
 						RemotePath:  remotePath,
@@ -53,6 +52,7 @@ func Upload() *cobra.Command {
 						RetryPolicy: file.RetryPolicy{Type: file.RetryErroredIfSomeCompleted, RetryCount: retryCount},
 						Config:      *config,
 					},
+					files_sdk.WithContext(ctx),
 				)
 			})
 

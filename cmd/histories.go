@@ -51,7 +51,7 @@ func Histories() *cobra.Command {
 			}
 
 			client := history.Client{Config: *config}
-			it, err := client.ListForFile(ctx, params)
+			it, err := client.ListForFile(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -124,7 +124,7 @@ json-styles: {raw, pretty}
 			}
 
 			client := history.Client{Config: *config}
-			it, err := client.ListForFolder(ctx, params)
+			it, err := client.ListForFolder(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -194,7 +194,7 @@ json-styles: {raw, pretty}
 			}
 
 			client := history.Client{Config: *config}
-			it, err := client.ListForUser(ctx, params)
+			it, err := client.ListForUser(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -264,7 +264,7 @@ json-styles: {raw, pretty}
 			}
 
 			client := history.Client{Config: *config}
-			it, err := client.ListLogins(ctx, params)
+			it, err := client.ListLogins(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -334,7 +334,7 @@ json-styles: {raw, pretty}
 			}
 
 			client := history.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})

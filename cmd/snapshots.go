@@ -42,7 +42,7 @@ func Snapshots() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := snapshot.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var snapshot interface{}
 			var err error
-			snapshot, err = client.Find(ctx, paramsSnapshotFind)
+			snapshot, err = client.Find(paramsSnapshotFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -129,7 +129,7 @@ json-styles: {raw, pretty}`)
 
 			var snapshot interface{}
 			var err error
-			snapshot, err = client.Create(ctx, paramsSnapshotCreate)
+			snapshot, err = client.Create(paramsSnapshotCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -183,7 +183,7 @@ json-styles: {raw, pretty}`)
 
 			var snapshot interface{}
 			var err error
-			snapshot, err = client.UpdateWithMap(ctx, mapParams)
+			snapshot, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -215,7 +215,7 @@ json-styles: {raw, pretty}`)
 			client := snapshot.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsSnapshotDelete)
+			err = client.Delete(paramsSnapshotDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

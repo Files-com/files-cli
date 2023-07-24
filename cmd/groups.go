@@ -41,7 +41,7 @@ func Groups() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := group.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var group interface{}
 			var err error
-			group, err = client.Find(ctx, paramsGroupFind)
+			group, err = client.Find(paramsGroupFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -125,7 +125,7 @@ json-styles: {raw, pretty}`)
 
 			var group interface{}
 			var err error
-			group, err = client.Create(ctx, paramsGroupCreate)
+			group, err = client.Create(paramsGroupCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -178,7 +178,7 @@ json-styles: {raw, pretty}`)
 
 			var group interface{}
 			var err error
-			group, err = client.UpdateWithMap(ctx, mapParams)
+			group, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), group, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -210,7 +210,7 @@ json-styles: {raw, pretty}`)
 			client := group.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsGroupDelete)
+			err = client.Delete(paramsGroupDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

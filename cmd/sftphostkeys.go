@@ -41,7 +41,7 @@ func SftpHostKeys() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := sftp_host_key.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -95,7 +95,7 @@ json-styles: {raw, pretty}
 
 			var sftpHostKey interface{}
 			var err error
-			sftpHostKey, err = client.Find(ctx, paramsSftpHostKeyFind)
+			sftpHostKey, err = client.Find(paramsSftpHostKeyFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -124,7 +124,7 @@ json-styles: {raw, pretty}`)
 
 			var sftpHostKey interface{}
 			var err error
-			sftpHostKey, err = client.Create(ctx, paramsSftpHostKeyCreate)
+			sftpHostKey, err = client.Create(paramsSftpHostKeyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -169,7 +169,7 @@ json-styles: {raw, pretty}`)
 
 			var sftpHostKey interface{}
 			var err error
-			sftpHostKey, err = client.UpdateWithMap(ctx, mapParams)
+			sftpHostKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -199,7 +199,7 @@ json-styles: {raw, pretty}`)
 			client := sftp_host_key.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsSftpHostKeyDelete)
+			err = client.Delete(paramsSftpHostKeyDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

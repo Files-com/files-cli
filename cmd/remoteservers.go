@@ -43,7 +43,7 @@ func RemoteServers() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := remote_server.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var remoteServer interface{}
 			var err error
-			remoteServer, err = client.Find(ctx, paramsRemoteServerFind)
+			remoteServer, err = client.Find(paramsRemoteServerFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -126,7 +126,7 @@ json-styles: {raw, pretty}`)
 
 			var remoteServerConfigurationFile interface{}
 			var err error
-			remoteServerConfigurationFile, err = client.FindConfigurationFile(ctx, paramsRemoteServerFindConfigurationFile)
+			remoteServerConfigurationFile, err = client.FindConfigurationFile(paramsRemoteServerFindConfigurationFile, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -203,7 +203,7 @@ json-styles: {raw, pretty}`)
 
 			var remoteServer interface{}
 			var err error
-			remoteServer, err = client.Create(ctx, paramsRemoteServerCreate)
+			remoteServer, err = client.Create(paramsRemoteServerCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -294,7 +294,7 @@ json-styles: {raw, pretty}`)
 
 			var remoteServerConfigurationFile interface{}
 			var err error
-			remoteServerConfigurationFile, err = client.ConfigurationFile(ctx, paramsRemoteServerConfigurationFile)
+			remoteServerConfigurationFile, err = client.ConfigurationFile(paramsRemoteServerConfigurationFile, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -567,7 +567,7 @@ json-styles: {raw, pretty}`)
 
 			var remoteServer interface{}
 			var err error
-			remoteServer, err = client.UpdateWithMap(ctx, mapParams)
+			remoteServer, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -658,7 +658,7 @@ json-styles: {raw, pretty}`)
 			client := remote_server.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsRemoteServerDelete)
+			err = client.Delete(paramsRemoteServerDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

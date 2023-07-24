@@ -40,7 +40,7 @@ func Styles() *cobra.Command {
 			}
 			var style interface{}
 			var err error
-			style, err = client.Find(ctx, paramsStyleFind)
+			style, err = client.Find(paramsStyleFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -83,7 +83,7 @@ json-styles: {raw, pretty}`)
 			}
 			var style interface{}
 			var err error
-			style, err = client.UpdateWithMap(ctx, mapParams)
+			style, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -114,7 +114,7 @@ json-styles: {raw, pretty}`)
 				paramsStyleDelete.Path = args[0]
 			}
 			var err error
-			err = client.Delete(ctx, paramsStyleDelete)
+			err = client.Delete(paramsStyleDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

@@ -41,7 +41,7 @@ func Behaviors() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := behavior.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -95,7 +95,7 @@ json-styles: {raw, pretty}
 
 			var behavior interface{}
 			var err error
-			behavior, err = client.Find(ctx, paramsBehaviorFind)
+			behavior, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -131,7 +131,7 @@ json-styles: {raw, pretty}`)
 			}
 
 			client := behavior.Client{Config: *config}
-			it, err := client.ListFor(ctx, params)
+			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -191,7 +191,7 @@ json-styles: {raw, pretty}
 			}
 			var behavior interface{}
 			var err error
-			behavior, err = client.Create(ctx, paramsBehaviorCreate)
+			behavior, err = client.Create(paramsBehaviorCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -223,7 +223,7 @@ json-styles: {raw, pretty}`)
 			client := behavior.Client{Config: *config}
 
 			var err error
-			err = client.WebhookTest(ctx, paramsBehaviorWebhookTest)
+			err = client.WebhookTest(paramsBehaviorWebhookTest, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -291,7 +291,7 @@ json-styles: {raw, pretty}`)
 			}
 			var behavior interface{}
 			var err error
-			behavior, err = client.UpdateWithMap(ctx, mapParams)
+			behavior, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -325,7 +325,7 @@ json-styles: {raw, pretty}`)
 			client := behavior.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsBehaviorDelete)
+			err = client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

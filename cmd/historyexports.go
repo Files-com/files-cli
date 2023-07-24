@@ -38,7 +38,7 @@ func HistoryExports() *cobra.Command {
 
 			var historyExport interface{}
 			var err error
-			historyExport, err = client.Find(ctx, paramsHistoryExportFind)
+			historyExport, err = client.Find(paramsHistoryExportFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -74,7 +74,7 @@ json-styles: {raw, pretty}`)
 
 			var historyExport interface{}
 			var err error
-			historyExport, err = client.Create(ctx, paramsHistoryExportCreate)
+			historyExport, err = client.Create(paramsHistoryExportCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

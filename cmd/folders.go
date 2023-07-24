@@ -69,9 +69,9 @@ func Folders() *cobra.Command {
 			fileClient := file.Client{Config: *config}
 			if listRecursively {
 				params.ConcurrencyManager = flib.NewConstrainedWorkGroup(concurrentDirectoryScanning)
-				it, err = fileClient.ListForRecursive(ctx, params)
+				it, err = fileClient.ListForRecursive(params, files_sdk.WithContext(ctx))
 			} else {
-				it, err = fileClient.ListFor(ctx, params)
+				it, err = fileClient.ListFor(params, files_sdk.WithContext(ctx))
 			}
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
@@ -156,7 +156,7 @@ json-styles: {raw, pretty}
 			}
 			var file interface{}
 			var err error
-			file, err = client.Create(ctx, paramsFolderCreate)
+			file, err = client.Create(paramsFolderCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

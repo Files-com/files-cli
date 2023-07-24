@@ -44,7 +44,7 @@ func Users() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := user.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -100,7 +100,7 @@ json-styles: {raw, pretty}
 
 			var user interface{}
 			var err error
-			user, err = client.Find(ctx, paramsUserFind)
+			user, err = client.Find(paramsUserFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -228,7 +228,7 @@ json-styles: {raw, pretty}`)
 
 			var user interface{}
 			var err error
-			user, err = client.Create(ctx, paramsUserCreate)
+			user, err = client.Create(paramsUserCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -301,7 +301,7 @@ json-styles: {raw, pretty}`)
 			client := user.Client{Config: *config}
 
 			var err error
-			err = client.Unlock(ctx, paramsUserUnlock)
+			err = client.Unlock(paramsUserUnlock, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -332,7 +332,7 @@ json-styles: {raw, pretty}`)
 			client := user.Client{Config: *config}
 
 			var err error
-			err = client.ResendWelcomeEmail(ctx, paramsUserResendWelcomeEmail)
+			err = client.ResendWelcomeEmail(paramsUserResendWelcomeEmail, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -363,7 +363,7 @@ json-styles: {raw, pretty}`)
 			client := user.Client{Config: *config}
 
 			var err error
-			err = client.User2faReset(ctx, paramsUserUser2faReset)
+			err = client.User2faReset(paramsUserUser2faReset, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -582,7 +582,7 @@ json-styles: {raw, pretty}`)
 
 			var user interface{}
 			var err error
-			user, err = client.UpdateWithMap(ctx, mapParams)
+			user, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -656,7 +656,7 @@ json-styles: {raw, pretty}`)
 			client := user.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsUserDelete)
+			err = client.Delete(paramsUserDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

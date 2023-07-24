@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -53,6 +54,18 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 		config.APIKey = "test"
 	}
 
+	r.SetMatcher(func(r *http.Request, i cassette.Request) bool {
+		if cassette.DefaultMatcher(r, i) {
+			if r.Body != nil {
+				io.ReadAll(r.Body)
+				r.Body.Close()
+			}
+
+			return true
+		}
+		return false
+	})
+
 	return r, &config, nil
 }
 
@@ -67,17 +80,15 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	folderClient := folder.Client{Config: *config}
 	fileClient := file.Client{Config: *config}
 
-	_, err = folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
+	_, err = folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	if !strings.Contains(err.Error(), "Destination Exists") {
 		assert.NoError(err)
 	}
-	params := file.UploadIOParams{
-		Reader:        strings.NewReader("testing 1"),
-		Size:          int64(9),
-		Path:          filepath.Join("test-dir-files-delete-r", "1.text"),
-		ProvidedMtime: time.Date(2010, 11, 17, 20, 34, 58, 651387237, time.UTC),
-	}
-	_, _, _, _, err = fileClient.UploadIO(context.Background(), params)
+	err = fileClient.Upload(
+		file.UploadWithReader(strings.NewReader("testing 1")),
+		file.UploadWithDestinationPath(filepath.Join("test-dir-files-delete-r", "1.text")),
+		file.UploadWithProvidedMtime(time.Date(2010, 11, 17, 20, 34, 58, 651387237, time.UTC)),
+	)
 	assert.NoError(err)
 	out, stdErr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
 	assert.Equal("", string(stdErr))
@@ -96,13 +107,11 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	folderClient := folder.Client{Config: *config}
 	fileClient := file.Client{Config: *config}
 
-	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
-	params := file.UploadIOParams{
-		Reader: strings.NewReader("testing 1"),
-		Size:   int64(9),
-		Path:   filepath.Join("test-dir-files-delete", "1.text"),
-	}
-	_, _, _, _, err = fileClient.UploadIO(context.Background(), params)
+	folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
+	err = fileClient.Upload(
+		file.UploadWithReader(strings.NewReader("testing 1")),
+		file.UploadWithDestinationPath(filepath.Join("test-dir-files-delete", "1.text")),
+	)
 	assert.NoError(err)
 
 	_, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
@@ -121,19 +130,17 @@ func TestFolders_ListFor_FilterBy(t *testing.T) {
 	folderClient := folder.Client{Config: *config}
 	fileClient := file.Client{Config: *config}
 
-	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy"})
-	folderClient.Create(context.Background(), files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy/cars"})
-	defer fileClient.Delete(context.Background(), files_sdk.FileDeleteParams{Path: "TestFolders_ListFor_FilterBy", Recursive: lib.Bool(true)})
+	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy"})
+	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy/cars"})
+	defer fileClient.Delete(files_sdk.FileDeleteParams{Path: "TestFolders_ListFor_FilterBy", Recursive: lib.Bool(true)})
 
 	createFiles := []string{"space.txt", "food.txt", "cars/car.jpg", "cars/super-car.jpg"}
 	for i, f := range createFiles {
-		params := file.UploadIOParams{
-			Reader:        strings.NewReader("testing " + fmt.Sprintf("%v", i)),
-			Size:          int64(9),
-			Path:          filepath.Join("TestFolders_ListFor_FilterBy", f),
-			ProvidedMtime: time.Now(),
-		}
-		_, _, _, _, err = fileClient.UploadIO(context.Background(), params)
+		err = fileClient.Upload(
+			file.UploadWithReader(strings.NewReader("testing "+fmt.Sprintf("%v", i))),
+			file.UploadWithSize(9),
+			file.UploadWithDestinationPath(filepath.Join("TestFolders_ListFor_FilterBy", f)),
+		)
 		require.NoError(t, err)
 	}
 

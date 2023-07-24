@@ -42,7 +42,7 @@ func InboxRecipients() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := inbox_recipient.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -102,7 +102,7 @@ json-styles: {raw, pretty}
 
 			var inboxRecipient interface{}
 			var err error
-			inboxRecipient, err = client.Create(ctx, paramsInboxRecipientCreate)
+			inboxRecipient, err = client.Create(paramsInboxRecipientCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

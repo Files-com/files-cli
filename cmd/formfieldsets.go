@@ -42,7 +42,7 @@ func FormFieldSets() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := form_field_set.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var formFieldSet interface{}
 			var err error
-			formFieldSet, err = client.Find(ctx, paramsFormFieldSetFind)
+			formFieldSet, err = client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -139,7 +139,7 @@ json-styles: {raw, pretty}`)
 
 			var formFieldSet interface{}
 			var err error
-			formFieldSet, err = client.Create(ctx, paramsFormFieldSetCreate)
+			formFieldSet, err = client.Create(paramsFormFieldSetCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -199,7 +199,7 @@ json-styles: {raw, pretty}`)
 
 			var formFieldSet interface{}
 			var err error
-			formFieldSet, err = client.UpdateWithMap(ctx, mapParams)
+			formFieldSet, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -231,7 +231,7 @@ json-styles: {raw, pretty}`)
 			client := form_field_set.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsFormFieldSetDelete)
+			err = client.Delete(paramsFormFieldSetDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

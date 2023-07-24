@@ -42,7 +42,7 @@ func GroupUsers() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := group_user.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -103,7 +103,7 @@ json-styles: {raw, pretty}
 
 			var groupUser interface{}
 			var err error
-			groupUser, err = client.Create(ctx, paramsGroupUserCreate)
+			groupUser, err = client.Create(paramsGroupUserCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -153,7 +153,7 @@ json-styles: {raw, pretty}`)
 
 			var groupUser interface{}
 			var err error
-			groupUser, err = client.UpdateWithMap(ctx, mapParams)
+			groupUser, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -184,7 +184,7 @@ json-styles: {raw, pretty}`)
 			client := group_user.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsGroupUserDelete)
+			err = client.Delete(paramsGroupUserDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

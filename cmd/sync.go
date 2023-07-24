@@ -39,7 +39,6 @@ func Sync() *cobra.Command {
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
 				transfer.StartLog("upload")
 				return client.Uploader(
-					ctx,
 					file.UploaderParams{
 						LocalPath:   localPath,
 						RemotePath:  remotePath,
@@ -50,6 +49,7 @@ func Sync() *cobra.Command {
 						Config:      *config,
 						DryRun:      dryRun,
 					},
+					files_sdk.WithContext(ctx),
 				)
 			})
 
@@ -72,7 +72,6 @@ func Sync() *cobra.Command {
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
 				transfer.StartLog("download")
 				return client.Downloader(
-					cmd.Context(),
 					file.DownloaderParams{
 						RemotePath:    remotePath,
 						LocalPath:     localPath,
@@ -83,6 +82,7 @@ func Sync() *cobra.Command {
 						Config:        *config,
 						DryRun:        dryRun,
 					},
+					files_sdk.WithContext(cmd.Context()),
 				)
 			})
 

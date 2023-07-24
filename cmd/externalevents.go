@@ -42,7 +42,7 @@ func ExternalEvents() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := external_event.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var externalEvent interface{}
 			var err error
-			externalEvent, err = client.Find(ctx, paramsExternalEventFind)
+			externalEvent, err = client.Find(paramsExternalEventFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -132,7 +132,7 @@ json-styles: {raw, pretty}`)
 
 			var externalEvent interface{}
 			var err error
-			externalEvent, err = client.Create(ctx, paramsExternalEventCreate)
+			externalEvent, err = client.Create(paramsExternalEventCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

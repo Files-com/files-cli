@@ -37,7 +37,7 @@ func FileCommentReactions() *cobra.Command {
 
 			var fileCommentReaction interface{}
 			var err error
-			fileCommentReaction, err = client.Create(ctx, paramsFileCommentReactionCreate)
+			fileCommentReaction, err = client.Create(paramsFileCommentReactionCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -67,7 +67,7 @@ json-styles: {raw, pretty}`)
 			client := file_comment_reaction.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsFileCommentReactionDelete)
+			err = client.Delete(paramsFileCommentReactionDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

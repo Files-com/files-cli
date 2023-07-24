@@ -41,7 +41,7 @@ func AutomationRuns() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := automation_run.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var automationRun interface{}
 			var err error
-			automationRun, err = client.Find(ctx, paramsAutomationRunFind)
+			automationRun, err = client.Find(paramsAutomationRunFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), automationRun, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

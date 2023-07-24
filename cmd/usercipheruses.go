@@ -41,7 +41,7 @@ func UserCipherUses() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := user_cipher_use.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})

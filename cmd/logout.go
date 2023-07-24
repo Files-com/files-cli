@@ -20,7 +20,7 @@ func LogOut() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := session.Client{Config: *ctx.Value("config").(*files_sdk.Config)}
-			deleteErr := client.Delete(cmd.Context())
+			deleteErr := client.Delete(files_sdk.WithContext(cmd.Context()))
 			if deleteErr != nil {
 				fmt.Println(deleteErr)
 			}

@@ -50,7 +50,7 @@ func Notifications() *cobra.Command {
 			}
 
 			client := notification.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -108,7 +108,7 @@ json-styles: {raw, pretty}
 
 			var notification interface{}
 			var err error
-			notification, err = client.Find(ctx, paramsNotificationFind)
+			notification, err = client.Find(paramsNotificationFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -173,7 +173,7 @@ json-styles: {raw, pretty}`)
 			}
 			var notification interface{}
 			var err error
-			notification, err = client.Create(ctx, paramsNotificationCreate)
+			notification, err = client.Create(paramsNotificationCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -272,7 +272,7 @@ json-styles: {raw, pretty}`)
 
 			var notification interface{}
 			var err error
-			notification, err = client.UpdateWithMap(ctx, mapParams)
+			notification, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -311,7 +311,7 @@ json-styles: {raw, pretty}`)
 			client := notification.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsNotificationDelete)
+			err = client.Delete(paramsNotificationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

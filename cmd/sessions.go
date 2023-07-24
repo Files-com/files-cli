@@ -37,7 +37,7 @@ func Sessions() *cobra.Command {
 
 			var session interface{}
 			var err error
-			session, err = client.Create(ctx, paramsSessionCreate)
+			session, err = client.Create(paramsSessionCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), session, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -66,7 +66,7 @@ json-styles: {raw, pretty}`)
 			client := session.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx)
+			err = client.Delete(files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

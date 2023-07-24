@@ -43,7 +43,7 @@ func ApiKeys() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := api_key.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var apiKey interface{}
 			var err error
-			apiKey, err = client.FindCurrent(ctx)
+			apiKey, err = client.FindCurrent(files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -124,7 +124,7 @@ json-styles: {raw, pretty}`)
 
 			var apiKey interface{}
 			var err error
-			apiKey, err = client.Find(ctx, paramsApiKeyFind)
+			apiKey, err = client.Find(paramsApiKeyFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -167,7 +167,7 @@ json-styles: {raw, pretty}`)
 			}
 			var apiKey interface{}
 			var err error
-			apiKey, err = client.Create(ctx, paramsApiKeyCreate)
+			apiKey, err = client.Create(paramsApiKeyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -228,7 +228,7 @@ json-styles: {raw, pretty}`)
 
 			var apiKey interface{}
 			var err error
-			apiKey, err = client.UpdateCurrentWithMap(ctx, mapParams)
+			apiKey, err = client.UpdateCurrentWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -292,7 +292,7 @@ json-styles: {raw, pretty}`)
 
 			var apiKey interface{}
 			var err error
-			apiKey, err = client.UpdateWithMap(ctx, mapParams)
+			apiKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -323,7 +323,7 @@ json-styles: {raw, pretty}`)
 			client := api_key.Client{Config: *config}
 
 			var err error
-			err = client.DeleteCurrent(ctx)
+			err = client.DeleteCurrent(files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -353,7 +353,7 @@ json-styles: {raw, pretty}`)
 			client := api_key.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsApiKeyDelete)
+			err = client.Delete(paramsApiKeyDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

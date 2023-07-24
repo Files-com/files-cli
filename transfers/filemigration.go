@@ -32,7 +32,7 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 	var progress *mpb.Progress
 	var bar *mpb.Bar
 	client := file_migration.Client{Config: config}
-	result, err := client.Wait(ctx, fileAction, func(migration files_sdk.FileMigration) {
+	result, err := client.Wait(fileAction, func(migration files_sdk.FileMigration) {
 		if !noProgress {
 			progressOnce.Do(func() {
 				progress = mpb.NewWithContext(ctx, mpb.WithWidth(64))
@@ -55,7 +55,7 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 			bar.SetTotal(migration.FilesTotal, false)
 			bar.SetCurrent(migration.FilesMoved)
 		}
-	})
+	}, files_sdk.WithContext(ctx))
 
 	if bar != nil {
 		bar.SetTotal(result.FilesTotal, true)

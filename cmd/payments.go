@@ -41,7 +41,7 @@ func Payments() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := payment.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -95,7 +95,7 @@ json-styles: {raw, pretty}
 
 			var accountLineItem interface{}
 			var err error
-			accountLineItem, err = client.Find(ctx, paramsPaymentFind)
+			accountLineItem, err = client.Find(paramsPaymentFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), accountLineItem, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

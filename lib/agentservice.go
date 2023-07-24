@@ -462,7 +462,7 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 	}
 
 	client := ip_address.Client{Config: *a.Config}
-	iter, err := client.GetReserved(ctx, files_sdk.IpAddressGetReservedParams{})
+	iter, err := client.GetReserved(files_sdk.IpAddressGetReservedParams{}, files_sdk.WithContext(ctx))
 	if err != nil {
 		return
 	}
@@ -592,10 +592,10 @@ func (a *AgentService) updateCloudConfig(ctx context.Context, status string, sou
 	params.PrivateKey = a.PrivateKey
 	params.PublicKey = a.PublicKey
 	logger.Debug("files-cli", "", "Update Cloud Configuration - source (%v) : %v", source, params)
-	newConfig, err := client.ConfigurationFile(ctx, params)
+	newConfig, err := client.ConfigurationFile(params, files_sdk.WithContext(ctx))
 	if err != nil {
 		logger.Debug("files-cli", "", "Cloud Configuration Update Error - source (%v): %v", source, err)
-		remoteAgentModel, findErr := client.Find(ctx, files_sdk.RemoteServerFindParams{Id: params.Id})
+		remoteAgentModel, findErr := client.Find(files_sdk.RemoteServerFindParams{Id: params.Id}, files_sdk.WithContext(ctx))
 		if findErr == nil {
 			logger.Debug("files-cli", "", "Server set attributes - hostname: %v, port: %v, disabled: %v, root: %v",
 				remoteAgentModel.Hostname, remoteAgentModel.Port, remoteAgentModel.Disabled, remoteAgentModel.FilesAgentRoot,

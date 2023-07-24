@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -108,7 +107,7 @@ func TestSyncCmd(t *testing.T) {
 			assert.Contains(t, string(stdOut), maybeInsert(tt.stdout, uploadFile))
 
 			client := file.Client{Config: *config}
-			if err := client.Delete(context.Background(), files_sdk.FileDeleteParams{Path: uploadFile}); err != nil {
+			if err := client.Delete(files_sdk.FileDeleteParams{Path: uploadFile}); err != nil {
 				responseError, ok := err.(files_sdk.ResponseError)
 				if !(ok && responseError.Type == "not-found") {
 					require.NoError(t, err)

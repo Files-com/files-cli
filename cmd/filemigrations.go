@@ -37,7 +37,7 @@ func FileMigrations() *cobra.Command {
 
 			var fileMigration interface{}
 			var err error
-			fileMigration, err = client.Find(ctx, paramsFileMigrationFind)
+			fileMigration, err = client.Find(paramsFileMigrationFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

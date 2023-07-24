@@ -41,7 +41,6 @@ func Download() *cobra.Command {
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *status.Job {
 				transfer.StartLog("download")
 				return client.Downloader(
-					ctx,
 					file.DownloaderParams{
 						RemotePath:    remotePath,
 						LocalPath:     localPath,
@@ -51,6 +50,7 @@ func Download() *cobra.Command {
 						PreserveTimes: transfer.PreserveTimes,
 						Config:        *config,
 					},
+					files_sdk.WithContext(ctx),
 				)
 			})
 

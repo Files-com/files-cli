@@ -44,7 +44,7 @@ func Bundles() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := bundle.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -99,7 +99,7 @@ json-styles: {raw, pretty}
 
 			var bundle interface{}
 			var err error
-			bundle, err = client.Find(ctx, paramsBundleFind)
+			bundle, err = client.Find(paramsBundleFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -180,7 +180,7 @@ json-styles: {raw, pretty}`)
 
 			var bundle interface{}
 			var err error
-			bundle, err = client.Create(ctx, paramsBundleCreate)
+			bundle, err = client.Create(paramsBundleCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -232,7 +232,7 @@ json-styles: {raw, pretty}`)
 			client := bundle.Client{Config: *config}
 
 			var err error
-			err = client.Share(ctx, paramsBundleShare)
+			err = client.Share(paramsBundleShare, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -368,7 +368,7 @@ json-styles: {raw, pretty}`)
 
 			var bundle interface{}
 			var err error
-			bundle, err = client.UpdateWithMap(ctx, mapParams)
+			bundle, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -420,7 +420,7 @@ json-styles: {raw, pretty}`)
 			client := bundle.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsBundleDelete)
+			err = client.Delete(paramsBundleDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

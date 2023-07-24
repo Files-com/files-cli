@@ -44,7 +44,7 @@ func FileComments() *cobra.Command {
 			}
 
 			client := file_comment.Client{Config: *config}
-			it, err := client.ListFor(ctx, params)
+			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -102,7 +102,7 @@ json-styles: {raw, pretty}
 			}
 			var fileComment interface{}
 			var err error
-			fileComment, err = client.Create(ctx, paramsFileCommentCreate)
+			fileComment, err = client.Create(paramsFileCommentCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -144,7 +144,7 @@ json-styles: {raw, pretty}`)
 
 			var fileComment interface{}
 			var err error
-			fileComment, err = client.UpdateWithMap(ctx, mapParams)
+			fileComment, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -173,7 +173,7 @@ json-styles: {raw, pretty}`)
 			client := file_comment.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsFileCommentDelete)
+			err = client.Delete(paramsFileCommentDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

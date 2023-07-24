@@ -42,7 +42,7 @@ func BundleNotifications() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := bundle_notification.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var bundleNotification interface{}
 			var err error
-			bundleNotification, err = client.Find(ctx, paramsBundleNotificationFind)
+			bundleNotification, err = client.Find(paramsBundleNotificationFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -135,7 +135,7 @@ json-styles: {raw, pretty}`)
 
 			var bundleNotification interface{}
 			var err error
-			bundleNotification, err = client.Create(ctx, paramsBundleNotificationCreate)
+			bundleNotification, err = client.Create(paramsBundleNotificationCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -184,7 +184,7 @@ json-styles: {raw, pretty}`)
 
 			var bundleNotification interface{}
 			var err error
-			bundleNotification, err = client.UpdateWithMap(ctx, mapParams)
+			bundleNotification, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -214,7 +214,7 @@ json-styles: {raw, pretty}`)
 			client := bundle_notification.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsBundleNotificationDelete)
+			err = client.Delete(paramsBundleNotificationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"testing"
@@ -87,7 +86,7 @@ func findOrCreateTestUser(p files_sdk.UserCreateParams) (files_sdk.User, error) 
 	defer r.Stop()
 
 	client := user.Client{Config: *config}
-	it, err := client.List(context.Background(), files_sdk.UserListParams{})
+	it, err := client.List(files_sdk.UserListParams{})
 	if err != nil {
 		return files_sdk.User{}, err
 	}
@@ -102,7 +101,7 @@ func findOrCreateTestUser(p files_sdk.UserCreateParams) (files_sdk.User, error) 
 		}
 	}
 
-	return client.Create(context.Background(), p)
+	return client.Create(p)
 }
 
 func deleteUser(u files_sdk.User) error {
@@ -115,5 +114,5 @@ func deleteUser(u files_sdk.User) error {
 
 	client := user.Client{Config: *config}
 
-	return client.Delete(context.Background(), files_sdk.UserDeleteParams{Id: u.Id})
+	return client.Delete(files_sdk.UserDeleteParams{Id: u.Id})
 }

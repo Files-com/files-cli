@@ -41,7 +41,7 @@ func ShareGroups() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := share_group.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var shareGroup interface{}
 			var err error
-			shareGroup, err = client.Find(ctx, paramsShareGroupFind)
+			shareGroup, err = client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -125,7 +125,7 @@ json-styles: {raw, pretty}`)
 
 			var shareGroup interface{}
 			var err error
-			shareGroup, err = client.Create(ctx, paramsShareGroupCreate)
+			shareGroup, err = client.Create(paramsShareGroupCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -174,7 +174,7 @@ json-styles: {raw, pretty}`)
 
 			var shareGroup interface{}
 			var err error
-			shareGroup, err = client.UpdateWithMap(ctx, mapParams)
+			shareGroup, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -204,7 +204,7 @@ json-styles: {raw, pretty}`)
 			client := share_group.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsShareGroupDelete)
+			err = client.Delete(paramsShareGroupDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

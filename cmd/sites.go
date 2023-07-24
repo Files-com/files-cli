@@ -35,7 +35,7 @@ func Sites() *cobra.Command {
 
 			var site interface{}
 			var err error
-			site, err = client.Get(ctx)
+			site, err = client.Get(files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -61,7 +61,7 @@ json-styles: {raw, pretty}`)
 
 			var usageSnapshot interface{}
 			var err error
-			usageSnapshot, err = client.GetUsage(ctx)
+			usageSnapshot, err = client.GetUsage(files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -559,7 +559,7 @@ json-styles: {raw, pretty}`)
 
 			var site interface{}
 			var err error
-			site, err = client.UpdateWithMap(ctx, mapParams)
+			site, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}

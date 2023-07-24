@@ -41,7 +41,7 @@ func PublicKeys() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := public_key.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -96,7 +96,7 @@ json-styles: {raw, pretty}
 
 			var publicKey interface{}
 			var err error
-			publicKey, err = client.Find(ctx, paramsPublicKeyFind)
+			publicKey, err = client.Find(paramsPublicKeyFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -125,7 +125,7 @@ json-styles: {raw, pretty}`)
 
 			var publicKey interface{}
 			var err error
-			publicKey, err = client.Create(ctx, paramsPublicKeyCreate)
+			publicKey, err = client.Create(paramsPublicKeyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -168,7 +168,7 @@ json-styles: {raw, pretty}`)
 
 			var publicKey interface{}
 			var err error
-			publicKey, err = client.UpdateWithMap(ctx, mapParams)
+			publicKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -197,7 +197,7 @@ json-styles: {raw, pretty}`)
 			client := public_key.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsPublicKeyDelete)
+			err = client.Delete(paramsPublicKeyDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

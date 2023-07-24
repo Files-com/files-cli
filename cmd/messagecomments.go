@@ -41,7 +41,7 @@ func MessageComments() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := message_comment.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -97,7 +97,7 @@ json-styles: {raw, pretty}
 
 			var messageComment interface{}
 			var err error
-			messageComment, err = client.Find(ctx, paramsMessageCommentFind)
+			messageComment, err = client.Find(paramsMessageCommentFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -126,7 +126,7 @@ json-styles: {raw, pretty}`)
 
 			var messageComment interface{}
 			var err error
-			messageComment, err = client.Create(ctx, paramsMessageCommentCreate)
+			messageComment, err = client.Create(paramsMessageCommentCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -168,7 +168,7 @@ json-styles: {raw, pretty}`)
 
 			var messageComment interface{}
 			var err error
-			messageComment, err = client.UpdateWithMap(ctx, mapParams)
+			messageComment, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -197,7 +197,7 @@ json-styles: {raw, pretty}`)
 			client := message_comment.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsMessageCommentDelete)
+			err = client.Delete(paramsMessageCommentDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}

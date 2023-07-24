@@ -41,7 +41,7 @@ func As2Stations() *cobra.Command {
 			params.MaxPages = MaxPagesList
 
 			client := as2_station.Client{Config: *config}
-			it, err := client.List(ctx, params)
+			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
 				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
 				values, ok := overriddenValues.([]interface{})
@@ -95,7 +95,7 @@ json-styles: {raw, pretty}
 
 			var as2Station interface{}
 			var err error
-			as2Station, err = client.Find(ctx, paramsAs2StationFind)
+			as2Station, err = client.Find(paramsAs2StationFind, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -124,7 +124,7 @@ json-styles: {raw, pretty}`)
 
 			var as2Station interface{}
 			var err error
-			as2Station, err = client.Create(ctx, paramsAs2StationCreate)
+			as2Station, err = client.Create(paramsAs2StationCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -177,7 +177,7 @@ json-styles: {raw, pretty}`)
 
 			var as2Station interface{}
 			var err error
-			as2Station, err = client.UpdateWithMap(ctx, mapParams)
+			as2Station, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
 		},
 	}
@@ -209,7 +209,7 @@ json-styles: {raw, pretty}`)
 			client := as2_station.Client{Config: *config}
 
 			var err error
-			err = client.Delete(ctx, paramsAs2StationDelete)
+			err = client.Delete(paramsAs2StationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
