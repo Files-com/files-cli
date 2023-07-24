@@ -55,7 +55,7 @@ func TestSyncCmd(t *testing.T) {
 			name:        "push with progress and output csv",
 			args:        []string{"push", "--retry-count", "0", "--output-format", "csv", "--format", "progress"},
 			progressOut: "", // mpb no longer outputs to a file
-			outputFile:  "status,transferred_bytes,size_bytes,local_path,remote_path,transferred_at,error,attempts",
+			outputFile:  "status,transferred_bytes,size_bytes,local_path,remote_path,completed_at,started_at,error,attempts",
 		},
 	}
 
