@@ -108,6 +108,7 @@ json-styles: {raw, pretty}`)
 	updateImmutableFiles := true
 	updateSessionPinnedByIp := true
 	updateBundlePasswordRequired := true
+	updateBundleRequireRegistration := true
 	updateBundleRequireShareRecipient := true
 	updatePasswordRequirementsApplyToBundles := true
 	updatePreventRootPermissionsForNonSiteAdmins := true
@@ -334,6 +335,9 @@ json-styles: {raw, pretty}`)
 			}
 			if cmd.Flags().Changed("bundle-password-required") {
 				mapParams["bundle_password_required"] = updateBundlePasswordRequired
+			}
+			if cmd.Flags().Changed("bundle-require-registration") {
+				mapParams["bundle_require_registration"] = updateBundleRequireRegistration
 			}
 			if cmd.Flags().Changed("bundle-require-share-recipient") {
 				mapParams["bundle_require_share_recipient"] = updateBundleRequireShareRecipient
@@ -623,6 +627,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updateImmutableFiles, "immutable-files", updateImmutableFiles, "Are files protected from modification?")
 	cmdUpdate.Flags().BoolVar(&updateSessionPinnedByIp, "session-pinned-by-ip", updateSessionPinnedByIp, "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)")
 	cmdUpdate.Flags().BoolVar(&updateBundlePasswordRequired, "bundle-password-required", updateBundlePasswordRequired, "Do Bundles require password protection?")
+	cmdUpdate.Flags().BoolVar(&updateBundleRequireRegistration, "bundle-require-registration", updateBundleRequireRegistration, "Do Bundles require registration?")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireShareRecipient, "bundle-require-share-recipient", updateBundleRequireShareRecipient, "Do Bundles require recipients for sharing?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleRegistrationNotifications, "bundle-registration-notifications", "", "Do Bundle owners receive registration notification?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleActivityNotifications, "bundle-activity-notifications", "", "Do Bundle owners receive activity notifications?")

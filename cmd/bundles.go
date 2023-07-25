@@ -177,6 +177,9 @@ json-styles: {raw, pretty}`)
 			if paramsBundleCreate.ExpiresAt.IsZero() {
 				paramsBundleCreate.ExpiresAt = nil
 			}
+			if paramsBundleCreate.StartAccessOnDate.IsZero() {
+				paramsBundleCreate.StartAccessOnDate = nil
+			}
 
 			var bundle interface{}
 			var err error
@@ -208,6 +211,8 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "BundleRegistrations can be saved without providing name?")
 	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "BundleRegistrations can be saved without providing company?")
+	paramsBundleCreate.StartAccessOnDate = &time.Time{}
+	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.SnapshotId, "snapshot-id", 0, "ID of the snapshot containing this bundle's contents.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
