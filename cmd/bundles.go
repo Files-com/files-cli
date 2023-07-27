@@ -355,6 +355,9 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("skip-company") {
 				mapParams["skip_company"] = updateSkipCompany
 			}
+			if cmd.Flags().Changed("start-access-on-date") {
+				lib.FlagUpdate(cmd, "start_access_on_date", paramsBundleUpdate.StartAccessOnDate, mapParams)
+			}
 			if cmd.Flags().Changed("skip-email") {
 				mapParams["skip_email"] = updateSkipEmail
 			}
@@ -369,6 +372,9 @@ json-styles: {raw, pretty}`)
 
 			if paramsBundleUpdate.ExpiresAt.IsZero() {
 				paramsBundleUpdate.ExpiresAt = nil
+			}
+			if paramsBundleUpdate.StartAccessOnDate.IsZero() {
+				paramsBundleUpdate.StartAccessOnDate = nil
 			}
 
 			var bundle interface{}
@@ -399,6 +405,8 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 	cmdUpdate.Flags().BoolVar(&updateSendEmailReceiptToUploader, "send-email-receipt-to-uploader", updateSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
 	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "BundleRegistrations can be saved without providing company?")
+	paramsBundleUpdate.StartAccessOnDate = &time.Time{}
+	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
