@@ -32,7 +32,7 @@ func InboxRegistrations() *cobra.Command {
 		Use:     "list",
 		Short:   "List Inbox Registrations",
 		Long:    `List Inbox Registrations`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

@@ -32,7 +32,7 @@ func Projects() *cobra.Command {
 		Use:     "list",
 		Short:   "List Projects",
 		Long:    `List Projects`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Project`,
 		Long:  `Show Project`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -117,6 +118,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Project`,
 		Long:  `Create Project`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -146,6 +148,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Project`,
 		Long:  `Update Project`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -188,6 +191,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Project`,
 		Long:  `Delete Project`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

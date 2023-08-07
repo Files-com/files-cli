@@ -33,7 +33,7 @@ func Histories() *cobra.Command {
 		Use:   "list-for-file",
 		Short: "List history for specific file",
 		Long:  `List history for specific file`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -106,7 +106,7 @@ json-styles: {raw, pretty}
 		Use:   "list-for-folder",
 		Short: "List history for specific folder",
 		Long:  `List history for specific folder`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -179,7 +179,7 @@ json-styles: {raw, pretty}
 		Use:   "list-for-user",
 		Short: "List history for specific user",
 		Long:  `List history for specific user`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -249,7 +249,7 @@ json-styles: {raw, pretty}
 		Use:   "list-logins",
 		Short: "List site login history",
 		Long:  `List site login history`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -318,7 +318,7 @@ json-styles: {raw, pretty}
 		Use:     "list",
 		Short:   "List site full action history",
 		Long:    `List site full action history`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

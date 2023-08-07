@@ -31,6 +31,7 @@ func HistoryExports() *cobra.Command {
 		Use:   "find",
 		Short: `Show History Export`,
 		Long:  `Show History Export`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -60,6 +61,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create History Export`,
 		Long:  `Create History Export`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

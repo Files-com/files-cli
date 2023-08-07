@@ -33,7 +33,7 @@ func BundleRecipients() *cobra.Command {
 		Use:     "list",
 		Short:   "List Bundle Recipients",
 		Long:    `List Bundle Recipients`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -92,6 +92,7 @@ json-styles: {raw, pretty}
 		Use:   "create",
 		Short: `Create Bundle Recipient`,
 		Long:  `Create Bundle Recipient`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -32,7 +32,7 @@ func Behaviors() *cobra.Command {
 		Use:     "list",
 		Short:   "List Behaviors",
 		Long:    `List Behaviors`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Behavior`,
 		Long:  `Show Behavior`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,7 +120,7 @@ json-styles: {raw, pretty}`)
 		Use:     "list-for [path]",
 		Short:   "List Behaviors by path",
 		Long:    `List Behaviors by path`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -181,6 +182,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create Behavior`,
 		Long:  `Create Behavior`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -217,6 +219,7 @@ json-styles: {raw, pretty}`)
 		Use:   "webhook-test",
 		Short: `Test webhook`,
 		Long:  `Test webhook`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -252,6 +255,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update [path]",
 		Short: `Update Behavior`,
 		Long:  `Update Behavior`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -319,6 +323,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Behavior`,
 		Long:  `Delete Behavior`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

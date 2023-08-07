@@ -32,7 +32,7 @@ func Priorities() *cobra.Command {
 		Use:     "list",
 		Short:   "List Priorities",
 		Long:    `List Priorities`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

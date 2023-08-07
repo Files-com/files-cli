@@ -33,7 +33,7 @@ func FormFieldSets() *cobra.Command {
 		Use:     "list",
 		Short:   "List Form Field Sets",
 		Long:    `List Form Field Sets`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Form Field Set`,
 		Long:  `Show Form Field Set`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -122,6 +123,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Form Field Set`,
 		Long:  `Create Form Field Set`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -168,6 +170,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Form Field Set`,
 		Long:  `Update Form Field Set`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -225,6 +228,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Form Field Set`,
 		Long:  `Delete Form Field Set`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

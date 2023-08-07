@@ -43,7 +43,7 @@ func Folders() *cobra.Command {
 		Use:     "list-for [path]",
 		Short:   "List Folders by path",
 		Long:    `List Folders by path`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -138,6 +138,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create folder`,
 		Long:  `Create folder`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

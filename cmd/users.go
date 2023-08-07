@@ -35,7 +35,7 @@ func Users() *cobra.Command {
 		Use:     "list",
 		Short:   "List Users",
 		Long:    `List Users`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -93,6 +93,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show User`,
 		Long:  `Show User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -143,6 +144,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create User`,
 		Long:  `Create User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -295,6 +297,7 @@ json-styles: {raw, pretty}`)
 		Use:   "unlock",
 		Short: `Unlock user who has been locked out due to failed logins`,
 		Long:  `Unlock user who has been locked out due to failed logins`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -326,6 +329,7 @@ json-styles: {raw, pretty}`)
 		Use:   "resend-welcome-email",
 		Short: `Resend user welcome email`,
 		Long:  `Resend user welcome email`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -357,6 +361,7 @@ json-styles: {raw, pretty}`)
 		Use:   "user-2fa-reset",
 		Short: `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
 		Long:  `Trigger 2FA Reset process for user who has lost access to their existing 2FA methods`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -409,6 +414,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update User`,
 		Long:  `Update User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -650,6 +656,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete User`,
 		Long:  `Delete User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

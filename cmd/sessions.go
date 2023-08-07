@@ -30,6 +30,7 @@ func Sessions() *cobra.Command {
 		Use:   "create",
 		Short: `Create user session (log in)`,
 		Long:  `Create user session (log in)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -60,6 +61,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete user session (log out)`,
 		Long:  `Delete user session (log out)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

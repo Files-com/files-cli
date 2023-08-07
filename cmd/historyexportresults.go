@@ -32,7 +32,7 @@ func HistoryExportResults() *cobra.Command {
 		Use:     "list",
 		Short:   "List History Export Results",
 		Long:    `List History Export Results`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

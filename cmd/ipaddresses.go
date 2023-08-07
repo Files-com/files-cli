@@ -32,7 +32,7 @@ func IpAddresses() *cobra.Command {
 		Use:     "list",
 		Short:   "List IP Addresses associated with the current site",
 		Long:    `List IP Addresses associated with the current site`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,7 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "get-exavault-reserved",
 		Short: "List all possible public ExaVault IP addresses",
 		Long:  `List all possible public ExaVault IP addresses`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -147,7 +147,7 @@ json-styles: {raw, pretty}
 		Use:   "get-reserved",
 		Short: "List all possible public IP addresses",
 		Long:  `List all possible public IP addresses`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

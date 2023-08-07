@@ -28,6 +28,7 @@ func Sites() *cobra.Command {
 		Use:   "get",
 		Short: `Show site settings`,
 		Long:  `Show site settings`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -54,6 +55,7 @@ json-styles: {raw, pretty}`)
 		Use:   "get-usage",
 		Short: `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
 		Long:  `Get the most recent usage snapshot (usage data for billing purposes) for a Site`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -146,6 +148,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update site settings`,
 		Long:  `Update site settings`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

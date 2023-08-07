@@ -32,7 +32,7 @@ func DnsRecords() *cobra.Command {
 		Use:     "list",
 		Short:   "Show site DNS configuration",
 		Long:    `Show site DNS configuration`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

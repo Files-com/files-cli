@@ -33,7 +33,7 @@ func Clickwraps() *cobra.Command {
 		Use:     "list",
 		Short:   "List Clickwraps",
 		Long:    `List Clickwraps`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Clickwrap`,
 		Long:  `Show Clickwrap`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -121,6 +122,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Clickwrap`,
 		Long:  `Create Clickwrap`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -173,6 +175,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Clickwrap`,
 		Long:  `Update Clickwrap`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -247,6 +250,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Clickwrap`,
 		Long:  `Delete Clickwrap`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

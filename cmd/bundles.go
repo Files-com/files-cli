@@ -35,7 +35,7 @@ func Bundles() *cobra.Command {
 		Use:     "list",
 		Short:   "List Bundles",
 		Long:    `List Bundles`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -92,6 +92,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Bundle`,
 		Long:  `Show Bundle`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -132,6 +133,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Bundle`,
 		Long:  `Create Bundle`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -231,6 +233,7 @@ json-styles: {raw, pretty}`)
 		Use:   "share",
 		Short: `Send email(s) with a link to bundle`,
 		Long:  `Send email(s) with a link to bundle`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -276,6 +279,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Bundle`,
 		Long:  `Update Bundle`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -427,6 +431,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Bundle`,
 		Long:  `Delete Bundle`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

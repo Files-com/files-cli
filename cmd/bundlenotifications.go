@@ -33,7 +33,7 @@ func BundleNotifications() *cobra.Command {
 		Use:     "list",
 		Short:   "List Bundle Notifications",
 		Long:    `List Bundle Notifications`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Bundle Notification`,
 		Long:  `Show Bundle Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -121,6 +122,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Bundle Notification`,
 		Long:  `Create Bundle Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -162,6 +164,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Bundle Notification`,
 		Long:  `Update Bundle Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -208,6 +211,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Bundle Notification`,
 		Long:  `Delete Bundle Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

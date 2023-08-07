@@ -34,7 +34,7 @@ func RemoteMounts() *cobra.Command {
 	var remoteServerName string
 	create := &cobra.Command{
 		Use:  "create",
-		Args: cobra.ExactArgs(0),
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if remoteServerName != "" {
 				var err error
@@ -100,7 +100,7 @@ func RemoteMounts() *cobra.Command {
 		Use:   "list",
 		Short: "List Remote Mounts",
 		Long:  `List Remote Mounts`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -183,6 +183,7 @@ func RemoteMounts() *cobra.Command {
 		Use:   "delete",
 		Short: `Delete Remote Mount`,
 		Long:  `Delete Remote Mount`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -213,6 +214,7 @@ func RemoteMounts() *cobra.Command {
 		Use:   "update",
 		Short: `Update Behavior`,
 		Long:  `Update Behavior`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			client := behavior.Client{Config: *Profile(cmd).Config}

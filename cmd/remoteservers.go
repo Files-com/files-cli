@@ -34,7 +34,7 @@ func RemoteServers() *cobra.Command {
 		Use:     "list",
 		Short:   "List Remote Servers",
 		Long:    `List Remote Servers`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Remote Server`,
 		Long:  `Show Remote Server`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,6 +120,7 @@ json-styles: {raw, pretty}`)
 		Use:   "find-configuration-file",
 		Short: `Download configuration file (required for some Remote Server integrations, such as the Files.com Agent)`,
 		Long:  `Download configuration file (required for some Remote Server integrations, such as the Files.com Agent)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -157,6 +159,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Remote Server`,
 		Long:  `Create Remote Server`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -287,6 +290,7 @@ json-styles: {raw, pretty}`)
 		Use:   "configuration-file",
 		Short: `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
 		Long:  `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -336,6 +340,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Remote Server`,
 		Long:  `Update Remote Server`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -652,6 +657,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Remote Server`,
 		Long:  `Delete Remote Server`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

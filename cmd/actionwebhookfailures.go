@@ -30,6 +30,7 @@ func ActionWebhookFailures() *cobra.Command {
 		Use:   "retry",
 		Short: `retry Action Webhook Failure`,
 		Long:  `retry Action Webhook Failure`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

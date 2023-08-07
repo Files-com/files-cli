@@ -34,7 +34,7 @@ func Notifications() *cobra.Command {
 		Use:     "list",
 		Short:   "List Notifications",
 		Long:    `List Notifications`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -101,6 +101,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Notification`,
 		Long:  `Show Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -138,6 +139,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create [path]",
 		Short: `Create Notification`,
 		Long:  `Create Notification`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -217,6 +219,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Notification`,
 		Long:  `Update Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -305,6 +308,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Notification`,
 		Long:  `Delete Notification`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

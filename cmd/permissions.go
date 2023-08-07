@@ -34,7 +34,7 @@ func Permissions() *cobra.Command {
 		Use:     "list",
 		Short:   "List Permissions",
 		Long:    `List Permissions`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -102,6 +102,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create Permission`,
 		Long:  `Create Permission`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -143,6 +144,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Permission`,
 		Long:  `Delete Permission`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

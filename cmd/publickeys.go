@@ -32,7 +32,7 @@ func PublicKeys() *cobra.Command {
 		Use:     "list",
 		Short:   "List Public Keys",
 		Long:    `List Public Keys`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Public Key`,
 		Long:  `Show Public Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -118,6 +119,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Public Key`,
 		Long:  `Create Public Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -149,6 +151,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Public Key`,
 		Long:  `Update Public Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -191,6 +194,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Public Key`,
 		Long:  `Delete Public Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

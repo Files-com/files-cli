@@ -32,6 +32,7 @@ func ActionNotificationExports() *cobra.Command {
 		Use:   "find",
 		Short: `Show Action Notification Export`,
 		Long:  `Show Action Notification Export`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -62,6 +63,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Action Notification Export`,
 		Long:  `Create Action Notification Export`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

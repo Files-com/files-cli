@@ -32,7 +32,7 @@ func SettingsChanges() *cobra.Command {
 		Use:     "list",
 		Short:   "List Settings Changes",
 		Long:    `List Settings Changes`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

@@ -30,6 +30,7 @@ func Styles() *cobra.Command {
 		Use:   "find [path]",
 		Short: `Show Style`,
 		Long:  `Show Style`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -62,6 +63,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update [path]",
 		Short: `Update Style`,
 		Long:  `Update Style`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -105,6 +107,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete [path]",
 		Short: `Delete Style`,
 		Long:  `Delete Style`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

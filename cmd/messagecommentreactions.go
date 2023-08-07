@@ -32,7 +32,7 @@ func MessageCommentReactions() *cobra.Command {
 		Use:     "list",
 		Short:   "List Message Comment Reactions",
 		Long:    `List Message Comment Reactions`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Message Comment Reaction`,
 		Long:  `Show Message Comment Reaction`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,6 +120,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Message Comment Reaction`,
 		Long:  `Create Message Comment Reaction`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -149,6 +151,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Message Comment Reaction`,
 		Long:  `Delete Message Comment Reaction`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

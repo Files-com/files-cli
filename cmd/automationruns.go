@@ -32,7 +32,7 @@ func AutomationRuns() *cobra.Command {
 		Use:     "list",
 		Short:   "List Automation Runs",
 		Long:    `List Automation Runs`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Automation Run`,
 		Long:  `Show Automation Run`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

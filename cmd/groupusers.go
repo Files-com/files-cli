@@ -33,7 +33,7 @@ func GroupUsers() *cobra.Command {
 		Use:     "list",
 		Short:   "List Group Users",
 		Long:    `List Group Users`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -92,6 +92,7 @@ json-styles: {raw, pretty}
 		Use:   "create",
 		Short: `Create Group User`,
 		Long:  `Create Group User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -128,6 +129,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Group User`,
 		Long:  `Update Group User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -178,6 +180,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Group User`,
 		Long:  `Delete Group User`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

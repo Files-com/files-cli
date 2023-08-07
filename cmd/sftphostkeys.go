@@ -32,7 +32,7 @@ func SftpHostKeys() *cobra.Command {
 		Use:     "list",
 		Short:   "List Sftp Host Keys",
 		Long:    `List Sftp Host Keys`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Sftp Host Key`,
 		Long:  `Show Sftp Host Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -117,6 +118,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Sftp Host Key`,
 		Long:  `Create Sftp Host Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -147,6 +149,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Sftp Host Key`,
 		Long:  `Update Sftp Host Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -193,6 +196,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Sftp Host Key`,
 		Long:  `Delete Sftp Host Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

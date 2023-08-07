@@ -32,7 +32,7 @@ func FileComments() *cobra.Command {
 		Use:     "list-for [path]",
 		Short:   "List File Comments by path",
 		Long:    `List File Comments by path`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -92,6 +92,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create File Comment`,
 		Long:  `Create File Comment`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -125,6 +126,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update File Comment`,
 		Long:  `Update File Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -167,6 +169,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete File Comment`,
 		Long:  `Delete File Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

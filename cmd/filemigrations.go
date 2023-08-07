@@ -30,6 +30,7 @@ func FileMigrations() *cobra.Command {
 		Use:   "find",
 		Short: `Show File Migration`,
 		Long:  `Show File Migration`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

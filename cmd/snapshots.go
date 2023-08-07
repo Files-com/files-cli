@@ -33,7 +33,7 @@ func Snapshots() *cobra.Command {
 		Use:     "list",
 		Short:   "List Snapshots",
 		Long:    `List Snapshots`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Snapshot`,
 		Long:  `Show Snapshot`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -118,6 +119,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Snapshot`,
 		Long:  `Create Snapshot`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -154,6 +156,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Snapshot`,
 		Long:  `Update Snapshot`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -209,6 +212,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Snapshot`,
 		Long:  `Delete Snapshot`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

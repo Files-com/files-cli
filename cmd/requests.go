@@ -34,7 +34,7 @@ func Requests() *cobra.Command {
 		Use:     "list",
 		Short:   "List Requests",
 		Long:    `List Requests`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -102,7 +102,7 @@ json-styles: {raw, pretty}
 		Use:   "get-folder",
 		Short: "List Requests",
 		Long:  `List Requests`,
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -166,6 +166,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create Request`,
 		Long:  `Create Request`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -201,6 +202,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Request`,
 		Long:  `Delete Request`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -32,7 +32,7 @@ func SsoStrategies() *cobra.Command {
 		Use:     "list",
 		Short:   "List Sso Strategies",
 		Long:    `List Sso Strategies`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Sso Strategy`,
 		Long:  `Show Sso Strategy`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -117,6 +118,7 @@ json-styles: {raw, pretty}`)
 		Use:   "sync",
 		Short: `Synchronize provisioning data with the SSO remote server`,
 		Long:  `Synchronize provisioning data with the SSO remote server`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

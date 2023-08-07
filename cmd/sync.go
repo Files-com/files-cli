@@ -28,7 +28,7 @@ func Sync() *cobra.Command {
 	var fields []string
 	push := &cobra.Command{
 		Use:  "push",
-		Args: cobra.ExactArgs(0),
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -61,7 +61,7 @@ func Sync() *cobra.Command {
 	}
 	pull := &cobra.Command{
 		Use:  "pull",
-		Args: cobra.ExactArgs(0),
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

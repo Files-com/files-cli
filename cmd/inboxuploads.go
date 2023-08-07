@@ -32,7 +32,7 @@ func InboxUploads() *cobra.Command {
 		Use:     "list",
 		Short:   "List Inbox Uploads",
 		Long:    `List Inbox Uploads`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

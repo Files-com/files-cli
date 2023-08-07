@@ -32,7 +32,7 @@ func Groups() *cobra.Command {
 		Use:     "list",
 		Short:   "List Groups",
 		Long:    `List Groups`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Group`,
 		Long:  `Show Group`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -118,6 +119,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Group`,
 		Long:  `Create Group`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -150,6 +152,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Group`,
 		Long:  `Update Group`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -204,6 +207,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Group`,
 		Long:  `Delete Group`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

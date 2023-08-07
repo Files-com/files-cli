@@ -16,7 +16,7 @@ func init() {
 func LogOut() *cobra.Command {
 	return &cobra.Command{
 		Use:  "logout",
-		Args: cobra.ExactArgs(0),
+		Args: cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
 			client := session.Client{Config: *ctx.Value("config").(*files_sdk.Config)}

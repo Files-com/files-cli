@@ -16,7 +16,7 @@ func init() {
 func Login() *cobra.Command {
 	return &cobra.Command{
 		Use:  "login",
-		Args: cobra.ExactArgs(0),
+		Args: cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			Profile(cmd).Overrides = lib.Overrides{Out: cmd.OutOrStdout(), In: cmd.InOrStdin()}.Init()
 			err := lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))

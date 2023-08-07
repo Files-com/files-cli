@@ -36,6 +36,7 @@ func Files() *cobra.Command {
 		Use:   "create [path]",
 		Short: `Upload file`,
 		Long:  `Upload file`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -91,6 +92,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update [path]",
 		Short: `Update file/folder metadata`,
 		Long:  `Update file/folder metadata`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -146,6 +148,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete [path]",
 		Short: `Delete file/folder`,
 		Long:  `Delete file/folder`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -187,6 +190,7 @@ json-styles: {raw, pretty}`)
 		Use:   "find [path]",
 		Short: `Find file/folder by path`,
 		Long:  `Find file/folder by path`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -233,6 +237,7 @@ json-styles: {raw, pretty}`)
 		Use:   "copy [path]",
 		Short: `Copy file/folder`,
 		Long:  `Copy file/folder`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -284,6 +289,7 @@ json-styles: {raw, pretty}`)
 		Use:   "move [path]",
 		Short: `Move file/folder`,
 		Long:  `Move file/folder`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -329,6 +335,7 @@ json-styles: {raw, pretty}`)
 		Use:   "begin-upload [path]",
 		Short: `Begin file upload`,
 		Long:  `Begin file upload`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

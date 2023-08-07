@@ -32,6 +32,7 @@ func WebhookTests() *cobra.Command {
 		Use:   "create",
 		Short: `Create Webhook Test`,
 		Long:  `Create Webhook Test`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

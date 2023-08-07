@@ -32,7 +32,7 @@ func MessageComments() *cobra.Command {
 		Use:     "list",
 		Short:   "List Message Comments",
 		Long:    `List Message Comments`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -90,6 +90,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Message Comment`,
 		Long:  `Show Message Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,6 +120,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create Message Comment`,
 		Long:  `Create Message Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -149,6 +151,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Message Comment`,
 		Long:  `Update Message Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -191,6 +194,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Message Comment`,
 		Long:  `Delete Message Comment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

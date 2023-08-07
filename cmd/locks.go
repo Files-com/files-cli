@@ -34,7 +34,7 @@ func Locks() *cobra.Command {
 		Use:     "list-for [path]",
 		Short:   "List Locks by path",
 		Long:    `List Locks by path`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -101,6 +101,7 @@ json-styles: {raw, pretty}
 		Use:   "create [path]",
 		Short: `Create Lock`,
 		Long:  `Create Lock`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -144,6 +145,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete [path]",
 		Short: `Delete Lock`,
 		Long:  `Delete Lock`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

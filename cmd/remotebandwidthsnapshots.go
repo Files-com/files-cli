@@ -32,7 +32,7 @@ func RemoteBandwidthSnapshots() *cobra.Command {
 		Use:     "list",
 		Short:   "List Remote Bandwidth Snapshots",
 		Long:    `List Remote Bandwidth Snapshots`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

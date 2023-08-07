@@ -32,7 +32,7 @@ func Payments() *cobra.Command {
 		Use:     "list",
 		Short:   "List Payments",
 		Long:    `List Payments`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Payment`,
 		Long:  `Show Payment`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

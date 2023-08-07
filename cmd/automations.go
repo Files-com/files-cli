@@ -35,7 +35,7 @@ func Automations() *cobra.Command {
 		Use:     "list",
 		Short:   "List Automations",
 		Long:    `List Automations`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -96,6 +96,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show Automation`,
 		Long:  `Show Automation`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -128,6 +129,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create [path]",
 		Short: `Create Automation`,
 		Long:  `Create Automation`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -191,6 +193,7 @@ json-styles: {raw, pretty}`)
 		Use:   "manual-run",
 		Short: `Manually run automation`,
 		Long:  `Manually run automation`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -225,6 +228,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update [path]",
 		Short: `Update Automation`,
 		Long:  `Update Automation`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -349,6 +353,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Automation`,
 		Long:  `Delete Automation`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

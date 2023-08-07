@@ -32,7 +32,7 @@ func As2Stations() *cobra.Command {
 		Use:     "list",
 		Short:   "List As2 Stations",
 		Long:    `List As2 Stations`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,6 +88,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show As2 Station`,
 		Long:  `Show As2 Station`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -117,6 +118,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create As2 Station`,
 		Long:  `Create As2 Station`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -149,6 +151,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update As2 Station`,
 		Long:  `Update As2 Station`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -203,6 +206,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete As2 Station`,
 		Long:  `Delete As2 Station`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

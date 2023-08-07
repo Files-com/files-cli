@@ -32,7 +32,7 @@ func BundleDownloads() *cobra.Command {
 		Use:     "list",
 		Short:   "List Bundle Downloads",
 		Long:    `List Bundle Downloads`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

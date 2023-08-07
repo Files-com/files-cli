@@ -33,7 +33,7 @@ func As2Partners() *cobra.Command {
 		Use:     "list",
 		Short:   "List As2 Partners",
 		Long:    `List As2 Partners`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find",
 		Short: `Show As2 Partner`,
 		Long:  `Show As2 Partner`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -119,6 +120,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create",
 		Short: `Create As2 Partner`,
 		Long:  `Create As2 Partner`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -158,6 +160,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update As2 Partner`,
 		Long:  `Update As2 Partner`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -216,6 +219,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete As2 Partner`,
 		Long:  `Delete As2 Partner`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

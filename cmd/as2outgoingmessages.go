@@ -32,7 +32,7 @@ func As2OutgoingMessages() *cobra.Command {
 		Use:     "list",
 		Short:   "List As2 Outgoing Messages",
 		Long:    `List As2 Outgoing Messages`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

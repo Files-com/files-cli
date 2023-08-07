@@ -33,7 +33,7 @@ func InboxRecipients() *cobra.Command {
 		Use:     "list",
 		Short:   "List Inbox Recipients",
 		Long:    `List Inbox Recipients`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -91,6 +91,7 @@ json-styles: {raw, pretty}
 		Use:   "create",
 		Short: `Create Inbox Recipient`,
 		Long:  `Create Inbox Recipient`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

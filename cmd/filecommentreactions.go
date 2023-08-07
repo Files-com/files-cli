@@ -30,6 +30,7 @@ func FileCommentReactions() *cobra.Command {
 		Use:   "create",
 		Short: `Create File Comment Reaction`,
 		Long:  `Create File Comment Reaction`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -61,6 +62,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete File Comment Reaction`,
 		Long:  `Delete File Comment Reaction`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -18,7 +18,7 @@ func TestHistories(t *testing.T) {
 	}{
 		{
 			name: "without flags",
-			args: []string{"list-logins", "--format", "csv", "use-pager=false"},
+			args: []string{"list-logins", "--format", "csv", "--use-pager=false"},
 			test: func(t *testing.T, stdOut []byte, stdErr []byte) {
 				assert.Equal(
 					t,
@@ -33,7 +33,7 @@ func TestHistories(t *testing.T) {
 		},
 		{
 			name: "with flags",
-			args: []string{"list-logins", "--format", "csv", "--start-at", "2023-01-28T19:41:43-05:00", "--end-at", "2023-01-30T07:43:37-05:00", "use-pager=false"},
+			args: []string{"list-logins", "--format", "csv", "--start-at", "2023-01-28T19:41:43-05:00", "--end-at", "2023-01-30T07:43:37-05:00", "--use-pager=false"},
 			test: func(t *testing.T, stdOut []byte, stdErr []byte) {
 				assert.Equal(
 					t,

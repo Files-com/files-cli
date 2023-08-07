@@ -34,7 +34,7 @@ func ApiKeys() *cobra.Command {
 		Use:     "list",
 		Short:   "List Api Keys",
 		Long:    `List Api Keys`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -89,6 +89,7 @@ json-styles: {raw, pretty}
 		Use:   "find-current",
 		Short: `Show information about current API key.  (Requires current API connection to be using an API key.)`,
 		Long:  `Show information about current API key.  (Requires current API connection to be using an API key.)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -117,6 +118,7 @@ json-styles: {raw, pretty}`)
 		Use:   "find",
 		Short: `Show Api Key`,
 		Long:  `Show Api Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -147,6 +149,7 @@ json-styles: {raw, pretty}`)
 		Use:   "create [path]",
 		Short: `Create Api Key`,
 		Long:  `Create Api Key`,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -196,6 +199,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update-current",
 		Short: `Update current API key.  (Requires current API connection to be using an API key.)`,
 		Long:  `Update current API key.  (Requires current API connection to be using an API key.)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -254,6 +258,7 @@ json-styles: {raw, pretty}`)
 		Use:   "update",
 		Short: `Update Api Key`,
 		Long:  `Update Api Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -317,6 +322,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete-current",
 		Short: `Delete current API key.  (Requires current API connection to be using an API key.)`,
 		Long:  `Delete current API key.  (Requires current API connection to be using an API key.)`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)
@@ -347,6 +353,7 @@ json-styles: {raw, pretty}`)
 		Use:   "delete",
 		Short: `Delete Api Key`,
 		Long:  `Delete Api Key`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(*files_sdk.Config)

@@ -32,7 +32,7 @@ func UserCipherUses() *cobra.Command {
 		Use:     "list",
 		Short:   "List User Cipher Uses",
 		Long:    `List User Cipher Uses`,
-		Args:    cobra.MinimumNArgs(0),
+		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
