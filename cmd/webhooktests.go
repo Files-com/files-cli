@@ -26,6 +26,7 @@ func WebhookTests() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createFileAsBody := true
+	createUseDedicatedIps := true
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -41,6 +42,9 @@ func WebhookTests() *cobra.Command {
 			if cmd.Flags().Changed("file-as-body") {
 				paramsWebhookTestCreate.FileAsBody = flib.Bool(createFileAsBody)
 			}
+			if cmd.Flags().Changed("use-dedicated-ips") {
+				paramsWebhookTestCreate.UseDedicatedIps = flib.Bool(createUseDedicatedIps)
+			}
 
 			var webhookTest interface{}
 			var err error
@@ -55,6 +59,7 @@ func WebhookTests() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createFileAsBody, "file-as-body", createFileAsBody, "Send the file data as the request body?")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.FileFormField, "file-form-field", "", "Send the file data as a named parameter in the request POST body")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Action, "action", "", "action for test body")
+	cmdCreate.Flags().BoolVar(&createUseDedicatedIps, "use-dedicated-ips", createUseDedicatedIps, "Use dedicated IPs for sending the webhook?")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
