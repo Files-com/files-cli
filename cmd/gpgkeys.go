@@ -132,10 +132,10 @@ json-styles: {raw, pretty}`)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
-	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.Name, "name", "", "Your GPG key name.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PublicKey, "public-key", "", "Your GPG public key")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKey, "private-key", "", "Your GPG private key.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKeyPassword, "private-key-password", "", "Your GPG private key password. Only required for password protected keys.")
+	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.Name, "name", "", "Your GPG key name.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
@@ -167,9 +167,6 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsGpgKeyUpdate.Id, mapParams)
 			}
-			if cmd.Flags().Changed("name") {
-				lib.FlagUpdate(cmd, "name", paramsGpgKeyUpdate.Name, mapParams)
-			}
 			if cmd.Flags().Changed("public-key") {
 				lib.FlagUpdate(cmd, "public_key", paramsGpgKeyUpdate.PublicKey, mapParams)
 			}
@@ -179,6 +176,9 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("private-key-password") {
 				lib.FlagUpdate(cmd, "private_key_password", paramsGpgKeyUpdate.PrivateKeyPassword, mapParams)
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsGpgKeyUpdate.Name, mapParams)
+			}
 
 			var gpgKey interface{}
 			var err error
@@ -187,10 +187,10 @@ json-styles: {raw, pretty}`)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.Id, "id", 0, "Gpg Key ID.")
-	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.Name, "name", "", "Your GPG key name.")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PublicKey, "public-key", "", "Your GPG public key")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKey, "private-key", "", "Your GPG private key.")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKeyPassword, "private-key-password", "", "Your GPG private key password. Only required for password protected keys.")
+	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.Name, "name", "", "Your GPG key name.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
