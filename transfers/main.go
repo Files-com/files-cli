@@ -15,28 +15,22 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/vbauerster/mpb/v8"
-
-	"github.com/spf13/cobra"
-
-	"github.com/samber/lo"
-
-	"github.com/Files-com/files-sdk-go/v2/directory"
-
-	"github.com/Files-com/files-sdk-go/v2/file"
-
-	"github.com/Files-com/files-sdk-go/v2/lib/direction"
-	"github.com/VividCortex/ewma"
-	"golang.org/x/crypto/ssh/terminal"
-
 	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	"github.com/Files-com/files-sdk-go/v2/directory"
 	external_event "github.com/Files-com/files-sdk-go/v2/externalevent"
+	"github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/Files-com/files-sdk-go/v2/file/manager"
 	"github.com/Files-com/files-sdk-go/v2/file/status"
 	sdklib "github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/Files-com/files-sdk-go/v2/lib/direction"
+	"github.com/VividCortex/ewma"
 	"github.com/aquilax/truncate"
+	"github.com/samber/lo"
+	"github.com/spf13/cobra"
+	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Transfers struct {
@@ -65,6 +59,7 @@ type Transfers struct {
 	transferRate                *atomic.Value
 	transferRateMutex           *sync.RWMutex
 	Ignore                      *[]string
+	Include                     *[]string
 	waitForEndingMessage        chan bool
 	*manager.Manager
 	Stdout             io.Writer
@@ -104,6 +99,7 @@ func New() *Transfers {
 		transferRate:          transferRate,
 		transferRateMutex:     &sync.RWMutex{},
 		Ignore:                &[]string{},
+		Include:               &[]string{},
 		waitForEndingMessage:  make(chan bool),
 		lastEndedFile:         endedFile,
 		finishedForDisplay:    &atomic.Bool{},
