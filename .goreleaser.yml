@@ -30,7 +30,7 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    name_template: '{{.ProjectName}}_{{.Os}}_{{.Arch}}{{.Arm}}'
+    name_template: '{{.ProjectName}}_{{if eq .Os "darwin"}}macOS{{else}}{{.Os}}{{end}}_{{.Arch}}{{.Arm}}'
     files:
       - README.md
       - completions/*
