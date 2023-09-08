@@ -9,10 +9,9 @@ import (
 	"testing"
 	"time"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/Files-com/files-sdk-go/v2/file"
 	"github.com/gin-gonic/gin"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -69,7 +68,7 @@ func TestBundles_Create(t *testing.T) {
 	})
 
 	t.Run("it returns an API error", func(t *testing.T) {
-		server := (&file.FakeDownloadServer{T: t}).Do()
+		server := (&file.MockAPIServer{T: t}).Do()
 		defer server.Shutdown()
 		config := &server.Client().Config
 		server.GetRouter().POST("/api/rest/v1/bundles", func(context *gin.Context) {
