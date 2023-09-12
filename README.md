@@ -35,6 +35,13 @@ curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cl
 sudo rpm -i ./files-cli.apk
 ```
 
+### Windows
+**Download**
+- 64bit [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_64bit.zip) *(Most Common)*
+- Arm64 [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip) *(Less Common)*
+
+Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
+
 ### Mac
 
 Download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
@@ -43,11 +50,6 @@ Download the compressed Tar archive (`*.tar.gz`), extract the files from the arc
 curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_macOS_64bit.tar.gz | tar zxv
 sudo mv ./files-cli /usr/local/bin
 ```
-
-### Windows
-**Download** [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_amd64.zip) [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip)
-
-Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
 
 ## Documentation
 
