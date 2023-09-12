@@ -37,7 +37,7 @@ sudo rpm -i ./files-cli.apk
 
 ### Mac
 
-For MacOS (64bit) based systems, download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
+Download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
 
 ```shell
 curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_macOS_64bit.tar.gz | tar zxv
@@ -45,9 +45,9 @@ sudo mv ./files-cli /usr/local/bin
 ```
 
 ### Windows
-**Download** [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_Windows_64bit.zip) [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_Windows_ARM64.zip)
+**Download** [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_amd64.zip) [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip)
 
-For Windows (64bit) based systems, download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
+Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
 
 ## Documentation
 
@@ -253,6 +253,7 @@ Available output formats are:
 - table,bright
 - table,light,horizontal/vertical
 - table,markdown
+- table-v2
 - json
 - json,raw
 - csv
