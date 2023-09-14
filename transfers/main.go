@@ -80,8 +80,7 @@ type Transfers struct {
 	OutFormat          []string
 	UsePager           bool
 	*file.Job
-	openConnections
-	openConnectionsMutex *sync.RWMutex
+	openConnections atomic.Value
 }
 
 type LastEndedFile struct {
@@ -97,6 +96,9 @@ func New() *Transfers {
 	filesRate.Store(newTransferRate())
 	endedFile := &atomic.Value{}
 	endedFile.Store(LastEndedFile{})
+	openConnections := atomic.Value{}
+	openConnections.Store("")
+
 	return &Transfers{
 		eventBody:             []string{},
 		eventErrors:           map[string]string{},
@@ -117,7 +119,7 @@ func New() *Transfers {
 		waitForEndingMessage:  make(chan bool),
 		lastEndedFile:         endedFile,
 		finishedForDisplay:    &atomic.Bool{},
-		openConnectionsMutex:  &sync.RWMutex{},
+		openConnections:       openConnections,
 	}
 }
 
@@ -390,7 +392,11 @@ func (t *Transfers) updateStatus() {
 		t.FilesRate().Add(t.Job.FilesRate())
 		t.filesRateMutex.Unlock()
 	}
-	t.fetchOpenConnections()
+	if t.OpenConnectionStats {
+		t.fetchOpenConnections()
+	}
+
+	t.findActiveFile()
 }
 
 func (t *Transfers) iterateOverErrored() {
@@ -493,17 +499,19 @@ func (t *Transfers) UpdateMainTotal() {
 		return
 	}
 
-	t.mainBar.SetCurrent(t.Job.TransferBytes(status.Included...))
-	t.mainBar.SetTotal(t.Job.TotalBytes(status.Included...), false)
+	if !t.mainBar.Completed() || !t.mainBar.Aborted() {
+		t.mainBar.SetCurrent(t.Job.TransferBytes(status.Included...))
+		t.mainBar.SetTotal(t.Job.TotalBytes(status.Included...), false)
+	}
 
 	if t.fileStatusBar != nil && t.Job.Finished.Called() {
 		t.fileStatusBar.SetCurrent(1)
 		t.fileStatusBar.SetTotal(1, true)
+	}
 
-		if t.OpenConnectionStats {
-			t.openConnectionsBar.SetCurrent(1)
-			t.openConnectionsBar.SetTotal(1, true)
-		}
+	if t.openConnectionsBar != nil && t.Job.Finished.Called() {
+		t.openConnectionsBar.SetCurrent(1)
+		t.openConnectionsBar.SetTotal(1, true)
 	}
 }
 
@@ -610,7 +618,7 @@ func (t *Transfers) buildStatusTransfer() {
 		int64(t.Job.Count()),
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
-				endedFile := t.findActiveFile()
+				endedFile := t.LastEndedFile()
 
 				width, _, terminalWidthErr := terminal.GetSize(0)
 				nonFilePathLen := len(fileCounts(t.Job)) + len(statusWithColor(endedFile.Status))
@@ -627,7 +635,7 @@ func (t *Transfers) buildStatusTransfer() {
 						io.WriteString(w, fmt.Sprintf("%v %v - %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
 					}
 				} else {
-					io.WriteString(w, fmt.Sprintf("%v %v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), t.transferProgress(endedFile)))
+					io.WriteString(w, fmt.Sprintf("%v %v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), t.transferProgress(endedFile.JobFile)))
 				}
 
 				return nil
@@ -659,20 +667,13 @@ func (t *Transfers) buildOpenConnections() {
 				decor.WC{W: 0, C: decor.DidentRight},
 			),
 			decor.Any(func(d decor.Statistics) string {
-				t.openConnectionsMutex.RLock()
-				defer t.openConnectionsMutex.RUnlock()
-				return fmt.Sprintf("(Data: %d API: %d API) Avg %v/s %v", t.openConnections.transferStats, t.openConnections.apiStats, lib.ByteCountSIFloat64(t.TransferRateValue()/float64(t.openConnections.transferStats)), directionSymbolFmt(t.Direction))
+				return t.openConnections.Load().(string)
 			},
 				decor.WC{W: 0, C: decor.DidentRight},
 			),
 		),
 		mpb.BarPriority(3),
 	)
-}
-
-type openConnections struct {
-	transferStats, apiStats int
-	valid                   bool
 }
 
 func (t *Transfers) fetchOpenConnections() {
@@ -686,12 +687,7 @@ func (t *Transfers) fetchOpenConnections() {
 				transferStats += count
 			}
 		}
-
-		t.openConnectionsMutex.Lock()
-		t.openConnections.apiStats = apiStats
-		t.openConnections.transferStats = transferStats
-		t.openConnections.valid = true
-		t.openConnectionsMutex.Unlock()
+		t.openConnections.Store(fmt.Sprintf("(Data: %d API: %d) Avg %v/s %v", transferStats, apiStats, lib.ByteCountSIFloat64(t.TransferRateValue()/float64(transferStats)), directionSymbolFmt(t.Direction)))
 	}
 }
 
