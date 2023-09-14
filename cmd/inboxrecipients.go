@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	inbox_recipient "github.com/Files-com/files-sdk-go/v2/inboxrecipient"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	inbox_recipient "github.com/Files-com/files-sdk-go/v3/inboxrecipient"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func InboxRecipients() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsInboxRecipientList
 			params.MaxPages = MaxPagesList
 
-			client := inbox_recipient.Client{Config: *config}
+			client := inbox_recipient.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -94,8 +94,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := inbox_recipient.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := inbox_recipient.Client{Config: config}
 
 			if cmd.Flags().Changed("share-after-create") {
 				paramsInboxRecipientCreate.ShareAfterCreate = flib.Bool(createShareAfterCreate)
@@ -104,7 +104,7 @@ json-styles: {raw, pretty}
 			var inboxRecipient interface{}
 			var err error
 			inboxRecipient, err = client.Create(paramsInboxRecipientCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), inboxRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsInboxRecipientCreate.InboxId, "inbox-id", 0, "Inbox to share.")

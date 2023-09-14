@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	ip_address "github.com/Files-com/files-sdk-go/v2/ipaddress"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	ip_address "github.com/Files-com/files-sdk-go/v3/ipaddress"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func IpAddresses() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressList
 			params.MaxPages = MaxPagesList
 
-			client := ip_address.Client{Config: *config}
+			client := ip_address.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,14 +93,14 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressGetExavaultReserved
 			params.MaxPages = MaxPagesGetExavaultReserved
 
-			client := ip_address.Client{Config: *config}
+			client := ip_address.Client{Config: config}
 			it, err := client.GetExavaultReserved(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -150,14 +150,14 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressGetReserved
 			params.MaxPages = MaxPagesGetReserved
 
-			client := ip_address.Client{Config: *config}
+			client := ip_address.Client{Config: config}
 			it, err := client.GetReserved(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	email_incoming_message "github.com/Files-com/files-sdk-go/v2/emailincomingmessage"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	email_incoming_message "github.com/Files-com/files-sdk-go/v3/emailincomingmessage"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func EmailIncomingMessages() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsEmailIncomingMessageList
 			params.MaxPages = MaxPagesList
 
-			client := email_incoming_message.Client{Config: *config}
+			client := email_incoming_message.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

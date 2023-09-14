@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/history"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/history"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +36,7 @@ func Histories() *cobra.Command {
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForFile
 			params.MaxPages = MaxPagesListForFile
 			if len(args) > 0 && args[0] != "" {
@@ -50,10 +50,10 @@ func Histories() *cobra.Command {
 				params.EndAt = nil
 			}
 
-			client := history.Client{Config: *config}
+			client := history.Client{Config: config}
 			it, err := client.ListForFile(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -109,7 +109,7 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForFolder
 			params.MaxPages = MaxPagesListForFolder
 			if len(args) > 0 && args[0] != "" {
@@ -123,10 +123,10 @@ json-styles: {raw, pretty}
 				params.EndAt = nil
 			}
 
-			client := history.Client{Config: *config}
+			client := history.Client{Config: config}
 			it, err := client.ListForFolder(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -182,7 +182,7 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForUser
 			params.MaxPages = MaxPagesListForUser
 
@@ -193,10 +193,10 @@ json-styles: {raw, pretty}
 				params.EndAt = nil
 			}
 
-			client := history.Client{Config: *config}
+			client := history.Client{Config: config}
 			it, err := client.ListForUser(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -252,7 +252,7 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListLogins
 			params.MaxPages = MaxPagesListLogins
 
@@ -263,10 +263,10 @@ json-styles: {raw, pretty}
 				params.EndAt = nil
 			}
 
-			client := history.Client{Config: *config}
+			client := history.Client{Config: config}
 			it, err := client.ListLogins(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -322,7 +322,7 @@ json-styles: {raw, pretty}
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
 
@@ -333,10 +333,10 @@ json-styles: {raw, pretty}
 				params.EndAt = nil
 			}
 
-			client := history.Client{Config: *config}
+			client := history.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

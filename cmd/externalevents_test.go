@@ -3,7 +3,7 @@ package cmd
 import (
 	"testing"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/stretchr/testify/assert"
 )
 

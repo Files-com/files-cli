@@ -33,7 +33,7 @@ Please take a look at the usage below to customize the serving parameters`,
 )
 
 func AgentInt(cmd *cobra.Command, requirePaths bool) error {
-	AgentService.Config = Profile(cmd).Config
+	AgentService.Config = *Profile(cmd).Config
 	return AgentService.Init(cmd.Context(), requirePaths)
 }
 

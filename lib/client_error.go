@@ -7,9 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Files-com/files-sdk-go/v2/lib/errors"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/lib/errors"
 )
 
 func ClientError(profile *Profiles, err error, out ...io.Writer) error {

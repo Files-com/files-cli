@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib/version"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 )
@@ -36,7 +36,7 @@ func ParseTag(tag string) string {
 	return tag
 }
 
-func GetLog(ctx context.Context, cmd *cobra.Command, config *files_sdk.Config, tag string, prepend string) error {
+func GetLog(ctx context.Context, cmd *cobra.Command, config files_sdk.Config, tag string, prepend string) error {
 	if tag == "" {
 		tag = "latest"
 	} else {
@@ -56,7 +56,7 @@ func GetLog(ctx context.Context, cmd *cobra.Command, config *files_sdk.Config, t
 	if err != nil {
 		return err
 	}
-	resp, err := config.GetHttpClient().Do(req)
+	resp, err := config.Do(req)
 	if err != nil {
 		return err
 	}
@@ -86,14 +86,14 @@ func GetLog(ctx context.Context, cmd *cobra.Command, config *files_sdk.Config, t
 	return err
 }
 
-func GetAllTags(ctx context.Context, config *files_sdk.Config, min string, max string) ([]string, error) {
+func GetAllTags(ctx context.Context, config files_sdk.Config, min string, max string) ([]string, error) {
 	var versions []string
 	req, err := http.NewRequestWithContext(ctx, "GET", Tags, nil)
 
 	if err != nil {
 		return versions, err
 	}
-	resp, err := config.GetHttpClient().Do(req)
+	resp, err := config.Do(req)
 	if err != nil {
 		return versions, err
 	}

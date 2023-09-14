@@ -5,9 +5,9 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	remote_server "github.com/Files-com/files-sdk-go/v2/remoteserver"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	remote_server "github.com/Files-com/files-sdk-go/v3/remoteserver"
 	"github.com/spf13/cobra"
 )
 
@@ -38,14 +38,14 @@ func RemoteServers() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
 
-			client := remote_server.Client{Config: *config}
+			client := remote_server.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,13 +93,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Find(paramsRemoteServerFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
@@ -123,13 +123,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.FindConfigurationFile(paramsRemoteServerFindConfigurationFile, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
@@ -162,8 +162,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			var RemoteServerCreateServerCertificateErr error
 			paramsRemoteServerCreate.ServerCertificate, RemoteServerCreateServerCertificateErr = lib.FetchKey("server-certificate", paramsRemoteServerCreate.ServerCertificate.Enum(), RemoteServerCreateServerCertificate)
@@ -207,7 +207,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Create(paramsRemoteServerCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -293,13 +293,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.ConfigurationFile(paramsRemoteServerConfigurationFile, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Id, "id", 0, "Remote Server ID.")
@@ -343,8 +343,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.RemoteServerUpdateParams{})
 			if convertErr != nil {
@@ -573,7 +573,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
@@ -660,8 +660,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := remote_server.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsRemoteServerDelete, files_sdk.WithContext(ctx))

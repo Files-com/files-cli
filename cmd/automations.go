@@ -5,9 +5,9 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/automation"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/automation"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +39,7 @@ func Automations() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
 
@@ -47,10 +47,10 @@ func Automations() *cobra.Command {
 				params.WithDeleted = flib.Bool(listWithDeleted)
 			}
 
-			client := automation.Client{Config: *config}
+			client := automation.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -99,13 +99,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := automation.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
 
 			var automation interface{}
 			var err error
 			automation, err = client.Find(paramsAutomationFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationFind.Id, "id", 0, "Automation ID.")
@@ -132,8 +132,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := automation.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
 
 			var AutomationCreateTriggerErr error
 			paramsAutomationCreate.Trigger, AutomationCreateTriggerErr = lib.FetchKey("trigger", paramsAutomationCreate.Trigger.Enum(), AutomationCreateTrigger)
@@ -156,7 +156,7 @@ json-styles: {raw, pretty}`)
 			var automation interface{}
 			var err error
 			automation, err = client.Create(paramsAutomationCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Source, "source", "", "Source Path")
@@ -196,8 +196,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := automation.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
 
 			var err error
 			err = client.ManualRun(paramsAutomationManualRun, files_sdk.WithContext(ctx))
@@ -231,8 +231,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := automation.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.AutomationUpdateParams{})
 			if convertErr != nil {
@@ -315,7 +315,7 @@ json-styles: {raw, pretty}`)
 			var automation interface{}
 			var err error
 			automation, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), automation, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
@@ -356,8 +356,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := automation.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsAutomationDelete, files_sdk.WithContext(ctx))

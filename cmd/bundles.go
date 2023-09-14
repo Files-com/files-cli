@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/bundle"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/bundle"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -39,14 +39,14 @@ func Bundles() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBundleList
 			params.MaxPages = MaxPagesList
 
-			client := bundle.Client{Config: *config}
+			client := bundle.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -95,13 +95,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
 
 			var bundle interface{}
 			var err error
 			bundle, err = client.Find(paramsBundleFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
@@ -136,8 +136,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
 
 			var BundleCreatePermissionsErr error
 			paramsBundleCreate.Permissions, BundleCreatePermissionsErr = lib.FetchKey("permissions", paramsBundleCreate.Permissions.Enum(), BundleCreatePermissions)
@@ -186,7 +186,7 @@ json-styles: {raw, pretty}`)
 			var bundle interface{}
 			var err error
 			bundle, err = client.Create(paramsBundleCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -236,8 +236,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
 
 			var err error
 			err = client.Share(paramsBundleShare, files_sdk.WithContext(ctx))
@@ -282,8 +282,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.BundleUpdateParams{})
 			if convertErr != nil {
@@ -384,7 +384,7 @@ json-styles: {raw, pretty}`)
 			var bundle interface{}
 			var err error
 			bundle, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundle, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
@@ -434,8 +434,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsBundleDelete, files_sdk.WithContext(ctx))

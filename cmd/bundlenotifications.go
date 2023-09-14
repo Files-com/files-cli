@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	bundle_notification "github.com/Files-com/files-sdk-go/v2/bundlenotification"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	bundle_notification "github.com/Files-com/files-sdk-go/v3/bundlenotification"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func BundleNotifications() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBundleNotificationList
 			params.MaxPages = MaxPagesList
 
-			client := bundle_notification.Client{Config: *config}
+			client := bundle_notification.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,13 +93,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle_notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle_notification.Client{Config: config}
 
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.Find(paramsBundleNotificationFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleNotificationFind.Id, "id", 0, "Bundle Notification ID.")
@@ -125,8 +125,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle_notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle_notification.Client{Config: config}
 
 			if cmd.Flags().Changed("notify-on-registration") {
 				paramsBundleNotificationCreate.NotifyOnRegistration = flib.Bool(createNotifyOnRegistration)
@@ -138,7 +138,7 @@ json-styles: {raw, pretty}`)
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.Create(paramsBundleNotificationCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.UserId, "user-id", 0, "The id of the user to notify.")
@@ -167,8 +167,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle_notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle_notification.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.BundleNotificationUpdateParams{})
 			if convertErr != nil {
@@ -188,7 +188,7 @@ json-styles: {raw, pretty}`)
 			var bundleNotification interface{}
 			var err error
 			bundleNotification, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), bundleNotification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleNotificationUpdate.Id, "id", 0, "Bundle Notification ID.")
@@ -214,8 +214,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := bundle_notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle_notification.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsBundleNotificationDelete, files_sdk.WithContext(ctx))

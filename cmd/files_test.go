@@ -11,21 +11,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/stretchr/testify/require"
-
 	cliLib "github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/file"
-	"github.com/Files-com/files-sdk-go/v2/folder"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/file"
+	"github.com/Files-com/files-sdk-go/v3/folder"
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/dnaeon/go-vcr/cassette"
 	recorder "github.com/dnaeon/go-vcr/recorder"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error) {
-	config := files_sdk.Config{}
+func CreateConfig(fixture string) (*recorder.Recorder, files_sdk.Config, error) {
 	var r *recorder.Recorder
 	var err error
 	if os.Getenv("GITLAB") != "" {
@@ -35,13 +33,13 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 		r, err = recorder.New(filepath.Join("fixtures", fixture))
 	}
 	if err != nil {
-		return r, &config, err
+		return r, files_sdk.Config{}, err
 	}
 
 	httpClient := &http.Client{
 		Transport: r,
 	}
-	config.SetHttpClient(httpClient)
+	config := files_sdk.Config{}.Init().SetCustomClient(httpClient)
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Key")
@@ -66,7 +64,7 @@ func CreateConfig(fixture string) (*recorder.Recorder, *files_sdk.Config, error)
 		return false
 	})
 
-	return r, &config, nil
+	return r, config, nil
 }
 
 func TestFiles_Delete_Recursive(t *testing.T) {
@@ -77,8 +75,8 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 	}
 	defer r.Stop()
 
-	folderClient := folder.Client{Config: *config}
-	fileClient := file.Client{Config: *config}
+	folderClient := folder.Client{Config: config}
+	fileClient := file.Client{Config: config}
 
 	_, err = folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete-r"})
 	if !strings.Contains(err.Error(), "Destination Exists") {
@@ -104,8 +102,8 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	}
 	defer r.Stop()
 
-	folderClient := folder.Client{Config: *config}
-	fileClient := file.Client{Config: *config}
+	folderClient := folder.Client{Config: config}
+	fileClient := file.Client{Config: config}
 
 	folderClient.Create(files_sdk.FolderCreateParams{Path: "test-dir-files-delete"})
 	err = fileClient.Upload(
@@ -127,8 +125,8 @@ func TestFolders_ListFor_FilterBy(t *testing.T) {
 	}
 	defer r.Stop()
 
-	folderClient := folder.Client{Config: *config}
-	fileClient := file.Client{Config: *config}
+	folderClient := folder.Client{Config: config}
+	fileClient := file.Client{Config: config}
 
 	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy"})
 	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy/cars"})
@@ -167,7 +165,7 @@ TestFolders_ListFor_FilterBy/cars/super-car.jpg`)
 	})
 }
 
-func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([]byte, []byte) {
+func callCmd(command *cobra.Command, config files_sdk.Config, args []string) ([]byte, []byte) {
 	command.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	command.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if OutputPath != "" {
@@ -188,10 +186,10 @@ func callCmd(command *cobra.Command, config *files_sdk.Config, args []string) ([
 	return stdOut.Bytes(), errOut.Bytes()
 }
 
-func Cmd(config *files_sdk.Config, command *cobra.Command, displayArgs []string, hiddenArgs []string) lib.Cmd {
+func Cmd(config files_sdk.Config, command *cobra.Command, displayArgs []string, hiddenArgs []string) lib.Cmd {
 	ctx := context.WithValue(context.Background(), "config", config)
 	ctx = context.WithValue(ctx, "testing", true)
-	profile := &cliLib.Profiles{Config: config}
+	profile := &cliLib.Profiles{Config: &config}
 	profile.Init()
 	ctx = context.WithValue(ctx, "profile", profile)
 	command.SetArgs(append(displayArgs, hiddenArgs...))

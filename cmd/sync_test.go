@@ -7,11 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/file"
-	"github.com/stretchr/testify/require"
-
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSyncCmd(t *testing.T) {
@@ -106,7 +105,7 @@ func TestSyncCmd(t *testing.T) {
 			}
 			assert.Contains(t, string(stdOut), maybeInsert(tt.stdout, uploadFile))
 
-			client := file.Client{Config: *config}
+			client := file.Client{Config: config}
 			if err := client.Delete(files_sdk.FileDeleteParams{Path: uploadFile}); err != nil {
 				responseError, ok := err.(files_sdk.ResponseError)
 				if !(ok && responseError.Type == "not-found") {

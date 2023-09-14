@@ -13,22 +13,18 @@ import (
 	"strings"
 	"time"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	ip_address "github.com/Files-com/files-sdk-go/v3/ipaddress"
+	remote_server "github.com/Files-com/files-sdk-go/v3/remoteserver"
 	"github.com/drakkan/sftpgo/v2/common"
-
-	"github.com/drakkan/sftpgo/v2/util"
-	"github.com/rs/zerolog"
-
-	"github.com/drakkan/sftpgo/v2/logger"
-
 	"github.com/drakkan/sftpgo/v2/config"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	ip_address "github.com/Files-com/files-sdk-go/v2/ipaddress"
-	remote_server "github.com/Files-com/files-sdk-go/v2/remoteserver"
 	"github.com/drakkan/sftpgo/v2/dataprovider"
 	"github.com/drakkan/sftpgo/v2/kms"
+	"github.com/drakkan/sftpgo/v2/logger"
 	"github.com/drakkan/sftpgo/v2/service"
+	"github.com/drakkan/sftpgo/v2/util"
 	"github.com/drakkan/sftpgo/v2/vfs"
+	"github.com/rs/zerolog"
 	"github.com/sftpgo/sdk"
 	"github.com/spf13/pflag"
 )
@@ -48,7 +44,7 @@ const (
 
 type AgentService struct {
 	service.Service
-	*files_sdk.Config
+	files_sdk.Config
 	ConfigPath string
 	files_sdk.RemoteServerConfigurationFile
 	portableFsProvider                 string
@@ -112,10 +108,10 @@ by overlapping round-trip times`)
 func (a *AgentService) Init(ctx context.Context, requirePaths bool) error {
 	a.Context = ctx
 	a.Config.Debug = true
-	a.Config.SetLogger(logger.GetLogger())
+	a.Config.Logger = logger.GetLogger()
 	a.Config.Subdomain = a.subdomain
 	profile := &Profiles{}
-	err := profile.Load(&files_sdk.Config{}, "default")
+	err := profile.Load(&a.Config, "default")
 	if err != nil {
 		return err
 	}
@@ -170,7 +166,7 @@ func (a *AgentService) LoadConfig(ctx context.Context) error {
 	if a.LogFilePath == "" {
 		return fmt.Errorf("log path is empty")
 	}
-	a.Config.SetLogger(logger.GetLogger())
+	a.Config.Logger = logger.GetLogger()
 	err := a.loadConfig()
 	if err != nil {
 		return err
@@ -257,7 +253,7 @@ func (a *AgentService) Start(_ bool) error {
 		return err
 	}
 	logger.Debug("files-cli", "", "AgentService.Start")
-	a.Config.SetLogger(logger.GetLogger())
+	a.Config.Logger = logger.GetLogger()
 	err = a.Service.StartPortableMode(int(a.Port), -1, -1, []string{}, false,
 		false, "", "", "", "")
 	if err == nil {
@@ -386,7 +382,7 @@ func (a *AgentService) afterStart() {
 
 func (a *AgentService) pingServer() {
 	logger.Debug("files-cli", "", "Contacting Files.com to attempt an agent connection")
-	a.Config.SetLogger(logger.GetLogger())
+	a.Config.Logger = logger.GetLogger()
 	ctx, cancel := context.WithTimeout(a.Context, time.Minute*6)
 	defer cancel()
 	attemptCount := 0
@@ -461,7 +457,7 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 		a.ipWhitelist[ip] = true
 	}
 
-	client := ip_address.Client{Config: *a.Config}
+	client := ip_address.Client{Config: a.Config}
 	iter, err := client.GetReserved(files_sdk.IpAddressGetReservedParams{}, files_sdk.WithContext(ctx))
 	if err != nil {
 		return
@@ -482,10 +478,9 @@ func (a *AgentService) loadPublicIpAddress(ctx context.Context) (err error) {
 	}
 
 	if a.Config.Subdomain != "" {
-		a.Config.RootPath()
-		url, err := url.Parse(a.Config.Endpoint)
+		url, err := url.Parse(a.Config.Endpoint())
 		if err != nil {
-			logger.Debug("files-cli", "", "Unable to parse url %v", a.Config.Endpoint)
+			logger.Debug("files-cli", "", "Unable to parse url %v", a.Config.Endpoint())
 			return err
 		}
 		ips, err := net.LookupIP(url.Hostname())
@@ -578,7 +573,7 @@ func (a *AgentService) reloadConfig() error {
 }
 
 func (a *AgentService) updateCloudConfig(ctx context.Context, status string, source string) error {
-	client := remote_server.Client{Config: *a.Config}
+	client := remote_server.Client{Config: a.Config}
 	params := files_sdk.RemoteServerConfigurationFileParams{}
 
 	params.Status = status

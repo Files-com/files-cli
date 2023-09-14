@@ -9,9 +9,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 func TestHandleResponse(t *testing.T) {

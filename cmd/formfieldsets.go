@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	form_field_set "github.com/Files-com/files-sdk-go/v2/formfieldset"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	form_field_set "github.com/Files-com/files-sdk-go/v3/formfieldset"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func FormFieldSets() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsFormFieldSetList
 			params.MaxPages = MaxPagesList
 
-			client := form_field_set.Client{Config: *config}
+			client := form_field_set.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,13 +93,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := form_field_set.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := form_field_set.Client{Config: config}
 
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFormFieldSetFind.Id, "id", 0, "Form Field Set ID.")
@@ -126,8 +126,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := form_field_set.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := form_field_set.Client{Config: config}
 
 			if cmd.Flags().Changed("skip-email") {
 				paramsFormFieldSetCreate.SkipEmail = flib.Bool(createSkipEmail)
@@ -142,7 +142,7 @@ json-styles: {raw, pretty}`)
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.Create(paramsFormFieldSetCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -173,8 +173,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := form_field_set.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := form_field_set.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.FormFieldSetUpdateParams{})
 			if convertErr != nil {
@@ -203,7 +203,7 @@ json-styles: {raw, pretty}`)
 			var formFieldSet interface{}
 			var err error
 			formFieldSet, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), formFieldSet, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
@@ -231,8 +231,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := form_field_set.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := form_field_set.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsFormFieldSetDelete, files_sdk.WithContext(ctx))

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/file"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +18,7 @@ import (
 
 func TestBundles_Create(t *testing.T) {
 	t.Run("it only send the explicit flags in the request", func(t *testing.T) {
-		config := &files_sdk.Config{}
+		config := files_sdk.Config{}.Init()
 
 		debugLog := filepath.Join(t.TempDir(), "debug.log")
 		logFile, err := os.Create(debugLog)
@@ -26,7 +26,7 @@ func TestBundles_Create(t *testing.T) {
 			require.NoError(t, err)
 		}
 		config.Debug = true
-		config.SetLogger(log.New(logFile, "", log.LstdFlags))
+		config.Logger = log.New(logFile, "", log.LstdFlags)
 		callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1",
 		})
@@ -37,7 +37,7 @@ func TestBundles_Create(t *testing.T) {
 	})
 
 	t.Run("it will send explicit time flags", func(t *testing.T) {
-		config := &files_sdk.Config{}
+		config := files_sdk.Config{}.Init()
 
 		debugLog := filepath.Join(t.TempDir(), "debug.log")
 		logFile, err := os.Create(debugLog)
@@ -45,7 +45,7 @@ func TestBundles_Create(t *testing.T) {
 			require.NoError(t, err)
 		}
 		config.Debug = true
-		config.SetLogger(log.New(logFile, "", log.LstdFlags))
+		config.Logger = log.New(logFile, "", log.LstdFlags)
 
 		expires := time.Now().Format(time.RFC3339)
 		callCmd(Bundles(), config, []string{
@@ -58,7 +58,7 @@ func TestBundles_Create(t *testing.T) {
 	})
 
 	t.Run("it requires value for time flag", func(t *testing.T) {
-		config := &files_sdk.Config{}
+		config := files_sdk.Config{}.Init()
 
 		_, stderr := callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1", "--expires-at",
@@ -70,7 +70,7 @@ func TestBundles_Create(t *testing.T) {
 	t.Run("it returns an API error", func(t *testing.T) {
 		server := (&file.MockAPIServer{T: t}).Do()
 		defer server.Shutdown()
-		config := &server.Client().Config
+		config := server.Client().Config
 		server.GetRouter().POST("/api/rest/v1/bundles", func(context *gin.Context) {
 			err := files_sdk.ResponseError{
 				ErrorMessage: "Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you",

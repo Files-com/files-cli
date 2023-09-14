@@ -3,8 +3,7 @@ package lib
 import (
 	"context"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/evertras/bubble-table/table"
 )

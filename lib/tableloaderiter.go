@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/bradfitz/iter"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"

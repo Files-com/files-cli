@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/behavior"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/behavior"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func Behaviors() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
 
-			client := behavior.Client{Config: *config}
+			client := behavior.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -91,13 +91,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			var behavior interface{}
 			var err error
 			behavior, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
@@ -124,17 +124,17 @@ json-styles: {raw, pretty}`)
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
 
-			client := behavior.Client{Config: *config}
+			client := behavior.Client{Config: config}
 			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -185,8 +185,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
@@ -194,7 +194,7 @@ json-styles: {raw, pretty}
 			var behavior interface{}
 			var err error
 			behavior, err = client.Create(paramsBehaviorCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
@@ -222,8 +222,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			var err error
 			err = client.WebhookTest(paramsBehaviorWebhookTest, files_sdk.WithContext(ctx))
@@ -258,8 +258,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.BehaviorUpdateParams{})
 			if convertErr != nil {
@@ -296,7 +296,7 @@ json-styles: {raw, pretty}`)
 			var behavior interface{}
 			var err error
 			behavior, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
@@ -326,8 +326,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))

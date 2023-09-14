@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	remote_bandwidth_snapshot "github.com/Files-com/files-sdk-go/v2/remotebandwidthsnapshot"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	remote_bandwidth_snapshot "github.com/Files-com/files-sdk-go/v3/remotebandwidthsnapshot"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func RemoteBandwidthSnapshots() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteBandwidthSnapshotList
 			params.MaxPages = MaxPagesList
 
-			client := remote_bandwidth_snapshot.Client{Config: *config}
+			client := remote_bandwidth_snapshot.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

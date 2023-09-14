@@ -5,8 +5,8 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	external_event "github.com/Files-com/files-sdk-go/v2/externalevent"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	external_event "github.com/Files-com/files-sdk-go/v3/externalevent"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func ExternalEvents() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsExternalEventList
 			params.MaxPages = MaxPagesList
 
-			client := external_event.Client{Config: *config}
+			client := external_event.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := external_event.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := external_event.Client{Config: config}
 
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Find(paramsExternalEventFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
@@ -123,8 +123,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := external_event.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := external_event.Client{Config: config}
 
 			var ExternalEventCreateStatusErr error
 			paramsExternalEventCreate.Status, ExternalEventCreateStatusErr = lib.FetchKey("status", paramsExternalEventCreate.Status.Enum(), ExternalEventCreateStatus)
@@ -135,7 +135,7 @@ json-styles: {raw, pretty}`)
 			var externalEvent interface{}
 			var err error
 			externalEvent, err = client.Create(paramsExternalEventCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), externalEvent, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))

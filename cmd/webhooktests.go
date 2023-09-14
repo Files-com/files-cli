@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/Files-com/files-sdk-go/v2/webhooktest"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/webhooktest"
 	"github.com/spf13/cobra"
 )
 
@@ -36,8 +36,8 @@ func WebhookTests() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := webhooktest.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := webhooktest.Client{Config: config}
 
 			if cmd.Flags().Changed("file-as-body") {
 				paramsWebhookTestCreate.FileAsBody = flib.Bool(createFileAsBody)
@@ -49,7 +49,7 @@ func WebhookTests() *cobra.Command {
 			var webhookTest interface{}
 			var err error
 			webhookTest, err = client.Create(paramsWebhookTestCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), webhookTest, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")

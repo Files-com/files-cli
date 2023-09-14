@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	file "github.com/Files-com/files-sdk-go/v2/file"
-	"github.com/Files-com/files-sdk-go/v2/file/manager"
-	"github.com/Files-com/files-sdk-go/v2/folder"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/file"
+	"github.com/Files-com/files-sdk-go/v3/file/manager"
+	"github.com/Files-com/files-sdk-go/v3/folder"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +47,7 @@ func Folders() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsFolderListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
@@ -66,7 +66,7 @@ func Folders() *cobra.Command {
 
 			var it lib.Iter
 			var err error
-			fileClient := file.Client{Config: *config}
+			fileClient := file.Client{Config: config}
 			if listRecursively {
 				params.ConcurrencyManager = flib.NewConstrainedWorkGroup(concurrentDirectoryScanning)
 				it, err = fileClient.ListForRecursive(params, files_sdk.WithContext(ctx))
@@ -141,8 +141,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := folder.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := folder.Client{Config: config}
 
 			if cmd.Flags().Changed("mkdir-parents") {
 				paramsFolderCreate.MkdirParents = flib.Bool(createMkdirParents)
@@ -158,7 +158,7 @@ json-styles: {raw, pretty}
 			var file interface{}
 			var err error
 			file, err = client.Create(paramsFolderCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFolderCreate.Path, "path", "", "Path to operate on.")

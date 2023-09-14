@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/behavior"
-	"github.com/Files-com/files-sdk-go/v2/folder"
-	remote_server "github.com/Files-com/files-sdk-go/v2/remoteserver"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/behavior"
+	"github.com/Files-com/files-sdk-go/v3/folder"
+	remote_server "github.com/Files-com/files-sdk-go/v3/remoteserver"
 	"github.com/spf13/cobra"
 )
 
@@ -74,7 +74,7 @@ func RemoteMounts() *cobra.Command {
 				false,
 				cmd.OutOrStdout(),
 				cmd.ErrOrStderr(),
-				Profile(cmd).Logger(),
+				Profile(cmd).Logger,
 			)
 
 			return err
@@ -103,14 +103,14 @@ func RemoteMounts() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
 
-			client := behavior.Client{Config: *config}
+			client := behavior.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -150,8 +150,8 @@ func RemoteMounts() *cobra.Command {
 		Long:  `Show Remote Mount`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			var resource interface{}
 			var err error
@@ -161,7 +161,7 @@ func RemoteMounts() *cobra.Command {
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
-			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
@@ -186,8 +186,8 @@ func RemoteMounts() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := behavior.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))
@@ -233,7 +233,7 @@ func RemoteMounts() *cobra.Command {
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
-			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&updateParams.Id, "id", 0, "Behavior ID.")

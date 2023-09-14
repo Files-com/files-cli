@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/style"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/style"
 	"github.com/spf13/cobra"
 )
 
@@ -33,8 +33,8 @@ func Styles() *cobra.Command {
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := style.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := style.Client{Config: config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleFind.Path = args[0]
@@ -42,7 +42,7 @@ func Styles() *cobra.Command {
 			var style interface{}
 			var err error
 			style, err = client.Find(paramsStyleFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsStyleFind.Path, "path", "", "Style path.")
@@ -66,8 +66,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := style.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := style.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.StyleUpdateParams{})
 			if convertErr != nil {
@@ -86,7 +86,7 @@ json-styles: {raw, pretty}`)
 			var style interface{}
 			var err error
 			style, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), style, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
@@ -110,8 +110,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := style.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := style.Client{Config: config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsStyleDelete.Path = args[0]

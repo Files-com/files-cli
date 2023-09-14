@@ -6,11 +6,10 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Files-com/files-sdk-go/v3/file"
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/Files-com/files-sdk-go/v2/file"
-	"github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 func TestDownload(t *testing.T) {
@@ -24,7 +23,7 @@ func TestDownload(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				sourceFs := (&file.FS{Context: context.Background()}).Init(*config, false)
+				sourceFs := (&file.FS{Context: context.Background()}).Init(config, false)
 				lib.BuildPathSpecTest(t, mutex, tt, sourceFs, destinationFs, func(source, destination string) lib.Cmd {
 					return Cmd(config, Download(), []string{source, destination}, []string{"--format", "text"})
 				})

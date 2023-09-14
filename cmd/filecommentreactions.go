@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	file_comment_reaction "github.com/Files-com/files-sdk-go/v2/filecommentreaction"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	file_comment_reaction "github.com/Files-com/files-sdk-go/v3/filecommentreaction"
 	"github.com/spf13/cobra"
 )
 
@@ -33,13 +33,13 @@ func FileCommentReactions() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_comment_reaction.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_comment_reaction.Client{Config: config}
 
 			var fileCommentReaction interface{}
 			var err error
 			fileCommentReaction, err = client.Create(paramsFileCommentReactionCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), fileCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -65,8 +65,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_comment_reaction.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_comment_reaction.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsFileCommentReactionDelete, files_sdk.WithContext(ctx))

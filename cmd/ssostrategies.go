@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	sso_strategy "github.com/Files-com/files-sdk-go/v2/ssostrategy"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	sso_strategy "github.com/Files-com/files-sdk-go/v3/ssostrategy"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func SsoStrategies() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSsoStrategyList
 			params.MaxPages = MaxPagesList
 
-			client := sso_strategy.Client{Config: *config}
+			client := sso_strategy.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -91,13 +91,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sso_strategy.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sso_strategy.Client{Config: config}
 
 			var ssoStrategy interface{}
 			var err error
 			ssoStrategy, err = client.Find(paramsSsoStrategyFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), ssoStrategy, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
@@ -121,8 +121,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sso_strategy.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sso_strategy.Client{Config: config}
 
 			var err error
 			err = client.Sync(paramsSsoStrategySync, files_sdk.WithContext(ctx))

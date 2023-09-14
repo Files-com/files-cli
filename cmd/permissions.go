@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/Files-com/files-sdk-go/v2/permission"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/permission"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func Permissions() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
 			if len(args) > 0 && args[0] != "" {
@@ -49,10 +49,10 @@ func Permissions() *cobra.Command {
 				params.IncludeGroups = flib.Bool(listIncludeGroups)
 			}
 
-			client := permission.Client{Config: *config}
+			client := permission.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -105,8 +105,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := permission.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := permission.Client{Config: config}
 
 			if cmd.Flags().Changed("recursive") {
 				paramsPermissionCreate.Recursive = flib.Bool(createRecursive)
@@ -118,7 +118,7 @@ json-styles: {raw, pretty}
 			var permission interface{}
 			var err error
 			permission, err = client.Create(paramsPermissionCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), permission, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
@@ -147,8 +147,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := permission.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := permission.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsPermissionDelete, files_sdk.WithContext(ctx))

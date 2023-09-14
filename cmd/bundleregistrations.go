@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	bundle_registration "github.com/Files-com/files-sdk-go/v2/bundleregistration"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	bundle_registration "github.com/Files-com/files-sdk-go/v3/bundleregistration"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func BundleRegistrations() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBundleRegistrationList
 			params.MaxPages = MaxPagesList
 
-			client := bundle_registration.Client{Config: *config}
+			client := bundle_registration.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

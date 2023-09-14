@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/Files-com/files-sdk-go/v2/notification"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/notification"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func Notifications() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsNotificationList
 			params.MaxPages = MaxPagesList
 			if len(args) > 0 && args[0] != "" {
@@ -49,10 +49,10 @@ func Notifications() *cobra.Command {
 				params.IncludeAncestors = flib.Bool(listIncludeAncestors)
 			}
 
-			client := notification.Client{Config: *config}
+			client := notification.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -104,13 +104,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := notification.Client{Config: config}
 
 			var notification interface{}
 			var err error
 			notification, err = client.Find(paramsNotificationFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsNotificationFind.Id, "id", 0, "Notification ID.")
@@ -142,8 +142,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := notification.Client{Config: config}
 
 			if cmd.Flags().Changed("notify-on-copy") {
 				paramsNotificationCreate.NotifyOnCopy = flib.Bool(createNotifyOnCopy)
@@ -176,7 +176,7 @@ json-styles: {raw, pretty}`)
 			var notification interface{}
 			var err error
 			notification, err = client.Create(paramsNotificationCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.UserId, "user-id", 0, "The id of the user to notify. Provide `user_id`, `username` or `group_id`.")
@@ -222,8 +222,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := notification.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.NotificationUpdateParams{})
 			if convertErr != nil {
@@ -276,7 +276,7 @@ json-styles: {raw, pretty}`)
 			var notification interface{}
 			var err error
 			notification, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), notification, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.Id, "id", 0, "Notification ID.")
@@ -311,8 +311,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := notification.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := notification.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsNotificationDelete, files_sdk.WithContext(ctx))

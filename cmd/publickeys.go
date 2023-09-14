@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	public_key "github.com/Files-com/files-sdk-go/v2/publickey"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	public_key "github.com/Files-com/files-sdk-go/v3/publickey"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func PublicKeys() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPublicKeyList
 			params.MaxPages = MaxPagesList
 
-			client := public_key.Client{Config: *config}
+			client := public_key.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := public_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := public_key.Client{Config: config}
 
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Find(paramsPublicKeyFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
@@ -122,13 +122,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := public_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := public_key.Client{Config: config}
 
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Create(paramsPublicKeyCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -154,8 +154,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := public_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := public_key.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.PublicKeyUpdateParams{})
 			if convertErr != nil {
@@ -172,7 +172,7 @@ json-styles: {raw, pretty}`)
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), publicKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")
@@ -197,8 +197,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := public_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := public_key.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsPublicKeyDelete, files_sdk.WithContext(ctx))

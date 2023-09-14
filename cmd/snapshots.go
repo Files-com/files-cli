@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/snapshot"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/snapshot"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func Snapshots() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSnapshotList
 			params.MaxPages = MaxPagesList
 
-			client := snapshot.Client{Config: *config}
+			client := snapshot.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := snapshot.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := snapshot.Client{Config: config}
 
 			var snapshot interface{}
 			var err error
 			snapshot, err = client.Find(paramsSnapshotFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSnapshotFind.Id, "id", 0, "Snapshot ID.")
@@ -122,8 +122,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := snapshot.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := snapshot.Client{Config: config}
 
 			if paramsSnapshotCreate.ExpiresAt.IsZero() {
 				paramsSnapshotCreate.ExpiresAt = nil
@@ -132,7 +132,7 @@ json-styles: {raw, pretty}`)
 			var snapshot interface{}
 			var err error
 			snapshot, err = client.Create(paramsSnapshotCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	paramsSnapshotCreate.ExpiresAt = &time.Time{}
@@ -159,8 +159,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := snapshot.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := snapshot.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.SnapshotUpdateParams{})
 			if convertErr != nil {
@@ -187,7 +187,7 @@ json-styles: {raw, pretty}`)
 			var snapshot interface{}
 			var err error
 			snapshot, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), snapshot, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSnapshotUpdate.Id, "id", 0, "Snapshot ID.")
@@ -215,8 +215,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := snapshot.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := snapshot.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsSnapshotDelete, files_sdk.WithContext(ctx))

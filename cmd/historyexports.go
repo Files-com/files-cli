@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	history_export "github.com/Files-com/files-sdk-go/v2/historyexport"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	history_export "github.com/Files-com/files-sdk-go/v3/historyexport"
 	"github.com/spf13/cobra"
 )
 
@@ -34,13 +34,13 @@ func HistoryExports() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := history_export.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := history_export.Client{Config: config}
 
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Find(paramsHistoryExportFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
@@ -64,8 +64,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := history_export.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := history_export.Client{Config: config}
 
 			if paramsHistoryExportCreate.StartAt.IsZero() {
 				paramsHistoryExportCreate.StartAt = nil
@@ -77,7 +77,7 @@ json-styles: {raw, pretty}`)
 			var historyExport interface{}
 			var err error
 			historyExport, err = client.Create(paramsHistoryExportCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), historyExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsHistoryExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

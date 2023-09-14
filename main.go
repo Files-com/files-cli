@@ -4,7 +4,7 @@ import (
 	_ "embed"
 
 	"github.com/Files-com/files-cli/cmd"
-	files "github.com/Files-com/files-sdk-go/v2"
+	files "github.com/Files-com/files-sdk-go/v3"
 )
 
 var (
@@ -14,5 +14,5 @@ var (
 )
 
 func main() {
-	cmd.Init(version, commit, date, &files.GlobalConfig)
+	cmd.Init(version, commit, date, files.GlobalConfig)
 }

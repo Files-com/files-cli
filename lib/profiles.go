@@ -3,7 +3,10 @@ package lib
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"os/user"
 	"path/filepath"
 	"reflect"
@@ -11,16 +14,10 @@ import (
 	"syscall"
 	"time"
 
-	"golang.org/x/crypto/ssh/terminal"
-
-	"fmt"
-	"io"
-	"os"
-
 	"github.com/Files-com/files-cli/lib/version"
-	"github.com/Files-com/files-sdk-go/v2/session"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/session"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Overrides struct {
@@ -158,10 +155,10 @@ func (p *Profiles) read() (b []byte, err error) {
 
 func (p *Profiles) SetOnConfig() {
 	p.Config.SessionId = p.Current().SessionId
-	if p.Config.Endpoint == "" {
-		p.Config.Endpoint = p.Current().Endpoint
+	if p.Config.Endpoint() == "" {
+		p.Config.EndpointOverride = p.Current().Endpoint
 	} else {
-		p.Current().Endpoint = p.Config.Endpoint
+		p.Current().Endpoint = p.Config.Endpoint()
 	}
 	if p.Config.Subdomain == "" {
 		p.Config.Subdomain = p.Current().Subdomain
@@ -225,7 +222,7 @@ func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context
 	return func() (version.Version, bool) {
 		checkingFailed := func(err error) bool {
 			if err != nil {
-				config.Logger().Printf("Versioning checking failed: %v", err.Error())
+				config.Logger.Printf("Versioning checking failed: %v", err.Error())
 				return true
 			}
 			return false
@@ -237,12 +234,13 @@ func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
-
-		resp, err := config.GetHttpClient().Do(req)
+		req.Close = true
+		resp, err := config.Do(req)
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
 		data, err := io.ReadAll(resp.Body)
+		resp.Body.Close()
 		if checkingFailed(err) {
 			return version.Version{}, false
 		}
@@ -258,7 +256,8 @@ func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context
 			if checkingFailed(err) {
 				return version.Version{}, false
 			}
-			config.Logger().Printf("Latest version: %v", latestVersion)
+
+			config.Logger.Printf("Latest version: %v", latestVersion)
 			return latestVersion, true
 		} else {
 			checkingFailed(fmt.Errorf("failed to parse tag_name from releases - %v", releases))

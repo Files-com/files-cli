@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/user"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/user"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -85,7 +85,7 @@ func findOrCreateTestUser(p files_sdk.UserCreateParams) (files_sdk.User, error) 
 
 	defer r.Stop()
 
-	client := user.Client{Config: *config}
+	client := user.Client{Config: config}
 	it, err := client.List(files_sdk.UserListParams{})
 	if err != nil {
 		return files_sdk.User{}, err
@@ -112,7 +112,7 @@ func deleteUser(u files_sdk.User) error {
 
 	defer r.Stop()
 
-	client := user.Client{Config: *config}
+	client := user.Client{Config: config}
 
 	return client.Delete(files_sdk.UserDeleteParams{Id: u.Id})
 }

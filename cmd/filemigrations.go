@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	file_migration "github.com/Files-com/files-sdk-go/v2/filemigration"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	file_migration "github.com/Files-com/files-sdk-go/v3/filemigration"
 	"github.com/spf13/cobra"
 )
 
@@ -33,13 +33,13 @@ func FileMigrations() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_migration.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_migration.Client{Config: config}
 
 			var fileMigration interface{}
 			var err error
 			fileMigration, err = client.Find(paramsFileMigrationFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), fileMigration, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")

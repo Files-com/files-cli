@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	share_group "github.com/Files-com/files-sdk-go/v2/sharegroup"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	share_group "github.com/Files-com/files-sdk-go/v3/sharegroup"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func ShareGroups() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsShareGroupList
 			params.MaxPages = MaxPagesList
 
-			client := share_group.Client{Config: *config}
+			client := share_group.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := share_group.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := share_group.Client{Config: config}
 
 			var shareGroup interface{}
 			var err error
 			shareGroup, err = client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsShareGroupFind.Id, "id", 0, "Share Group ID.")
@@ -122,13 +122,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := share_group.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := share_group.Client{Config: config}
 
 			var shareGroup interface{}
 			var err error
 			shareGroup, err = client.Create(paramsShareGroupCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsShareGroupCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -154,8 +154,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := share_group.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := share_group.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.ShareGroupUpdateParams{})
 			if convertErr != nil {
@@ -178,7 +178,7 @@ json-styles: {raw, pretty}`)
 			var shareGroup interface{}
 			var err error
 			shareGroup, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), shareGroup, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsShareGroupUpdate.Id, "id", 0, "Share Group ID.")
@@ -204,8 +204,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := share_group.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := share_group.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsShareGroupDelete, files_sdk.WithContext(ctx))

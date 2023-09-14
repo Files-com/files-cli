@@ -7,9 +7,8 @@ import (
 	"sync"
 
 	"github.com/Files-com/files-cli/lib"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	file_migration "github.com/Files-com/files-sdk-go/v2/filemigration"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	file_migration "github.com/Files-com/files-sdk-go/v3/filemigration"
 	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
 )

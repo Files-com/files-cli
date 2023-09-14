@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/Files-com/files-sdk-go/v2/lock"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/lock"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func Locks() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsLockListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
@@ -49,10 +49,10 @@ func Locks() *cobra.Command {
 				params.IncludeChildren = flib.Bool(listForIncludeChildren)
 			}
 
-			client := lock.Client{Config: *config}
+			client := lock.Client{Config: config}
 			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -104,8 +104,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := lock.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := lock.Client{Config: config}
 
 			if cmd.Flags().Changed("allow-access-by-any-user") {
 				paramsLockCreate.AllowAccessByAnyUser = flib.Bool(createAllowAccessByAnyUser)
@@ -120,7 +120,7 @@ json-styles: {raw, pretty}
 			var lock interface{}
 			var err error
 			lock, err = client.Create(paramsLockCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), lock, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
@@ -148,8 +148,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := lock.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := lock.Client{Config: config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsLockDelete.Path = args[0]

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	message_comment_reaction "github.com/Files-com/files-sdk-go/v2/messagecommentreaction"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	message_comment_reaction "github.com/Files-com/files-sdk-go/v3/messagecommentreaction"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func MessageCommentReactions() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsMessageCommentReactionList
 			params.MaxPages = MaxPagesList
 
-			client := message_comment_reaction.Client{Config: *config}
+			client := message_comment_reaction.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,13 +93,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment_reaction.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment_reaction.Client{Config: config}
 
 			var messageCommentReaction interface{}
 			var err error
 			messageCommentReaction, err = client.Find(paramsMessageCommentReactionFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentReactionFind.Id, "id", 0, "Message Comment Reaction ID.")
@@ -123,13 +123,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment_reaction.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment_reaction.Client{Config: config}
 
 			var messageCommentReaction interface{}
 			var err error
 			messageCommentReaction, err = client.Create(paramsMessageCommentReactionCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), messageCommentReaction, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -154,8 +154,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment_reaction.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment_reaction.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsMessageCommentReactionDelete, files_sdk.WithContext(ctx))

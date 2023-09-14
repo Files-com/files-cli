@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	message_comment "github.com/Files-com/files-sdk-go/v2/messagecomment"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	message_comment "github.com/Files-com/files-sdk-go/v3/messagecomment"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func MessageComments() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsMessageCommentList
 			params.MaxPages = MaxPagesList
 
-			client := message_comment.Client{Config: *config}
+			client := message_comment.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -93,13 +93,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment.Client{Config: config}
 
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.Find(paramsMessageCommentFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsMessageCommentFind.Id, "id", 0, "Message Comment ID.")
@@ -123,13 +123,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment.Client{Config: config}
 
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.Create(paramsMessageCommentCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsMessageCommentCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -154,8 +154,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.MessageCommentUpdateParams{})
 			if convertErr != nil {
@@ -172,7 +172,7 @@ json-styles: {raw, pretty}`)
 			var messageComment interface{}
 			var err error
 			messageComment, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), messageComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsMessageCommentUpdate.Id, "id", 0, "Message Comment ID.")
@@ -197,8 +197,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := message_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := message_comment.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsMessageCommentDelete, files_sdk.WithContext(ctx))

@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	group_user "github.com/Files-com/files-sdk-go/v2/groupuser"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	group_user "github.com/Files-com/files-sdk-go/v3/groupuser"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func GroupUsers() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsGroupUserList
 			params.MaxPages = MaxPagesList
 
-			client := group_user.Client{Config: *config}
+			client := group_user.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -95,8 +95,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := group_user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := group_user.Client{Config: config}
 
 			if cmd.Flags().Changed("admin") {
 				paramsGroupUserCreate.Admin = flib.Bool(createAdmin)
@@ -105,7 +105,7 @@ json-styles: {raw, pretty}
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.Create(paramsGroupUserCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.GroupId, "group-id", 0, "Group ID to add user to.")
@@ -132,8 +132,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := group_user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := group_user.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.GroupUserUpdateParams{})
 			if convertErr != nil {
@@ -156,7 +156,7 @@ json-styles: {raw, pretty}`)
 			var groupUser interface{}
 			var err error
 			groupUser, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), groupUser, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.Id, "id", 0, "Group User ID.")
@@ -183,8 +183,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := group_user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := group_user.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsGroupUserDelete, files_sdk.WithContext(ctx))

@@ -8,12 +8,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Files-com/files-sdk-go/v2/lib"
-
+	"github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/olekukonko/ts"
-
-	"github.com/jedib0t/go-pretty/v6/table"
 )
 
 func tableWriter(style string, out io.Writer) table.Writer {

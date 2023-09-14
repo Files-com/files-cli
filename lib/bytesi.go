@@ -1,6 +1,9 @@
 package lib
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func ByteCountSI(b int64) string {
 	return ByteCountSIFloat64(float64(b))
@@ -16,6 +19,12 @@ func ByteCountSIFloat64(b float64) string {
 		div *= unit
 		exp++
 	}
+
+	c := b / float64(div)
+	if math.IsNaN(c) || c < 0 {
+		return "0 B"
+	}
+
 	return fmt.Sprintf("%.1f %cB",
-		b/float64(div), "kMGTPE"[exp])
+		c, "kMGTPE"[exp])
 }

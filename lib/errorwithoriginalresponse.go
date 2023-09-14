@@ -4,9 +4,8 @@ import (
 	"context"
 	"io"
 
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/hashicorp/go-retryablehttp"
-
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
 )
 
 func ErrorWithOriginalResponse(err error, logger retryablehttp.Logger) (interface{}, error) {

@@ -1,14 +1,13 @@
 package lib
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"syscall"
 
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"golang.org/x/crypto/ssh/terminal"
-
-	"fmt"
-	"strings"
 )
 
 func YubiResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseError files_sdk.ResponseError, out io.Writer) (files_sdk.SessionCreateParams, error) {

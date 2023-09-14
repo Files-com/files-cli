@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	as2_partner "github.com/Files-com/files-sdk-go/v2/as2partner"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	as2_partner "github.com/Files-com/files-sdk-go/v3/as2partner"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func As2Partners() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAs2PartnerList
 			params.MaxPages = MaxPagesList
 
-			client := as2_partner.Client{Config: *config}
+			client := as2_partner.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := as2_partner.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_partner.Client{Config: config}
 
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Find(paramsAs2PartnerFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
@@ -123,8 +123,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := as2_partner.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_partner.Client{Config: config}
 
 			if cmd.Flags().Changed("enable-dedicated-ips") {
 				paramsAs2PartnerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
@@ -133,7 +133,7 @@ json-styles: {raw, pretty}`)
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.Create(paramsAs2PartnerCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "AS2 Name")
@@ -163,8 +163,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := as2_partner.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_partner.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.As2PartnerUpdateParams{})
 			if convertErr != nil {
@@ -193,7 +193,7 @@ json-styles: {raw, pretty}`)
 			var as2Partner interface{}
 			var err error
 			as2Partner, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
@@ -222,8 +222,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := as2_partner.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_partner.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsAs2PartnerDelete, files_sdk.WithContext(ctx))

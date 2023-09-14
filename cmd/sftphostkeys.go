@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	sftp_host_key "github.com/Files-com/files-sdk-go/v2/sftphostkey"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	sftp_host_key "github.com/Files-com/files-sdk-go/v3/sftphostkey"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func SftpHostKeys() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSftpHostKeyList
 			params.MaxPages = MaxPagesList
 
-			client := sftp_host_key.Client{Config: *config}
+			client := sftp_host_key.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -91,13 +91,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sftp_host_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sftp_host_key.Client{Config: config}
 
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Find(paramsSftpHostKeyFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSftpHostKeyFind.Id, "id", 0, "Sftp Host Key ID.")
@@ -121,13 +121,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sftp_host_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sftp_host_key.Client{Config: config}
 
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Create(paramsSftpHostKeyCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
@@ -152,8 +152,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sftp_host_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sftp_host_key.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.SftpHostKeyUpdateParams{})
 			if convertErr != nil {
@@ -173,7 +173,7 @@ json-styles: {raw, pretty}`)
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
@@ -199,8 +199,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := sftp_host_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sftp_host_key.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsSftpHostKeyDelete, files_sdk.WithContext(ctx))

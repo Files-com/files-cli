@@ -2,13 +2,12 @@ package lib
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-
-	"fmt"
 	"strings"
+
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 )
 
 func TotpResponse(paramsSessionCreate files_sdk.SessionCreateParams, out io.Writer) (files_sdk.SessionCreateParams, error) {

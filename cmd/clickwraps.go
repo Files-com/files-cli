@@ -5,8 +5,8 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	"github.com/Files-com/files-sdk-go/v2/clickwrap"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/clickwrap"
 	"github.com/spf13/cobra"
 )
 
@@ -37,14 +37,14 @@ func Clickwraps() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsClickwrapList
 			params.MaxPages = MaxPagesList
 
-			client := clickwrap.Client{Config: *config}
+			client := clickwrap.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := clickwrap.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := clickwrap.Client{Config: config}
 
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Find(paramsClickwrapFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsClickwrapFind.Id, "id", 0, "Clickwrap ID.")
@@ -125,8 +125,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := clickwrap.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := clickwrap.Client{Config: config}
 
 			var ClickwrapCreateUseWithBundlesErr error
 			paramsClickwrapCreate.UseWithBundles, ClickwrapCreateUseWithBundlesErr = lib.FetchKey("use-with-bundles", paramsClickwrapCreate.UseWithBundles.Enum(), ClickwrapCreateUseWithBundles)
@@ -147,7 +147,7 @@ json-styles: {raw, pretty}`)
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.Create(paramsClickwrapCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsClickwrapCreate.Name, "name", "", "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)")
@@ -178,8 +178,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := clickwrap.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := clickwrap.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.ClickwrapUpdateParams{})
 			if convertErr != nil {
@@ -224,7 +224,7 @@ json-styles: {raw, pretty}`)
 			var clickwrap interface{}
 			var err error
 			clickwrap, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), clickwrap, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsClickwrapUpdate.Id, "id", 0, "Clickwrap ID.")
@@ -253,8 +253,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := clickwrap.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := clickwrap.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsClickwrapDelete, files_sdk.WithContext(ctx))

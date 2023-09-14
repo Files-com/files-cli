@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	inbox_registration "github.com/Files-com/files-sdk-go/v2/inboxregistration"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	inbox_registration "github.com/Files-com/files-sdk-go/v3/inboxregistration"
 	"github.com/spf13/cobra"
 )
 
@@ -36,14 +36,14 @@ func InboxRegistrations() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsInboxRegistrationList
 			params.MaxPages = MaxPagesList
 
-			client := inbox_registration.Client{Config: *config}
+			client := inbox_registration.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr

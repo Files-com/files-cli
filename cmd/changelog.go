@@ -33,7 +33,7 @@ func Changelog() *cobra.Command {
 
 			tagRange := strings.Split(tag, "..")
 			if len(tagRange) == 2 {
-				versions, err := changelog.GetAllTags(ctx, Profile(cmd).Config, changelog.ParseTag(tagRange[0]), changelog.ParseTag(tagRange[1]))
+				versions, err := changelog.GetAllTags(ctx, *Profile(cmd).Config, changelog.ParseTag(tagRange[0]), changelog.ParseTag(tagRange[1]))
 				if err != nil {
 					return err
 				}
@@ -41,9 +41,9 @@ func Changelog() *cobra.Command {
 				for i, tag := range versions {
 					var err error
 					if i == 0 {
-						err = changelog.GetLog(ctx, cmd, Profile(cmd).Config, tag, "# ChangeLog\n\n")
+						err = changelog.GetLog(ctx, cmd, *Profile(cmd).Config, tag, "# ChangeLog\n\n")
 					} else {
-						err = changelog.GetLog(ctx, cmd, Profile(cmd).Config, tag, "")
+						err = changelog.GetLog(ctx, cmd, *Profile(cmd).Config, tag, "")
 					}
 
 					if err != nil {
@@ -56,7 +56,7 @@ func Changelog() *cobra.Command {
 				if len(result) > 0 {
 					tag = fmt.Sprintf("v%v", result[0])
 				}
-				return changelog.GetLog(ctx, cmd, Profile(cmd).Config, tag, "# ChangeLog\n\n")
+				return changelog.GetLog(ctx, cmd, *Profile(cmd).Config, tag, "# ChangeLog\n\n")
 			}
 
 			return nil

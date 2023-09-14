@@ -20,7 +20,7 @@ func TestFolders_ListFor_WithPreviews(t *testing.T) {
 	// Create a logger that writes to the byte buffer
 	logger := log.New(&buf, "InMemoryLogger: ", log.LstdFlags)
 
-	config.SetLogger(logger)
+	config.Logger = logger
 	config.Debug = true
 	stdout, stderr := callCmd(Folders(), config, []string{
 		"ls", "--with-previews",

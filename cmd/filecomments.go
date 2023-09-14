@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	file_comment "github.com/Files-com/files-sdk-go/v2/filecomment"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	file_comment "github.com/Files-com/files-sdk-go/v3/filecomment"
 	"github.com/spf13/cobra"
 )
 
@@ -36,17 +36,17 @@ func FileComments() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsFileCommentListFor
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
 
-			client := file_comment.Client{Config: *config}
+			client := file_comment.Client{Config: config}
 			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -95,8 +95,8 @@ json-styles: {raw, pretty}
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_comment.Client{Config: config}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFileCommentCreate.Path = args[0]
@@ -104,7 +104,7 @@ json-styles: {raw, pretty}
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.Create(paramsFileCommentCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
@@ -129,8 +129,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_comment.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.FileCommentUpdateParams{})
 			if convertErr != nil {
@@ -147,7 +147,7 @@ json-styles: {raw, pretty}`)
 			var fileComment interface{}
 			var err error
 			fileComment, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), fileComment, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
@@ -172,8 +172,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := file_comment.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file_comment.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsFileCommentDelete, files_sdk.WithContext(ctx))

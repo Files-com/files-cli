@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
-	"github.com/Files-com/files-sdk-go/v2/user"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/user"
 	"github.com/spf13/cobra"
 )
 
@@ -39,14 +39,14 @@ func Users() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserList
 			params.MaxPages = MaxPagesList
 
-			client := user.Client{Config: *config}
+			client := user.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -96,13 +96,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var user interface{}
 			var err error
 			user, err = client.Find(paramsUserFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
@@ -147,8 +147,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var UserCreateAuthenticationMethodErr error
 			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserCreate.AuthenticationMethod.Enum(), UserCreateAuthenticationMethod)
@@ -231,7 +231,7 @@ json-styles: {raw, pretty}`)
 			var user interface{}
 			var err error
 			user, err = client.Create(paramsUserCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createAvatarDelete, "avatar-delete", createAvatarDelete, "If true, the avatar will be deleted.")
@@ -300,8 +300,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var err error
 			err = client.Unlock(paramsUserUnlock, files_sdk.WithContext(ctx))
@@ -332,8 +332,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var err error
 			err = client.ResendWelcomeEmail(paramsUserResendWelcomeEmail, files_sdk.WithContext(ctx))
@@ -364,8 +364,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var err error
 			err = client.User2faReset(paramsUserUser2faReset, files_sdk.WithContext(ctx))
@@ -417,8 +417,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.UserUpdateParams{})
 			if convertErr != nil {
@@ -589,7 +589,7 @@ json-styles: {raw, pretty}`)
 			var user interface{}
 			var err error
 			user, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), user, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
@@ -659,8 +659,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := user.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsUserDelete, files_sdk.WithContext(ctx))

@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	action_notification_export "github.com/Files-com/files-sdk-go/v2/actionnotificationexport"
-	flib "github.com/Files-com/files-sdk-go/v2/lib"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	action_notification_export "github.com/Files-com/files-sdk-go/v3/actionnotificationexport"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -35,13 +35,13 @@ func ActionNotificationExports() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := action_notification_export.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := action_notification_export.Client{Config: config}
 
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Find(paramsActionNotificationExportFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
@@ -66,8 +66,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := action_notification_export.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := action_notification_export.Client{Config: config}
 
 			if cmd.Flags().Changed("query-success") {
 				paramsActionNotificationExportCreate.QuerySuccess = flib.Bool(createQuerySuccess)
@@ -83,7 +83,7 @@ json-styles: {raw, pretty}`)
 			var actionNotificationExport interface{}
 			var err error
 			actionNotificationExport, err = client.Create(paramsActionNotificationExportCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), actionNotificationExport, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")

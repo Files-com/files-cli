@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	api_key "github.com/Files-com/files-sdk-go/v2/apikey"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	api_key "github.com/Files-com/files-sdk-go/v3/apikey"
 	"github.com/spf13/cobra"
 )
 
@@ -38,14 +38,14 @@ func ApiKeys() *cobra.Command {
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
+			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsApiKeyList
 			params.MaxPages = MaxPagesList
 
-			client := api_key.Client{Config: *config}
+			client := api_key.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger())
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
 				values, ok := overriddenValues.([]interface{})
 				if ok {
 					return &values, newErr
@@ -92,13 +92,13 @@ json-styles: {raw, pretty}
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.FindCurrent(files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFindCurrent, fieldsFindCurrent, usePagerFindCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 
@@ -121,13 +121,13 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Find(paramsApiKeyFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsApiKeyFind.Id, "id", 0, "Api Key ID.")
@@ -152,8 +152,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			var ApiKeyCreatePermissionSetErr error
 			paramsApiKeyCreate.PermissionSet, ApiKeyCreatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyCreate.PermissionSet.Enum(), ApiKeyCreatePermissionSet)
@@ -171,7 +171,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Create(paramsApiKeyCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsApiKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -202,8 +202,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.ApiKeyUpdateCurrentParams{})
 			if convertErr != nil {
@@ -233,7 +233,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.UpdateCurrentWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdateCurrent, fieldsUpdateCurrent, usePagerUpdateCurrent, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	paramsApiKeyUpdateCurrent.ExpiresAt = &time.Time{}
@@ -261,8 +261,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			mapParams, convertErr := lib.StructToMap(files_sdk.ApiKeyUpdateParams{})
 			if convertErr != nil {
@@ -298,7 +298,7 @@ json-styles: {raw, pretty}`)
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger())
+			return lib.HandleResponse(ctx, Profile(cmd), apiKey, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsApiKeyUpdate.Id, "id", 0, "Api Key ID.")
@@ -325,8 +325,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			var err error
 			err = client.DeleteCurrent(files_sdk.WithContext(ctx))
@@ -356,8 +356,8 @@ json-styles: {raw, pretty}`)
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := api_key.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := api_key.Client{Config: config}
 
 			var err error
 			err = client.Delete(paramsApiKeyDelete, files_sdk.WithContext(ctx))

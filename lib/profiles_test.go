@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -14,16 +15,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/samber/lo"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/Files-com/files-cli/lib/version"
-
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/dnaeon/go-vcr/cassette"
 	recorder "github.com/dnaeon/go-vcr/recorder"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func pipeInput(input string, f func()) {
@@ -58,9 +56,8 @@ func createTempConfig(sdkConfig *files_sdk.Config) (string, *Profiles) {
 	return filepath.Join(dir, "files-cli"), config
 }
 
-func createRecorder(fixture string) (sdkConfig *files_sdk.Config, r *recorder.Recorder) {
+func createRecorder(fixture string) (sdkConfig files_sdk.Config, r *recorder.Recorder) {
 	var err error
-	sdkConfig = &files_sdk.Config{}
 	if os.Getenv("GITLAB") != "" {
 		fmt.Println("using ModeReplaying")
 		r, err = recorder.NewAsMode(filepath.Join("fixtures", fixture), recorder.ModeReplaying, nil)
@@ -70,16 +67,15 @@ func createRecorder(fixture string) (sdkConfig *files_sdk.Config, r *recorder.Re
 	if err != nil {
 		panic(err)
 	}
-	httpClient := &http.Client{
+	sdkConfig = files_sdk.Config{}.Init().SetCustomClient(&http.Client{
 		Transport: r,
-	}
-	sdkConfig.SetHttpClient(httpClient)
+	})
 
 	r.AddFilter(func(i *cassette.Interaction) error {
 		delete(i.Request.Headers, "X-Filesapi-Auth")
 		return nil
 	})
-	return sdkConfig, r
+	return
 }
 
 type StubInput struct {
@@ -197,7 +193,7 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 
 	sdkConfig, r := createRecorder("TestCreateSession_InvalidPassword")
 	defer r.Stop()
-	_, config := createTempConfig(sdkConfig)
+	_, config := createTempConfig(&sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
@@ -210,7 +206,9 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	assert.Equal("testuser", config.Current().Username)
 	assert.Equal("", config.Current().SessionId)
 	assert.Equal(time.Time{}, config.Current().SessionExpiry)
-	assert.Equal("Invalid username or password", err.(files_sdk.ResponseError).ErrorMessage)
+	var resErr files_sdk.ResponseError
+	require.True(t, errors.As(err, &resErr))
+	assert.Equal("Invalid username or password", resErr.ErrorMessage)
 }
 
 func TestCreateSession_ValidPassword(t *testing.T) {
@@ -218,7 +216,7 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 
 	sdkConfig, r := createRecorder("TestCreateSession_ValidPassword")
 	defer r.Stop()
-	_, config := createTempConfig(sdkConfig)
+	_, config := createTempConfig(&sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
 	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}

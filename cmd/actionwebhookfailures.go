@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
-	files_sdk "github.com/Files-com/files-sdk-go/v2"
-	action_webhook_failure "github.com/Files-com/files-sdk-go/v2/actionwebhookfailure"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	action_webhook_failure "github.com/Files-com/files-sdk-go/v3/actionwebhookfailure"
 	"github.com/spf13/cobra"
 )
 
@@ -33,8 +33,8 @@ func ActionWebhookFailures() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			config := ctx.Value("config").(*files_sdk.Config)
-			client := action_webhook_failure.Client{Config: *config}
+			config := ctx.Value("config").(files_sdk.Config)
+			client := action_webhook_failure.Client{Config: config}
 
 			var err error
 			err = client.Retry(paramsActionWebhookFailureRetry, files_sdk.WithContext(ctx))

@@ -10,7 +10,8 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
-	files "github.com/Files-com/files-sdk-go/v2"
+	files "github.com/Files-com/files-sdk-go/v3"
+	lib2 "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 )
@@ -31,8 +32,7 @@ var (
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			sdkConfig := cmd.Context().Value("config").(*files.Config)
-			sdkConfig.FeatureFlags = files.FeatureFlags()
+			sdkConfig := cmd.Context().Value("config").(files.Config)
 			for _, flag := range featureFlags {
 				sdkConfig.FeatureFlag(flag) // panic unknown flag
 				sdkConfig.FeatureFlags[flag] = true
@@ -53,17 +53,27 @@ var (
 					os.Exit(1)
 				}
 				sdkConfig.Debug = true
-				sdkConfig.SetLogger(log.New(logFile, "", log.LstdFlags))
+				sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
+				sdkConfig.Logger.Printf("Command: %v", strings.Join(os.Args, " "))
 			}
 
 			profile := &lib.Profiles{}
-			err := profile.Load(sdkConfig, ProfileValue)
+			err := profile.Load(&sdkConfig, ProfileValue)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			cmd.SetContext(context.WithValue(cmd.Context(), "profile", profile))
+			cmd.SetContext(context.WithValue(cmd.Context(), "config", sdkConfig))
+			if sdkConfig.Debug {
+				sdkConfig.Logger.Printf("Environment: %v", sdkConfig.Environment.String())
+				if transport, ok := sdkConfig.Client.HTTPClient.Transport.(*lib2.Transport); ok {
+					sdkConfig.Logger.Printf("MaxIdleConnsPerHost: %v", transport.MaxIdleConnsPerHost)
+					sdkConfig.Logger.Printf("MaxIdleConns: %v", transport.MaxIdleConns)
+					sdkConfig.Logger.Printf("MaxConnsPerHost: %v", transport.MaxConnsPerHost)
+				}
+			}
 
 			if OutputPath != "" {
 				output, err := os.Create(OutputPath)
@@ -86,7 +96,7 @@ var (
 			}
 
 			if !ignoreVersionCheck {
-				Profile(cmd).CheckVersion(Version, lib.FetchLatestVersionNumber(*sdkConfig, cmd.Context()), lib.InstalledViaBrew(), cmd.ErrOrStderr())
+				Profile(cmd).CheckVersion(Version, lib.FetchLatestVersionNumber(sdkConfig, cmd.Context()), lib.InstalledViaBrew(), cmd.ErrOrStderr())
 			}
 
 			if Profile(cmd).Config.GetAPIKey() != "" {
@@ -118,7 +128,7 @@ var (
 	}
 )
 
-func Init(version string, _commit string, _date string, config *files.Config) {
+func Init(version string, _commit string, _date string, config files.Config) {
 	commit = _commit
 	date = _date
 	Version = version
@@ -136,7 +146,7 @@ func init() {
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "File path to save output")
-	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "If authenticating to the API via a session ID (as opposed to an API key), we require that you provide the session user’s password again in a X-Files-Reauthentication header for certain types of requests where we want to add an additional level of security. We call this process Reauthentication.")
+	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())

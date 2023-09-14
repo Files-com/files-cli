@@ -11,8 +11,8 @@ import (
 	"testing"
 
 	lib2 "github.com/Files-com/files-cli/lib"
-	"github.com/Files-com/files-sdk-go/v2/file"
-	"github.com/Files-com/files-sdk-go/v2/lib"
+	"github.com/Files-com/files-sdk-go/v3/file"
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -127,7 +127,7 @@ func TestUpload(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				destinationFs = lib.ReadWriteFs((&file.FS{Context: context.Background()}).Init(*config, false))
+				destinationFs = lib.ReadWriteFs((&file.FS{Context: context.Background()}).Init(config, false))
 				lib.BuildPathSpecTest(t, mutex, tt, sourceFs, destinationFs, func(source, destination string) lib.Cmd {
 					return Cmd(config, Upload(), []string{source, destination}, []string{"--format", "text"})
 				})
