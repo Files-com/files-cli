@@ -155,10 +155,10 @@ func (p *Profiles) read() (b []byte, err error) {
 
 func (p *Profiles) SetOnConfig() {
 	p.Config.SessionId = p.Current().SessionId
-	if p.Config.Endpoint() == "" {
+	if p.Config.EndpointOverride == "" {
 		p.Config.EndpointOverride = p.Current().Endpoint
 	} else {
-		p.Current().Endpoint = p.Config.Endpoint()
+		p.Current().Endpoint = p.Config.EndpointOverride
 	}
 	if p.Config.Subdomain == "" {
 		p.Config.Subdomain = p.Current().Subdomain

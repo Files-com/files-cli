@@ -37,6 +37,13 @@ archives:
 changelog:
   sort: asc
   use: git
+  abbrev: -1
+  filters:
+    exclude:
+      - '^.*$'  # Exclude all by default
+    include:
+      - '^\s*- .*'  # Include lines that start with optional whitespace followed by '- '
+      - '^#.*'  # Include lines that start with '#'
 checksum:
   name_template: 'checksums.txt'
 snapshot:

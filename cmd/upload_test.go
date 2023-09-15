@@ -88,8 +88,9 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 		name   string
 		status string
 		size   int
-	}{{name: "1.text", status: "complete", size: 24}, {name: "2.text", status: "complete", size: 24}, {name: "3.pdf", status: "ignored"}}
+	}{{name: "1 (1).text", status: "complete", size: 24}, {name: "2.text", status: "complete", size: 24}, {name: "3.pdf", status: "ignored"}}
 	var filePaths []string
+	var expectation []string
 	for _, file := range filesAndStatus {
 		f, err := os.Create(filepath.Join(tmpDir, file.name))
 		assert.NoError(err)
@@ -97,6 +98,7 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 		f.Close()
 		if file.status == "complete" {
 			filePaths = append(filePaths, f.Name())
+			expectation = append(expectation, fmt.Sprintf("%v %v size %v", filepath.Base(file.name), file.status, lib2.ByteCountSI(int64(file.size))))
 		}
 	}
 
@@ -106,13 +108,7 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 	stdOut, stdErr := callCmd(Upload(), config, args)
 	assert.Equal("", string(stdErr))
 
-	var expectation []string
-
-	for _, file := range filesAndStatus {
-		expectation = append(expectation, fmt.Sprintf("%v %v size %v", filepath.Base(file.name), file.status, lib2.ByteCountSI(int64(file.size))))
-	}
-
-	assert.ElementsMatch(expectation, strings.Split(string(stdOut), "\n")[0:3])
+	assert.ElementsMatch(expectation, strings.Split(string(stdOut), "\n")[0:2])
 }
 
 func TestUpload(t *testing.T) {

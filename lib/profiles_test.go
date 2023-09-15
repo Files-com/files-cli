@@ -173,6 +173,22 @@ func TestProfiles_Load(t *testing.T) {
 		assert.Equal(t, files_sdk.Staging, config.Environment)
 	}
 
+	t.Log("updates custom profile with endpoint")
+	{
+		config := &files_sdk.Config{APIKey: "yyyyyyyy", EndpointOverride: "http://localhost:8080"}
+		profile := &Profiles{ConfigDir: dir}
+		profile.Load(config, "with-custom-endpoint")
+		assert.Equal(t, "yyyyyyyy", config.APIKey)
+		assert.Equal(t, "http://localhost:8080", config.Endpoint())
+
+		// Reloading works
+		config = &files_sdk.Config{}
+		profile = &Profiles{ConfigDir: dir}
+		profile.Load(config, "with-custom-endpoint")
+		assert.Equal(t, "yyyyyyyy", config.APIKey)
+		assert.Equal(t, "http://localhost:8080", config.Endpoint())
+	}
+
 	t.Log("upgrades v1 to v2")
 	{
 		v1Profile := Profile{APIKey: "xxxxxx"}

@@ -67,6 +67,7 @@ type Transfers struct {
 	transferRateMutex           *sync.RWMutex
 	Ignore                      *[]string
 	Include                     *[]string
+	ExactPaths                  []string
 	waitForEndingMessage        chan bool
 	*manager.Manager
 	Stdout             io.Writer
@@ -157,7 +158,6 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 			}
 		}
 	}()
-	t.createManager()
 	t.createProgress(ctx)
 	t.start = time.Now()
 	t.Stderr = stderr
@@ -168,6 +168,11 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 
 func (t *Transfers) createManager() {
 	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning, t.DownloadFilesAsSingleStream)
+}
+
+func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
+	t.createManager()
+	return config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {

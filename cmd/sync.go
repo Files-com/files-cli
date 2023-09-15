@@ -58,12 +58,12 @@ func Sync() *cobra.Command {
 		Use:  "pull",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: transfer.BuildConfig(config)}
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *file.Job {
 				transfer.StartLog("download")
 				return client.Downloader(

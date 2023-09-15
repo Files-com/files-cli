@@ -55,9 +55,8 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 			}
 
 			if len(args) > 2 {
-				sourcePaths := args[0 : len(args)-1]
-				sourcePath = fmt.Sprintf("%v%v", findCommonParent(sourcePaths), string(os.PathSeparator))
-				transfer.Include = &sourcePaths
+				transfer.ExactPaths = args[0 : len(args)-1]
+				sourcePath = fmt.Sprintf("%v%v", findCommonParent(transfer.ExactPaths), string(os.PathSeparator))
 				remotePath = args[len(args)-1]
 			}
 
@@ -65,11 +64,12 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 				return err
 			}
 
-			client := file.Client{Config: config}
+			client := file.Client{Config: transfer.BuildConfig(config)}
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *file.Job {
 				transfer.StartLog("upload")
 				return client.Uploader(
 					file.UploaderParams{
+						LocalPaths:  transfer.ExactPaths,
 						LocalPath:   sourcePath,
 						RemotePath:  remotePath,
 						Sync:        transfer.SyncFlag,

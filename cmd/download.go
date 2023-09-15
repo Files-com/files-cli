@@ -30,7 +30,7 @@ func Download() *cobra.Command {
 			if len(args) > 1 && args[1] != "" {
 				localPath = args[1]
 			}
-			client := file.Client{Config: config}
+			client := file.Client{Config: transfer.BuildConfig(config)}
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
