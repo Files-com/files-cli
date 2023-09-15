@@ -141,6 +141,7 @@ json-styles: {raw, pretty}`)
 	updateIcon128Delete := true
 	updateLogoDelete := true
 	updateBundleWatermarkAttachmentDelete := true
+	updateLoginPageBackgroundImageDelete := true
 	updateDisable2faWithDelay := true
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
@@ -548,6 +549,11 @@ json-styles: {raw, pretty}`)
 			if cmd.Flags().Changed("bundle-watermark-attachment-delete") {
 				mapParams["bundle_watermark_attachment_delete"] = updateBundleWatermarkAttachmentDelete
 			}
+			if cmd.Flags().Changed("login-page-background-image-file") {
+			}
+			if cmd.Flags().Changed("login-page-background-image-delete") {
+				mapParams["login_page_background_image_delete"] = updateLoginPageBackgroundImageDelete
+			}
 			if cmd.Flags().Changed("disable-2fa-with-delay") {
 				mapParams["disable_2fa_with_delay"] = updateDisable2faWithDelay
 			}
@@ -695,6 +701,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updateIcon128Delete, "icon128-delete", updateIcon128Delete, "If true, will delete the file stored in icon128")
 	cmdUpdate.Flags().BoolVar(&updateLogoDelete, "logo-delete", updateLogoDelete, "If true, will delete the file stored in logo")
 	cmdUpdate.Flags().BoolVar(&updateBundleWatermarkAttachmentDelete, "bundle-watermark-attachment-delete", updateBundleWatermarkAttachmentDelete, "If true, will delete the file stored in bundle_watermark_attachment")
+	cmdUpdate.Flags().BoolVar(&updateLoginPageBackgroundImageDelete, "login-page-background-image-delete", updateLoginPageBackgroundImageDelete, "If true, will delete the file stored in login_page_background_image")
 	cmdUpdate.Flags().BoolVar(&updateDisable2faWithDelay, "disable-2fa-with-delay", updateDisable2faWithDelay, "If set to true, we will begin the process of disabling 2FA on this site.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
