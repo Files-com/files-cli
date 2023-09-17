@@ -147,8 +147,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.2.0 h1:Rt8g24XnyGTyglgET/PRUNlrUeu9F5L+7FilkXfZgs0=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/Files-com/files-sdk-go/v3 v3.0.3 h1:55uPDObdtuLGY31YA04yLPrwlWH5xZ6Fn+Q04T1HgCc=
-github.com/Files-com/files-sdk-go/v3 v3.0.3/go.mod h1:JyU5fL11QxTRxq22b7XVZuKq3C/6/tB2/5fFjTUENCQ=
+github.com/Files-com/files-sdk-go/v3 v3.0.4 h1:CRPjMCZh/ZBWF2fJl8wMjf+6vgbA7hNSEOKWfL3zQOw=
+github.com/Files-com/files-sdk-go/v3 v3.0.4/go.mod h1:JyU5fL11QxTRxq22b7XVZuKq3C/6/tB2/5fFjTUENCQ=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962 h1:KeNholpO2xKjgaaSyd+DyQRrsQjhbSeS7qe4nEw8aQw=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962/go.mod h1:kC29dT1vFpj7py2OvG1khBdQpo3kInWP+6QipLbdngo=
 github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.2/go.mod h1:qR6jVnZTKDCW3j+fC9mOEPHm++1nKDMkqbbkD6KNsfo=
@@ -583,6 +583,7 @@ github.com/drakkan/net v0.0.0-20221007053106-916f307e3230/go.mod h1:YDH+HFinaLZZ
 github.com/drakkan/sftpgo/v2 v2.3.6 h1:g8RpWEf4v4heP/t0kZP3GTyb4ladwThPZ0MwKj76Flg=
 github.com/drakkan/sftpgo/v2 v2.3.6/go.mod h1:kGMjkbz3ZHclqid4O7I/9r2hlk2P65TouKCz4UYD8lo=
 github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
+github.com/dustin/go-humanize v1.0.0 h1:VSnTsYCnlFHaM2/igO1h6X3HA71jcobQuxemgkq4zYo=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/eapache/go-resiliency v1.1.0/go.mod h1:kFI+JgMyC7bLPUVY133qvEBtVayf5mFgVsvEsIPBvNs=
 github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21/go.mod h1:+020luEh2TKB4/GOp8oxxtq0Daoen/Cii55CzbTV6DU=

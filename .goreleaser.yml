@@ -23,6 +23,8 @@ builds:
         goarch: arm
     main: ./main.go
     binary: files-cli
+    flags:
+      - -trimpath
 archives:
   # default format for Mac (darwin) and Linux
   - format: tar.gz
@@ -39,11 +41,9 @@ changelog:
   use: git
   abbrev: -1
   filters:
-    exclude:
-      - '^.*$'  # Exclude all by default
     include:
       - '^\s*- .*'  # Include lines that start with optional whitespace followed by '- '
-      - '^#.*'  # Include lines that start with '#'
+      - '^#+.*'  # Include lines that start with one or more '#'
 checksum:
   name_template: 'checksums.txt'
 snapshot:

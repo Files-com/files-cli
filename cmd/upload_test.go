@@ -10,9 +10,9 @@ import (
 	"sync"
 	"testing"
 
-	lib2 "github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +30,7 @@ func TestUploadCmd(t *testing.T) {
 	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "--format", "text"})
 	assert.Equal("", string(stdErr))
 	assert.ElementsMatch([]string{
-		fmt.Sprintf("upload_test.go complete size %v", lib2.ByteCountSI(info.Size())),
+		fmt.Sprintf("upload_test.go complete size %v", humanize.Bytes(uint64(info.Size()))),
 	}, strings.Split(string(stdOut), "\n")[0:1])
 }
 
@@ -98,7 +98,7 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 		f.Close()
 		if file.status == "complete" {
 			filePaths = append(filePaths, f.Name())
-			expectation = append(expectation, fmt.Sprintf("%v %v size %v", filepath.Base(file.name), file.status, lib2.ByteCountSI(int64(file.size))))
+			expectation = append(expectation, fmt.Sprintf("%v %v size %v", filepath.Base(file.name), file.status, humanize.Bytes(uint64(file.size))))
 		}
 	}
 

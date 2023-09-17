@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.0.3
+	github.com/Files-com/files-sdk-go/v3 v3.0.4
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -15,6 +15,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/drakkan/sftpgo/v2 v2.3.6
+	github.com/dustin/go-humanize v1.0.0
 	github.com/evertras/bubble-table v0.15.2
 	github.com/fatih/structs v1.1.0
 	github.com/gin-gonic/gin v1.9.0

@@ -21,7 +21,6 @@ func Sync() *cobra.Command {
 	transfer.SyncFlag = true
 	var localPath string
 	var remotePath string
-	var dryRun bool
 	push := &cobra.Command{
 		Use:  "push",
 		Args: cobra.NoArgs,
@@ -42,7 +41,7 @@ func Sync() *cobra.Command {
 						Manager:     transfer.Manager,
 						Ignore:      *transfer.Ignore,
 						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:      dryRun,
+						DryRun:      transfer.DryRun,
 					},
 					files_sdk.WithContext(ctx),
 				)
@@ -74,7 +73,7 @@ func Sync() *cobra.Command {
 						Manager:       transfer.Manager,
 						PreserveTimes: transfer.PreserveTimes,
 						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:        dryRun,
+						DryRun:        transfer.DryRun,
 					},
 					files_sdk.WithContext(cmd.Context()),
 				)
@@ -96,7 +95,6 @@ func Sync() *cobra.Command {
 	transfer.DownloadFlags(pull.Flags())
 
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
-	sync.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "Index files and compare with destination but don't transfer files.")
 
 	sync.AddCommand(push)
 	sync.AddCommand(pull)

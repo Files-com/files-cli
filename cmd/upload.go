@@ -77,6 +77,7 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 						Ignore:      *transfer.Ignore,
 						Include:     *transfer.Include,
 						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						DryRun:      transfer.DryRun,
 					},
 					files_sdk.WithContext(ctx),
 				)

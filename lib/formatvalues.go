@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
+
+	"github.com/dustin/go-humanize"
 )
 
 func formatValue(value interface{}) interface{} {
@@ -36,11 +38,11 @@ func formatValuePretty(key string, value interface{}) interface{} {
 func formatSize(value interface{}) interface{} {
 	switch value.(type) {
 	case float64:
-		value = ByteCountSIFloat64(value.(float64))
+		value = humanize.Bytes(uint64(value.(float64)))
 	case string:
 		v, err := strconv.ParseInt(value.(string), 10, 64)
 		if err == nil {
-			value = ByteCountSI(v)
+			value = humanize.Bytes(uint64(v))
 		}
 	case nil:
 		value = ""

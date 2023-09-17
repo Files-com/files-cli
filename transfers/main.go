@@ -24,8 +24,10 @@ import (
 	"github.com/Files-com/files-sdk-go/v3/file/status"
 	sdklib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/lib/direction"
+	"github.com/Files-com/files-sdk-go/v3/lib/keyvalue"
 	"github.com/VividCortex/ewma"
 	"github.com/aquilax/truncate"
+	"github.com/dustin/go-humanize"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -48,6 +50,7 @@ type Transfers struct {
 	SendLogsToCloud             bool
 	DisableProgressOutput       bool
 	PreserveTimes               bool
+	DryRun                      bool
 	DownloadFilesAsSingleStream bool
 	OpenConnectionStats         bool
 	ConcurrentConnectionLimit   int
@@ -338,6 +341,8 @@ func (t *Transfers) SetupSignals() {
 			t.buildOpenConnections()
 		}
 		updateStatusTick := time.NewTicker(time.Millisecond * 250)
+		metricsLoggerBackoff := time.Second * 15
+		metricsLoggerTick := time.NewTicker(metricsLoggerBackoff)
 		defer updateStatusTick.Stop()
 		func() {
 			for {
@@ -347,6 +352,7 @@ func (t *Transfers) SetupSignals() {
 					t.mainBar.Abort(false)
 
 					t.Log("transfer-canceled", fmt.Sprintf("Canceled at %v", time.Now()), nil)
+					t.metricsLogging()
 
 					return
 				case <-t.Job.Finished.C:
@@ -357,12 +363,17 @@ func (t *Transfers) SetupSignals() {
 					t.mainBar.Abort(false)
 
 					t.finishedForDisplay.Store(true)
-					t.Log("transfer-finished-bytes", fmt.Sprintf("total downloaded: %v", lib.ByteCountSI(t.Job.TransferBytes())), nil)
+					t.Log("transfer-finished-bytes", fmt.Sprintf("total downloaded: %v", humanize.Bytes(uint64(t.Job.TransferBytes()))), nil)
 					t.Log("transfer-finished-time", fmt.Sprintf("Finished at %v", time.Now()), nil)
+					t.metricsLogging()
 
 					return
 				case <-updateStatusTick.C:
 					t.updateStatus()
+				case <-metricsLoggerTick.C:
+					metricsLoggerBackoff = metricsLoggerBackoff * 2
+					metricsLoggerTick.Reset(metricsLoggerBackoff)
+					t.metricsLogging()
 				}
 			}
 		}()
@@ -370,6 +381,25 @@ func (t *Transfers) SetupSignals() {
 		t.iterateOverErrored()
 		t.waitForEndingMessage <- true
 	}()
+}
+
+func (t *Transfers) metricsLogging() {
+	t.Logger.Printf(keyvalue.New(map[string]interface{}{
+		"message":       "metric logs",
+		"transfer_rate": humanize.Bytes(uint64(int64(t.TransferRateValue()))),
+		"total":         humanize.Bytes(uint64(t.Job.TotalBytes(status.Included...))),
+		"current":       humanize.Bytes(uint64(t.Job.TransferBytes(status.Included...))),
+		"eta":           time.Duration(t.ETAValue()).Round(time.Second),
+		"elapsed_Time":  t.Job.ElapsedTime().Round(time.Second).String(),
+		"scanning":      t.Job.Scanning.Called(),
+		"end_scanning":  t.Job.EndScanning.Called(),
+		"canceled":      t.Job.Canceled.Called(),
+		"finished":      t.Job.Finished.Called(),
+		"started":       t.Job.Started.Called(),
+		"completed":     humanize.Comma(int64(t.Count(status.Complete))),
+		"count":         humanize.Comma(int64(t.Count(append(status.Included, status.Skipped)...))),
+		"file_rate":     fmt.Sprintf("%.1f", t.FilesRateValue()),
+	}))
 }
 
 func (t *Transfers) updateStatus() {
@@ -425,7 +455,7 @@ func (t *Transfers) Text(s file.JobFile) string {
 	if s.Status.Is(status.Skipped) {
 		return fmt.Sprintf("%v %v", bestPath(s), s.StatusName)
 	} else {
-		return fmt.Sprintf("%v %v size %v", bestPath(s), s.StatusName, lib.ByteCountSI(s.TransferBytes))
+		return fmt.Sprintf("%v %v size %v", bestPath(s), s.StatusName, humanize.Bytes(uint64(s.TransferBytes)))
 	}
 }
 
@@ -481,7 +511,6 @@ func (t *Transfers) FilesRate() ewma.MovingAverage {
 
 	b, ok := i.(ewma.MovingAverage)
 	if ok {
-
 		return b
 	}
 
@@ -557,9 +586,9 @@ func (t *Transfers) buildMainTotalTransfer() {
 			decor.Counters(decor.UnitKB, " (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
 			decor.Any(func(d decor.Statistics) string {
 				if t.Job.Finished.Called() {
-					return fmt.Sprintf(" %v/s %v", lib.ByteCountSIFloat64(float64(t.Job.FinalTransferRate())), directionSymbolFmt(t.Job.Direction))
+					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.Job.FinalTransferRate())), directionSymbolFmt(t.Job.Direction))
 				} else {
-					return fmt.Sprintf(" %v/s %v", lib.ByteCountSIFloat64(t.TransferRateValue()), directionSymbolFmt(t.Job.Direction))
+					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.TransferRateValue())), directionSymbolFmt(t.Job.Direction))
 				}
 
 			},
@@ -626,7 +655,7 @@ func (t *Transfers) buildStatusTransfer() {
 				endedFile := t.LastEndedFile()
 
 				width, _, terminalWidthErr := terminal.GetSize(0)
-				nonFilePathLen := len(fileCounts(t.Job)) + len(statusWithColor(endedFile.Status))
+				nonFilePathLen := len(fileCounts(t.Job, t.FilesRateValue())) + len(statusWithColor(endedFile.Status))
 				remainingWidth := width - nonFilePathLen
 				if endedFile.Status.Is(status.Complete, status.Queued, status.Indexed) {
 					io.WriteString(w, fmt.Sprintf("%v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth)))
@@ -634,7 +663,7 @@ func (t *Transfers) buildStatusTransfer() {
 					tw := 50
 
 					if terminalWidthErr == nil {
-						tw = int(math.Min(float64(width-len(fmt.Sprint(fileCounts(t.Job), statusWithColor(endedFile.Status), "-", displayName(endedFile.Path, remainingWidth)))), float64(width)))
+						tw = int(math.Min(float64(width-len(fmt.Sprint(fileCounts(t.Job, t.FilesRateValue()), statusWithColor(endedFile.Status), "-", displayName(endedFile.Path, remainingWidth)))), float64(width)))
 					}
 					if tw > 0 {
 						io.WriteString(w, fmt.Sprintf("%v %v - %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
@@ -648,7 +677,7 @@ func (t *Transfers) buildStatusTransfer() {
 		}),
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
-				return fileCounts(t.Job)
+				return fileCounts(t.Job, t.FilesRateValue())
 			},
 				decor.WC{W: 0, C: decor.DidentRight},
 			),
@@ -692,14 +721,13 @@ func (t *Transfers) fetchOpenConnections() {
 				transferStats += count
 			}
 		}
-		t.openConnections.Store(fmt.Sprintf("(Data: %d API: %d) Avg %v/s %v", transferStats, apiStats, lib.ByteCountSIFloat64(t.TransferRateValue()/float64(transferStats)), directionSymbolFmt(t.Direction)))
+		t.openConnections.Store(fmt.Sprintf("(Data: %d API: %d) Avg %v/s %v", transferStats, apiStats, humanize.Bytes(uint64(t.TransferRateValue()/float64(transferStats))), directionSymbolFmt(t.Direction)))
 	}
 }
 
-func (t *Transfers) findActiveFile() file.JobFile {
+func (t *Transfers) findActiveFile() {
 	lastEndedFile := t.LastEndedFile()
 
-	endedFile := lastEndedFile.JobFile
 	now := time.Now()
 	if lastEndedFile.Time.IsZero() || now.Sub(lastEndedFile.Time) > time.Second*2 {
 		for _, s := range []status.Status{status.Uploading, status.Downloading, status.Queued, status.Indexed} {
@@ -711,16 +739,15 @@ func (t *Transfers) findActiveFile() file.JobFile {
 						break
 					}
 				}
-				diff := now.Sub(file.ToStatusFile(d).LastByte)
+				diff := now.Sub(file.ToStatusFile(d).EndedAt)
 				statusDiff := now.Sub(statusChange.Time)
 				if diff < time.Millisecond*500 || statusDiff < time.Millisecond*500 || len(t.Job.Statuses) == 1 {
 					t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: file.ToStatusFile(d)})
-					return file.ToStatusFile(d)
+					return
 				}
 			}
 		}
 	}
-	return endedFile
 }
 
 func displayName(path string, terminalWidth int) string {
@@ -732,12 +759,12 @@ func displayName(path string, terminalWidth int) string {
 	return path
 }
 
-func fileCounts(job *file.Job) string {
+func fileCounts(job *file.Job, rate float64) string {
 	if job.Count(append(status.Included, status.Skipped)...) < 2 {
 		return ""
 	}
 
-	base := fmt.Sprintf("(%v/%v Files) %.1f Files/s %v", formatWithComma(job.Count(status.Complete)), formatWithComma(job.Count(append(status.Included, status.Skipped)...)), job.FilesRate(), directionSymbolFmt(job.Direction))
+	base := fmt.Sprintf("(%v/%v Files) %.1f Files/s %v", formatWithComma(job.Count(status.Complete)), formatWithComma(job.Count(append(status.Included, status.Skipped)...)), rate, directionSymbolFmt(job.Direction))
 
 	if job.Sync {
 		return fmt.Sprintf("Synced %v", base)
@@ -818,7 +845,7 @@ func (t *Transfers) CommonFlags(flags *pflag.FlagSet) {
 	flags.StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	flags.BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
 	flags.MarkHidden("test-progress-bar-out")
-
+	flags.BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
 }
 
 func (t *Transfers) UploadFlags(flags *pflag.FlagSet) {
