@@ -36,14 +36,6 @@ archives:
     files:
       - README.md
       - completions/*
-changelog:
-  sort: asc
-  use: git
-  abbrev: -1
-  filters:
-    include:
-      - '^\s*- .*'  # Include lines that start with optional whitespace followed by '- '
-      - '^#+.*'  # Include lines that start with one or more '#'
 checksum:
   name_template: 'checksums.txt'
 snapshot:
