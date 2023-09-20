@@ -17,7 +17,7 @@ func Config() *cobra.Command {
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
 	configParams := &lib.Profile{}
-	subdomainCreate := &cobra.Command{
+	configSet := &cobra.Command{
 		Use:     "set",
 		Aliases: []string{"config-set"},
 		Run: func(cmd *cobra.Command, args []string) {
@@ -34,15 +34,20 @@ func Config() *cobra.Command {
 				Profile(cmd).Current().Endpoint = configParams.Endpoint
 			}
 
+			if configParams.ConcurrentConnectionLimit != 0 {
+				Profile(cmd).Current().ConcurrentConnectionLimit = configParams.ConcurrentConnectionLimit
+			}
+
 			Profile(cmd).Save()
 		},
 	}
-	subdomainCreate.Flags().StringVarP(&configParams.Subdomain, "subdomain", "d", configParams.Subdomain, "Subdomain of site")
-	subdomainCreate.Flags().StringVarP(&configParams.Username, "username", "u", configParams.Username, "Username to sign in as")
-	subdomainCreate.Flags().StringVarP(&configParams.APIKey, "api-key", "a", configParams.APIKey, "API Key")
-	subdomainCreate.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
+	configSet.Flags().StringVarP(&configParams.Subdomain, "subdomain", "d", configParams.Subdomain, "Subdomain of site")
+	configSet.Flags().StringVarP(&configParams.Username, "username", "u", configParams.Username, "Username to sign in as")
+	configSet.Flags().StringVarP(&configParams.APIKey, "api-key", "a", configParams.APIKey, "API Key")
+	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
+	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
 
-	Config.AddCommand(subdomainCreate)
+	Config.AddCommand(configSet)
 	resetConfig := lib.ResetConfig{}
 	var resetDelete *cobra.Command
 	resetDelete = &cobra.Command{
@@ -67,6 +72,7 @@ func Config() *cobra.Command {
 	resetDelete.Flags().BoolVarP(&resetConfig.Endpoint, "endpoint", "e", false, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
 	resetDelete.Flags().BoolVarP(&resetConfig.Session, "session", "s", false, "")
 	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
+	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Set the maximum number of concurrent connections.")
 
 	Config.AddCommand(resetDelete)
 

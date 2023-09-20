@@ -41,24 +41,26 @@ type Profiles struct {
 }
 
 type Profile struct {
-	SessionId             string    `json:"session_id"`
-	SessionExpiry         time.Time `json:"session_expiry"`
-	LastValidVersionCheck time.Time `json:"last_valid_version_check"`
-	Subdomain             string    `json:"subdomain"`
-	Username              string    `json:"username"`
-	APIKey                string    `json:"api_key"`
-	Endpoint              string    `json:"endpoint,omitempty"`
-	configPathOverride    string
-	files_sdk.Environment `json:"environment"`
+	SessionId                 string    `json:"session_id"`
+	SessionExpiry             time.Time `json:"session_expiry"`
+	LastValidVersionCheck     time.Time `json:"last_valid_version_check"`
+	Subdomain                 string    `json:"subdomain"`
+	Username                  string    `json:"username"`
+	APIKey                    string    `json:"api_key"`
+	Endpoint                  string    `json:"endpoint,omitempty"`
+	configPathOverride        string
+	files_sdk.Environment     `json:"environment"`
+	ConcurrentConnectionLimit int `json:"concurrent_connection_limit"`
 }
 
 type ResetConfig struct {
-	Subdomain    bool
-	Username     bool
-	APIKey       bool
-	Endpoint     bool
-	Session      bool
-	VersionCheck bool
+	Subdomain                 bool
+	Username                  bool
+	APIKey                    bool
+	Endpoint                  bool
+	Session                   bool
+	VersionCheck              bool
+	ConcurrentConnectionLimit bool
 }
 
 var SessionExpiry = time.Hour * 6

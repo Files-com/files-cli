@@ -311,6 +311,10 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 		}
 	}
 
+	if !cmd.Flags().Changed("concurrent-connection-limit") {
+		t.ConcurrentConnectionLimit = lib.DefaultInt(cmd.Context().Value("profile").(*lib.Profiles).Current().ConcurrentConnectionLimit, t.ConcurrentConnectionLimit)
+	}
+
 	return nil
 }
 
