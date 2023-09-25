@@ -47,13 +47,17 @@ var (
 				if debug == "files-cli_[command]_[timestamp].log" {
 					debug = fmt.Sprintf("files-cli_%v_%v.log", cmd.CalledAs(), strings.Replace(time.Now().Format(time.DateTime), " ", "_", 1))
 				}
-				logFile, err := os.Create(debug)
-				if err != nil {
-					fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-					os.Exit(1)
+				if strings.ToLower(debug) == "stdout" {
+					sdkConfig.Logger = log.New(os.Stdout, "", log.LstdFlags)
+				} else {
+					logFile, err := os.Create(debug)
+					if err != nil {
+						fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
+						os.Exit(1)
+					}
+					sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
 				}
 				sdkConfig.Debug = true
-				sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
 				sdkConfig.Logger.Printf("Command: %v", strings.Join(os.Args, " "))
 			}
 
@@ -138,7 +142,7 @@ func Init(version string, _commit string, _date string, config files.Config) {
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Verbose logging. --debug=[OPTIONAL LOG NAME]")
+	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Enable verbose logging. Use --debug=[LOG FILE NAME] to specify a log file or --debug=STDOUT to display logs directly on the screen.")
 	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "files-cli_[command]_[timestamp].log"
 	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
 	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
