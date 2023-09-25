@@ -61,7 +61,7 @@ func IpAddresses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -73,10 +73,7 @@ func IpAddresses() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetExavaultReserved []string
@@ -118,7 +115,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatGetExavaultReserved, fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -130,10 +127,7 @@ json-styles: {raw, pretty}
 
 	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved []string
@@ -175,7 +169,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatGetReserved, fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetReserved), fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -187,10 +181,7 @@ json-styles: {raw, pretty}
 
 	cmdGetReserved.Flags().Int64VarP(&MaxPagesGetReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetReserved.Flags().StringSliceVar(&fieldsGetReserved, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdGetReserved.Flags().StringSliceVar(&formatGetReserved, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdGetReserved.Flags().StringSliceVar(&formatGetReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdGetReserved)
 	return IpAddresses

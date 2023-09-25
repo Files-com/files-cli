@@ -62,7 +62,7 @@ func BundleRecipients() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -76,10 +76,7 @@ func BundleRecipients() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	BundleRecipients.AddCommand(cmdList)
 	var fieldsCreate []string
@@ -105,7 +102,7 @@ json-styles: {raw, pretty}
 			var bundleRecipient interface{}
 			var err error
 			bundleRecipient, err = client.Create(paramsBundleRecipientCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
@@ -117,9 +114,7 @@ json-styles: {raw, pretty}
 	cmdCreate.Flags().BoolVar(&createShareAfterCreate, "share-after-create", createShareAfterCreate, "Set to true to share the link with the recipient upon creation.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
-	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	BundleRecipients.AddCommand(cmdCreate)

@@ -61,7 +61,7 @@ func Behaviors() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -73,10 +73,7 @@ func Behaviors() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind []string
@@ -97,15 +94,13 @@ json-styles: {raw, pretty}
 			var behavior interface{}
 			var err error
 			behavior, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdFind)
@@ -152,7 +147,7 @@ json-styles: {raw, pretty}`)
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatListFor, fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -167,10 +162,7 @@ json-styles: {raw, pretty}`)
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate []string
@@ -194,7 +186,7 @@ json-styles: {raw, pretty}
 			var behavior interface{}
 			var err error
 			behavior, err = client.Create(paramsBehaviorCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be a integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
@@ -204,9 +196,7 @@ json-styles: {raw, pretty}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Behavior, "behavior", "", "Behavior type.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
-	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdCreate)
@@ -239,9 +229,7 @@ json-styles: {raw, pretty}`)
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "action for test body")
 
 	cmdWebhookTest.Flags().StringSliceVar(&fieldsWebhookTest, "fields", []string{}, "comma separated list of field names")
-	cmdWebhookTest.Flags().StringSliceVar(&formatWebhookTest, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdWebhookTest.Flags().StringSliceVar(&formatWebhookTest, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdWebhookTest.Flags().BoolVar(&usePagerWebhookTest, "use-pager", usePagerWebhookTest, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdWebhookTest)
@@ -296,7 +284,7 @@ json-styles: {raw, pretty}`)
 			var behavior interface{}
 			var err error
 			behavior, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
@@ -308,9 +296,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
-	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdUpdate)
@@ -340,9 +326,7 @@ json-styles: {raw, pretty}`)
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
-	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Behaviors.AddCommand(cmdDelete)

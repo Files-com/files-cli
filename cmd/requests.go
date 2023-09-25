@@ -70,7 +70,7 @@ func Requests() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -84,10 +84,7 @@ func Requests() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder []string
@@ -137,7 +134,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatGetFolder, fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetFolder), fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -151,10 +148,7 @@ json-styles: {raw, pretty}
 
 	cmdGetFolder.Flags().Int64VarP(&MaxPagesGetFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetFolder.Flags().StringSliceVar(&fieldsGetFolder, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdGetFolder.Flags().StringSliceVar(&formatGetFolder, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdGetFolder.Flags().StringSliceVar(&formatGetFolder, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate []string
@@ -178,7 +172,7 @@ json-styles: {raw, pretty}
 			var request interface{}
 			var err error
 			request, err = client.Create(paramsRequestCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), request, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), request, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")
@@ -187,9 +181,7 @@ json-styles: {raw, pretty}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.GroupIds, "group-ids", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
-	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdCreate)
@@ -219,9 +211,7 @@ json-styles: {raw, pretty}`)
 	cmdDelete.Flags().Int64Var(&paramsRequestDelete.Id, "id", 0, "Request ID.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
-	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Requests.AddCommand(cmdDelete)

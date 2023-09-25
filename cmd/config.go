@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -38,6 +40,10 @@ func Config() *cobra.Command {
 				Profile(cmd).Current().ConcurrentConnectionLimit = configParams.ConcurrentConnectionLimit
 			}
 
+			if len(configParams.ResourceFormat) > 0 {
+				Profile(cmd).Current().ResourceFormat = configParams.ResourceFormat
+			}
+
 			Profile(cmd).Save()
 		},
 	}
@@ -46,6 +52,7 @@ func Config() *cobra.Command {
 	configSet.Flags().StringVarP(&configParams.APIKey, "api-key", "a", configParams.APIKey, "API Key")
 	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
 	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
+	configSet.Flags().StringSliceVarP(&configParams.ResourceFormat, "format", "f", configParams.ResourceFormat, fmt.Sprintf("Set default resource format: %v", lib.FormatHelpText))
 
 	Config.AddCommand(configSet)
 	resetConfig := lib.ResetConfig{}
@@ -72,7 +79,8 @@ func Config() *cobra.Command {
 	resetDelete.Flags().BoolVarP(&resetConfig.Endpoint, "endpoint", "e", false, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
 	resetDelete.Flags().BoolVarP(&resetConfig.Session, "session", "s", false, "")
 	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
-	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Set the maximum number of concurrent connections.")
+	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Reset the maximum number of concurrent connections.")
+	resetDelete.Flags().BoolVarP(&resetConfig.ResourceFormat, "format", "f", false, "Reset default resource format")
 
 	Config.AddCommand(resetDelete)
 

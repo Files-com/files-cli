@@ -47,9 +47,7 @@ func ActionWebhookFailures() *cobra.Command {
 	cmdRetry.Flags().Int64Var(&paramsActionWebhookFailureRetry.Id, "id", 0, "Action Webhook Failure ID.")
 
 	cmdRetry.Flags().StringSliceVar(&fieldsRetry, "fields", []string{}, "comma separated list of field names")
-	cmdRetry.Flags().StringSliceVar(&formatRetry, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdRetry.Flags().StringSliceVar(&formatRetry, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdRetry.Flags().BoolVar(&usePagerRetry, "use-pager", usePagerRetry, "Use $PAGER (.ie less, more, etc)")
 
 	ActionWebhookFailures.AddCommand(cmdRetry)

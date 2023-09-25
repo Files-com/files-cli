@@ -17,6 +17,7 @@ import (
 	"github.com/Files-com/files-cli/lib/version"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/session"
+	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -50,7 +51,15 @@ type Profile struct {
 	Endpoint                  string    `json:"endpoint,omitempty"`
 	configPathOverride        string
 	files_sdk.Environment     `json:"environment"`
-	ConcurrentConnectionLimit int `json:"concurrent_connection_limit"`
+	ConcurrentConnectionLimit int      `json:"concurrent_connection_limit"`
+	ResourceFormat            []string `json:"resource_format"`
+}
+
+func (p Profile) SetResourceFormat(cmd *cobra.Command, defaultFormat []string) []string {
+	if len(p.ResourceFormat) > 0 && !cmd.Flags().Changed("format") {
+		return p.ResourceFormat
+	}
+	return defaultFormat
 }
 
 type ResetConfig struct {
@@ -61,6 +70,7 @@ type ResetConfig struct {
 	Session                   bool
 	VersionCheck              bool
 	ConcurrentConnectionLimit bool
+	ResourceFormat            bool
 }
 
 var SessionExpiry = time.Hour * 6
@@ -95,6 +105,12 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 	}
 	if reset.VersionCheck {
 		p.Current().LastValidVersionCheck = time.Now()
+	}
+	if reset.ConcurrentConnectionLimit {
+		p.Current().ConcurrentConnectionLimit = 0
+	}
+	if reset.ResourceFormat {
+		p.Current().ResourceFormat = nil
 	}
 	return p.Save()
 }

@@ -37,14 +37,12 @@ func Sites() *cobra.Command {
 			var site interface{}
 			var err error
 			site, err = client.Get(files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatGet, fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), site, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGet), fieldsGet, usePagerGet, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 
 	cmdGet.Flags().StringSliceVar(&fieldsGet, "fields", []string{}, "comma separated list of field names")
-	cmdGet.Flags().StringSliceVar(&formatGet, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdGet.Flags().StringSliceVar(&formatGet, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGet.Flags().BoolVar(&usePagerGet, "use-pager", usePagerGet, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGet)
@@ -64,14 +62,12 @@ json-styles: {raw, pretty}`)
 			var usageSnapshot interface{}
 			var err error
 			usageSnapshot, err = client.GetUsage(files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, formatGetUsage, fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), usageSnapshot, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGetUsage), fieldsGetUsage, usePagerGetUsage, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 
 	cmdGetUsage.Flags().StringSliceVar(&fieldsGetUsage, "fields", []string{}, "comma separated list of field names")
-	cmdGetUsage.Flags().StringSliceVar(&formatGetUsage, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdGetUsage.Flags().StringSliceVar(&formatGetUsage, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetUsage.Flags().BoolVar(&usePagerGetUsage, "use-pager", usePagerGetUsage, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdGetUsage)
@@ -576,7 +572,7 @@ json-styles: {raw, pretty}`)
 			var site interface{}
 			var err error
 			site, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), site, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), site, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Name, "name", "", "Site name")
@@ -713,9 +709,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
-	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Sites.AddCommand(cmdUpdate)

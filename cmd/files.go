@@ -59,7 +59,7 @@ func Files() *cobra.Command {
 			var file interface{}
 			var err error
 			file, err = client.Create(paramsFileCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
@@ -77,9 +77,7 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createWithRename, "with-rename", createWithRename, "Allow file rename instead of overwrite?")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
-	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdCreate)
@@ -123,7 +121,7 @@ json-styles: {raw, pretty}`)
 			var file interface{}
 			var err error
 			file, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
@@ -132,9 +130,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.PriorityColor, "priority-color", "", "Priority/Bookmark color of file.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
-	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdUpdate)
@@ -173,9 +169,7 @@ json-styles: {raw, pretty}`)
 	cmdDelete.Flags().BoolVar(&deleteRecursive, "recursive", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
-	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdDelete)
@@ -209,7 +203,7 @@ json-styles: {raw, pretty}`)
 			var file interface{}
 			var err error
 			file, err = client.Find(paramsFileFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), file, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), file, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsFileFind.Path, "path", "", "Path to operate on.")
@@ -218,9 +212,7 @@ json-styles: {raw, pretty}`)
 	cmdFind.Flags().BoolVar(&findWithPriorityColor, "with-priority-color", findWithPriorityColor, "Include file priority color information?")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdFind)
@@ -256,11 +248,11 @@ json-styles: {raw, pretty}`)
 			if err != nil {
 				return err
 			}
-			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockCopy, noProgressCopy, eventLogCopy, formatCopy, cmd.OutOrStdout())
+			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockCopy, noProgressCopy, eventLogCopy, Profile(cmd).Current().SetResourceFormat(cmd, formatCopy), cmd.OutOrStdout())
 			if err != nil {
 				return err
 			}
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatCopy, fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCopy), fieldsCopy, usePagerCopy, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
@@ -268,9 +260,7 @@ json-styles: {raw, pretty}`)
 	cmdCopy.Flags().BoolVar(&copyStructure, "structure", copyStructure, "Copy structure only?")
 
 	cmdCopy.Flags().StringSliceVar(&fieldsCopy, "fields", []string{}, "comma separated list of field names")
-	cmdCopy.Flags().StringSliceVar(&formatCopy, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCopy.Flags().StringSliceVar(&formatCopy, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCopy.Flags().BoolVar(&usePagerCopy, "use-pager", usePagerCopy, "Use $PAGER (.ie less, more, etc)")
 
 	cmdCopy.Flags().BoolVarP(&blockCopy, "block", "b", blockCopy, "Wait on response for async copy with final status")
@@ -304,20 +294,18 @@ json-styles: {raw, pretty}`)
 			if err != nil {
 				return err
 			}
-			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockMove, noProgressMove, eventLogMove, formatMove, cmd.OutOrStdout())
+			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockMove, noProgressMove, eventLogMove, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), cmd.OutOrStdout())
 			if err != nil {
 				return err
 			}
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, formatMove, fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
 	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
 
 	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
-	cmdMove.Flags().StringSliceVar(&formatMove, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdMove.Flags().StringSliceVar(&formatMove, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdMove.Flags().BoolVar(&usePagerMove, "use-pager", usePagerMove, "Use $PAGER (.ie less, more, etc)")
 
 	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
@@ -354,7 +342,7 @@ json-styles: {raw, pretty}`)
 			var fileUploadPartCollection interface{}
 			var err error
 			fileUploadPartCollection, err = client.BeginUpload(paramsFileBeginUpload, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, formatBeginUpload, fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), fileUploadPartCollection, err, Profile(cmd).Current().SetResourceFormat(cmd, formatBeginUpload), fieldsBeginUpload, usePagerBeginUpload, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdBeginUpload.Flags().StringVar(&paramsFileBeginUpload.Path, "path", "", "Path to operate on.")
@@ -367,9 +355,7 @@ json-styles: {raw, pretty}`)
 	cmdBeginUpload.Flags().BoolVar(&beginUploadWithRename, "with-rename", beginUploadWithRename, "Allow file rename instead of overwrite?")
 
 	cmdBeginUpload.Flags().StringSliceVar(&fieldsBeginUpload, "fields", []string{}, "comma separated list of field names")
-	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdBeginUpload.Flags().BoolVar(&usePagerBeginUpload, "use-pager", usePagerBeginUpload, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdBeginUpload)

@@ -122,7 +122,7 @@ func RemoteMounts() *cobra.Command {
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -133,10 +133,7 @@ func RemoteMounts() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-        table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-        json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	mounts.AddCommand(cmdList)
 
@@ -161,21 +158,17 @@ func RemoteMounts() *cobra.Command {
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
-			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatFind, fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, false, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 
 	mounts.AddCommand(cmdFind)
 
 	var fieldsDelete []string
-	var formatDelete []string
 	usePagerDelete := true
 	paramsBehaviorDelete := files_sdk.BehaviorDeleteParams{}
 
@@ -197,10 +190,6 @@ func RemoteMounts() *cobra.Command {
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
-	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	mounts.AddCommand(cmdDelete)
@@ -233,7 +222,7 @@ func RemoteMounts() *cobra.Command {
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
-			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), expandedResource, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), Profile(cmd).Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&updateParams.Id, "id", 0, "Behavior ID.")
@@ -243,10 +232,7 @@ func RemoteMounts() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&mountValue.RemoteServerId, "remote-server-id", mountValue.RemoteServerId, "")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
-	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-                                                                                                                                                 table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-                                                                                                                                                 json-styles: {raw, pretty}
-                                                                                                                                                 `)
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	mounts.AddCommand(cmdUpdate)

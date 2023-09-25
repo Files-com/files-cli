@@ -63,7 +63,7 @@ func RemoteServers() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -75,10 +75,7 @@ func RemoteServers() *cobra.Command {
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind []string
@@ -99,15 +96,13 @@ json-styles: {raw, pretty}
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Find(paramsRemoteServerFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatFind, fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFind)
@@ -129,15 +124,13 @@ json-styles: {raw, pretty}`)
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.FindConfigurationFile(paramsRemoteServerFindConfigurationFile, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatFindConfigurationFile, fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFindConfigurationFile), fieldsFindConfigurationFile, usePagerFindConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
 
 	cmdFindConfigurationFile.Flags().StringSliceVar(&fieldsFindConfigurationFile, "fields", []string{}, "comma separated list of field names")
-	cmdFindConfigurationFile.Flags().StringSliceVar(&formatFindConfigurationFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdFindConfigurationFile.Flags().StringSliceVar(&formatFindConfigurationFile, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFindConfigurationFile.Flags().BoolVar(&usePagerFindConfigurationFile, "use-pager", usePagerFindConfigurationFile, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFindConfigurationFile)
@@ -207,7 +200,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.Create(paramsRemoteServerCreate, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatCreate, fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -275,9 +268,7 @@ json-styles: {raw, pretty}`)
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeRegion, "linode-region", "", "Linode region")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
-	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdCreate)
@@ -299,7 +290,7 @@ json-styles: {raw, pretty}`)
 			var remoteServerConfigurationFile interface{}
 			var err error
 			remoteServerConfigurationFile, err = client.ConfigurationFile(paramsRemoteServerConfigurationFile, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, formatConfigurationFile, fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, Profile(cmd).Current().SetResourceFormat(cmd, formatConfigurationFile), fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Id, "id", 0, "Remote Server ID.")
@@ -316,9 +307,7 @@ json-styles: {raw, pretty}`)
 	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Subdomain, "subdomain", "", "")
 
 	cmdConfigurationFile.Flags().StringSliceVar(&fieldsConfigurationFile, "fields", []string{}, "comma separated list of field names")
-	cmdConfigurationFile.Flags().StringSliceVar(&formatConfigurationFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdConfigurationFile.Flags().StringSliceVar(&formatConfigurationFile, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdConfigurationFile.Flags().BoolVar(&usePagerConfigurationFile, "use-pager", usePagerConfigurationFile, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdConfigurationFile)
@@ -573,7 +562,7 @@ json-styles: {raw, pretty}`)
 			var remoteServer interface{}
 			var err error
 			remoteServer, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, formatUpdate, fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
@@ -642,9 +631,7 @@ json-styles: {raw, pretty}`)
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeRegion, "linode-region", "", "Linode region")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
-	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdUpdate)
@@ -674,9 +661,7 @@ json-styles: {raw, pretty}`)
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerDelete.Id, "id", 0, "Remote Server ID.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
-	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`)
+	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdDelete)

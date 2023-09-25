@@ -71,7 +71,7 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatListForFile, fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFile), fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -89,10 +89,7 @@ func Histories() *cobra.Command {
 
 	cmdListForFile.Flags().Int64VarP(&MaxPagesListForFile, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForFile.Flags().StringSliceVar(&fieldsListForFile, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdListForFile.Flags().StringSliceVar(&formatListForFile, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdListForFile.Flags().StringSliceVar(&formatListForFile, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder []string
@@ -144,7 +141,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatListForFolder, fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFolder), fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -162,10 +159,7 @@ json-styles: {raw, pretty}
 
 	cmdListForFolder.Flags().Int64VarP(&MaxPagesListForFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForFolder.Flags().StringSliceVar(&fieldsListForFolder, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdListForFolder.Flags().StringSliceVar(&formatListForFolder, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdListForFolder.Flags().StringSliceVar(&formatListForFolder, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser []string
@@ -214,7 +208,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatListForUser, fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForUser), fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -232,10 +226,7 @@ json-styles: {raw, pretty}
 
 	cmdListForUser.Flags().Int64VarP(&MaxPagesListForUser, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForUser.Flags().StringSliceVar(&fieldsListForUser, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdListForUser.Flags().StringSliceVar(&formatListForUser, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdListForUser.Flags().StringSliceVar(&formatListForUser, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins []string
@@ -284,7 +275,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatListLogins, fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListLogins), fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -301,10 +292,7 @@ json-styles: {raw, pretty}
 
 	cmdListLogins.Flags().Int64VarP(&MaxPagesListLogins, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListLogins.Flags().StringSliceVar(&fieldsListLogins, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdListLogins.Flags().StringSliceVar(&formatListLogins, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdListLogins.Flags().StringSliceVar(&formatListLogins, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList []string
@@ -354,7 +342,7 @@ json-styles: {raw, pretty}
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, formatList, fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
 			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -371,10 +359,7 @@ json-styles: {raw, pretty}
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdList.Flags().StringSliceVar(&formatList, "format", []string{"table", "light"}, `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {light, dark, bright} table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}
-        `)
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	Histories.AddCommand(cmdList)
 	return Histories
