@@ -256,7 +256,7 @@ Available output formats are:
 - table,bright
 - table,light,horizontal/vertical
 - table,markdown
-- table-v2
+- table,interactive
 - json
 - json,raw
 - csv

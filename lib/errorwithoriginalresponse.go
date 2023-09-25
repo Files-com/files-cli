@@ -2,6 +2,7 @@ package lib
 
 import (
 	"context"
+	"errors"
 	"io"
 
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
@@ -9,7 +10,8 @@ import (
 )
 
 func ErrorWithOriginalResponse(err error, logger retryablehttp.Logger) (interface{}, error) {
-	originalResponse, ok := err.(flib.ErrorWithOriginalResponse)
+	var originalResponse flib.ErrorWithOriginalResponse
+	ok := errors.As(err, &originalResponse)
 	if ok {
 		logger.Printf("Recovering from original error: `%v`", originalResponse.Error())
 
