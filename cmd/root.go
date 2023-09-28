@@ -45,7 +45,11 @@ var (
 			debugFlag := cmd.Flag("debug")
 			if debugFlag.Changed {
 				if debug == "files-cli_[command]_[timestamp].log" {
-					debug = fmt.Sprintf("files-cli_%v_%v.log", cmd.CalledAs(), strings.Replace(time.Now().Format(time.DateTime), " ", "_", 1))
+					debug = fmt.Sprintf(
+						"files-cli_%v_%v.log",
+						cmd.CalledAs(),
+						time.Now().Format("20060102_150405"),
+					)
 				}
 				if strings.ToLower(debug) == "stdout" {
 					sdkConfig.Logger = log.New(os.Stdout, "", log.LstdFlags)
