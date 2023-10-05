@@ -127,7 +127,7 @@ var (
 			}
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
-				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found. Using session login.\n")
+				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found.\nTo use an API key, provide it with the --api-key=FILES_API_KEY flag.\nFalling back to session login...\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
@@ -152,7 +152,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
 	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
-	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "API Key")
+	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "Set API Key for single use")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "File path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
@@ -162,5 +162,8 @@ func init() {
 }
 
 func Profile(cmd *cobra.Command) *lib.Profiles {
-	return cmd.Context().Value("profile").(*lib.Profiles)
+	if profile, ok := cmd.Context().Value("profile").(*lib.Profiles); ok {
+		return profile
+	}
+	return &lib.Profiles{}
 }

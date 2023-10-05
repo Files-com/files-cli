@@ -3,6 +3,7 @@ package lib
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -197,7 +198,7 @@ func (p *Profiles) Save() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path, file, 0644)
+	return os.WriteFile(path, file, 0600)
 }
 
 func (p *Profiles) ValidSession() bool {
@@ -320,14 +321,21 @@ func (p *Profiles) configRoot() (string, error) {
 	return filepath.Join(usr.HomeDir, ".config"), nil
 }
 
+// initConfig initializes the configuration for a set of profiles.
+// It ensures that the configuration directory and file exist.
+// If there's a permission issue with the configuration file, it renames the file and creates a new one.
 func (p *Profiles) initConfig() error {
+	// Determine the configuration root directory
 	root, err := p.configRoot()
 	if err != nil {
 		return err
 	}
-	_, err = os.Stat(root)
-	if os.IsNotExist(err) {
-		os.MkdirAll(root, 755)
+
+	// Create the root directory if it doesn't exist
+	if _, err := os.Stat(root); os.IsNotExist(err) {
+		if err := os.MkdirAll(root, 0755); err != nil {
+			return err
+		}
 	}
 
 	path, err := p.configPath()
@@ -335,15 +343,32 @@ func (p *Profiles) initConfig() error {
 		return err
 	}
 
-	_, err = os.Stat(path)
-	if os.IsNotExist(err) {
-		f, err := os.Create(path)
-		if err != nil {
+	stat, err := os.Stat(path)
+	var missingReadPerms bool
+	if err == nil {
+		missingReadPerms = stat.Mode().Perm()&0400 == 0
+	}
+
+	// Handle configuration file permissions and existence
+	var createFile bool
+	if os.IsPermission(err) || missingReadPerms {
+		backupPath := fmt.Sprintf("%v-backup", path)
+		if err := os.Rename(path, backupPath); err != nil {
+			panic(err)
+		}
+		fmt.Fprintf(os.Stderr, "Warning: The config file '%v' has a permissions issue and cannot be read. To avoid data loss, it has been renamed to '%v'. A new config file will be created.\n", path, backupPath)
+		createFile = true
+	} else if os.IsNotExist(err) {
+		createFile = true
+	}
+
+	// Create a new configuration file if it doesn't exist or was renamed
+	if createFile {
+		if err := os.WriteFile(path, []byte("{}"), 0600); err != nil {
 			return err
 		}
-		f.Write([]byte("{}"))
-		f.Close()
 	}
+
 	return nil
 }
 
@@ -357,7 +382,8 @@ func contains(s []string, e string) bool {
 }
 
 func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams, err error, config *Profiles) (files_sdk.SessionCreateParams, error) {
-	responseError, ok := err.(files_sdk.ResponseError)
+	var responseError files_sdk.ResponseError
+	ok := errors.As(err, &responseError)
 	if !ok {
 		return paramsSessionCreate, err
 	}
@@ -424,8 +450,14 @@ func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCre
 	userNameDisplay := "Username: %s"
 	if paramsSessionCreate.Username != "" {
 		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, paramsSessionCreate.Username, profile)
+		if err != nil {
+			return err
+		}
 	} else {
 		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, profile.Current().Username, profile)
+		if err != nil {
+			return err
+		}
 	}
 	paramsSessionCreate.Username = profile.Current().Username
 

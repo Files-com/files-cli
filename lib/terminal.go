@@ -2,15 +2,12 @@ package lib
 
 import (
 	"context"
+	"errors"
 	"fmt"
-
-	//tea "test3/go/pkg/mod/github.com/charmbracelet/bubbletea@v0.20.0"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
-
-type errMsg error
 
 type PretextInputModel struct {
 	textInput textinput.Model
@@ -28,11 +25,11 @@ func (p *PretextInputModel) new(display string, pretext string, charLimit int, w
 	p.textInput.Focus()
 }
 
-func (p PretextInputModel) Init() tea.Cmd {
+func (p *PretextInputModel) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (p PretextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (p *PretextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -41,9 +38,10 @@ func (p PretextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			p.textInput, cmd = p.textInput.Update(msg)
 			return p, tea.Quit
 		case tea.KeyCtrlC, tea.KeyEsc:
+			p.err = errors.New("exited session loging")
 			return p, tea.Quit
 		}
-	case errMsg:
+	case error:
 		p.err = msg
 		return p, nil
 	}
@@ -51,12 +49,12 @@ func (p PretextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return p, cmd
 }
 
-func (p PretextInputModel) View() string {
+func (p *PretextInputModel) View() string {
 	return fmt.Sprintf(p.display, p.textInput.View()) + "\n"
 }
 
 func PromptUserWithPretext(ctx context.Context, display string, pretext string, profile *Profiles) (string, error) {
-	var pretextModel PretextInputModel
+	pretextModel := &PretextInputModel{}
 	maxInputLength := 156
 	var maxAdditionalCharViewSpace int
 	if pretext == "" {
@@ -66,6 +64,9 @@ func PromptUserWithPretext(ctx context.Context, display string, pretext string, 
 	}
 	pretextModel.new(display, pretext, maxInputLength, len(pretext)+maxAdditionalCharViewSpace)
 	p := tea.NewProgram(pretextModel, tea.WithOutput(profile.Out), tea.WithInput(profile.In), tea.WithContext(ctx))
-	newModel, err := p.Run()
-	return newModel.(PretextInputModel).textInput.Value(), err
+	_, err := p.Run()
+	if err == nil {
+		err = pretextModel.err
+	}
+	return pretextModel.textInput.Value(), err
 }
