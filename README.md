@@ -137,7 +137,7 @@ files-cli logout
 *Return root folder listing*
 
 ```shell 
-files-cli folders list-for --fields path,type
+files-cli folders list-for --fields path,type --format json
 
 [{
     "path": "document.docx",
@@ -251,17 +251,21 @@ You can configure the output format by using the `--format` option. For example,
 
 Available output formats are:
 
-- table
+- table *(default)*
+- table,interactive *(searchable and scrollable)*
 - table,dark
 - table,bright
-- table,light,horizontal/vertical
+- table,light,{horizontal/vertical}
 - table,markdown
-- table,interactive
-- json
-- json,raw
+- json *(human-readable)*
+- json,raw *(machine-readable)*
 - csv
 
 Here are some examples:
+
+``` shell
+files-cli users list --format="table,interactive"
+```
 
 ``` shell
 files-cli folders list-for /path/to/folder --format csv
@@ -273,6 +277,12 @@ files-cli folders create --path “/path/to/folder/to/be/created” --format="js
 
 ``` shell
 files-cli users list --format="table,dark"
+```
+
+Set as default for profile
+
+```shell
+files-cli config set --format="table,interactive"
 ```
 
 ### Command Help
