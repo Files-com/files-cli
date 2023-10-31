@@ -121,6 +121,7 @@ func Sites() *cobra.Command {
 	updateFtpEnabled := true
 	updateSftpEnabled := true
 	updateGroupAdminsCanSetUserPassword := true
+	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAllowed2faMethodSms := true
 	updateAllowed2faMethodU2f := true
 	updateAllowed2faMethodTotp := true
@@ -404,6 +405,12 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("group-admins-can-set-user-password") {
 				mapParams["group_admins_can_set_user_password"] = updateGroupAdminsCanSetUserPassword
 			}
+			if cmd.Flags().Changed("bundle-recipient-blacklist-free-email-domains") {
+				mapParams["bundle_recipient_blacklist_free_email_domains"] = updateBundleRecipientBlacklistFreeEmailDomains
+			}
+			if cmd.Flags().Changed("bundle-recipient-blacklist-domains") {
+				lib.FlagUpdateLen(cmd, "bundle_recipient_blacklist_domains", paramsSiteUpdate.BundleRecipientBlacklistDomains, mapParams)
+			}
 			if cmd.Flags().Changed("allowed-2fa-method-sms") {
 				mapParams["allowed_2fa_method_sms"] = updateAllowed2faMethodSms
 			}
@@ -657,6 +664,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins set password authentication method")
+	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
+	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
