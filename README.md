@@ -20,7 +20,7 @@ brew install files-cli
 For Linux systems that support RPM, such as Red Hat Linux, Fedora Linux, CentOS, openSUSE, Oracle Linux, and others, use the RPM Package Manager to install the CLI App:
 
 ```shell
-curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.rpm -O files-cli.rpm
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.rpm -o files-cli.rpm
 
 sudo rpm -i ./files-cli.rpm
 ```
@@ -30,7 +30,7 @@ sudo rpm -i ./files-cli.rpm
 For Debian based systems, such as Ubuntu Linux, use the APT-based Package Manager to install the CLI App:
 
 ```shell
-curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.apk -O files-cli.apk
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.apk -o files-cli.apk
 
 sudo rpm -i ./files-cli.apk
 ```
