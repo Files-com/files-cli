@@ -126,10 +126,10 @@ func Groups() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), group, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Notes, "notes", "", "Group notes.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -159,9 +159,6 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsGroupUpdate.Id, mapParams)
 			}
-			if cmd.Flags().Changed("name") {
-				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
-			}
 			if cmd.Flags().Changed("notes") {
 				lib.FlagUpdate(cmd, "notes", paramsGroupUpdate.Notes, mapParams)
 			}
@@ -171,6 +168,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("admin-ids") {
 				lib.FlagUpdate(cmd, "admin_ids", paramsGroupUpdate.AdminIds, mapParams)
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
+			}
 
 			var group interface{}
 			var err error
@@ -179,10 +179,10 @@ func Groups() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.Id, "id", 0, "Group ID.")
-	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Name, "name", "", "Group name.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Notes, "notes", "", "Group notes.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Name, "name", "", "Group name.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
