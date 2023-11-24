@@ -139,6 +139,7 @@ func RemoteServers() *cobra.Command {
 	usePagerCreate := true
 	createResetAuthentication := true
 	createPinToSiteRegion := true
+	createAzureBlobStorageHierarchicalNamespace := true
 	createEnableDedicatedIps := true
 	createDropboxTeams := true
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
@@ -189,6 +190,9 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("pin-to-site-region") {
 				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(createPinToSiteRegion)
+			}
+			if cmd.Flags().Changed("azure-blob-storage-hierarchical-namespace") {
+				paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = flib.Bool(createAzureBlobStorageHierarchicalNamespace)
 			}
 			if cmd.Flags().Changed("enable-dedicated-ips") {
 				paramsRemoteServerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
@@ -242,6 +246,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage Container name")
+	cmdCreate.Flags().BoolVar(&createAzureBlobStorageHierarchicalNamespace, "azure-blob-storage-hierarchical-namespace", createAzureBlobStorageHierarchicalNamespace, "Enable when storage account has hierarchical namespace feature enabled")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
@@ -316,6 +321,7 @@ func RemoteServers() *cobra.Command {
 	usePagerUpdate := true
 	updateResetAuthentication := true
 	updatePinToSiteRegion := true
+	updateAzureBlobStorageHierarchicalNamespace := true
 	updateEnableDedicatedIps := true
 	updateDropboxTeams := true
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
@@ -486,6 +492,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("azure-blob-storage-container") {
 				lib.FlagUpdate(cmd, "azure_blob_storage_container", paramsRemoteServerUpdate.AzureBlobStorageContainer, mapParams)
 			}
+			if cmd.Flags().Changed("azure-blob-storage-hierarchical-namespace") {
+				mapParams["azure_blob_storage_hierarchical_namespace"] = updateAzureBlobStorageHierarchicalNamespace
+			}
 			if cmd.Flags().Changed("azure-blob-storage-sas-token") {
 				lib.FlagUpdate(cmd, "azure_blob_storage_sas_token", paramsRemoteServerUpdate.AzureBlobStorageSasToken, mapParams)
 			}
@@ -605,6 +614,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage Container name")
+	cmdUpdate.Flags().BoolVar(&updateAzureBlobStorageHierarchicalNamespace, "azure-blob-storage-hierarchical-namespace", updateAzureBlobStorageHierarchicalNamespace, "Enable when storage account has hierarchical namespace feature enabled")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
