@@ -24,7 +24,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/rs/zerolog v1.28.0
-	github.com/samber/lo v1.38.1
+	github.com/samber/lo v1.39.0
 	github.com/sc0vu/didyoumean v0.0.0-20210223094345-27965c2b1bc9
 	github.com/sftpgo/sdk v0.1.1
 	github.com/spf13/cobra v1.7.0
