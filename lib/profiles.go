@@ -455,7 +455,7 @@ func ValidateDomain(domain string) bool {
 
 func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
 	var err error
-	profile.Current().Subdomain, err = PromptUserWithPretext(ctx, "Site: %s", lib.DefaultString(profile.Current().Subdomain, profile.Current().Endpoint), "Enter your site subdomain (e.g. mysite) or custom domain (e.g. myfilescustomdomain.com)", profile)
+	profile.Current().Subdomain, err = PromptUserWithPretext(ctx, "Site: %s", lib.DefaultString(profile.Current().Subdomain, profile.Current().Endpoint), "Enter your site subdomain (e.g. mysite) or custom domain (e.g. myfiles.customdomain.com)", profile)
 	if err != nil {
 		return err
 	}
