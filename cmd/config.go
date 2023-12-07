@@ -50,7 +50,7 @@ func Config() *cobra.Command {
 	configSet.Flags().StringVarP(&configParams.Subdomain, "subdomain", "d", configParams.Subdomain, "Subdomain of site")
 	configSet.Flags().StringVarP(&configParams.Username, "username", "u", configParams.Username, "Username to sign in as")
 	configSet.Flags().StringVarP(&configParams.APIKey, "api-key", "a", configParams.APIKey, "Store API Key in plain text config file `~/.config/files-cli`")
-	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For testing only, example: 'https://site.files.com'\nTo change subdomain use flag instead.")
+	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For use with custom domains. Example: 'https://myfilescustomdomain.com'")
 	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
 	configSet.Flags().StringSliceVarP(&configParams.ResourceFormat, "format", "f", configParams.ResourceFormat, fmt.Sprintf("Set default resource format: %v", lib.FormatHelpText))
 

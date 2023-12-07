@@ -2,11 +2,14 @@ package lib
 
 import (
 	"context"
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -17,6 +20,7 @@ import (
 
 	"github.com/Files-com/files-cli/lib/version"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/session"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
@@ -440,21 +444,46 @@ func passwordPrompt() (password string, err error) {
 	return password, nil
 }
 
+func ValidateDomain(domain string) bool {
+	_, err := net.LookupHost(domain)
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCreateParams, profile *Profiles) error {
 	var err error
-	profile.Current().Subdomain, err = PromptUserWithPretext(ctx, "Subdomain: %s", profile.Current().Subdomain, profile)
+	profile.Current().Subdomain, err = PromptUserWithPretext(ctx, "Site: %s", lib.DefaultString(profile.Current().Subdomain, profile.Current().Endpoint), "Enter your site subdomain (e.g. mysite) or custom domain (e.g. myfilescustomdomain.com)", profile)
 	if err != nil {
 		return err
 	}
 
+	_, err = url.Parse(files_sdk.Config{Subdomain: profile.Current().Subdomain}.Endpoint())
+	if err != nil {
+		customDomain := profile.Current().Subdomain
+		_, err = url.Parse(files_sdk.Config{EndpointOverride: customDomain}.Endpoint())
+		if err != nil {
+			return fmt.Errorf("invalid domain or subdomain: %v", profile.Current().Subdomain)
+		}
+		profile.Current().Subdomain = ""
+		profile.Current().Endpoint = customDomain
+	}
+
+	if strings.Contains(profile.Current().Subdomain, ".") {
+		profile.Current().Endpoint = profile.Current().Subdomain
+		profile.Current().Subdomain = ""
+	}
+
 	userNameDisplay := "Username: %s"
 	if paramsSessionCreate.Username != "" {
-		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, paramsSessionCreate.Username, profile)
+		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, paramsSessionCreate.Username, "", profile)
 		if err != nil {
 			return err
 		}
 	} else {
-		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, profile.Current().Username, profile)
+		profile.Current().Username, err = PromptUserWithPretext(ctx, userNameDisplay, profile.Current().Username, "", profile)
 		if err != nil {
 			return err
 		}
@@ -471,15 +500,32 @@ func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCre
 	}
 
 	profile.SetOnConfig()
-	profile.SessionId = ""
-	client := session.Client{Config: *profile.Config}
-
-	result, err := client.Create(paramsSessionCreate)
-
+	result, err := createSession(*profile.Config, paramsSessionCreate)
+	if err != nil {
+		var x509Err x509.HostnameError
+		if errors.As(err, &x509Err) {
+			customDomain := profile.Current().Subdomain
+			profile.Current().Subdomain = ""
+			profile.SessionId = ""
+			profile.Current().Endpoint = customDomain
+			profile.SetOnConfig()
+			result, err = createSession(*profile.Config, paramsSessionCreate)
+		}
+		var respErr files_sdk.ResponseError
+		if errors.As(err, &respErr) {
+			if respErr.Type == "not-authenticated/lockout-region-mismatch" {
+				profile.Current().Endpoint = respErr.Data.Host
+				profile.SessionId = ""
+				profile.SetOnConfig()
+				result, err = createSession(*profile.Config, paramsSessionCreate)
+			}
+		}
+	}
 	if err != nil {
 		otpSessionCreate, err := SessionUnauthorizedError(paramsSessionCreate, err, profile)
+		profile.Config.APIKey = ""
 		if err == nil {
-			result, err = client.Create(otpSessionCreate)
+			result, err = createSession(*profile.Config, otpSessionCreate)
 		}
 
 		if err != nil {
@@ -495,4 +541,12 @@ func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCre
 	}
 	profile.SetOnConfig()
 	return nil
+}
+
+func createSession(config files_sdk.Config, params files_sdk.SessionCreateParams) (files_sdk.Session, error) {
+	return (&session.Client{Config: config}).Create(params, files_sdk.RequestOption(func(r *http.Request) error {
+		r.Header.Del("X-FilesAPI-Auth")
+		r.Header.Del("X-FilesAPI-Key")
+		return nil
+	}))
 }

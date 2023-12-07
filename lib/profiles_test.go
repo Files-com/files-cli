@@ -204,6 +204,25 @@ func TestProfiles_Load(t *testing.T) {
 	}
 }
 
+func TestCreateSession_CustomDomain(t *testing.T) {
+	assert := assert.New(t)
+
+	sdkConfig, r := createRecorder("TestCreateSession_CustomDomain")
+	defer r.Stop()
+	_, config := createTempConfig(&sdkConfig)
+	var err error
+	stdOut := bytes.NewBufferString("")
+	stdIn := &StubInput{inputs: []string{"testdomain.com", "\r", "", "testuser", "\r"}}
+	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	err = CreateSession(ctx, files_sdk.SessionCreateParams{Password: "badpassword"}, config)
+	assert.NoError(ctx.Err())
+	assert.Error(err)
+	assert.Equal("testdomain.com", config.Current().Endpoint)
+	assert.Equal("testuser", config.Current().Username)
+}
+
 func TestCreateSession_InvalidPassword(t *testing.T) {
 	assert := assert.New(t)
 
