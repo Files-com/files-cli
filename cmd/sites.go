@@ -122,6 +122,7 @@ func Sites() *cobra.Command {
 	updateSftpEnabled := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
+	updateAdminsBypassLockedSubfolders := true
 	updateAllowed2faMethodSms := true
 	updateAllowed2faMethodU2f := true
 	updateAllowed2faMethodTotp := true
@@ -411,6 +412,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("bundle-recipient-blacklist-domains") {
 				lib.FlagUpdateLen(cmd, "bundle_recipient_blacklist_domains", paramsSiteUpdate.BundleRecipientBlacklistDomains, mapParams)
 			}
+			if cmd.Flags().Changed("admins-bypass-locked-subfolders") {
+				mapParams["admins_bypass_locked_subfolders"] = updateAdminsBypassLockedSubfolders
+			}
 			if cmd.Flags().Changed("allowed-2fa-method-sms") {
 				mapParams["allowed_2fa_method_sms"] = updateAllowed2faMethodSms
 			}
@@ -666,6 +670,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins set password authentication method")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
+	cmdUpdate.Flags().BoolVar(&updateAdminsBypassLockedSubfolders, "admins-bypass-locked-subfolders", updateAdminsBypassLockedSubfolders, "Allow admins to bypass the locked subfolders setting.")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
