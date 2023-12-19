@@ -6,6 +6,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/group"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -108,6 +109,10 @@ func Groups() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createFtpPermission := true
+	createSftpPermission := true
+	createDavPermission := true
+	createRestapiPermission := true
 	paramsGroupCreate := files_sdk.GroupCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -120,6 +125,19 @@ func Groups() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := group.Client{Config: config}
 
+			if cmd.Flags().Changed("ftp-permission") {
+				paramsGroupCreate.FtpPermission = flib.Bool(createFtpPermission)
+			}
+			if cmd.Flags().Changed("sftp-permission") {
+				paramsGroupCreate.SftpPermission = flib.Bool(createSftpPermission)
+			}
+			if cmd.Flags().Changed("dav-permission") {
+				paramsGroupCreate.DavPermission = flib.Bool(createDavPermission)
+			}
+			if cmd.Flags().Changed("restapi-permission") {
+				paramsGroupCreate.RestapiPermission = flib.Bool(createRestapiPermission)
+			}
+
 			var group interface{}
 			var err error
 			group, err = client.Create(paramsGroupCreate, files_sdk.WithContext(ctx))
@@ -129,6 +147,10 @@ func Groups() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Notes, "notes", "", "Group notes.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.")
+	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
+	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
+	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -139,6 +161,10 @@ func Groups() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateFtpPermission := true
+	updateSftpPermission := true
+	updateDavPermission := true
+	updateRestapiPermission := true
 	paramsGroupUpdate := files_sdk.GroupUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -168,6 +194,18 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("admin-ids") {
 				lib.FlagUpdate(cmd, "admin_ids", paramsGroupUpdate.AdminIds, mapParams)
 			}
+			if cmd.Flags().Changed("ftp-permission") {
+				mapParams["ftp_permission"] = updateFtpPermission
+			}
+			if cmd.Flags().Changed("sftp-permission") {
+				mapParams["sftp_permission"] = updateSftpPermission
+			}
+			if cmd.Flags().Changed("dav-permission") {
+				mapParams["dav_permission"] = updateDavPermission
+			}
+			if cmd.Flags().Changed("restapi-permission") {
+				mapParams["restapi_permission"] = updateRestapiPermission
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
 			}
@@ -182,6 +220,10 @@ func Groups() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Notes, "notes", "", "Group notes.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.")
+	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
+	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
+	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Name, "name", "", "Group name.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

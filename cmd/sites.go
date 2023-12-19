@@ -120,6 +120,7 @@ func Sites() *cobra.Command {
 	updateUserRequestsNotifyAdmins := true
 	updateFtpEnabled := true
 	updateSftpEnabled := true
+	updateProtocolAccessGroupsOnly := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAdminsBypassLockedSubfolders := true
@@ -401,6 +402,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("active-sftp-host-key-id") {
 				lib.FlagUpdate(cmd, "active_sftp_host_key_id", paramsSiteUpdate.ActiveSftpHostKeyId, mapParams)
 			}
+			if cmd.Flags().Changed("protocol-access-groups-only") {
+				mapParams["protocol_access_groups_only"] = updateProtocolAccessGroupsOnly
+			}
 			if cmd.Flags().Changed("bundle-watermark-value") {
 			}
 			if cmd.Flags().Changed("group-admins-can-set-user-password") {
@@ -667,6 +671,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
+	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If `true`, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins set password authentication method")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
