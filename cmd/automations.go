@@ -115,6 +115,7 @@ func Automations() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createAlwaysOverwriteSizeMatchingFiles := true
 	createDisabled := true
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateTrigger := ""
@@ -141,6 +142,9 @@ func Automations() *cobra.Command {
 				return AutomationCreateAutomationErr
 			}
 
+			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
+				paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = flib.Bool(createAlwaysOverwriteSizeMatchingFiles)
+			}
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
 			}
@@ -164,6 +168,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
@@ -210,6 +215,7 @@ func Automations() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateAlwaysOverwriteSizeMatchingFiles := true
 	updateDisabled := true
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
@@ -276,6 +282,9 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("schedule") {
 			}
+			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
+				mapParams["always_overwrite_size_matching_files"] = updateAlwaysOverwriteSizeMatchingFiles
+			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsAutomationUpdate.Description, mapParams)
 			}
@@ -320,6 +329,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
