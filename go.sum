@@ -147,8 +147,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.2.0 h1:Rt8g24XnyGTyglgET/PRUNlrUeu9F5L+7FilkXfZgs0=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
-github.com/Files-com/files-sdk-go/v3 v3.1.19 h1:5ihrczqt0tU7q1Ijevo8LimkhV/5aibq0nfzATcwz2Y=
-github.com/Files-com/files-sdk-go/v3 v3.1.19/go.mod h1:f49d/rhuF8Jc1BV5fa8VV/9vs9vwJD/LKhccsdwisgQ=
+github.com/Files-com/files-sdk-go/v3 v3.1.20 h1:pregqUbXxNCL8dQO745E+YIjcGLxgllwGbZ/LD9R0B0=
+github.com/Files-com/files-sdk-go/v3 v3.1.20/go.mod h1:f49d/rhuF8Jc1BV5fa8VV/9vs9vwJD/LKhccsdwisgQ=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962 h1:KeNholpO2xKjgaaSyd+DyQRrsQjhbSeS7qe4nEw8aQw=
 github.com/GehirnInc/crypt v0.0.0-20200316065508-bb7000b8a962/go.mod h1:kC29dT1vFpj7py2OvG1khBdQpo3kInWP+6QipLbdngo=
 github.com/GoogleCloudPlatform/cloudsql-proxy v1.31.2/go.mod h1:qR6jVnZTKDCW3j+fC9mOEPHm++1nKDMkqbbkD6KNsfo=
