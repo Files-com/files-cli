@@ -1,0 +1,18 @@
+{
+  "substitute_urls": [
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=%s&X-Goog-Expires=%s&X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-SignedHeaders=host",
+    "https://s3.amazonaws.com/test.example.com/metadata/1234/00000000-0000-0000-0001-00000000?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=%s&X-Amz-Expires=%s",
+    "https://filescomtests.blob.core.windows.net/testazureremote/ntie3buw/file-to-download.txt?sp=se=%s"
+  ],
+  "error_urls": [
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=20220101T120000Z",
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=20220101T120000Z&X-Goog-Date=20220202T120000Z",
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Expires=900&X-Goog-Expires=600",
+    "https://filescomtests.blob.core.windows.net/testazureremote/ntie3buw/file-to-download.txt?sp=se=20220101T120000Z&sp=se=20220202T120000Z",
+    "https://filescomtests.blob.core.windows.net/testazureremote/ntie3buw/file-to-download.txt?sp=20220101T120000Z",
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=20220101&X-Goog-Expires=900",
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=asdf&X-Goog-Expires=900",
+    "https://storage.googleapis.com/example-bucket/cat.jpeg?X-Goog-Date=20220101T120000Z&&X-Goog-Expires=900",
+    "https://s3.amazonaws.com/test.example.com/metadata/1234/00000000-0000-0000-0001-00000000?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=asdf&X-Amz-Expires=900"
+  ]
+}
