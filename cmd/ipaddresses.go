@@ -76,6 +76,60 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	IpAddresses.AddCommand(cmdList)
+	var fieldsGetSmartfileReserved []string
+	var formatGetSmartfileReserved []string
+	usePagerGetSmartfileReserved := true
+	filterbyGetSmartfileReserved := make(map[string]string)
+	paramsIpAddressGetSmartfileReserved := files_sdk.IpAddressGetSmartfileReservedParams{}
+	var MaxPagesGetSmartfileReserved int64
+
+	cmdGetSmartfileReserved := &cobra.Command{
+		Use:   "get-smartfile-reserved",
+		Short: "List all possible public SmartFile IP addresses",
+		Long:  `List all possible public SmartFile IP addresses`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			params := paramsIpAddressGetSmartfileReserved
+			params.MaxPages = MaxPagesGetSmartfileReserved
+
+			client := ip_address.Client{Config: config}
+			it, err := client.GetSmartfileReserved(params, files_sdk.WithContext(ctx))
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			if len(filterbyGetSmartfileReserved) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyGetSmartfileReserved, i)
+					return i, matchOk, err
+				}
+			}
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), fieldsGetSmartfileReserved, usePagerGetSmartfileReserved, listFilter, cmd.OutOrStdout())
+			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+		},
+	}
+
+	cmdGetSmartfileReserved.Flags().StringToStringVar(&filterbyGetSmartfileReserved, "filter-by", filterbyGetSmartfileReserved, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+
+	cmdGetSmartfileReserved.Flags().StringVar(&paramsIpAddressGetSmartfileReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
+	cmdGetSmartfileReserved.Flags().Int64Var(&paramsIpAddressGetSmartfileReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+
+	cmdGetSmartfileReserved.Flags().Int64VarP(&MaxPagesGetSmartfileReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetSmartfileReserved.Flags().StringSliceVar(&fieldsGetSmartfileReserved, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdGetSmartfileReserved.Flags().StringSliceVar(&formatGetSmartfileReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGetSmartfileReserved.Flags().BoolVar(&usePagerGetSmartfileReserved, "use-pager", usePagerGetSmartfileReserved, "Use $PAGER (.ie less, more, etc)")
+	IpAddresses.AddCommand(cmdGetSmartfileReserved)
 	var fieldsGetExavaultReserved []string
 	var formatGetExavaultReserved []string
 	usePagerGetExavaultReserved := true
