@@ -101,6 +101,7 @@ func Sites() *cobra.Command {
 	updatePasswordRequireNumber := true
 	updatePasswordRequireUnbreached := true
 	updateRequireLogoutFromBundlesAndInboxes := true
+	updateDavUserRootEnabled := true
 	updateSftpUserRootEnabled := true
 	updateDisablePasswordReset := true
 	updateImmutableFiles := true
@@ -118,6 +119,7 @@ func Sites() *cobra.Command {
 	updateSharingEnabled := true
 	updateUserRequestsEnabled := true
 	updateUserRequestsNotifyAdmins := true
+	updateDavEnabled := true
 	updateFtpEnabled := true
 	updateSftpEnabled := true
 	updateProtocolAccessGroupsOnly := true
@@ -324,6 +326,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("require-logout-from-bundles-and-inboxes") {
 				mapParams["require_logout_from_bundles_and_inboxes"] = updateRequireLogoutFromBundlesAndInboxes
 			}
+			if cmd.Flags().Changed("dav-user-root-enabled") {
+				mapParams["dav_user_root_enabled"] = updateDavUserRootEnabled
+			}
 			if cmd.Flags().Changed("sftp-user-root-enabled") {
 				mapParams["sftp_user_root_enabled"] = updateSftpUserRootEnabled
 			}
@@ -389,6 +394,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("user-requests-notify-admins") {
 				mapParams["user_requests_notify_admins"] = updateUserRequestsNotifyAdmins
+			}
+			if cmd.Flags().Changed("dav-enabled") {
+				mapParams["dav_enabled"] = updateDavEnabled
 			}
 			if cmd.Flags().Changed("ftp-enabled") {
 				mapParams["ftp_enabled"] = updateFtpEnabled
@@ -645,6 +653,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequireNumber, "password-require-number", updatePasswordRequireNumber, "Require a number in passwords?")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequireUnbreached, "password-require-unbreached", updatePasswordRequireUnbreached, "Require passwords that have not been previously breached? (see https://haveibeenpwned.com/)")
 	cmdUpdate.Flags().BoolVar(&updateRequireLogoutFromBundlesAndInboxes, "require-logout-from-bundles-and-inboxes", updateRequireLogoutFromBundlesAndInboxes, "If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.")
+	cmdUpdate.Flags().BoolVar(&updateDavUserRootEnabled, "dav-user-root-enabled", updateDavUserRootEnabled, "Use user FTP roots also for WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateSftpUserRootEnabled, "sftp-user-root-enabled", updateSftpUserRootEnabled, "Use user FTP roots also for SFTP?")
 	cmdUpdate.Flags().BoolVar(&updateDisablePasswordReset, "disable-password-reset", updateDisablePasswordReset, "Is password reset disabled?")
 	cmdUpdate.Flags().BoolVar(&updateImmutableFiles, "immutable-files", updateImmutableFiles, "Are files protected from modification?")
@@ -667,6 +676,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSharingEnabled, "sharing-enabled", updateSharingEnabled, "Allow bundle creation")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsEnabled, "user-requests-enabled", updateUserRequestsEnabled, "Enable User Requests feature")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
+	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
