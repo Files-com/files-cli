@@ -1,0 +1,36 @@
+[
+  {
+    "headers": {},
+    "result": null
+  },
+  {
+    "headers": {
+      "Retry-After": ["aaaaaa"]
+    },
+    "result": null
+  },
+  {
+    "headers": {
+      "Retry-After": ["120"]
+    },
+    "result": 120
+  },
+  {
+    "headers": {
+      "Retry-After": ["120", "60"]
+    },
+    "result": 120
+  },
+  {
+    "headers": {
+      "Retry-After": ["120", "aaaaaa"]
+    },
+    "result": 120
+  },
+  {
+    "headers": {
+      "Retry-After": ["%s"]
+    },
+    "result": 60
+  }
+]
