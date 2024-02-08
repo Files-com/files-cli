@@ -11,26 +11,32 @@
   },
   {
     "headers": {
-      "Retry-After": ["120"]
+      "Retry-After": ["5"]
     },
-    "result": 120
+    "result": 5
   },
   {
     "headers": {
-      "Retry-After": ["120", "60"]
+      "Retry-After": ["60"]
     },
-    "result": 120
+    "result": null
   },
   {
     "headers": {
-      "Retry-After": ["120", "aaaaaa"]
+      "Retry-After": ["5", "10"]
     },
-    "result": 120
+    "result": 5
+  },
+  {
+    "headers": {
+      "Retry-After": ["5", "aaaaaa"]
+    },
+    "result": 5
   },
   {
     "headers": {
       "Retry-After": ["%s"]
     },
-    "result": 60
+    "result": 8
   }
 ]
