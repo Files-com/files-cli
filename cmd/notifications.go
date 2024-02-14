@@ -185,6 +185,8 @@ func Notifications() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdCreate.Flags().StringSliceVar(&paramsNotificationCreate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to match for action path")
+	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "Only notify on actions made by a member of one of the specified groups")
+	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringUserIds, "triggering-user-ids", []int64{}, "Only notify on actions made one of the specified users")
 	cmdCreate.Flags().BoolVar(&createTriggerByShareRecipients, "trigger-by-share-recipients", createTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.GroupId, "group-id", 0, "The ID of the group to notify.  Provide `user_id`, `username` or `group_id`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Path, "path", "", "Path")
@@ -283,6 +285,8 @@ func Notifications() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdUpdate.Flags().StringSliceVar(&paramsNotificationUpdate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to match for action path")
+	cmdUpdate.Flags().Int64SliceVar(&paramsNotificationUpdate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "Only notify on actions made by a member of one of the specified groups")
+	cmdUpdate.Flags().Int64SliceVar(&paramsNotificationUpdate.TriggeringUserIds, "triggering-user-ids", []int64{}, "Only notify on actions made one of the specified users")
 	cmdUpdate.Flags().BoolVar(&updateTriggerByShareRecipients, "trigger-by-share-recipients", updateTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
