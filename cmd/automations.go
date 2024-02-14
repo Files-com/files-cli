@@ -168,6 +168,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
@@ -280,7 +282,14 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("group-ids") {
 				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
 			}
-			if cmd.Flags().Changed("schedule") {
+			if cmd.Flags().Changed("schedule-days-of-week") {
+				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAutomationUpdate.ScheduleDaysOfWeek, mapParams)
+			}
+			if cmd.Flags().Changed("schedule-times-of-day") {
+				lib.FlagUpdateLen(cmd, "schedule_times_of_day", paramsAutomationUpdate.ScheduleTimesOfDay, mapParams)
+			}
+			if cmd.Flags().Changed("schedule-time-zone") {
+				lib.FlagUpdate(cmd, "schedule_time_zone", paramsAutomationUpdate.ScheduleTimeZone, mapParams)
 			}
 			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
 				mapParams["always_overwrite_size_matching_files"] = updateAlwaysOverwriteSizeMatchingFiles
@@ -329,6 +338,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
+	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")

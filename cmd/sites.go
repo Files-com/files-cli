@@ -258,6 +258,8 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("motd-use-for-sftp") {
 				mapParams["motd_use_for_sftp"] = updateMotdUseForSftp
 			}
+			if cmd.Flags().Changed("left-navigation-visibility") {
+			}
 			if cmd.Flags().Changed("session-expiry") {
 				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
 			}
