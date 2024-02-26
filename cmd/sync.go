@@ -40,6 +40,7 @@ func Sync() *cobra.Command {
 						Sync:        transfer.SyncFlag,
 						Manager:     transfer.Manager,
 						Ignore:      *transfer.Ignore,
+						Include:     *transfer.Include,
 						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:      transfer.DryRun,
 					},
