@@ -2,11 +2,13 @@
 
 The Files.com CLI App provides convenient access to the Files.com API.
 
+
 ## Installation
 
 Download the latest release for Windows, macOS, or Linux from the [CLI App Releases](https://github.com/Files-com/files-cli/releases) page.
 
-### Homebrew 
+
+### Homebrew
 
 For systems with Homebrew available, use the following commands:
 
@@ -36,12 +38,14 @@ sudo rpm -i ./files-cli.apk
 ```
 
 ### Windows
+
 **Download**
 
 - AMD/Intel 64-Bit Processors [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_64bit.zip) *(Most Common)*
 - ARM Processors [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip) *(Less Common)*
 
 Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
+
 
 ### Mac
 
@@ -52,9 +56,12 @@ curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cl
 sudo mv ./files-cli /usr/local/bin
 ```
 
+
 ## Documentation
 
+
 ### Setting API Key
+
 
 #### Setting by ENV (Linux/macOS)
 
@@ -62,17 +69,20 @@ sudo mv ./files-cli /usr/local/bin
 export FILES_API_KEY="XXXX-XXXX..."
 ```
 
+
 #### Setting by ENV (Windows)
 
 ``` shell
 set FILES_API_KEY="XXXX-XXXX..."
 ```
 
+
 #### Set Via a Flag
 
-```shell 
+```shell
 files-cli folders list-for --api-key "XXXX-XXXX..."
 ```
+
 
 ### Password Authentication
 
@@ -91,6 +101,7 @@ files-cli login
 ```
 
 If your account requires Two-Factor Authentication, you will be prompted for the second factor after you submit your password. Once you are logged in, subsequent uses of the CLI App will perform those actions using your credentials and permissions until you log out.
+
 
 ### Using Multiple Accounts
 
@@ -122,6 +133,7 @@ files-cli config set --api-key API_KEY_TWO --profile secondaccount
 
 If the `--profile` option is not specified then all configuration and operations will use your default profile settings.
 
+
 ### Logging Out
 
 Your login session will expire automatically after a period of time. The CLI App will expire your session after 6 hours or your session will expire based on the settings of your authentication system, whichever is sooner.
@@ -132,11 +144,12 @@ To log out of your session manually, use:
 files-cli logout
 ```
 
+
 ### List files
 
 *Return root folder listing*
 
-```shell 
+```shell
 files-cli folders list-for --fields path,type --format json
 
 [{
@@ -151,9 +164,10 @@ files-cli folders list-for --fields path,type --format json
 
 *List a Folder*
 
-```shell 
+```shell
 files-cli folders list-for /path/to/folder
 ```
+
 
 ### Download a File/Folder
 
@@ -175,6 +189,7 @@ To download a folder, use the command:
 files-cli download /remote/path/to/folder/ /local/path/to/folder/
 ```
 
+
 ### Upload a File/Folder
 
 To upload a file, use the command:
@@ -195,6 +210,7 @@ To upload a folder, use the command:
 files-cli upload /local/path/to/folder/ /remote/path/to/folder/
 ```
 
+
 ### Creating folders
 
 To create folders, use this command:
@@ -203,11 +219,13 @@ To create folders, use this command:
 files-cli folders create --path “/path/to/folder/to/be/created”
 ```
 
+
 ### Sending Operation/Run Logs to the Cloud
 
 If you are running scripted operations, you can have the CLI send a report of the operation including the Success/Failure status as well as a log of every run. To do this add the flag `--send-logs-to-cloud`.
 
 The operation logs will be made available in the web interface at **Settings > Logs > External logs**.
+
 
 ### Syncing Files
 
@@ -224,6 +242,7 @@ Here is a "pull" (download) example for syncing files to a local Documents folde
 ``` shell
 files-cli download Documents Documents --sync --send-logs-to-cloud
 ```
+
 
 ### Administrator actions
 
@@ -242,6 +261,7 @@ For example, you can configure [automatic new user folders](https://www.files.co
 ``` shell
 files-cli behaviors create --path "/path/to/folder" --behavior "create_user_folders" --value '{ "permission":"full", "additional_permission":"bundle", "existing_users":false, "group_id":1, "new_folder_name":"username", "subfolders":[]}'
 ```
+
 
 ### Formatting the output
 
@@ -285,15 +305,17 @@ Set as default for profile
 files-cli config set --format="table,interactive"
 ```
 
+
 ### Command Help
 
 ```shell
 files-cli [command] --help
 ```
 
+
 ## Development
 
-To build for testing it assumes the go package is in parallel directory. 
+To build for testing it assumes the go package is in parallel directory.
 
 ```shell
 DEVELOPMENT_BUILD ./build.sh
