@@ -3,6 +3,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
 )
@@ -33,6 +35,7 @@ Please take a look at the usage below to customize the serving parameters`,
 )
 
 func AgentInt(cmd *cobra.Command, requirePaths bool) error {
+	fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and will be removed from the CLI. Please use Agent v2.\n")
 	AgentService.Config = *Profile(cmd).Config
 	return AgentService.Init(cmd.Context(), requirePaths)
 }
