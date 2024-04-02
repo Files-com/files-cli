@@ -151,6 +151,7 @@ func Groups() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
+	cmdCreate.Flags().StringVar(&paramsGroupCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Name, "name", "", "Group name.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -206,6 +207,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("restapi-permission") {
 				mapParams["restapi_permission"] = updateRestapiPermission
 			}
+			if cmd.Flags().Changed("allowed-ips") {
+				lib.FlagUpdate(cmd, "allowed_ips", paramsGroupUpdate.AllowedIps, mapParams)
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
 			}
@@ -224,6 +228,7 @@ func Groups() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
+	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Name, "name", "", "Group name.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
