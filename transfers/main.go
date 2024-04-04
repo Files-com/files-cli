@@ -383,6 +383,7 @@ func (t *Transfers) SetupSignals() {
 		}()
 
 		t.iterateOverErrored()
+		t.Progress.Shutdown() // Force a shutdown. Was required for Windows DataCenter.
 		t.waitForEndingMessage <- true
 	}()
 }
