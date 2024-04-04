@@ -6,13 +6,10 @@ import (
 	"io"
 	"math"
 	"os"
-	"os/signal"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
-	"syscall"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
@@ -56,6 +53,7 @@ type Transfers struct {
 	ConcurrentConnectionLimit   int
 	ConcurrentDirectoryScanning int
 	RetryCount                  int
+	DumpGoroutinesOnExit        bool
 	FormatIterFields            []string
 	AfterMove                   string
 	AfterDelete                 bool
@@ -134,33 +132,11 @@ func newTransferRate() ewma.MovingAverage {
 func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer, jobCaller func() *file.Job) *Transfers {
 	t.it = (&sdklib.IterChan[interface{}]{}).Init(ctx)
 
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
-	go func() {
-		called := false
-		for signal := range sigCh {
-			switch signal {
-			case syscall.SIGQUIT:
-				buf := make([]byte, 1<<20)
-				stack := runtime.Stack(buf, true)
-				fmt.Printf("=== received SIGQUIT ===\n*** goroutine dump...\n%s\n*** end\n", buf[:stack])
-				err := os.WriteFile("files-cli_dump.txt", buf[:stack], 0644)
-				if err != nil {
-					fmt.Printf("Failed to write goroutine dump to file: %v\n", err)
-				}
-			case os.Interrupt, syscall.SIGTERM:
-				if called {
-					os.Exit(1)
-				}
-				called = true
-				go func() {
-					t.Progress.Shutdown()
-					t.Job.Cancel()
-					os.Exit(0)
-				}()
-			}
-		}
-	}()
+	Signals(ctx, t.DumpGoroutinesOnExit, func() {
+		t.Progress.Shutdown()
+		t.Job.Cancel()
+		os.Exit(0)
+	})
 	t.createProgress(ctx)
 	t.start = time.Now()
 	t.Stderr = stderr
@@ -851,6 +827,8 @@ func (t *Transfers) CommonFlags(flags *pflag.FlagSet) {
 	flags.BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
 	flags.MarkHidden("test-progress-bar-out")
 	flags.BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
+	flags.BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")
+	flags.MarkHidden("dump-goroutines-on-exit")
 }
 
 func (t *Transfers) UploadFlags(flags *pflag.FlagSet) {
