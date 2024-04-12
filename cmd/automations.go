@@ -117,6 +117,8 @@ func Automations() *cobra.Command {
 	usePagerCreate := true
 	createAlwaysOverwriteSizeMatchingFiles := true
 	createDisabled := true
+	createIgnoreLockedFolders := true
+	createOverwriteFiles := true
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateTrigger := ""
 	AutomationCreateAutomation := ""
@@ -148,6 +150,12 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
 			}
+			if cmd.Flags().Changed("ignore-locked-folders") {
+				paramsAutomationCreate.IgnoreLockedFolders = flib.Bool(createIgnoreLockedFolders)
+			}
+			if cmd.Flags().Changed("overwrite-files") {
+				paramsAutomationCreate.OverwriteFiles = flib.Bool(createOverwriteFiles)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsAutomationCreate.Path = args[0]
@@ -174,7 +182,9 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
+	cmdCreate.Flags().BoolVar(&createIgnoreLockedFolders, "ignore-locked-folders", createIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
+	cmdCreate.Flags().BoolVar(&createOverwriteFiles, "overwrite-files", createOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
@@ -220,6 +230,8 @@ func Automations() *cobra.Command {
 	usePagerUpdate := true
 	updateAlwaysOverwriteSizeMatchingFiles := true
 	updateDisabled := true
+	updateIgnoreLockedFolders := true
+	updateOverwriteFiles := true
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
 	AutomationUpdateAutomation := ""
@@ -301,8 +313,14 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
+			if cmd.Flags().Changed("ignore-locked-folders") {
+				mapParams["ignore_locked_folders"] = updateIgnoreLockedFolders
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsAutomationUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("overwrite-files") {
+				mapParams["overwrite_files"] = updateOverwriteFiles
 			}
 			if cmd.Flags().Changed("trigger") {
 				lib.FlagUpdate(cmd, "trigger", paramsAutomationUpdate.Trigger, mapParams)
@@ -345,7 +363,9 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
+	cmdUpdate.Flags().BoolVar(&updateIgnoreLockedFolders, "ignore-locked-folders", updateIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
+	cmdUpdate.Flags().BoolVar(&updateOverwriteFiles, "overwrite-files", updateOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
