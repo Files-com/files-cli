@@ -20,25 +20,11 @@ $ files-cli agent --config {path-to/config.json}
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, true)
-			if err != nil {
-				return err
-			}
-			err = AgentService.Start(true)
-			if err != nil {
-				return err
-			}
-			AgentService.Wait()
-			return AgentService.Error
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
+			return nil
 		},
 	}
 )
-
-func AgentInt(cmd *cobra.Command, requirePaths bool) error {
-	fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and will be removed from the CLI. Please use Agent v2.\n")
-	AgentService.Config = *Profile(cmd).Config
-	return AgentService.Init(cmd.Context(), requirePaths)
-}
 
 func init() {
 	if AgentService == nil {

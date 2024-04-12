@@ -3,14 +3,10 @@
 package cmd
 
 import (
-	"os"
-
-	"github.com/drakkan/sftpgo/v2/logger"
+	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/spf13/cobra"
-
-	"fmt"
 )
 
 var (
@@ -23,22 +19,7 @@ $ files-cli agent start
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, false)
-			if err != nil {
-				return err
-			}
-			winService := lib.WindowsService{
-				AgentService: AgentService,
-			}
-
-			err = winService.RunService()
-
-			if err != nil {
-				logger.Debug("files-cli", "", "Start Cmd - err: %v", err)
-				return fmt.Errorf("Error starting service: %v\r\n", err)
-			} else {
-				fmt.Printf("Service started!\r\n")
-			}
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 			return nil
 		},
 	}
@@ -51,21 +32,7 @@ $ files-cli agent install --config {path-to/config.json}
 
 Please take a look at the usage below to customize the serving parameters`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, true)
-			if err != nil {
-				return err
-			}
-			winService := lib.WindowsService{
-				AgentService: AgentService,
-			}
-
-			err = winService.Install(AgentService.ServiceArgs()...)
-			if err != nil {
-				logger.Debug("files-cli", "", "Error installing service: %v", err)
-				return fmt.Errorf("Error installing service: %v\r\n", err)
-			}
-			fmt.Printf("Service installed!\r\n")
-
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 			return nil
 		},
 	}
@@ -73,21 +40,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "uninstall",
 		Short: "Uninstall Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, false)
-			if err != nil {
-				return err
-			}
-			s := lib.WindowsService{
-				AgentService: AgentService,
-			}
-			err = s.Uninstall()
-			if err != nil {
-				logger.Debug("files-cli", "", "Error removing service: %v", err)
-				return fmt.Errorf("Error removing service: %v\r\n", err)
-			} else {
-				fmt.Printf("Service uninstalled\r\n")
-			}
-
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 			return nil
 		},
 	}
@@ -95,21 +48,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "status",
 		Short: "Status of Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, false)
-			if err != nil {
-				return err
-			}
-			s := lib.WindowsService{
-				AgentService: AgentService,
-			}
-			status, err := s.Status()
-			if err != nil {
-				logger.Debug("files-cli", "", "Error querying service status: %v", err)
-				return fmt.Errorf("Error querying service status: %v\r\n", err)
-			} else {
-				fmt.Printf("Service status: %#v\r\n", status.String())
-			}
-
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 			return nil
 		},
 	}
@@ -117,20 +56,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "stop",
 		Short: "Stop Files.com Agent Windows Service",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := AgentInt(cmd, false)
-			if err != nil {
-				return err
-			}
-			s := lib.WindowsService{
-				AgentService: AgentService,
-			}
-			err = s.Stop()
-			if err != nil {
-				logger.Debug("files-cli", "", "Error stopping service: %v\r\n", err)
-				return fmt.Errorf("Error stopping service: %v\r\n", err)
-			} else {
-				fmt.Printf("Service stopped!\r\n")
-			}
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 			return nil
 		},
 	}
@@ -138,21 +64,7 @@ Please take a look at the usage below to customize the serving parameters`,
 		Use:   "rotatelogs",
 		Short: "Signal to the running service to rotate the logs",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := AgentInt(cmd, false)
-			if err != nil {
-				fmt.Printf("Error sending rotate log file signal to the service: %v\r\n", err)
-				os.Exit(1)
-			}
-			s := lib.WindowsService{
-				AgentService: AgentService,
-			}
-			err = s.RotateLogFile()
-			if err != nil {
-				fmt.Printf("Error sending rotate log file signal to the service: %v\r\n", err)
-				os.Exit(1)
-			} else {
-				fmt.Printf("Rotate log file signal sent!\r\n")
-			}
+			fmt.Fprintf(cmd.OutOrStderr(), "Agent v1 is deprecated and has been removed from the CLI. Please use Agent v2.\n")
 		},
 	}
 )
