@@ -136,6 +136,7 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.PublicCertificate, "public-certificate", "", "")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "Id of As2Station for this partner")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.ServerCertificate, "server-certificate", "", "Remote server certificate security setting")
+	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.MdnValidationLevel, "mdn-validation-level", "", "MDN Validation Level")
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -176,6 +177,9 @@ func As2Partners() *cobra.Command {
 			if cmd.Flags().Changed("server-certificate") {
 				lib.FlagUpdate(cmd, "server_certificate", paramsAs2PartnerUpdate.ServerCertificate, mapParams)
 			}
+			if cmd.Flags().Changed("mdn-validation-level") {
+				lib.FlagUpdate(cmd, "mdn_validation_level", paramsAs2PartnerUpdate.MdnValidationLevel, mapParams)
+			}
 			if cmd.Flags().Changed("public-certificate") {
 				lib.FlagUpdate(cmd, "public_certificate", paramsAs2PartnerUpdate.PublicCertificate, mapParams)
 			}
@@ -193,6 +197,7 @@ func As2Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Name, "name", "", "AS2 Name")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Uri, "uri", "", "URL base for AS2 responses")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.ServerCertificate, "server-certificate", "", "Remote server certificate security setting")
+	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.MdnValidationLevel, "mdn-validation-level", "", "MDN Validation Level")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.PublicCertificate, "public-certificate", "", "")
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "")
 
