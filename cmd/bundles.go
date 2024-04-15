@@ -197,7 +197,8 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Note, "note", "", "Bundle internal note")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
-	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, and any custom form data.")
+	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
+	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdCreate.Flags().StringVar(&BundleCreatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleCreate.Permissions.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPreviewOnly, "preview-only", createPreviewOnly, "DEPRECATED: Restrict users to previewing files only. Use `permissions` instead.")
 	cmdCreate.Flags().BoolVar(&createRequireRegistration, "require-registration", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
@@ -332,6 +333,9 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("path-template") {
 				lib.FlagUpdate(cmd, "path_template", paramsBundleUpdate.PathTemplate, mapParams)
 			}
+			if cmd.Flags().Changed("path-template-time-zone") {
+				lib.FlagUpdate(cmd, "path_template_time_zone", paramsBundleUpdate.PathTemplateTimeZone, mapParams)
+			}
 			if cmd.Flags().Changed("permissions") {
 				lib.FlagUpdate(cmd, "permissions", paramsBundleUpdate.Permissions, mapParams)
 			}
@@ -393,7 +397,8 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
-	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, and any custom form data.")
+	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
+	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "DEPRECATED: Restrict users to previewing files only. Use `permissions` instead.")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
