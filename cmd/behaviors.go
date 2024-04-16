@@ -6,6 +6,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/behavior"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -168,6 +169,7 @@ func Behaviors() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createDisableParentFolderBehavior := true
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -180,6 +182,10 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := behavior.Client{Config: config}
 
+			if cmd.Flags().Changed("disable-parent-folder-behavior") {
+				paramsBehaviorCreate.DisableParentFolderBehavior = flib.Bool(createDisableParentFolderBehavior)
+			}
+
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
 			}
@@ -190,6 +196,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Folder behaviors path.")
@@ -236,6 +243,7 @@ func Behaviors() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateDisableParentFolderBehavior := true
 	updateAttachmentDelete := true
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
@@ -261,6 +269,9 @@ func Behaviors() *cobra.Command {
 				lib.FlagUpdate(cmd, "value", paramsBehaviorUpdate.Value, mapParams)
 			}
 			if cmd.Flags().Changed("attachment-file") {
+			}
+			if cmd.Flags().Changed("disable-parent-folder-behavior") {
+				mapParams["disable_parent_folder_behavior"] = updateDisableParentFolderBehavior
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsBehaviorUpdate.Name, mapParams)
@@ -289,6 +300,7 @@ func Behaviors() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Behavior, "behavior", "", "Behavior type.")
