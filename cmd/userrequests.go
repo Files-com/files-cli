@@ -128,6 +128,7 @@ func UserRequests() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Name, "name", "", "Name of user requested")
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Email, "email", "", "Email of user requested")
 	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Details, "details", "", "Details of the user request")
+	cmdCreate.Flags().StringVar(&paramsUserRequestCreate.Company, "company", "", "Company of the user requested")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
