@@ -122,6 +122,8 @@ func Sites() *cobra.Command {
 	updateDavEnabled := true
 	updateFtpEnabled := true
 	updateSftpEnabled := true
+	updateUsersCanCreateApiKeys := true
+	updateUsersCanCreateSshKeys := true
 	updateProtocolAccessGroupsOnly := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
@@ -407,6 +409,12 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("sftp-enabled") {
 				mapParams["sftp_enabled"] = updateSftpEnabled
 			}
+			if cmd.Flags().Changed("users-can-create-api-keys") {
+				mapParams["users_can_create_api_keys"] = updateUsersCanCreateApiKeys
+			}
+			if cmd.Flags().Changed("users-can-create-ssh-keys") {
+				mapParams["users_can_create_ssh_keys"] = updateUsersCanCreateSshKeys
+			}
 			if cmd.Flags().Changed("sftp-host-key-type") {
 				lib.FlagUpdate(cmd, "sftp_host_key_type", paramsSiteUpdate.SftpHostKeyType, mapParams)
 			}
@@ -685,6 +693,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
+	cmdUpdate.Flags().BoolVar(&updateUsersCanCreateApiKeys, "users-can-create-api-keys", updateUsersCanCreateApiKeys, "Allow users to create their own API keys?")
+	cmdUpdate.Flags().BoolVar(&updateUsersCanCreateSshKeys, "users-can-create-ssh-keys", updateUsersCanCreateSshKeys, "Allow users to create their own SSH keys?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
 	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
