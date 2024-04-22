@@ -24,8 +24,12 @@ func TestDownload(t *testing.T) {
 					t.Fatal(err)
 				}
 				sourceFs := (&file.FS{Context: context.Background()}).Init(config, false)
-				lib.BuildPathSpecTest(t, mutex, tt, sourceFs, destinationFs, func(source, destination string) lib.Cmd {
-					return Cmd(config, Download(), []string{source, destination}, []string{"--format", "text"})
+				lib.BuildPathSpecTest(t, mutex, tt, sourceFs, destinationFs, func(args lib.PathSpecArgs) lib.Cmd {
+					if args.PreserveTimes {
+						return Cmd(config, Download(), []string{args.Src, args.Dest}, []string{"--format", "text", "--times"})
+
+					}
+					return Cmd(config, Download(), []string{args.Src, args.Dest}, []string{"--format", "text"})
 				})
 				r.Stop()
 			})

@@ -836,6 +836,7 @@ func (t *Transfers) UploadFlags(flags *pflag.FlagSet) {
 	flags.IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
 	flags.StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
 	flags.StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
+	flags.BoolVarP(&t.PreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
 }
 
 func (t *Transfers) DownloadFlags(flags *pflag.FlagSet) {
