@@ -140,6 +140,36 @@ func Snapshots() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Snapshots.AddCommand(cmdCreate)
+	var fieldsFinalize []string
+	var formatFinalize []string
+	usePagerFinalize := true
+	paramsSnapshotFinalize := files_sdk.SnapshotFinalizeParams{}
+
+	cmdFinalize := &cobra.Command{
+		Use:   "finalize",
+		Short: `Finalize Snapshot`,
+		Long:  `Finalize Snapshot`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := snapshot.Client{Config: config}
+
+			var err error
+			err = client.Finalize(paramsSnapshotFinalize, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdFinalize.Flags().Int64Var(&paramsSnapshotFinalize.Id, "id", 0, "Snapshot ID.")
+
+	cmdFinalize.Flags().StringSliceVar(&fieldsFinalize, "fields", []string{}, "comma separated list of field names")
+	cmdFinalize.Flags().StringSliceVar(&formatFinalize, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFinalize.Flags().BoolVar(&usePagerFinalize, "use-pager", usePagerFinalize, "Use $PAGER (.ie less, more, etc)")
+
+	Snapshots.AddCommand(cmdFinalize)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
