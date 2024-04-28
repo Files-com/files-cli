@@ -223,6 +223,7 @@ func Files() *cobra.Command {
 	var noProgressCopy bool
 	var eventLogCopy bool
 	copyStructure := true
+	copyOverwrite := true
 	paramsFileCopy := files_sdk.FileCopyParams{}
 
 	cmdCopy := &cobra.Command{
@@ -237,6 +238,9 @@ func Files() *cobra.Command {
 
 			if cmd.Flags().Changed("structure") {
 				paramsFileCopy.Structure = flib.Bool(copyStructure)
+			}
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileCopy.Overwrite = flib.Bool(copyOverwrite)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -258,6 +262,7 @@ func Files() *cobra.Command {
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Destination, "destination", "", "Copy destination path.")
 	cmdCopy.Flags().BoolVar(&copyStructure, "structure", copyStructure, "Copy structure only?")
+	cmdCopy.Flags().BoolVar(&copyOverwrite, "overwrite", copyOverwrite, "Overwrite existing file(s) in the destination?")
 
 	cmdCopy.Flags().StringSliceVar(&fieldsCopy, "fields", []string{}, "comma separated list of field names")
 	cmdCopy.Flags().StringSliceVar(&formatCopy, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -273,6 +278,7 @@ func Files() *cobra.Command {
 	var blockMove bool
 	var noProgressMove bool
 	var eventLogMove bool
+	moveOverwrite := true
 	paramsFileMove := files_sdk.FileMoveParams{}
 
 	cmdMove := &cobra.Command{
@@ -284,6 +290,10 @@ func Files() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileMove.Overwrite = flib.Bool(moveOverwrite)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFileMove.Path = args[0]
@@ -303,6 +313,7 @@ func Files() *cobra.Command {
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
 	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
+	cmdMove.Flags().BoolVar(&moveOverwrite, "overwrite", moveOverwrite, "Overwrite existing file(s) in the destination?")
 
 	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
 	cmdMove.Flags().StringSliceVar(&formatMove, "format", lib.FormatDefaults, lib.FormatHelpText)
