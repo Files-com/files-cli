@@ -158,7 +158,7 @@ func Behaviors() *cobra.Command {
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Path, "path", "", "Path to operate on.")
-	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Recursive, "recursive", "", "Show behaviors above this path?")
+	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.AncestorBehaviors, "ancestor-behaviors", "", "Show behaviors above this path?")
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Behavior, "behavior", "", "DEPRECATED: If set only shows folder behaviors matching this behavior type. Use `filter[behavior]` instead.")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -170,6 +170,7 @@ func Behaviors() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createDisableParentFolderBehavior := true
+	createRecursive := true
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -185,6 +186,9 @@ func Behaviors() *cobra.Command {
 			if cmd.Flags().Changed("disable-parent-folder-behavior") {
 				paramsBehaviorCreate.DisableParentFolderBehavior = flib.Bool(createDisableParentFolderBehavior)
 			}
+			if cmd.Flags().Changed("recursive") {
+				paramsBehaviorCreate.Recursive = flib.Bool(createRecursive)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsBehaviorCreate.Path = args[0]
@@ -197,6 +201,7 @@ func Behaviors() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
 	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
+	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Is behavior recursive?")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Folder behaviors path.")
@@ -244,6 +249,7 @@ func Behaviors() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateDisableParentFolderBehavior := true
+	updateRecursive := true
 	updateAttachmentDelete := true
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
@@ -273,6 +279,9 @@ func Behaviors() *cobra.Command {
 			if cmd.Flags().Changed("disable-parent-folder-behavior") {
 				mapParams["disable_parent_folder_behavior"] = updateDisableParentFolderBehavior
 			}
+			if cmd.Flags().Changed("recursive") {
+				mapParams["recursive"] = updateRecursive
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsBehaviorUpdate.Name, mapParams)
 			}
@@ -301,6 +310,7 @@ func Behaviors() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
 	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
+	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "Is behavior recursive?")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Behavior, "behavior", "", "Behavior type.")

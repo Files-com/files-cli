@@ -117,6 +117,7 @@ func Automations() *cobra.Command {
 	usePagerCreate := true
 	createAlwaysOverwriteSizeMatchingFiles := true
 	createDisabled := true
+	createFlattenDestinationStructure := true
 	createIgnoreLockedFolders := true
 	createOverwriteFiles := true
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
@@ -150,6 +151,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
 			}
+			if cmd.Flags().Changed("flatten-destination-structure") {
+				paramsAutomationCreate.FlattenDestinationStructure = flib.Bool(createFlattenDestinationStructure)
+			}
 			if cmd.Flags().Changed("ignore-locked-folders") {
 				paramsAutomationCreate.IgnoreLockedFolders = flib.Bool(createIgnoreLockedFolders)
 			}
@@ -182,6 +186,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
+	cmdCreate.Flags().BoolVar(&createFlattenDestinationStructure, "flatten-destination-structure", createFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdCreate.Flags().BoolVar(&createIgnoreLockedFolders, "ignore-locked-folders", createIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
 	cmdCreate.Flags().BoolVar(&createOverwriteFiles, "overwrite-files", createOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
@@ -231,6 +236,7 @@ func Automations() *cobra.Command {
 	usePagerUpdate := true
 	updateAlwaysOverwriteSizeMatchingFiles := true
 	updateDisabled := true
+	updateFlattenDestinationStructure := true
 	updateIgnoreLockedFolders := true
 	updateOverwriteFiles := true
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
@@ -314,6 +320,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
+			if cmd.Flags().Changed("flatten-destination-structure") {
+				mapParams["flatten_destination_structure"] = updateFlattenDestinationStructure
+			}
 			if cmd.Flags().Changed("ignore-locked-folders") {
 				mapParams["ignore_locked_folders"] = updateIgnoreLockedFolders
 			}
@@ -367,6 +376,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
+	cmdUpdate.Flags().BoolVar(&updateFlattenDestinationStructure, "flatten-destination-structure", updateFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdUpdate.Flags().BoolVar(&updateIgnoreLockedFolders, "ignore-locked-folders", updateIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
 	cmdUpdate.Flags().BoolVar(&updateOverwriteFiles, "overwrite-files", updateOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
