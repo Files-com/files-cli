@@ -250,7 +250,6 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageSasToken, "azure-files-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible endpoint")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible endpoint")
@@ -505,9 +504,6 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("azure-files-storage-share-name") {
 				lib.FlagUpdate(cmd, "azure_files_storage_share_name", paramsRemoteServerUpdate.AzureFilesStorageShareName, mapParams)
 			}
-			if cmd.Flags().Changed("azure-files-storage-sas-token") {
-				lib.FlagUpdate(cmd, "azure_files_storage_sas_token", paramsRemoteServerUpdate.AzureFilesStorageSasToken, mapParams)
-			}
 			if cmd.Flags().Changed("s3-compatible-bucket") {
 				lib.FlagUpdate(cmd, "s3_compatible_bucket", paramsRemoteServerUpdate.S3CompatibleBucket, mapParams)
 			}
@@ -622,7 +618,6 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageSasToken, "azure-files-storage-sas-token", "", "Shared Access Signature (SAS) token")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible endpoint")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible endpoint")
