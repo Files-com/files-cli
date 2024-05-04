@@ -135,6 +135,7 @@ func Sites() *cobra.Command {
 	updateAllowed2faMethodWebauthn := true
 	updateAllowed2faMethodYubi := true
 	updateAllowed2faMethodEmail := true
+	updateAllowed2faMethodStatic := true
 	updateAllowed2faMethodBypassForFtpSftpDav := true
 	updateRequire2fa := true
 	updateLdapEnabled := true
@@ -463,6 +464,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("allowed-2fa-method-email") {
 				mapParams["allowed_2fa_method_email"] = updateAllowed2faMethodEmail
 			}
+			if cmd.Flags().Changed("allowed-2fa-method-static") {
+				mapParams["allowed_2fa_method_static"] = updateAllowed2faMethodStatic
+			}
 			if cmd.Flags().Changed("allowed-2fa-method-bypass-for-ftp-sftp-dav") {
 				mapParams["allowed_2fa_method_bypass_for_ftp_sftp_dav"] = updateAllowed2faMethodBypassForFtpSftpDav
 			}
@@ -717,6 +721,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodWebauthn, "allowed-2fa-method-webauthn", updateAllowed2faMethodWebauthn, "Is WebAuthn two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodYubi, "allowed-2fa-method-yubi", updateAllowed2faMethodYubi, "Is yubikey two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodEmail, "allowed-2fa-method-email", updateAllowed2faMethodEmail, "Is OTP via email two factor authentication allowed?")
+	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodStatic, "allowed-2fa-method-static", updateAllowed2faMethodStatic, "Is OTP via static codes for two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodBypassForFtpSftpDav, "allowed-2fa-method-bypass-for-ftp-sftp-dav", updateAllowed2faMethodBypassForFtpSftpDav, "Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateRequire2fa, "require-2fa", updateRequire2fa, "Require two-factor authentication for all users?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Require2faUserType, "require-2fa-user-type", "", "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?")
