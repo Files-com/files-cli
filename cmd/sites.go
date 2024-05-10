@@ -79,6 +79,7 @@ func Sites() *cobra.Command {
 	updateWelcomeEmailEnabled := true
 	updateAskAboutOverwrites := true
 	updateShowRequestAccessLink := true
+	updateAlwaysMkdirParents := true
 	updateWindowsModeFtp := true
 	updateDesktopApp := true
 	updateDesktopAppSessionIpPinning := true
@@ -201,6 +202,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("show-request-access-link") {
 				mapParams["show_request_access_link"] = updateShowRequestAccessLink
+			}
+			if cmd.Flags().Changed("always-mkdir-parents") {
+				mapParams["always_mkdir_parents"] = updateAlwaysMkdirParents
 			}
 			if cmd.Flags().Changed("welcome-email-cc") {
 				lib.FlagUpdate(cmd, "welcome_email_cc", paramsSiteUpdate.WelcomeEmailCc, mapParams)
@@ -635,6 +639,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateWelcomeEmailEnabled, "welcome-email-enabled", updateWelcomeEmailEnabled, "Will the welcome email be sent to new users?")
 	cmdUpdate.Flags().BoolVar(&updateAskAboutOverwrites, "ask-about-overwrites", updateAskAboutOverwrites, "If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.")
 	cmdUpdate.Flags().BoolVar(&updateShowRequestAccessLink, "show-request-access-link", updateShowRequestAccessLink, "Show request access link for users without access?  Currently unused.")
+	cmdUpdate.Flags().BoolVar(&updateAlwaysMkdirParents, "always-mkdir-parents", updateAlwaysMkdirParents, "Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeEmailCc, "welcome-email-cc", "", "Include this email in welcome emails if enabled")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeEmailSubject, "welcome-email-subject", "", "Include this email subject in welcome emails if enabled")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeCustomText, "welcome-custom-text", "", "Custom text send in user welcome email")
