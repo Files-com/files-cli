@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.20
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.1.73
+	github.com/Files-com/files-sdk-go/v3 v3.1.74
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
