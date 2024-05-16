@@ -107,6 +107,7 @@ func TestProfiles_Load(t *testing.T) {
 		config.APIKey = "123456789"
 		profile := &Profiles{ConfigDir: dir}
 		profile.Load(config, "")
+		profile.Save()
 	}
 
 	t.Log("creates custom profile")
@@ -115,6 +116,7 @@ func TestProfiles_Load(t *testing.T) {
 		config.APIKey = "xxxxxxxxxx"
 		profile := &Profiles{ConfigDir: dir}
 		profile.Load(config, "custom")
+		profile.Save()
 	}
 
 	t.Log("creates custom profile with environment")
@@ -124,6 +126,7 @@ func TestProfiles_Load(t *testing.T) {
 		config.Environment = files_sdk.Staging
 		profile := &Profiles{ConfigDir: dir}
 		profile.Load(config, "staging")
+		profile.Save()
 	}
 
 	config := &files_sdk.Config{}
@@ -178,6 +181,7 @@ func TestProfiles_Load(t *testing.T) {
 		config := &files_sdk.Config{APIKey: "yyyyyyyy", EndpointOverride: "http://localhost:8080"}
 		profile := &Profiles{ConfigDir: dir}
 		profile.Load(config, "with-custom-endpoint")
+		profile.Save()
 		assert.Equal(t, "yyyyyyyy", config.APIKey)
 		assert.Equal(t, "http://localhost:8080", config.Endpoint())
 

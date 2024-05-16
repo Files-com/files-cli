@@ -152,6 +152,7 @@ func (p *Profiles) Load(config *files_sdk.Config, profile string) error {
 		}
 	} else {
 		p.Profiles["default"] = &v1Profile
+		p.Save()
 	}
 
 	if profile != "" {
@@ -163,7 +164,6 @@ func (p *Profiles) Load(config *files_sdk.Config, profile string) error {
 	p.Config = config
 
 	p.SetOnConfig()
-	p.Save()
 	return nil
 }
 
