@@ -104,6 +104,8 @@ func Files() *cobra.Command {
 			if cmd.Flags().Changed("path") {
 				lib.FlagUpdate(cmd, "path", paramsFileUpdate.Path, mapParams)
 			}
+			if cmd.Flags().Changed("custom-metadata") {
+			}
 			if cmd.Flags().Changed("provided-mtime") {
 				lib.FlagUpdate(cmd, "provided_mtime", paramsFileUpdate.ProvidedMtime, mapParams)
 			}
