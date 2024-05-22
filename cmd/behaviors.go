@@ -200,7 +200,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
-	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
+	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder and its children.")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Is behavior recursive?")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
@@ -309,7 +309,7 @@ func Behaviors() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
-	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder.")
+	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder and its children.")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "Is behavior recursive?")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
