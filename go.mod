@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.21
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.2.2
+	github.com/Files-com/files-sdk-go/v3 v3.2.3
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/aquilax/truncate v1.0.0
@@ -18,7 +18,7 @@ require (
 	github.com/evertras/bubble-table v0.15.2
 	github.com/fatih/structs v1.1.0
 	github.com/gin-gonic/gin v1.10.0
-	github.com/hashicorp/go-retryablehttp v0.7.6
+	github.com/hashicorp/go-retryablehttp v0.7.7
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
