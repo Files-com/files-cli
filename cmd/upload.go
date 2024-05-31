@@ -78,6 +78,7 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 						Include:     *transfer.Include,
 						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:      transfer.DryRun,
+						NoOverwrite: transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)
@@ -88,7 +89,7 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 				lib.FormatIter(ctx, transfer.Iter(ctx, config), transfer.Format, transfer.FormatIterFields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)
 		}}
-	transfer.UploadFlags(upload.Flags())
+	transfer.UploadFlags(upload)
 
 	return upload
 }

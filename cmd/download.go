@@ -45,6 +45,7 @@ func Download() *cobra.Command {
 						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						PreserveTimes: transfer.PreserveTimes,
 						DryRun:        transfer.DryRun,
+						NoOverwrite:   transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)
@@ -56,7 +57,7 @@ func Download() *cobra.Command {
 			)
 		},
 	}
-	transfer.DownloadFlags(download.Flags())
+	transfer.DownloadFlags(download)
 
 	return download
 }

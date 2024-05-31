@@ -27,7 +27,6 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
 	"golang.org/x/crypto/ssh/terminal"
@@ -48,6 +47,7 @@ type Transfers struct {
 	DisableProgressOutput       bool
 	PreserveTimes               bool
 	DryRun                      bool
+	NoOverwrite                 bool
 	DownloadFilesAsSingleStream bool
 	OpenConnectionStats         bool
 	ConcurrentConnectionLimit   int
@@ -812,41 +812,49 @@ func (t *Transfers) transferProgress(file file.JobFile) string {
 	return ""
 }
 
-func (t *Transfers) CommonFlags(flags *pflag.FlagSet) {
-	flags.IntVarP(&t.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "Set the maximum number of concurrent connections.")
-	flags.BoolVarP(&t.SyncFlag, "sync", "s", t.SyncFlag, "Upload only files that have a different size than those on the remote.")
+func (t *Transfers) CommonFlags(cmd *cobra.Command) {
+	cmd.Flags().IntVarP(&t.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "Set the maximum number of concurrent connections.")
+	cmd.Flags().BoolVarP(&t.SyncFlag, "sync", "s", t.SyncFlag, "Upload only files that have a different size than those on the remote.")
 	if t.SyncFlag {
 		// Allow sync flag to still be called, but since it's the default, it's hidden.
-		flags.MarkHidden("sync")
+		cmd.Flags().MarkHidden("sync")
+	} else {
+		cmd.Flags().BoolVar(&t.NoOverwrite, "no-overwrite", t.NoOverwrite, "Skip files that exist on the destination.")
 	}
-	flags.BoolVarP(&t.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event.")
-	flags.BoolVarP(&t.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete.")
-	flags.MarkDeprecated("disable-progress-output", "Use `--format` to disable progress bar.")
-	flags.IntVar(&t.RetryCount, "retry-count", 2, "Number of retry attempts upon transfer failure.")
-	flags.StringSliceVar(&t.FormatIterFields, "fields", []string{}, "Specify a comma-separated list of field names to display in the output.")
-	flags.StringSliceVar(&t.Format, "format", []string{"progress"}, `formats: {progress, text, json, csv, none}.`)
-	flags.StringSliceVar(&t.OutFormat, "output-format", []string{"csv"}, `For use with '--output'. formats: {text, json, csv}.`)
-	flags.BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
-	flags.StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
-	flags.BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
-	flags.MarkHidden("test-progress-bar-out")
-	flags.BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
-	flags.BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")
-	flags.MarkHidden("dump-goroutines-on-exit")
+	cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+		if t.SyncFlag && t.NoOverwrite {
+			return fmt.Errorf("cannot use both --sync and --no-overwrite flags together")
+		}
+		return nil
+	}
+	cmd.Flags().BoolVarP(&t.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event.")
+	cmd.Flags().BoolVarP(&t.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete.")
+	cmd.Flags().MarkDeprecated("disable-progress-output", "Use `--format` to disable progress bar.")
+	cmd.Flags().IntVar(&t.RetryCount, "retry-count", 2, "Number of retry attempts upon transfer failure.")
+	cmd.Flags().StringSliceVar(&t.FormatIterFields, "fields", []string{}, "Specify a comma-separated list of field names to display in the output.")
+	cmd.Flags().StringSliceVar(&t.Format, "format", []string{"progress"}, `formats: {progress, text, json, csv, none}.`)
+	cmd.Flags().StringSliceVar(&t.OutFormat, "output-format", []string{"csv"}, `For use with '--output'. formats: {text, json, csv}.`)
+	cmd.Flags().BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
+	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
+	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
+	cmd.Flags().MarkHidden("test-progress-bar-out")
+	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
+	cmd.Flags().BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")
+	cmd.Flags().MarkHidden("dump-goroutines-on-exit")
 }
 
-func (t *Transfers) UploadFlags(flags *pflag.FlagSet) {
-	t.CommonFlags(flags)
-	flags.IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
-	flags.StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
-	flags.StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
-	flags.BoolVarP(&t.PreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
+func (t *Transfers) UploadFlags(cmd *cobra.Command) {
+	t.CommonFlags(cmd)
+	cmd.Flags().IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
+	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
+	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
+	cmd.Flags().BoolVarP(&t.PreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
 }
 
-func (t *Transfers) DownloadFlags(flags *pflag.FlagSet) {
-	t.CommonFlags(flags)
-	flags.BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
-	flags.BoolVarP(&t.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
+func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
+	t.CommonFlags(cmd)
+	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
+	cmd.Flags().BoolVarP(&t.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
 }
 
 func formatWithComma(i int) string {

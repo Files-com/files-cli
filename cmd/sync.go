@@ -43,6 +43,7 @@ func Sync() *cobra.Command {
 						Include:     *transfer.Include,
 						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:      transfer.DryRun,
+						NoOverwrite: transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)
@@ -75,6 +76,7 @@ func Sync() *cobra.Command {
 						PreserveTimes: transfer.PreserveTimes,
 						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:        transfer.DryRun,
+						NoOverwrite:   transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(cmd.Context()),
 				)
@@ -92,8 +94,8 @@ func Sync() *cobra.Command {
 	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
 	sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
 
-	transfer.UploadFlags(push.Flags())
-	transfer.DownloadFlags(pull.Flags())
+	transfer.UploadFlags(push)
+	transfer.DownloadFlags(pull)
 
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 
