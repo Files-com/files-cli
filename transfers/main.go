@@ -814,7 +814,11 @@ func (t *Transfers) transferProgress(file file.JobFile) string {
 
 func (t *Transfers) CommonFlags(flags *pflag.FlagSet) {
 	flags.IntVarP(&t.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "Set the maximum number of concurrent connections.")
-	flags.BoolVarP(&t.SyncFlag, "sync", "s", false, "Upload only files that have a different size than those on the remote.")
+	flags.BoolVarP(&t.SyncFlag, "sync", "s", t.SyncFlag, "Upload only files that have a different size than those on the remote.")
+	if t.SyncFlag {
+		// Allow sync flag to still be called, but since it's the default, it's hidden.
+		flags.MarkHidden("sync")
+	}
 	flags.BoolVarP(&t.SendLogsToCloud, "send-logs-to-cloud", "l", false, "Log output as external event.")
 	flags.BoolVarP(&t.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete.")
 	flags.MarkDeprecated("disable-progress-output", "Use `--format` to disable progress bar.")

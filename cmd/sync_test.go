@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -75,6 +77,8 @@ func TestSyncCmd(t *testing.T) {
 			progressBarFileName := strings.Replace(tt.name, " ", "_", -1) + "-progressbar"
 			tt.args = append(tt.args, "--test-progress-bar-out", progressBarFileName)
 			tt.args = append(tt.args, "--local-path", uploadFile)
+			remotePath := filepath.Join("cli-test", "sync", uploadFile)
+			tt.args = append(tt.args, "--remote-path", remotePath)
 			t.Log(tt.args)
 			stdOut, stdErr := callCmd(Sync(), config, tt.args)
 			assert.Contains(t, string(stdErr), maybeInsert(tt.stderr, uploadFile))
@@ -107,7 +111,8 @@ func TestSyncCmd(t *testing.T) {
 
 			client := file.Client{Config: config}
 			if err := client.Delete(files_sdk.FileDeleteParams{Path: uploadFile}); err != nil {
-				responseError, ok := err.(files_sdk.ResponseError)
+				var responseError files_sdk.ResponseError
+				ok := errors.As(err, &responseError)
 				if !(ok && responseError.Type == "not-found") {
 					require.NoError(t, err)
 				}
