@@ -33,43 +33,44 @@ import (
 )
 
 type Transfers struct {
-	scanningBar                 *mpb.Bar
-	mainBar                     *mpb.Bar
-	fileStatusBar               *mpb.Bar
-	openConnectionsBar          *mpb.Bar
-	eventBody                   []string
-	eventBodyMutex              *sync.RWMutex
-	eventErrors                 map[string]string
-	eventErrorsMutex            *sync.RWMutex
-	pathPadding                 int
-	SyncFlag                    bool
-	SendLogsToCloud             bool
-	DisableProgressOutput       bool
-	PreserveTimes               bool
-	DryRun                      bool
-	NoOverwrite                 bool
-	DownloadFilesAsSingleStream bool
-	OpenConnectionStats         bool
-	ConcurrentConnectionLimit   int
-	ConcurrentDirectoryScanning int
-	RetryCount                  int
-	DumpGoroutinesOnExit        bool
-	FormatIterFields            []string
-	AfterMove                   string
-	AfterDelete                 bool
-	Progress                    *mpb.Progress
-	externalEvent               files_sdk.ExternalEventCreateParams
-	start                       time.Time
-	ETA                         ewma.MovingAverage
-	ETAMutex                    *sync.RWMutex
-	filesRate                   *atomic.Value
-	filesRateMutex              *sync.RWMutex
-	transferRate                *atomic.Value
-	transferRateMutex           *sync.RWMutex
-	Ignore                      *[]string
-	Include                     *[]string
-	ExactPaths                  []string
-	waitForEndingMessage        chan bool
+	scanningBar                   *mpb.Bar
+	mainBar                       *mpb.Bar
+	fileStatusBar                 *mpb.Bar
+	openConnectionsBar            *mpb.Bar
+	eventBody                     []string
+	eventBodyMutex                *sync.RWMutex
+	eventErrors                   map[string]string
+	eventErrorsMutex              *sync.RWMutex
+	pathPadding                   int
+	SyncFlag                      bool
+	SendLogsToCloud               bool
+	DisableProgressOutput         bool
+	PreserveTimes                 bool
+	DryRun                        bool
+	NoOverwrite                   bool
+	DownloadFilesAsSingleStream   bool
+	OpenConnectionStats           bool
+	ConcurrentConnectionLimit     int
+	ConcurrentDirectoryScanning   int
+	RetryCount                    int
+	DumpGoroutinesOnExit          bool
+	FormatIterFields              []string
+	AfterMove                     string
+	AfterDeleteSourceFiles        bool
+	AfterDeleteEmptySourceFolders bool
+	Progress                      *mpb.Progress
+	externalEvent                 files_sdk.ExternalEventCreateParams
+	start                         time.Time
+	ETA                           ewma.MovingAverage
+	ETAMutex                      *sync.RWMutex
+	filesRate                     *atomic.Value
+	filesRateMutex                *sync.RWMutex
+	transferRate                  *atomic.Value
+	transferRateMutex             *sync.RWMutex
+	Ignore                        *[]string
+	Include                       *[]string
+	ExactPaths                    []string
+	waitForEndingMessage          chan bool
 	*manager.Manager
 	Stdout             io.Writer
 	Stderr             io.Writer
@@ -216,12 +217,16 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Con
 }
 
 func (t *Transfers) afterActions(ctx context.Context, f file.JobFile, config files_sdk.Config) {
-	if t.AfterDelete {
+	if t.AfterDeleteSourceFiles {
 		t.afterActionLog(file.DeleteSource{Direction: f.Direction, Config: config}.Call(f, files_sdk.WithContext(ctx)))
 	}
 
 	if t.AfterMove != "" {
 		t.afterActionLog(file.MoveSource{Direction: f.Direction, Config: config, Path: t.AfterMove}.Call(f, files_sdk.WithContext(ctx)))
+	}
+
+	if t.AfterDeleteEmptySourceFolders {
+		t.afterActionLog(file.DeleteEmptySourceFolders{Direction: f.Direction, Config: config}.Call(f, files_sdk.WithContext(ctx)))
 	}
 }
 

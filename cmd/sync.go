@@ -91,11 +91,15 @@ func Sync() *cobra.Command {
 
 	sync.PersistentFlags().StringVarP(&localPath, "local-path", "p", localPath, "{local path}")
 	sync.PersistentFlags().StringVarP(&remotePath, "remote-path", "r", remotePath, "{remote path}")
-	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction is moves local files after sync.")
-	sync.PersistentFlags().BoolVar(&transfer.AfterDelete, "delete-source", transfer.AfterDelete, "For pull direction it deletes remote files after sync. For push direction is deletes local files after sync.")
+	sync.PersistentFlags().StringVar(&transfer.AfterMove, "move-source", transfer.AfterMove, "{path} - For pull direction it moves remote files after sync. For push direction it moves local files after sync.")
+	sync.PersistentFlags().BoolVar(&transfer.AfterDeleteSourceFiles, "delete-source", transfer.AfterDeleteSourceFiles, "[Deprecated] For pull direction it deletes remote files after sync. For push direction it deletes local files after sync.")
+	sync.PersistentFlags().BoolVar(&transfer.AfterDeleteSourceFiles, "delete-source-files", transfer.AfterDeleteSourceFiles, "For pull direction it deletes remote files after sync. For push direction it deletes local files after sync.")
+	sync.PersistentFlags().BoolVar(&transfer.AfterDeleteEmptySourceFolders, "delete-source-empty-folders", transfer.AfterDeleteEmptySourceFolders, "For pull direction it deletes remote folder after sync. For push direction it deletes local folder after sync.")
 
 	transfer.UploadFlags(push)
 	transfer.DownloadFlags(pull)
+
+	sync.PersistentFlags().MarkDeprecated("delete-source", "Please use delete-source-files.")
 
 	sync.PersistentFlags().BoolVarP(&transfer.DisableProgressOutput, "disable-progress-output", "d", false, "Disable progress bars and only show status when file is complete")
 
