@@ -197,7 +197,7 @@ func RemoteMounts() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
-	updateParams := files_sdk.BehaviorUpdateParams{Behavior: "remote_server_mount"}
+	updateParams := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -226,7 +226,6 @@ func RemoteMounts() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&updateParams.Id, "id", 0, "Behavior ID.")
-	cmdUpdate.Flags().StringVar(&updateParams.Path, "path", updateParams.Path, "")
 	cmdUpdate.Flags().StringVar(&updateParams.Name, "name", updateParams.Name, "")
 	cmdUpdate.Flags().StringVar(&mountValue.RemotePath, "remote-path", mountValue.RemotePath, "")
 	cmdUpdate.Flags().Int64Var(&mountValue.RemoteServerId, "remote-server-id", mountValue.RemoteServerId, "")

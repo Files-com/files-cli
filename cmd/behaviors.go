@@ -254,10 +254,10 @@ func Behaviors() *cobra.Command {
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
-		Use:   "update [path]",
+		Use:   "update",
 		Short: `Update Behavior`,
 		Long:  `Update Behavior`,
-		Args:  cobra.RangeArgs(0, 1),
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
@@ -288,19 +288,10 @@ func Behaviors() *cobra.Command {
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsBehaviorUpdate.Description, mapParams)
 			}
-			if cmd.Flags().Changed("behavior") {
-				lib.FlagUpdate(cmd, "behavior", paramsBehaviorUpdate.Behavior, mapParams)
-			}
-			if cmd.Flags().Changed("path") {
-				lib.FlagUpdate(cmd, "path", paramsBehaviorUpdate.Path, mapParams)
-			}
 			if cmd.Flags().Changed("attachment-delete") {
 				mapParams["attachment_delete"] = updateAttachmentDelete
 			}
 
-			if len(args) > 0 && args[0] != "" {
-				mapParams["path"] = args[0]
-			}
 			var behavior interface{}
 			var err error
 			behavior, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
@@ -313,8 +304,6 @@ func Behaviors() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "Is behavior recursive?")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
-	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Behavior, "behavior", "", "Behavior type.")
-	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Path, "path", "", "Folder behaviors path.")
 	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
