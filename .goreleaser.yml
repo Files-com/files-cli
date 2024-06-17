@@ -1,5 +1,6 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+version: 2
 release:
   github:
     owner: Files-com
@@ -49,7 +50,7 @@ brews:
     commit_author:
       name: files-opensource-bot
       email: info@files.com
-    folder: Formula
+    directory: Formula
     homepage: "https://files.com/"
     description: Files.com command-line interface
     license: "MIT"
