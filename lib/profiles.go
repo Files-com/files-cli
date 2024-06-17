@@ -173,7 +173,7 @@ func (p *Profiles) read() (b []byte, err error) {
 	if err != nil {
 		return b, err
 	}
-	return readFileWithLock(path)
+	return os.ReadFile(path)
 }
 
 func (p *Profiles) SetOnConfig() {
@@ -202,45 +202,7 @@ func (p *Profiles) Save() error {
 	if err != nil {
 		return err
 	}
-	return writeFileWithLock(path, file, 0600)
-}
-
-func readFileWithLock(path string) ([]byte, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	if err := syscall.Flock(int(file.Fd()), syscall.LOCK_SH); err != nil {
-		return nil, err
-	}
-	defer syscall.Flock(int(file.Fd()), syscall.LOCK_UN)
-
-	return io.ReadAll(file)
-}
-
-func writeFileWithLock(path string, data []byte, perm os.FileMode) error {
-	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, perm)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	if err := syscall.Flock(int(file.Fd()), syscall.LOCK_EX); err != nil {
-		return err
-	}
-	defer syscall.Flock(int(file.Fd()), syscall.LOCK_UN)
-
-	if err := file.Truncate(0); err != nil {
-		return err
-	}
-
-	_, err = file.Write(data)
-	if err1 := file.Close(); err1 != nil && err == nil {
-		err = err1
-	}
-	return err
+	return os.WriteFile(path, file, 0600)
 }
 
 func (p *Profiles) ValidSession() bool {
