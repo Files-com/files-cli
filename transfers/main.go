@@ -224,10 +224,6 @@ func (t *Transfers) afterActions(ctx context.Context, f file.JobFile, config fil
 	if t.AfterMove != "" {
 		t.afterActionLog(file.MoveSource{Direction: f.Direction, Config: config, Path: t.AfterMove}.Call(f, files_sdk.WithContext(ctx)))
 	}
-
-	if t.AfterDeleteEmptySourceFolders {
-		t.afterActionLog(file.DeleteEmptySourceFolders{Direction: f.Direction, Config: config}.Call(f, files_sdk.WithContext(ctx)))
-	}
 }
 
 func (t *Transfers) afterActionLog(log status.Log, err error) {
@@ -301,7 +297,7 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 
 func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 	t.RegisterFileEvents(ctx, config)
-	t.SetupSignals()
+	t.SetupSignals(ctx)
 	t.Job.Start()
 	t.Job.Wait()
 
@@ -318,7 +314,7 @@ func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 	t.it.Stop()
 }
 
-func (t *Transfers) SetupSignals() {
+func (t *Transfers) SetupSignals(ctx context.Context) {
 	go func() {
 		t.buildMainTotalTransfer()
 		t.buildStatusTransfer()
@@ -343,6 +339,9 @@ func (t *Transfers) SetupSignals() {
 				case <-t.Job.Finished.C:
 					if t.Job.Count(status.Errored) == 0 {
 						t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: file.JobFile{}})
+						if t.AfterDeleteEmptySourceFolders {
+							t.afterActionLog(file.DeleteEmptySourceFolders{Config: t.Config, Direction: t.Job.Direction}.Call(*t.Job, files_sdk.WithContext(ctx)))
+						}
 					}
 					t.updateStatus()
 					t.mainBar.Abort(false)
