@@ -139,6 +139,7 @@ func Sites() *cobra.Command {
 	updateAllowed2faMethodStatic := true
 	updateAllowed2faMethodBypassForFtpSftpDav := true
 	updateRequire2fa := true
+	updateUseDedicatedIpsForSmtp := true
 	updateLdapEnabled := true
 	updateLdapSecure := true
 	updateUploadsViaEmailAuthentication := true
@@ -504,6 +505,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("login-help-text") {
 				lib.FlagUpdate(cmd, "login_help_text", paramsSiteUpdate.LoginHelpText, mapParams)
 			}
+			if cmd.Flags().Changed("use-dedicated-ips-for-smtp") {
+				mapParams["use_dedicated_ips_for_smtp"] = updateUseDedicatedIpsForSmtp
+			}
 			if cmd.Flags().Changed("smtp-address") {
 				lib.FlagUpdate(cmd, "smtp_address", paramsSiteUpdate.SmtpAddress, mapParams)
 			}
@@ -738,6 +742,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteHeader, "site-header", "", "Custom site header text")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteFooter, "site-footer", "", "Custom site footer text")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LoginHelpText, "login-help-text", "", "Login help text")
+	cmdUpdate.Flags().BoolVar(&updateUseDedicatedIpsForSmtp, "use-dedicated-ips-for-smtp", updateUseDedicatedIpsForSmtp, "If using custom SMTP, should we use dedicated IPs to deliver emails?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpAddress, "smtp-address", "", "SMTP server hostname or IP")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpAuthentication, "smtp-authentication", "", "SMTP server authentication type")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpFrom, "smtp-from", "", "From address to use when mailing through custom SMTP")
