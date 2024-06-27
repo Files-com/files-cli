@@ -33,13 +33,13 @@ func TestJsonMarshalIter(t *testing.T) {
 func TestJsonMarshalIter_Raw(t *testing.T) {
 	a := assert.New(t)
 	p1 := Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}
-	p2 := Person{FirstName: "Tom", LastName: "Smith", Age: 99}
+	p2 := Person{FirstName: "Tom&Jerry", LastName: "Smith", Age: 99}
 	it := MockIter{SliceIter: SliceIter{Items: []interface{}{p1, p2}}}
 	buf := bytes.NewBufferString("")
 
 	JsonMarshalIter(context.Background(), &it, []string{}, nil, false, "raw", buf)
 
-	a.Equal(`[{"age":100,"first_name":"Dustin","last_name":"Zeisler"},{"age":99,"first_name":"Tom","last_name":"Smith"}]
+	a.Equal(`[{"age":100,"first_name":"Dustin","last_name":"Zeisler"},{"age":99,"first_name":"Tom&Jerry","last_name":"Smith"}]
 `, buf.String())
 }
 

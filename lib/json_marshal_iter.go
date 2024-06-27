@@ -1,12 +1,22 @@
 package lib
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 )
+
+func JSONMarshal(t interface{}, prefix, indent string) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent(prefix, indent)
+	err := encoder.Encode(t)
+	return bytes.TrimRight(buffer.Bytes(), "\n"), err
+}
 
 func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filterIter FilterIter, usePager bool, format string, out io.Writer) error {
 	ctx, cancel := context.WithCancel(parentCtx)
@@ -43,9 +53,9 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 		}
 		var jsonObject []byte
 		if format == "raw" {
-			jsonObject, err = json.Marshal(recordMap)
+			jsonObject, err = JSONMarshal(recordMap, "", "")
 		} else {
-			jsonObject, err = json.MarshalIndent(recordMap, "", "    ")
+			jsonObject, err = JSONMarshal(recordMap, "", "    ")
 		}
 		if err != nil {
 			return err
@@ -94,9 +104,9 @@ func JsonMarshal(i interface{}, fields []string, usePager bool, format string, o
 	}
 	var jsonObject []byte
 	if format == "raw" {
-		jsonObject, err = json.Marshal(recordMap)
+		jsonObject, err = JSONMarshal(recordMap, "", "")
 	} else {
-		jsonObject, err = json.MarshalIndent(recordMap, "", "    ")
+		jsonObject, err = JSONMarshal(recordMap, "", "    ")
 	}
 	if err != nil {
 		return err
