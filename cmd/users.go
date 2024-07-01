@@ -73,6 +73,8 @@ func Users() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsUserList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsUserList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsUserList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsUserList.Page, "page", 0, "")
 	cmdList.Flags().StringVar(&paramsUserList.Ids, "ids", "", "comma-separated list of User IDs")
 	cmdList.Flags().StringVar(&paramsUserList.Search, "search", "", "Searches for partial matches of name, username, or email.")
 
@@ -241,7 +243,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.PasswordConfirmation, "password-confirmation", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdCreate.Flags().BoolVar(&createAnnouncementsRead, "announcements-read", createAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
-	cmdCreate.Flags().BoolVar(&createAttachmentsPermission, "attachments-permission", createAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
+	cmdCreate.Flags().BoolVar(&createAttachmentsPermission, "attachments-permission", createAttachmentsPermission, "DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.")
 	paramsUserCreate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdCreate.Flags().StringVar(&UserCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserCreate.AuthenticationMethod.Enum()).MapKeys()))
@@ -592,7 +594,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.PasswordConfirmation, "password-confirmation", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdUpdate.Flags().BoolVar(&updateAnnouncementsRead, "announcements-read", updateAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
-	cmdUpdate.Flags().BoolVar(&updateAttachmentsPermission, "attachments-permission", updateAttachmentsPermission, "DEPRECATED: Can the user create Bundles (aka Share Links)? Use the bundle permission instead.")
+	cmdUpdate.Flags().BoolVar(&updateAttachmentsPermission, "attachments-permission", updateAttachmentsPermission, "DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.")
 	paramsUserUpdate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdUpdate.Flags().StringVar(&UserUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserUpdate.AuthenticationMethod.Enum()).MapKeys()))

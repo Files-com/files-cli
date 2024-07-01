@@ -77,6 +77,8 @@ func Automations() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsAutomationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAutomationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsAutomationList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsAutomationList.Page, "page", 0, "")
 	cmdList.Flags().BoolVar(&listWithDeleted, "with-deleted", listWithDeleted, "Set to true to include deleted automations in the results.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -119,6 +121,7 @@ func Automations() *cobra.Command {
 	createDisabled := true
 	createFlattenDestinationStructure := true
 	createIgnoreLockedFolders := true
+	createLegacyFolderMatching := true
 	createOverwriteFiles := true
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	AutomationCreateTrigger := ""
@@ -157,6 +160,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("ignore-locked-folders") {
 				paramsAutomationCreate.IgnoreLockedFolders = flib.Bool(createIgnoreLockedFolders)
 			}
+			if cmd.Flags().Changed("legacy-folder-matching") {
+				paramsAutomationCreate.LegacyFolderMatching = flib.Bool(createLegacyFolderMatching)
+			}
 			if cmd.Flags().Changed("overwrite-files") {
 				paramsAutomationCreate.OverwriteFiles = flib.Bool(createOverwriteFiles)
 			}
@@ -171,7 +177,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Source, "source", "", "Source Path")
-	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Destination, "destination", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Destination, "destination", "", "")
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.Destinations, "destinations", []string{}, "A list of String destination paths or Hash of folder_path and optional file_path.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
@@ -188,6 +194,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().BoolVar(&createFlattenDestinationStructure, "flatten-destination-structure", createFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdCreate.Flags().BoolVar(&createIgnoreLockedFolders, "ignore-locked-folders", createIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
+	cmdCreate.Flags().BoolVar(&createLegacyFolderMatching, "legacy-folder-matching", createLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
 	cmdCreate.Flags().BoolVar(&createOverwriteFiles, "overwrite-files", createOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.PathTimeZone, "path-time-zone", "", "Timezone to use when rendering timestamps in paths.")
@@ -238,6 +245,7 @@ func Automations() *cobra.Command {
 	updateDisabled := true
 	updateFlattenDestinationStructure := true
 	updateIgnoreLockedFolders := true
+	updateLegacyFolderMatching := true
 	updateOverwriteFiles := true
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
@@ -302,6 +310,8 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("group-ids") {
 				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
 			}
+			if cmd.Flags().Changed("schedule") {
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAutomationUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -325,6 +335,9 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("ignore-locked-folders") {
 				mapParams["ignore_locked_folders"] = updateIgnoreLockedFolders
+			}
+			if cmd.Flags().Changed("legacy-folder-matching") {
+				mapParams["legacy_folder_matching"] = updateLegacyFolderMatching
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsAutomationUpdate.Name, mapParams)
@@ -361,7 +374,7 @@ func Automations() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Source, "source", "", "Source Path")
-	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Destination, "destination", "", "DEPRECATED: Destination Path. Use `destinations` instead.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Destination, "destination", "", "")
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.Destinations, "destinations", []string{}, "A list of String destination paths or Hash of folder_path and optional file_path.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
@@ -378,6 +391,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().BoolVar(&updateFlattenDestinationStructure, "flatten-destination-structure", updateFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdUpdate.Flags().BoolVar(&updateIgnoreLockedFolders, "ignore-locked-folders", updateIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
+	cmdUpdate.Flags().BoolVar(&updateLegacyFolderMatching, "legacy-folder-matching", updateLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
 	cmdUpdate.Flags().BoolVar(&updateOverwriteFiles, "overwrite-files", updateOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.PathTimeZone, "path-time-zone", "", "Timezone to use when rendering timestamps in paths.")

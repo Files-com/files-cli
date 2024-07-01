@@ -73,6 +73,8 @@ func ApiKeys() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsApiKeyList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsApiKeyList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsApiKeyList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsApiKeyList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsApiKeyList.Page, "page", 0, "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
@@ -139,10 +141,10 @@ func ApiKeys() *cobra.Command {
 	ApiKeyCreatePermissionSet := ""
 
 	cmdCreate := &cobra.Command{
-		Use:   "create",
+		Use:   "create [path]",
 		Short: `Create Api Key`,
 		Long:  `Create Api Key`,
-		Args:  cobra.NoArgs,
+		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
@@ -158,6 +160,9 @@ func ApiKeys() *cobra.Command {
 				paramsApiKeyCreate.ExpiresAt = nil
 			}
 
+			if len(args) > 0 && args[0] != "" {
+				paramsApiKeyCreate.Path = args[0]
+			}
 			var apiKey interface{}
 			var err error
 			apiKey, err = client.Create(paramsApiKeyCreate, files_sdk.WithContext(ctx))
@@ -170,6 +175,7 @@ func ApiKeys() *cobra.Command {
 	lib.TimeVar(cmdCreate.Flags(), paramsApiKeyCreate.ExpiresAt, "expires-at", "API Key expiration date")
 	cmdCreate.Flags().StringVar(&ApiKeyCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Name, "name", "", "Internal name for the API Key.  For your use.")
+	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Path, "path", "", "Folder path restriction for this api key.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

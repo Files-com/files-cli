@@ -71,6 +71,8 @@ func HistoryExportResults() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsHistoryExportResultList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsHistoryExportResultList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsHistoryExportResultList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsHistoryExportResultList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsHistoryExportResultList.Page, "page", 0, "")
 	cmdList.Flags().Int64Var(&paramsHistoryExportResultList.HistoryExportId, "history-export-id", 0, "ID of the associated history export.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")

@@ -70,6 +70,8 @@ func BundleDownloads() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsBundleDownloadList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBundleDownloadList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsBundleDownloadList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsBundleDownloadList.Page, "page", 0, "")
 	cmdList.Flags().Int64Var(&paramsBundleDownloadList.BundleId, "bundle-id", 0, "Bundle ID")
 	cmdList.Flags().Int64Var(&paramsBundleDownloadList.BundleRegistrationId, "bundle-registration-id", 0, "BundleRegistration ID")
 

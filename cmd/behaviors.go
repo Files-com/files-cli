@@ -71,6 +71,8 @@ func Behaviors() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsBehaviorList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBehaviorList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsBehaviorList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsBehaviorList.Page, "page", 0, "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
@@ -111,6 +113,7 @@ func Behaviors() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
+	listForAncestorBehaviors := true
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
@@ -125,6 +128,10 @@ func Behaviors() *cobra.Command {
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
+			}
+
+			if cmd.Flags().Changed("ancestor-behaviors") {
+				params.AncestorBehaviors = flib.Bool(listForAncestorBehaviors)
 			}
 
 			client := behavior.Client{Config: config}
@@ -157,9 +164,11 @@ func Behaviors() *cobra.Command {
 
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Action, "action", "", "")
+	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.Page, "page", 0, "")
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Path, "path", "", "Path to operate on.")
-	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.AncestorBehaviors, "ancestor-behaviors", "", "Show behaviors above this path?")
-	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Behavior, "behavior", "", "DEPRECATED: If set only shows folder behaviors matching this behavior type. Use `filter[behavior]` instead.")
+	cmdListFor.Flags().BoolVar(&listForAncestorBehaviors, "ancestor-behaviors", listForAncestorBehaviors, "If `true`, behaviors above this path are shown.")
+	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Behavior, "behavior", "", "")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
@@ -199,12 +208,12 @@ func Behaviors() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
-	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder and its children.")
-	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Is behavior recursive?")
+	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Value, "value", "", "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
+	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "If `true`, behavior is treated as recursive, meaning that it impacts child folders as well.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
-	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Folder behaviors path.")
+	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Path where this behavior should apply.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Behavior, "behavior", "", "Behavior type.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -236,9 +245,9 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Url, "url", "", "URL for testing the webhook.")
-	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Method, "method", "", "HTTP method(GET or POST).")
-	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Encoding, "encoding", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
-	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "action for test body")
+	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Method, "method", "", "HTTP request method (GET or POST).")
+	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Encoding, "encoding", "", "Encoding type for the webhook payload. Can be JSON, XML, or RAW (form data).")
+	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "Action for test body.")
 
 	cmdWebhookTest.Flags().StringSliceVar(&fieldsWebhookTest, "fields", []string{}, "comma separated list of field names")
 	cmdWebhookTest.Flags().StringSliceVar(&formatWebhookTest, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -299,12 +308,12 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
-	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Value, "value", "", "The value of the folder behavior.  Can be an integer, array, or hash depending on the type of folder behavior. See The Behavior Types section for example values for each type of behavior.")
-	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, the parent folder's behavior will be disabled for this folder and its children.")
-	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "Is behavior recursive?")
+	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Value, "value", "", "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior.")
+	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
+	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "If `true`, behavior is treated as recursive, meaning that it impacts child folders as well.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
-	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If true, will delete the file stored in attachment")
+	cmdUpdate.Flags().BoolVar(&updateAttachmentDelete, "attachment-delete", updateAttachmentDelete, "If `true`, delete the file stored in `attachment`.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

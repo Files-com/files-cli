@@ -74,6 +74,8 @@ func Bundles() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsBundleList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsBundleList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBundleList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().StringVar(&paramsBundleList.Action, "action", "", "")
+	cmdList.Flags().Int64Var(&paramsBundleList.Page, "page", 0, "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
@@ -114,7 +116,6 @@ func Bundles() *cobra.Command {
 	createCreateSnapshot := true
 	createDontSeparateSubmissionsByFolder := true
 	createFinalizeSnapshot := true
-	createPreviewOnly := true
 	createRequireRegistration := true
 	createRequireShareRecipient := true
 	createSendEmailReceiptToUploader := true
@@ -148,9 +149,6 @@ func Bundles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("finalize-snapshot") {
 				paramsBundleCreate.FinalizeSnapshot = flib.Bool(createFinalizeSnapshot)
-			}
-			if cmd.Flags().Changed("preview-only") {
-				paramsBundleCreate.PreviewOnly = flib.Bool(createPreviewOnly)
 			}
 			if cmd.Flags().Changed("require-registration") {
 				paramsBundleCreate.RequireRegistration = flib.Bool(createRequireRegistration)
@@ -200,7 +198,6 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdCreate.Flags().StringVar(&BundleCreatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleCreate.Permissions.Enum()).MapKeys()))
-	cmdCreate.Flags().BoolVar(&createPreviewOnly, "preview-only", createPreviewOnly, "DEPRECATED: Restrict users to previewing files only. Use `permissions` instead.")
 	cmdCreate.Flags().BoolVar(&createRequireRegistration, "require-registration", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
@@ -256,7 +253,6 @@ func Bundles() *cobra.Command {
 	updateCreateSnapshot := true
 	updateDontSeparateSubmissionsByFolder := true
 	updateFinalizeSnapshot := true
-	updatePreviewOnly := true
 	updateRequireRegistration := true
 	updateRequireShareRecipient := true
 	updateSendEmailReceiptToUploader := true
@@ -339,9 +335,6 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("permissions") {
 				lib.FlagUpdate(cmd, "permissions", paramsBundleUpdate.Permissions, mapParams)
 			}
-			if cmd.Flags().Changed("preview-only") {
-				mapParams["preview_only"] = updatePreviewOnly
-			}
 			if cmd.Flags().Changed("require-registration") {
 				mapParams["require_registration"] = updateRequireRegistration
 			}
@@ -400,7 +393,6 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
-	cmdUpdate.Flags().BoolVar(&updatePreviewOnly, "preview-only", updatePreviewOnly, "DEPRECATED: Restrict users to previewing files only. Use `permissions` instead.")
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 	cmdUpdate.Flags().BoolVar(&updateSendEmailReceiptToUploader, "send-email-receipt-to-uploader", updateSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
