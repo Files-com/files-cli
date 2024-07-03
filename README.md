@@ -29,12 +29,12 @@ sudo rpm -i ./files-cli.rpm
 
 ### Debian based systems
 
-For Debian based systems, such as Ubuntu Linux, use the APT-based Package Manager to install the CLI App:
+For Debian based systems, such as Ubuntu Linux, use the APT Package Manager to install the CLI App:
 
 ```shell
-curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.apk -o files-cli.apk
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.deb -o files-cli.deb
 
-sudo rpm -i ./files-cli.apk
+sudo apt install ./files-cli.deb
 ```
 
 ### Windows
