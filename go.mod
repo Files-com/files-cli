@@ -22,7 +22,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
-	github.com/samber/lo v1.45.0
+	github.com/samber/lo v1.46.0
 	github.com/sc0vu/didyoumean v0.0.0-20230904130613-22d315697818
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
