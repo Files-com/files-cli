@@ -32,8 +32,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Api Keys",
-		Long:    `List Api Keys`,
+		Short:   "List API Keys",
+		Long:    `List API Keys`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -113,8 +113,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Api Key`,
-		Long:  `Show Api Key`,
+		Short: `Show API Key`,
+		Long:  `Show API Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -142,8 +142,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
-		Short: `Create Api Key`,
-		Long:  `Create Api Key`,
+		Short: `Create API Key`,
+		Long:  `Create API Key`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -175,7 +175,7 @@ func ApiKeys() *cobra.Command {
 	lib.TimeVar(cmdCreate.Flags(), paramsApiKeyCreate.ExpiresAt, "expires-at", "API Key expiration date")
 	cmdCreate.Flags().StringVar(&ApiKeyCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Name, "name", "", "Internal name for the API Key.  For your use.")
-	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Path, "path", "", "Folder path restriction for this api key.")
+	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Path, "path", "", "Folder path restriction for this API key.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -247,8 +247,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Api Key`,
-		Long:  `Update Api Key`,
+		Short: `Update API Key`,
+		Long:  `Update API Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -338,8 +338,8 @@ func ApiKeys() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Api Key`,
-		Long:  `Delete Api Key`,
+		Short: `Delete API Key`,
+		Long:  `Delete API Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

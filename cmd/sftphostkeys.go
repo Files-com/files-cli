@@ -30,8 +30,8 @@ func SftpHostKeys() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Sftp Host Keys",
-		Long:    `List Sftp Host Keys`,
+		Short:   "List SFTP Host Keys",
+		Long:    `List SFTP Host Keys`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -85,8 +85,8 @@ func SftpHostKeys() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Sftp Host Key`,
-		Long:  `Show Sftp Host Key`,
+		Short: `Show SFTP Host Key`,
+		Long:  `Show SFTP Host Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -113,8 +113,8 @@ func SftpHostKeys() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Sftp Host Key`,
-		Long:  `Create Sftp Host Key`,
+		Short: `Create SFTP Host Key`,
+		Long:  `Create SFTP Host Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -142,8 +142,8 @@ func SftpHostKeys() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Sftp Host Key`,
-		Long:  `Update Sftp Host Key`,
+		Short: `Update SFTP Host Key`,
+		Long:  `Update SFTP Host Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -187,8 +187,8 @@ func SftpHostKeys() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Sftp Host Key`,
-		Long:  `Delete Sftp Host Key`,
+		Short: `Delete SFTP Host Key`,
+		Long:  `Delete SFTP Host Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

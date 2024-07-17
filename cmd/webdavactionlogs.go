@@ -30,8 +30,8 @@ func WebDavActionLogs() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Web Dav Action Logs",
-		Long:    `List Web Dav Action Logs`,
+		Short:   "List WebDAV Action Logs",
+		Long:    `List WebDAV Action Logs`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

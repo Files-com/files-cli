@@ -32,8 +32,8 @@ func As2Partners() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List As2 Partners",
-		Long:    `List As2 Partners`,
+		Short:   "List AS2 Partners",
+		Long:    `List AS2 Partners`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -87,8 +87,8 @@ func As2Partners() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show As2 Partner`,
-		Long:  `Show As2 Partner`,
+		Short: `Show AS2 Partner`,
+		Long:  `Show AS2 Partner`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -118,8 +118,8 @@ func As2Partners() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create As2 Partner`,
-		Long:  `Create As2 Partner`,
+		Short: `Create AS2 Partner`,
+		Long:  `Create AS2 Partner`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -172,8 +172,8 @@ func As2Partners() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update As2 Partner`,
-		Long:  `Update As2 Partner`,
+		Short: `Update AS2 Partner`,
+		Long:  `Update AS2 Partner`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -252,8 +252,8 @@ func As2Partners() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete As2 Partner`,
-		Long:  `Delete As2 Partner`,
+		Short: `Delete AS2 Partner`,
+		Long:  `Delete AS2 Partner`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

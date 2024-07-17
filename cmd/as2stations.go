@@ -30,8 +30,8 @@ func As2Stations() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List As2 Stations",
-		Long:    `List As2 Stations`,
+		Short:   "List AS2 Stations",
+		Long:    `List AS2 Stations`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -85,8 +85,8 @@ func As2Stations() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show As2 Station`,
-		Long:  `Show As2 Station`,
+		Short: `Show AS2 Station`,
+		Long:  `Show AS2 Station`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -113,8 +113,8 @@ func As2Stations() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create As2 Station`,
-		Long:  `Create As2 Station`,
+		Short: `Create AS2 Station`,
+		Long:  `Create AS2 Station`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -144,8 +144,8 @@ func As2Stations() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update As2 Station`,
-		Long:  `Update As2 Station`,
+		Short: `Update AS2 Station`,
+		Long:  `Update AS2 Station`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -197,8 +197,8 @@ func As2Stations() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete As2 Station`,
-		Long:  `Delete As2 Station`,
+		Short: `Delete AS2 Station`,
+		Long:  `Delete AS2 Station`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

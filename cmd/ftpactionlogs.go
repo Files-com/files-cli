@@ -30,8 +30,8 @@ func FtpActionLogs() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Ftp Action Logs",
-		Long:    `List Ftp Action Logs`,
+		Short:   "List FTP Action Logs",
+		Long:    `List FTP Action Logs`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

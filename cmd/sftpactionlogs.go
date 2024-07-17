@@ -30,8 +30,8 @@ func SftpActionLogs() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Sftp Action Logs",
-		Long:    `List Sftp Action Logs`,
+		Short:   "List SFTP Action Logs",
+		Long:    `List SFTP Action Logs`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

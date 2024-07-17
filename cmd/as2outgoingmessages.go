@@ -30,8 +30,8 @@ func As2OutgoingMessages() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List As2 Outgoing Messages",
-		Long:    `List As2 Outgoing Messages`,
+		Short:   "List AS2 Outgoing Messages",
+		Long:    `List AS2 Outgoing Messages`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

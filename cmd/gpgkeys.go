@@ -30,8 +30,8 @@ func GpgKeys() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Gpg Keys",
-		Long:    `List Gpg Keys`,
+		Short:   "List GPG Keys",
+		Long:    `List GPG Keys`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -86,8 +86,8 @@ func GpgKeys() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Gpg Key`,
-		Long:  `Show Gpg Key`,
+		Short: `Show GPG Key`,
+		Long:  `Show GPG Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -114,8 +114,8 @@ func GpgKeys() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Gpg Key`,
-		Long:  `Create Gpg Key`,
+		Short: `Create GPG Key`,
+		Long:  `Create GPG Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -146,8 +146,8 @@ func GpgKeys() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Gpg Key`,
-		Long:  `Update Gpg Key`,
+		Short: `Update GPG Key`,
+		Long:  `Update GPG Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -199,8 +199,8 @@ func GpgKeys() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Gpg Key`,
-		Long:  `Delete Gpg Key`,
+		Short: `Delete GPG Key`,
+		Long:  `Delete GPG Key`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

@@ -30,8 +30,8 @@ func SsoStrategies() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Sso Strategies",
-		Long:    `List Sso Strategies`,
+		Short:   "List SSO Strategies",
+		Long:    `List SSO Strategies`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -85,8 +85,8 @@ func SsoStrategies() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Sso Strategy`,
-		Long:  `Show Sso Strategy`,
+		Short: `Show SSO Strategy`,
+		Long:  `Show SSO Strategy`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

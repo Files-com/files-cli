@@ -30,8 +30,8 @@ func ExavaultApiRequestLogs() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Exavault Api Request Logs",
-		Long:    `List Exavault Api Request Logs`,
+		Short:   "List Exavault API Request Logs",
+		Long:    `List Exavault API Request Logs`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
