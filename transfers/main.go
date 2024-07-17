@@ -36,6 +36,7 @@ type Transfers struct {
 	scanningBar                   *mpb.Bar
 	mainBar                       *mpb.Bar
 	fileStatusBar                 *mpb.Bar
+	syncStatusBar                 *mpb.Bar
 	openConnectionsBar            *mpb.Bar
 	eventBody                     []string
 	eventBodyMutex                *sync.RWMutex
@@ -318,6 +319,9 @@ func (t *Transfers) SetupSignals(ctx context.Context) {
 	go func() {
 		t.buildMainTotalTransfer()
 		t.buildStatusTransfer()
+		if t.Sync {
+			t.buildStatusSync()
+		}
 		if t.OpenConnectionStats {
 			t.buildOpenConnections()
 		}
@@ -528,6 +532,11 @@ func (t *Transfers) UpdateMainTotal() {
 		t.fileStatusBar.SetTotal(1, true)
 	}
 
+	if t.syncStatusBar != nil && t.Job.Finished.Called() {
+		t.syncStatusBar.SetCurrent(1)
+		t.syncStatusBar.SetTotal(1, true)
+	}
+
 	if t.openConnectionsBar != nil && t.Job.Finished.Called() {
 		t.openConnectionsBar.SetCurrent(1)
 		t.openConnectionsBar.SetTotal(1, true)
@@ -671,6 +680,26 @@ func (t *Transfers) buildStatusTransfer() {
 	)
 }
 
+func (t *Transfers) buildStatusSync() {
+	t.syncStatusBar = t.Progress.AddBar(
+		1,
+		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
+			return mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
+				return nil
+			})
+		}),
+		mpb.PrependDecorators(
+			decor.Any(func(d decor.Statistics) string {
+				comparedCount := t.Job.Count(append(status.Running, append(status.Ended, status.Compared)...)...)
+				excludedCount := t.Job.Count(status.Excluded...)
+				return fmt.Sprintf("Syncing (%v files compared, %v files require transfer)", formatWithComma(comparedCount), formatWithComma(comparedCount-excludedCount))
+			},
+				decor.WC{W: 0, C: decor.DidentRight},
+			),
+		),
+	)
+}
+
 func (t *Transfers) buildOpenConnections() {
 	t.openConnectionsBar = t.Progress.AddBar(
 		1,
@@ -745,17 +774,12 @@ func displayName(path string, terminalWidth int) string {
 }
 
 func fileCounts(job *file.Job, rate float64) string {
-	if job.Count(append(status.Included, status.Skipped)...) < 2 {
+	includedCount := job.Count(status.Included...)
+	if includedCount < 2 {
 		return ""
 	}
 
-	base := fmt.Sprintf("(%v/%v Files) %.1f Files/s %v", formatWithComma(job.Count(status.Complete)), formatWithComma(job.Count(append(status.Included, status.Skipped)...)), rate, directionSymbolFmt(job.Direction))
-
-	if job.Sync {
-		return fmt.Sprintf("Synced %v", base)
-	} else {
-		return base
-	}
+	return fmt.Sprintf("Transferring (%v/%v Files) %.1f Files/s %v", formatWithComma(job.Count(status.Complete)), formatWithComma(includedCount), rate, directionSymbolFmt(job.Direction))
 }
 
 func directionFmt(p direction.Direction, finished bool) (str string) {
