@@ -90,6 +90,7 @@ func Sites() *cobra.Command {
 	updatePinAllRemoteServersToSiteRegion := true
 	updateMotdUseForFtp := true
 	updateMotdUseForSftp := true
+	updateBundleRequireNote := true
 	updateSslRequired := true
 	updateTlsDisabled := true
 	updateSftpInsecureCiphers := true
@@ -271,6 +272,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("additional-text-file-types") {
 				lib.FlagUpdateLen(cmd, "additional_text_file_types", paramsSiteUpdate.AdditionalTextFileTypes, mapParams)
+			}
+			if cmd.Flags().Changed("bundle-require-note") {
+				mapParams["bundle_require_note"] = updateBundleRequireNote
 			}
 			if cmd.Flags().Changed("session-expiry") {
 				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
@@ -665,6 +669,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForFtp, "motd-use-for-ftp", updateMotdUseForFtp, "Show message to users connecting via FTP")
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForSftp, "motd-use-for-sftp", updateMotdUseForSftp, "Show message to users connecting via SFTP")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
+	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateTlsDisabled, "tls-disabled", updateTlsDisabled, "DO NOT ENABLE. This setting allows TLSv1.0 and TLSv1.1 to be used on your site.  We intend to remove this capability entirely in early 2024.  If set, the `sftp_insecure_ciphers` flag will be automatically set to true.")
