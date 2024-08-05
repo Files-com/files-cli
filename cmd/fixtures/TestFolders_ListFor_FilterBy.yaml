@@ -502,7 +502,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy?page=1
+    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy
     method: GET
   response:
     body: '[{"path":"TestFolders_ListFor_FilterBy/cars","display_name":"cars","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","display_name":"food.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:17Z","mtime":"2023-01-26T00:32:17Z","provided_mtime":"2023-01-26T00:32:16Z","crc32":"5867c1f8","md5":"ab6e3983b98e417df77242b035504638","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","display_name":"space.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:16Z","mtime":"2023-01-26T00:32:16Z","provided_mtime":"2023-01-26T00:32:14Z","crc32":"2f60f16e","md5":"17522b7187d4320a39cc5f674f45d7dc","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -533,7 +533,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars?page=1
+    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars
     method: GET
   response:
     body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","display_name":"car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:18Z","mtime":"2023-01-26T00:32:18Z","provided_mtime":"2023-01-26T00:32:17Z","crc32":"c16e9042","md5":"f29e2ea37b89dc6c1a7522523109e5c0","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","display_name":"super-car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:20Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":"2023-01-26T00:32:18Z","crc32":"b669a0d4","md5":"15e081c59a53cf6aadd83c7dc0e831d3","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'
@@ -595,7 +595,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy?page=1
+    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy
     method: GET
   response:
     body: '[{"path":"TestFolders_ListFor_FilterBy/cars","display_name":"cars","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","display_name":"food.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:17Z","mtime":"2023-01-26T00:32:17Z","provided_mtime":"2023-01-26T00:32:16Z","crc32":"5867c1f8","md5":"ab6e3983b98e417df77242b035504638","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","display_name":"space.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:16Z","mtime":"2023-01-26T00:32:16Z","provided_mtime":"2023-01-26T00:32:14Z","crc32":"2f60f16e","md5":"17522b7187d4320a39cc5f674f45d7dc","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -628,7 +628,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars?page=1
+    url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars
     method: GET
   response:
     body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","display_name":"car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:18Z","mtime":"2023-01-26T00:32:18Z","provided_mtime":"2023-01-26T00:32:17Z","crc32":"c16e9042","md5":"f29e2ea37b89dc6c1a7522523109e5c0","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","display_name":"super-car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:20Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":"2023-01-26T00:32:18Z","crc32":"b669a0d4","md5":"15e081c59a53cf6aadd83c7dc0e831d3","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'

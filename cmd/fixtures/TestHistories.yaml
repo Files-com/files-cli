@@ -9,7 +9,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/history/login?page=1
+    url: https://app.files.com/api/rest/v1/history/login
     method: GET
   response:
     body: '[{"id":1,"user_id":1234,"when":"2022-01-28T19:41:43-05:00"},{"id":1,"user_id":1234,"when":"2023-01-28T19:41:43-05:00"}]'
@@ -42,7 +42,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/history/login?end_at=2023-01-30T07%3A43%3A37-05%3A00&page=1&start_at=2023-01-28T19%3A41%3A43-05%3A00
+    url: https://app.files.com/api/rest/v1/history/login?end_at=2023-01-30T07%3A43%3A37-05%3A00&start_at=2023-01-28T19%3A41%3A43-05%3A00
     method: GET
   response:
     body: '[{"id":1,"user_id":1234,"when":"2023-01-28T19:41:43-05:00"}]'

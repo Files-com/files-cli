@@ -474,7 +474,7 @@ interactions:
     headers:
       User-Agent:
       - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest/foo","display_name":"foo","type":"directory","size":null,"created_at":"2024-04-22T21:40:57Z","mtime":"2024-04-22T21:40:58Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}]'
@@ -506,7 +506,7 @@ interactions:
     headers:
       User-Agent:
       - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest/foo?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest/foo
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_Dest_with_PreserveTimes/dest-root/Dest/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:40:58Z","mtime":"2024-04-22T21:40:58Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'

@@ -981,7 +981,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar","display_name":"bar","type":"directory","size":null,"created_at":"2023-02-06T16:53:53Z","mtime":"2023-02-06T16:53:54Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:53:51Z","mtime":"2023-02-06T16:53:51Z","provided_mtime":null,"crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -1012,7 +1012,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar/lo.txt","display_name":"lo.txt","type":"file","size":0,"created_at":"2023-02-06T16:53:54Z","mtime":"2023-02-06T16:53:54Z","provided_mtime":null,"crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -1255,7 +1255,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar","display_name":"bar","type":"directory","size":null,"created_at":"2023-02-06T16:53:53Z","mtime":"2023-02-06T16:53:54Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:53:51Z","mtime":"2023-02-06T16:53:51Z","provided_mtime":null,"crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -1288,7 +1288,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_dest_with_nested_directories_and_files/src-root/src/foo/bar/lo.txt","display_name":"lo.txt","type":"file","size":0,"created_at":"2023-02-06T16:53:54Z","mtime":"2023-02-06T16:53:54Z","provided_mtime":null,"crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'

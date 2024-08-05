@@ -600,7 +600,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo","display_name":"foo","type":"directory","size":null,"created_at":"2023-02-06T16:53:59Z","mtime":"2023-02-06T16:54:00Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}]'
@@ -631,7 +631,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo/bar","display_name":"bar","type":"directory","size":null,"created_at":"2023-02-06T16:53:59Z","mtime":"2023-02-06T16:54:00Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:54:00Z","mtime":"2023-02-06T16:54:00Z","provided_mtime":"2023-02-06T16:53:57Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
@@ -662,7 +662,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo/bar?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo/bar
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_foo_to_dest_with_nested_directories_and_files/dest-root/dest/foo/bar/lo.txt","display_name":"lo.txt","type":"file","size":0,"created_at":"2023-02-06T16:54:00Z","mtime":"2023-02-06T16:54:00Z","provided_mtime":"2023-02-06T16:53:57Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'

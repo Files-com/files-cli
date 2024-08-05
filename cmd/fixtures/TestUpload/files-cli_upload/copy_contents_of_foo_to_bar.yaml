@@ -689,7 +689,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_contents_of_foo_to_bar/dest-root/Dest/bar?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestUpload-files-cli_upload-copy_contents_of_foo_to_bar/dest-root/Dest/bar
     method: GET
   response:
     body: '[{"path":"tmp/TestUpload-files-cli_upload-copy_contents_of_foo_to_bar/dest-root/Dest/bar/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:52:54Z","mtime":"2023-02-06T16:52:54Z","provided_mtime":"2023-02-06T16:52:49Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'

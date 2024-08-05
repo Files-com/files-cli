@@ -795,7 +795,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src/foo","display_name":"foo","type":"directory","size":null,"created_at":"2023-02-06T16:52:47Z","mtime":"2023-02-06T16:52:49Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}]'
@@ -826,7 +826,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src/foo?page=1
+    url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src/foo
     method: GET
   response:
     body: '[{"path":"tmp/TestDownload-files-cli_download-copy_baz.txt_to_Dest/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2023-02-06T16:52:49Z","mtime":"2023-02-06T16:52:49Z","provided_mtime":null,"crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'

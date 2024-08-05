@@ -9,7 +9,7 @@ interactions:
       - close
       User-Agent:
       - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/users?page=1
+    url: https://app.files.com/api/rest/v1/users
     method: GET
   response:
     body: '[{"id":401963,"username":"dustin","admin_group_ids":[],"allowed_ips":null,"attachments_permission":true,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2020-04-02T16:17:28-04:00","dav_permission":true,"disabled":false,"email":"dustin@zeisler.net","first_login_at":"2022-02-11T18:05:19-05:00","ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":"2022-12-14T15:23:45-05:00","last_web_login_at":"2022-12-14T15:23:22-05:00","last_ftp_login_at":"2022-12-14T15:23:45-05:00","last_sftp_login_at":"2022-07-06T12:29:08-04:00","last_dav_login_at":"2022-10-20T19:31:56-04:00","last_desktop_login_at":"2020-04-14T11:32:56-04:00","last_restapi_login_at":"2022-11-28T19:03:19-05:00","last_api_use_at":"2022-01-13T13:55:13-05:00","last_active_at":"2022-12-14T15:23:45-05:00","last_protocol_cipher":"TLSv1.2;
