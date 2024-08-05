@@ -70,8 +70,6 @@ func IpAddresses() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsIpAddressList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsIpAddressList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVar(&paramsIpAddressList.Action, "action", "", "")
-	cmdList.Flags().Int64Var(&paramsIpAddressList.Page, "page", 0, "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
@@ -126,8 +124,6 @@ func IpAddresses() *cobra.Command {
 
 	cmdGetSmartfileReserved.Flags().StringVar(&paramsIpAddressGetSmartfileReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdGetSmartfileReserved.Flags().Int64Var(&paramsIpAddressGetSmartfileReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdGetSmartfileReserved.Flags().StringVar(&paramsIpAddressGetSmartfileReserved.Action, "action", "", "")
-	cmdGetSmartfileReserved.Flags().Int64Var(&paramsIpAddressGetSmartfileReserved.Page, "page", 0, "")
 
 	cmdGetSmartfileReserved.Flags().Int64VarP(&MaxPagesGetSmartfileReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetSmartfileReserved.Flags().StringSliceVar(&fieldsGetSmartfileReserved, "fields", []string{}, "comma separated list of field names to include in response")
@@ -182,8 +178,6 @@ func IpAddresses() *cobra.Command {
 
 	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Action, "action", "", "")
-	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.Page, "page", 0, "")
 
 	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
@@ -238,8 +232,6 @@ func IpAddresses() *cobra.Command {
 
 	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdGetReserved.Flags().StringVar(&paramsIpAddressGetReserved.Action, "action", "", "")
-	cmdGetReserved.Flags().Int64Var(&paramsIpAddressGetReserved.Page, "page", 0, "")
 
 	cmdGetReserved.Flags().Int64VarP(&MaxPagesGetReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdGetReserved.Flags().StringSliceVar(&fieldsGetReserved, "fields", []string{}, "comma separated list of field names to include in response")

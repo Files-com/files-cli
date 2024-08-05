@@ -85,8 +85,6 @@ func Histories() *cobra.Command {
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListForFile.Flags().Int64Var(&paramsHistoryListForFile.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Action, "action", "", "")
-	cmdListForFile.Flags().Int64Var(&paramsHistoryListForFile.Page, "page", 0, "")
 	cmdListForFile.Flags().StringVar(&paramsHistoryListForFile.Path, "path", "", "Path to operate on.")
 
 	cmdListForFile.Flags().Int64VarP(&MaxPagesListForFile, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -157,8 +155,6 @@ func Histories() *cobra.Command {
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListForFolder.Flags().Int64Var(&paramsHistoryListForFolder.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Action, "action", "", "")
-	cmdListForFolder.Flags().Int64Var(&paramsHistoryListForFolder.Page, "page", 0, "")
 	cmdListForFolder.Flags().StringVar(&paramsHistoryListForFolder.Path, "path", "", "Path to operate on.")
 
 	cmdListForFolder.Flags().Int64VarP(&MaxPagesListForFolder, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -226,8 +222,6 @@ func Histories() *cobra.Command {
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Action, "action", "", "")
-	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.Page, "page", 0, "")
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.UserId, "user-id", 0, "User ID.")
 
 	cmdListForUser.Flags().Int64VarP(&MaxPagesListForUser, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -295,8 +289,6 @@ func Histories() *cobra.Command {
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListLogins.Flags().Int64Var(&paramsHistoryListLogins.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdListLogins.Flags().StringVar(&paramsHistoryListLogins.Action, "action", "", "")
-	cmdListLogins.Flags().Int64Var(&paramsHistoryListLogins.Page, "page", 0, "")
 
 	cmdListLogins.Flags().Int64VarP(&MaxPagesListLogins, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListLogins.Flags().StringSliceVar(&fieldsListLogins, "fields", []string{}, "comma separated list of field names to include in response")
@@ -364,8 +356,6 @@ func Histories() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsHistoryList.Display, "display", "", "Display format. Leave blank or set to `full` or `parent`.")
 	cmdList.Flags().StringVar(&paramsHistoryList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsHistoryList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVar(&paramsHistoryList.Action, "action", "", "")
-	cmdList.Flags().Int64Var(&paramsHistoryList.Page, "page", 0, "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")

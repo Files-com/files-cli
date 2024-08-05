@@ -77,8 +77,6 @@ func Automations() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsAutomationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAutomationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().StringVar(&paramsAutomationList.Action, "action", "", "")
-	cmdList.Flags().Int64Var(&paramsAutomationList.Page, "page", 0, "")
 	cmdList.Flags().BoolVar(&listWithDeleted, "with-deleted", listWithDeleted, "Set to true to include deleted automations in the results.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -177,7 +175,6 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Source, "source", "", "Source Path")
-	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Destination, "destination", "", "")
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.Destinations, "destinations", []string{}, "A list of String destination paths or Hash of folder_path and optional file_path.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.DestinationReplaceFrom, "destination-replace-from", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
@@ -283,9 +280,6 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("source") {
 				lib.FlagUpdate(cmd, "source", paramsAutomationUpdate.Source, mapParams)
 			}
-			if cmd.Flags().Changed("destination") {
-				lib.FlagUpdate(cmd, "destination", paramsAutomationUpdate.Destination, mapParams)
-			}
 			if cmd.Flags().Changed("destinations") {
 				lib.FlagUpdateLen(cmd, "destinations", paramsAutomationUpdate.Destinations, mapParams)
 			}
@@ -309,8 +303,6 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("group-ids") {
 				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
-			}
-			if cmd.Flags().Changed("schedule") {
 			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAutomationUpdate.ScheduleDaysOfWeek, mapParams)
@@ -374,7 +366,6 @@ func Automations() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Source, "source", "", "Source Path")
-	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Destination, "destination", "", "")
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.Destinations, "destinations", []string{}, "A list of String destination paths or Hash of folder_path and optional file_path.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
