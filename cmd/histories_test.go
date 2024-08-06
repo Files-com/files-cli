@@ -22,9 +22,9 @@ func TestHistories(t *testing.T) {
 			test: func(t *testing.T, stdOut []byte, stdErr []byte) {
 				assert.Equal(
 					t,
-					`id,path,when,destination,display,ip,source,targets,user_id,username,action,failure_type,interface
-1,,2022-01-28T19:41:43-05:00,,,,,,1234,,,,
-1,,2023-01-28T19:41:43-05:00,,,,,,1234,,,,
+					`id,path,when,destination,display,ip,source,targets,user_id,username,user_is_from_parent_site,action,failure_type,interface
+1,,2022-01-28T19:41:43-05:00,,,,,,1234,,,,,
+1,,2023-01-28T19:41:43-05:00,,,,,,1234,,,,,
 `,
 					string(stdOut),
 				)
@@ -37,8 +37,8 @@ func TestHistories(t *testing.T) {
 			test: func(t *testing.T, stdOut []byte, stdErr []byte) {
 				assert.Equal(
 					t,
-					`id,path,when,destination,display,ip,source,targets,user_id,username,action,failure_type,interface
-1,,2023-01-28T19:41:43-05:00,,,,,,1234,,,,
+					`id,path,when,destination,display,ip,source,targets,user_id,username,user_is_from_parent_site,action,failure_type,interface
+1,,2023-01-28T19:41:43-05:00,,,,,,1234,,,,,
 `,
 					string(stdOut),
 				)
