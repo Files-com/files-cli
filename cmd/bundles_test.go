@@ -3,15 +3,12 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
-	"github.com/Files-com/files-sdk-go/v3/file"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -64,29 +61,20 @@ func TestBundles_Create(t *testing.T) {
 			"create", "--paths", "folder1", "--expires-at",
 		})
 
-		assert.Equal(t, string(stderr), "Error: flag needs an argument: --expires-at\n")
+		assert.Equal(t, "Error: flag needs an argument: --expires-at\n", string(stderr))
 	})
 
 	t.Run("it returns an API error", func(t *testing.T) {
-		server := (&file.MockAPIServer{T: t}).Do()
-		defer server.Shutdown()
-		config := server.Client().Config
-		server.GetRouter().POST("/api/rest/v1/bundles", func(context *gin.Context) {
-			err := files_sdk.ResponseError{
-				ErrorMessage: "Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you",
-				HttpCode:     422,
-				Title:        "Model Save Error",
-				Type:         "processing-failure/model-save-error",
-				Errors:       []files_sdk.ResponseError{{ErrorMessage: "Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you"}},
-			}
-
-			context.JSON(http.StatusUnprocessableEntity, err)
-		})
+		r, config, err := CreateConfig("TestBundles_Create")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer r.Stop()
 
 		_, stderr := callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1",
 		})
 
-		assert.Equal(t, string(stderr), "Error: Model Save Error - `Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you`\n")
+		assert.Equal(t, "Error: Model Save Error - `Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you`\n", string(stderr))
 	})
 }

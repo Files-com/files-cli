@@ -1,0 +1,40 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"paths":["folder1"]}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 3.2.30
+    url: https://app.files.com/api/rest/v1/bundles
+    method: POST
+  response:
+    body: >
+      {"error":"Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension
+      doesn't exist or can't be read by you","http-code":422,"instance":"ccfc1c11d53f2ae88e06b44b16ff09c8",
+      "title":"Model Save Error","type":"processing-failure/model-save-error"}
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "263"
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 09 Aug 2024 16:34:49 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Error-Class:
+      - not-authenticated/invalid-credentials
+      X-Request-Id:
+      - ccfc1c11d53f2ae88e06b44b16ff09c8
+    status: 422 Unprocessable Entity
+    code: 422
+    duration: ""
