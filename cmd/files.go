@@ -334,8 +334,8 @@ func Files() *cobra.Command {
 
 	cmdBeginUpload := &cobra.Command{
 		Use:   "begin-upload [path]",
-		Short: `Begin file upload`,
-		Long:  `Begin file upload`,
+		Short: `Begin File Upload`,
+		Long:  `Begin File Upload`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
