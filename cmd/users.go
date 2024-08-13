@@ -122,6 +122,7 @@ func Users() *cobra.Command {
 	createDisabled := true
 	createFtpPermission := true
 	createOfficeIntegrationEnabled := true
+	createReadonlySiteAdmin := true
 	createReceiveAdminAlerts := true
 	createRequirePasswordChange := true
 	createRestapiPermission := true
@@ -191,6 +192,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("office-integration-enabled") {
 				paramsUserCreate.OfficeIntegrationEnabled = flib.Bool(createOfficeIntegrationEnabled)
 			}
+			if cmd.Flags().Changed("readonly-site-admin") {
+				paramsUserCreate.ReadonlySiteAdmin = flib.Bool(createReadonlySiteAdmin)
+			}
 			if cmd.Flags().Changed("receive-admin-alerts") {
 				paramsUserCreate.ReceiveAdminAlerts = flib.Bool(createReceiveAdminAlerts)
 			}
@@ -259,6 +263,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Notes, "notes", "", "Any internal notes on the user")
 	cmdCreate.Flags().BoolVar(&createOfficeIntegrationEnabled, "office-integration-enabled", createOfficeIntegrationEnabled, "Enable integration with Office for the web?")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
+	cmdCreate.Flags().BoolVar(&createReadonlySiteAdmin, "readonly-site-admin", createReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
 	paramsUserCreate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
@@ -384,6 +389,7 @@ func Users() *cobra.Command {
 	updateDisabled := true
 	updateFtpPermission := true
 	updateOfficeIntegrationEnabled := true
+	updateReadonlySiteAdmin := true
 	updateReceiveAdminAlerts := true
 	updateRequirePasswordChange := true
 	updateRestapiPermission := true
@@ -520,6 +526,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("password-validity-days") {
 				lib.FlagUpdate(cmd, "password_validity_days", paramsUserUpdate.PasswordValidityDays, mapParams)
 			}
+			if cmd.Flags().Changed("readonly-site-admin") {
+				mapParams["readonly_site_admin"] = updateReadonlySiteAdmin
+			}
 			if cmd.Flags().Changed("receive-admin-alerts") {
 				mapParams["receive_admin_alerts"] = updateReceiveAdminAlerts
 			}
@@ -610,6 +619,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Notes, "notes", "", "Any internal notes on the user")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationEnabled, "office-integration-enabled", updateOfficeIntegrationEnabled, "Enable integration with Office for the web?")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
+	cmdUpdate.Flags().BoolVar(&updateReadonlySiteAdmin, "readonly-site-admin", updateReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
 	paramsUserUpdate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
