@@ -14,7 +14,7 @@
   [ "a/b/c.txt\r", "a/b/c.txt" ],
   [ " space_at_beginning", " space_at_beginning"],
   [ "space_at_end ", "space_at_end"],
-  [ "tab\tseperated", "tab\tseperated"],
+  [ "tab\tseparated", "tab\tseparated"],
   [ "<title>hello</hello>", "<title>hello</hello>"],
   [ "안녕하세요", "안녕하세요" ],
   [ "こんにちは", "こんにちは" ],
