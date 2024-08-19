@@ -58,14 +58,10 @@ curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cl
 sudo mv ./files-cli /usr/local/bin
 ```
 
-<Note title="Getting started">
 Learn how to use the Files.com CLI App by reading [the
 documentation](https://www.files.com/docs/client-apps/command-line-interface-cli-app).
-</Note>
 
-<Note title="Repository">
 Explore the [files-cli](https://github.com/Files-com/files-cli) code on GitHub.
-</Note>
 
 ### Command Help
 
@@ -117,9 +113,7 @@ files-cli --api-key=YOUR_API_KEY folders list-for ''
 ## You do not need to include the same API key for future commands.
 ```
 
-<Note>
 Don't forget to replace the placeholder, `YOUR_API_KEY`, with your actual API key.
-</Note>
 
 ### Authenticate with a Session
 
