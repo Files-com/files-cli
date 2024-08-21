@@ -215,42 +215,6 @@ files-cli config set --format json,raw
 files-cli config set -f table,bright,vertical
 ```
 
-### Logging
-
-The Files.com SDK is compatible with the standard log4j logging scheme.
-
-Add `com.files` logger to your `Loggers` root in the `log4j2.xml` file.
-
-```xml title="log4j2.xml"
-<Loggers>
-    <!-- set preferred level -->
-    <Logger name="com.files" level="TRACE" />
-    <!-- to enable network request -->
-    <Logger name="okhttp3.logging.wire" level="INFO"/>
-</Loggers>
-```
-
-Create a `resources/log4j2.xml` file.
-
-```xml title="resources/log4j2.xml"
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <!-- set preferred level -->
-        <Logger name="com.files" level="TRACE"/>
-        <!-- to enable network request -->
-        <Logger name="okhttp3.logging.wire" level="INFO"/>
-    </Loggers>
-</Configuration>
-```
-
-You can read more about [log4j2 configuration](https://logging.apache.org/log4j/2.x/manual/configuration.html).
-
 ## Errors
 
 The Files.com CLI will detect errors coming back from the API and provide a detailed message to the current
