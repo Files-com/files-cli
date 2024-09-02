@@ -5,40 +5,31 @@ The content included here should be enough to get started, but please visit our
 
 ## Introduction
 
-The Files.com CLI App provides convenient access to the Files.com API.
+The Files.com Command Line Interface (CLI) App is a great option for scripted or automated transfers between a local machine and Files.com.
+
+Because it works through the standard Command Line, the CLI app is easy to script from a variety of environments without having to use our SDKs. With that said, if you are already using a programming language where we offer an SDK, the SDK may offer a higher level of integration for your application.
+
+The CLI App is cross-platform (Windows/macOS/Linux) and supports fast, concurrent file transfers.
+
+The CLI App uses the Files.com RESTful APIs via the HTTPS protocol (port 443) to securely communicate and transfer files so, when used interactively or from a script, no firewall changes should be required in order to allow connectivity.
+
+### Support For All Operations, Not Just File Operations
+
+The CLI supports all file Operations including list, download, upload, move, rename, delete, etc. But equally important is that it supports operations on every resource available in Files.com including Users, Permissions, Groups, Remote Servers, Behaviors, etc.
+
+The available resources are listed in this documentation under the Resources menu on the left.
 
 ### Installation
 
 Download the latest release for Windows, macOS, or Linux from the [CLI App Releases](https://github.com/Files-com/files-cli/releases) page.
 
-#### Homebrew
+On that page, you'll need to pick your exact operating system to download the correct version.
 
-For systems with Homebrew available, use the following commands:
+No installation is necessary. The app is a self contained app which can be stored anywhere on your computer.
 
-```shell
-brew tap Files-com/homebrew-tap
-brew install files-cli
-```
+We recommend placing the app binary into one of the folders listed in your `%PATH%` (Windows) or `$PATH` (Linux and Mac).
 
-#### RPM Package Manager based systems
-
-For Linux systems that support RPM, such as Red Hat Linux, Fedora Linux, CentOS, openSUSE, Oracle Linux, and others, use the RPM Package Manager to install the CLI App:
-
-```shell
-curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.rpm -o files-cli.rpm
-
-sudo rpm -i ./files-cli.rpm
-```
-
-#### Debian based systems
-
-For Debian based systems, such as Ubuntu Linux, use the APT Package Manager to install the CLI App:
-
-```shell
-curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.deb -o files-cli.deb
-
-sudo apt install ./files-cli.deb
-```
+Here are specific instructions, grouped by OS:
 
 #### Windows
 
@@ -49,13 +40,42 @@ sudo apt install ./files-cli.deb
 
 Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
 
-#### Mac
+#### Mac using Homebrew
+
+For systems with Homebrew available, use the following commands:
+
+```shell
+brew tap Files-com/homebrew-tap
+brew install files-cli
+```
+
+#### Mac without Homebrew
 
 Download the compressed Tar archive (`*.tar.gz`), extract the files from the archive, and place the `files-cli` binary file into any directory listed in your `$PATH` environment variable.
 
 ```shell
 curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_macOS_64bit.tar.gz | tar zxv
 sudo mv ./files-cli /usr/local/bin
+```
+
+#### Linux: RPM Package Manager based systems
+
+For Linux systems that support RPM, such as Red Hat Linux, Fedora Linux, CentOS, openSUSE, Oracle Linux, and others, use the RPM Package Manager to install the CLI App:
+
+```shell
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.rpm -o files-cli.rpm
+
+sudo rpm -i ./files-cli.rpm
+```
+
+#### Linux: Debian based systems
+
+For Debian based systems, such as Ubuntu Linux, use the APT Package Manager to install the CLI App:
+
+```shell
+curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cli_linux_{ARCH}.deb -o files-cli.deb
+
+sudo apt install ./files-cli.deb
 ```
 
 Learn how to use the Files.com CLI App by reading [the
