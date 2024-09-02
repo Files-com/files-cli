@@ -75,10 +75,9 @@ files-cli folders --help
 
 ### Getting Support
 
-The Files.com team is happy to help with any SDK Integration challenges you
-may face.
+The Files.com Support team provides official support for all of our official Files.com integration tools.
 
-Just email support@files.com and we'll get the process started.
+To initiate a support conversation, you can send an [Authenticated Support Request](https://www.files.com/docs/overview/requesting-support) or simply send an E-Mail to support@files.com.
 
 ## Authentication
 
