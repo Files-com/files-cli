@@ -58,7 +58,7 @@ curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cl
 sudo mv ./files-cli /usr/local/bin
 ```
 
-#### Linux: RPM Package Manager based systems
+#### Linux: RPM Package Manager Based Systems
 
 For Linux systems that support RPM, such as Red Hat Linux, Fedora Linux, CentOS, openSUSE, Oracle Linux, and others, use the RPM Package Manager to install the CLI App:
 
@@ -68,7 +68,7 @@ curl -L https://github.com/Files-com/files-cli/releases/latest/download/files-cl
 sudo rpm -i ./files-cli.rpm
 ```
 
-#### Linux: Debian based systems
+#### Linux: Debian Based Systems
 
 For Debian based systems, such as Ubuntu Linux, use the APT Package Manager to install the CLI App:
 
@@ -114,13 +114,13 @@ Note that when using a user-specific API key, if the user is an administrator, y
 access to the entire API. If the user is not an administrator, you will only be able to access files
 that user can access, and no access will be granted to site administration functions in the API.
 
-#### Setting by environment variable on MacOS or Linux
+#### Setting by Environment Variable on MacOS or Linux
 
 ``` shell
 export FILES_API_KEY="YOUR_API_KEY"
 ```
 
-#### Setting by environment variable on Windows
+#### Setting by Environment Variable on Windows
 
 ``` shell
 set FILES_API_KEY="YOUR_API_KEY"
@@ -146,7 +146,7 @@ session times out, simply create a new session and resume where you left off. Th
 automatically handled by SDKs because we do not want to store password information in memory without
 your explicit consent.
 
-#### Logging in
+#### Logging In
 
 To log in to the CLI App with your username and password, you must first configure the CLI App with information about your Files.com account.
 
@@ -160,7 +160,7 @@ files-cli folders list-for ''
 > password: vroom
 ```
 
-#### Using a session
+#### Using a Session
 
 Once a the password has been verified by the first run command, all subsequent commands can be run and the current verified session will be used.
 
@@ -168,7 +168,7 @@ Once a the password has been verified by the first run command, all subsequent c
 files-cli folders list-for ''
 ```
 
-#### Logging out
+#### Logging Out
 
 User sessions can be ended by calling `sessions delete`.
 
@@ -180,7 +180,7 @@ files-cli sessions delete
 
 The files-cli client can be configured by running `files-cli config set`.
 
-### Using multiple accounts
+### Using Multiple Accounts
 
 You can use the `--profile` option to modify the configuration of a specific
 profile. That same option can be used to specify the profile to use when
@@ -191,7 +191,7 @@ without needing to reauthenticate when switching between them.
 files-cli config set --profile firstaccount --username FIRSTUSERNAME
 ```
 
-### Configuration options
+### Configuration Options
 
 #### Base URL
 
@@ -204,7 +204,7 @@ files-cli config set --endpoint https://MY-SUBDOMAIN.files.com
 files-cli config set -e https://MY-SUBDOMAIN.files.com
 ```
 
-#### Concurrent connection limit
+#### Concurrent Connection Limit
 
 Set the maximum number of concurrent connections.
 
@@ -214,7 +214,7 @@ files-cli config set --concurrent-connection-limit 5
 files-cli config set -c 5
 ```
 
-#### Default resource format
+#### Default Resource Format
 
 Set default format for displaying resources.
 
@@ -266,9 +266,9 @@ To understand the types of errors that come back from the Files.com API and will
 
 ## Examples
 
-### File operations
+### File Operations
 
-#### Return root folder listing
+#### Return Root Folder Listing
 
 ```shell
 files-cli folders list-for --fields path,type --format json
@@ -331,7 +331,7 @@ To upload a folder, use the command:
 files-cli upload /local/path/to/folder/ /remote/path/to/folder/
 ```
 
-#### Creating folders
+#### Creating Folders
 
 To create folders, use this command:
 
@@ -367,7 +367,7 @@ run. To do this add the flag `--send-logs-to-cloud`.
 The operation logs will be made available in the web interface at
 **Settings > Logs > External logs**.
 
-### Administrator actions
+### Administrator Actions
 
 If you have administrator privileges for your Files.com account, you can use the
 CLI App to perform administrator actions.
@@ -424,7 +424,7 @@ You can select the output format by using the `--format` option. For example,
 to specify that the output should be formatted in JSON format, use the option
 `--format json`.
 
-### Supported formats
+### Supported Formats
 
 - table *(default)*
 - table,interactive *(searchable and scrollable)*
@@ -452,7 +452,7 @@ files-cli folders create --path /path/to/folder/to/be/created --format=json,raw
 files-cli users list --format=table,dark
 ```
 
-### Configuring the default format
+### Configuring the Default Format
 
 You can configure a preferred format as the default for a profile.
 
