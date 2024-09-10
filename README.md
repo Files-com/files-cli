@@ -234,6 +234,34 @@ files-cli config set --format json,raw
 files-cli config set -f table,bright,vertical
 ```
 
+## Sort and Filter
+
+  Several of the Files.com API resources have list operations that return multiple instances of the resource.  The List operations
+can be sorted and filtered.
+
+### Sorting
+
+The CLI does not currently support sorting.  Please see SDK documentation for other languages for sorting.
+
+### Filtering
+
+Filters apply selection criteria to the underlying query that returns the results. Filters can be applied individually to select resource fields
+and/or in a combination with each other.
+
+```filter_by``` -  Client side filtering: eg. field_name=*.jpg) |
+
+An example of cli command line filter argument:
+
+```--filter-by="field_name=*.jpg"```
+
+<ConditionalContent includedCodeLanguages={['cli']}>
+```shellsession title="Example Filter Request" hasDataFormatSelector
+files-cli users list \
+  --filter-by="not_site_admin=true" \
+  --api-key=my-key
+```
+</ConditionalContent>
+
 ## Errors
 
 The Files.com CLI will detect errors coming back from the API and provide a detailed message to the current
