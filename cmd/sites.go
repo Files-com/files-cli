@@ -132,7 +132,6 @@ func Sites() *cobra.Command {
 	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAdminsBypassLockedSubfolders := true
 	updateAllowed2faMethodSms := true
-	updateAllowed2faMethodU2f := true
 	updateAllowed2faMethodTotp := true
 	updateAllowed2faMethodWebauthn := true
 	updateAllowed2faMethodYubi := true
@@ -458,9 +457,6 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("allowed-2fa-method-sms") {
 				mapParams["allowed_2fa_method_sms"] = updateAllowed2faMethodSms
 			}
-			if cmd.Flags().Changed("allowed-2fa-method-u2f") {
-				mapParams["allowed_2fa_method_u2f"] = updateAllowed2faMethodU2f
-			}
 			if cmd.Flags().Changed("allowed-2fa-method-totp") {
 				mapParams["allowed_2fa_method_totp"] = updateAllowed2faMethodTotp
 			}
@@ -730,7 +726,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
 	cmdUpdate.Flags().BoolVar(&updateAdminsBypassLockedSubfolders, "admins-bypass-locked-subfolders", updateAdminsBypassLockedSubfolders, "Allow admins to bypass the locked subfolders setting.")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodSms, "allowed-2fa-method-sms", updateAllowed2faMethodSms, "Is SMS two factor authentication allowed?")
-	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodU2f, "allowed-2fa-method-u2f", updateAllowed2faMethodU2f, "Is U2F two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodTotp, "allowed-2fa-method-totp", updateAllowed2faMethodTotp, "Is TOTP two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodWebauthn, "allowed-2fa-method-webauthn", updateAllowed2faMethodWebauthn, "Is WebAuthn two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodYubi, "allowed-2fa-method-yubi", updateAllowed2faMethodYubi, "Is yubikey two factor authentication allowed?")
