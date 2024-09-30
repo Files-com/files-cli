@@ -278,7 +278,8 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSubscribeToNewsletter, "subscribe-to-newsletter", createSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdCreate.Flags().StringVar(&UserCreateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting %v", reflect.ValueOf(paramsUserCreate.Require2fa.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsUserCreate.TimeZone, "time-zone", "", "User time zone")
-	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
+	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
+	cmdCreate.Flags().StringVar(&paramsUserCreate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -571,6 +572,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("user-root") {
 				lib.FlagUpdate(cmd, "user_root", paramsUserUpdate.UserRoot, mapParams)
 			}
+			if cmd.Flags().Changed("user-home") {
+				lib.FlagUpdate(cmd, "user_home", paramsUserUpdate.UserHome, mapParams)
+			}
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
 			}
@@ -634,7 +638,8 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSubscribeToNewsletter, "subscribe-to-newsletter", updateSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdUpdate.Flags().StringVar(&UserUpdateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting %v", reflect.ValueOf(paramsUserUpdate.Require2fa.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.TimeZone, "time-zone", "", "User time zone")
-	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.")
+	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
+	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
