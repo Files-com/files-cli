@@ -32,8 +32,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Siem Http Destinations",
-		Long:    `List Siem Http Destinations`,
+		Short:   "List SIEM HTTP Destinations",
+		Long:    `List SIEM HTTP Destinations`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -85,8 +85,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Siem Http Destination`,
-		Long:  `Show Siem Http Destination`,
+		Short: `Show SIEM HTTP Destination`,
+		Long:  `Show SIEM HTTP Destination`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -126,8 +126,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Siem Http Destination`,
-		Long:  `Create Siem Http Destination`,
+		Short: `Create SIEM HTTP Destination`,
+		Long:  `Create SIEM HTTP Destination`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -237,8 +237,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdSendTestEntry := &cobra.Command{
 		Use:   "send-test-entry",
-		Short: `send_test_entry Siem Http Destination`,
-		Long:  `send_test_entry Siem Http Destination`,
+		Short: `send_test_entry SIEM HTTP Destination`,
+		Long:  `send_test_entry SIEM HTTP Destination`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -351,8 +351,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Siem Http Destination`,
-		Long:  `Update Siem Http Destination`,
+		Short: `Update SIEM HTTP Destination`,
+		Long:  `Update SIEM HTTP Destination`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -505,8 +505,8 @@ func SiemHttpDestinations() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Siem Http Destination`,
-		Long:  `Delete Siem Http Destination`,
+		Short: `Delete SIEM HTTP Destination`,
+		Long:  `Delete SIEM HTTP Destination`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
