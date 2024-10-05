@@ -189,6 +189,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
 	cmdCreate.Flags().BoolVar(&createFlattenDestinationStructure, "flatten-destination-structure", createFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdCreate.Flags().BoolVar(&createIgnoreLockedFolders, "ignore-locked-folders", createIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdCreate.Flags().BoolVar(&createLegacyFolderMatching, "legacy-folder-matching", createLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")
@@ -322,6 +323,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
+			if cmd.Flags().Changed("exclude-pattern") {
+				lib.FlagUpdate(cmd, "exclude_pattern", paramsAutomationUpdate.ExcludePattern, mapParams)
+			}
 			if cmd.Flags().Changed("flatten-destination-structure") {
 				mapParams["flatten_destination_structure"] = updateFlattenDestinationStructure
 			}
@@ -380,6 +384,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
 	cmdUpdate.Flags().BoolVar(&updateFlattenDestinationStructure, "flatten-destination-structure", updateFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdUpdate.Flags().BoolVar(&updateIgnoreLockedFolders, "ignore-locked-folders", updateIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdUpdate.Flags().BoolVar(&updateLegacyFolderMatching, "legacy-folder-matching", updateLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")

@@ -168,7 +168,7 @@ func Files() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().StringVar(&paramsFileDelete.Path, "path", "", "Path to operate on.")
-	cmdDelete.Flags().BoolVar(&deleteRecursive, "recursive", deleteRecursive, "If true, will recursively delete folers.  Otherwise, will error on non-empty folders.")
+	cmdDelete.Flags().BoolVar(&deleteRecursive, "recursive", deleteRecursive, "If true, will recursively delete folders.  Otherwise, will error on non-empty folders.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
