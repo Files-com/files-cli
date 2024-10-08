@@ -383,6 +383,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("bundle-upload-receipt-notifications") {
 				lib.FlagUpdate(cmd, "bundle_upload_receipt_notifications", paramsSiteUpdate.BundleUploadReceiptNotifications, mapParams)
 			}
+			if cmd.Flags().Changed("document-edits-in-bundle-allowed") {
+				lib.FlagUpdate(cmd, "document_edits_in_bundle_allowed", paramsSiteUpdate.DocumentEditsInBundleAllowed, mapParams)
+			}
 			if cmd.Flags().Changed("password-requirements-apply-to-bundles") {
 				mapParams["password_requirements_apply_to_bundles"] = updatePasswordRequirementsApplyToBundles
 			}
@@ -658,8 +661,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.MobileAppSessionLifetime, "mobile-app-session-lifetime", 0, "Mobile app session lifetime (in hours)")
 	cmdUpdate.Flags().BoolVar(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "Does the welcome screen appear?")
-	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationAvailable, "office-integration-available", updateOfficeIntegrationAvailable, "Allow users to use Office for the web?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.OfficeIntegrationType, "office-integration-type", "", "Office integration application used to edit and view the MS Office documents")
+	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationAvailable, "office-integration-available", updateOfficeIntegrationAvailable, "If true, allows users to use a document editing integration.")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.OfficeIntegrationType, "office-integration-type", "", "Which document editing integration to support. Files.com Editor or Microsoft Office for the Web.")
 	cmdUpdate.Flags().BoolVar(&updatePinAllRemoteServersToSiteRegion, "pin-all-remote-servers-to-site-region", updatePinAllRemoteServersToSiteRegion, "If true, we will ensure that all internal communications with any remote server are made through the primary region of the site. This setting overrides individual remote server settings.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.MotdText, "motd-text", "", "A message to show users when they connect via FTP or SFTP.")
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForFtp, "motd-use-for-ftp", updateMotdUseForFtp, "Show message to users connecting via FTP")
@@ -702,6 +705,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleRegistrationNotifications, "bundle-registration-notifications", "", "Do Bundle owners receive registration notification?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleActivityNotifications, "bundle-activity-notifications", "", "Do Bundle owners receive activity notifications?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleUploadReceiptNotifications, "bundle-upload-receipt-notifications", "", "Do Bundle uploaders receive upload confirmation notifications?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DocumentEditsInBundleAllowed, "document-edits-in-bundle-allowed", "", "If true, allow public viewers of Bundles with full permissions to use document editing integrations.")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
 	cmdUpdate.Flags().BoolVar(&updatePreventRootPermissionsForNonSiteAdmins, "prevent-root-permissions-for-non-site-admins", updatePreventRootPermissionsForNonSiteAdmins, "If true, we will prevent non-administrators from receiving any permissions directly on the root folder.  This is commonly used to prevent the accidental application of permissions.")
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")

@@ -29,7 +29,6 @@ func Automations() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAutomationList := files_sdk.AutomationListParams{}
 	var MaxPagesList int64
-	listWithDeleted := true
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -42,10 +41,6 @@ func Automations() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
-
-			if cmd.Flags().Changed("with-deleted") {
-				params.WithDeleted = flib.Bool(listWithDeleted)
-			}
 
 			client := automation.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -77,7 +72,6 @@ func Automations() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsAutomationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAutomationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().BoolVar(&listWithDeleted, "with-deleted", listWithDeleted, "Set to true to include deleted automations in the results.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
