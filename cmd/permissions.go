@@ -119,11 +119,12 @@ func Permissions() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Path, "path", "", "Folder path")
-	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID")
+	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID. Provide `group_name` or `group_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Permission, "permission", "", "Permission type.  Can be `admin`, `full`, `readonly`, `writeonly`, `list`, or `history`")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Apply to subfolders recursively?")
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.UserId, "user-id", 0, "User ID.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Username, "username", "", "User username.  Provide `username` or `user_id`")
+	cmdCreate.Flags().StringVar(&paramsPermissionCreate.GroupName, "group-name", "", "Group name.  Provide `group_name` or `group_id`")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
