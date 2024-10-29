@@ -92,6 +92,11 @@ func Sites() *cobra.Command {
 	updateMotdUseForSftp := true
 	updateBundleRequireNote := true
 	updateBundleSendSharedReceipts := true
+	updateCalculateFileChecksumsCrc32 := true
+	updateCalculateFileChecksumsMd5 := true
+	updateCalculateFileChecksumsSha1 := true
+	updateCalculateFileChecksumsSha256 := true
+	updateLegacyChecksumsMode := true
 	updateSslRequired := true
 	updateTlsDisabled := true
 	updateSftpInsecureCiphers := true
@@ -279,6 +284,21 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("bundle-send-shared-receipts") {
 				mapParams["bundle_send_shared_receipts"] = updateBundleSendSharedReceipts
+			}
+			if cmd.Flags().Changed("calculate-file-checksums-crc32") {
+				mapParams["calculate_file_checksums_crc32"] = updateCalculateFileChecksumsCrc32
+			}
+			if cmd.Flags().Changed("calculate-file-checksums-md5") {
+				mapParams["calculate_file_checksums_md5"] = updateCalculateFileChecksumsMd5
+			}
+			if cmd.Flags().Changed("calculate-file-checksums-sha1") {
+				mapParams["calculate_file_checksums_sha1"] = updateCalculateFileChecksumsSha1
+			}
+			if cmd.Flags().Changed("calculate-file-checksums-sha256") {
+				mapParams["calculate_file_checksums_sha256"] = updateCalculateFileChecksumsSha256
+			}
+			if cmd.Flags().Changed("legacy-checksums-mode") {
+				mapParams["legacy_checksums_mode"] = updateLegacyChecksumsMode
 			}
 			if cmd.Flags().Changed("session-expiry") {
 				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
@@ -678,6 +698,11 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().BoolVar(&updateBundleSendSharedReceipts, "bundle-send-shared-receipts", updateBundleSendSharedReceipts, "Do Bundle creators receive receipts of invitations?")
+	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsCrc32, "calculate-file-checksums-crc32", updateCalculateFileChecksumsCrc32, "Calculate CRC32 checksums for files?")
+	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsMd5, "calculate-file-checksums-md5", updateCalculateFileChecksumsMd5, "Calculate MD5 checksums for files?")
+	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha1, "calculate-file-checksums-sha1", updateCalculateFileChecksumsSha1, "Calculate SHA1 checksums for files?")
+	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha256, "calculate-file-checksums-sha256", updateCalculateFileChecksumsSha256, "Calculate SHA256 checksums for files?")
+	cmdUpdate.Flags().BoolVar(&updateLegacyChecksumsMode, "legacy-checksums-mode", updateLegacyChecksumsMode, "Use legacy checksums mode?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateTlsDisabled, "tls-disabled", updateTlsDisabled, "DO NOT ENABLE. This setting allows TLSv1.0 and TLSv1.1 to be used on your site.  We intend to remove this capability entirely in early 2024.  If set, the `sftp_insecure_ciphers` flag will be automatically set to true.")
