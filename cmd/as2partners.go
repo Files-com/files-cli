@@ -145,11 +145,12 @@ func As2Partners() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), as2Partner, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 PArtner.")
+	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
 	cmdCreate.Flags().StringVar(&As2PartnerCreateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. %v", reflect.ValueOf(paramsAs2PartnerCreate.MdnValidationLevel.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&As2PartnerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? %v", reflect.ValueOf(paramsAs2PartnerCreate.ServerCertificate.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "ID of the AS2 Station associated with this partner.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "The partner's formal AS2 name.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
@@ -212,6 +213,11 @@ func As2Partners() *cobra.Command {
 			if cmd.Flags().Changed("server-certificate") {
 				lib.FlagUpdate(cmd, "server_certificate", paramsAs2PartnerUpdate.ServerCertificate, mapParams)
 			}
+			if cmd.Flags().Changed("default-mime-type") {
+				lib.FlagUpdate(cmd, "default_mime_type", paramsAs2PartnerUpdate.DefaultMimeType, mapParams)
+			}
+			if cmd.Flags().Changed("additional-http-headers") {
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsAs2PartnerUpdate.Name, mapParams)
 			}
@@ -229,11 +235,12 @@ func As2Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
-	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 PArtner.")
+	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. %v", reflect.ValueOf(paramsAs2PartnerUpdate.MdnValidationLevel.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? %v", reflect.ValueOf(paramsAs2PartnerUpdate.ServerCertificate.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Name, "name", "", "The partner's formal AS2 name.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.PublicCertificate, "public-certificate", "", "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.")
