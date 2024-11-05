@@ -118,6 +118,7 @@ func Sites() *cobra.Command {
 	updateBundlePasswordRequired := true
 	updateBundleRequireRegistration := true
 	updateBundleRequireShareRecipient := true
+	updateDocumentEditsInBundleAllowed := true
 	updatePasswordRequirementsApplyToBundles := true
 	updatePreventRootPermissionsForNonSiteAdmins := true
 	updateOptOutGlobal := true
@@ -409,7 +410,7 @@ func Sites() *cobra.Command {
 				lib.FlagUpdate(cmd, "bundle_upload_receipt_notifications", paramsSiteUpdate.BundleUploadReceiptNotifications, mapParams)
 			}
 			if cmd.Flags().Changed("document-edits-in-bundle-allowed") {
-				lib.FlagUpdate(cmd, "document_edits_in_bundle_allowed", paramsSiteUpdate.DocumentEditsInBundleAllowed, mapParams)
+				mapParams["document_edits_in_bundle_allowed"] = updateDocumentEditsInBundleAllowed
 			}
 			if cmd.Flags().Changed("password-requirements-apply-to-bundles") {
 				mapParams["password_requirements_apply_to_bundles"] = updatePasswordRequirementsApplyToBundles
@@ -739,7 +740,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleRegistrationNotifications, "bundle-registration-notifications", "", "Do Bundle owners receive registration notification?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleActivityNotifications, "bundle-activity-notifications", "", "Do Bundle owners receive activity notifications?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleUploadReceiptNotifications, "bundle-upload-receipt-notifications", "", "Do Bundle uploaders receive upload confirmation notifications?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DocumentEditsInBundleAllowed, "document-edits-in-bundle-allowed", "", "If true, allow public viewers of Bundles with full permissions to use document editing integrations.")
+	cmdUpdate.Flags().BoolVar(&updateDocumentEditsInBundleAllowed, "document-edits-in-bundle-allowed", updateDocumentEditsInBundleAllowed, "If true, allow public viewers of Bundles with full permissions to use document editing integrations.")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
 	cmdUpdate.Flags().BoolVar(&updatePreventRootPermissionsForNonSiteAdmins, "prevent-root-permissions-for-non-site-admins", updatePreventRootPermissionsForNonSiteAdmins, "If true, we will prevent non-administrators from receiving any permissions directly on the root folder.  This is commonly used to prevent the accidental application of permissions.")
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")
