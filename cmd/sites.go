@@ -114,7 +114,6 @@ func Sites() *cobra.Command {
 	updateSftpUserRootEnabled := true
 	updateDisablePasswordReset := true
 	updateImmutableFiles := true
-	updateSessionPinnedByIp := true
 	updateBundlePasswordRequired := true
 	updateBundleRequireRegistration := true
 	updateBundleRequireShareRecipient := true
@@ -384,9 +383,6 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("immutable-files") {
 				mapParams["immutable_files"] = updateImmutableFiles
-			}
-			if cmd.Flags().Changed("session-pinned-by-ip") {
-				mapParams["session_pinned_by_ip"] = updateSessionPinnedByIp
 			}
 			if cmd.Flags().Changed("bundle-not-found-message") {
 				lib.FlagUpdate(cmd, "bundle_not_found_message", paramsSiteUpdate.BundleNotFoundMessage, mapParams)
@@ -732,7 +728,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSftpUserRootEnabled, "sftp-user-root-enabled", updateSftpUserRootEnabled, "Use user FTP roots also for SFTP?")
 	cmdUpdate.Flags().BoolVar(&updateDisablePasswordReset, "disable-password-reset", updateDisablePasswordReset, "Is password reset disabled?")
 	cmdUpdate.Flags().BoolVar(&updateImmutableFiles, "immutable-files", updateImmutableFiles, "Are files protected from modification?")
-	cmdUpdate.Flags().BoolVar(&updateSessionPinnedByIp, "session-pinned-by-ip", updateSessionPinnedByIp, "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleNotFoundMessage, "bundle-not-found-message", "", "Custom error message to show when bundle is not found.")
 	cmdUpdate.Flags().BoolVar(&updateBundlePasswordRequired, "bundle-password-required", updateBundlePasswordRequired, "Do Bundles require password protection?")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireRegistration, "bundle-require-registration", updateBundleRequireRegistration, "Do Bundles require registration?")
