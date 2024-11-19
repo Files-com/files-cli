@@ -691,6 +691,7 @@ func (t *Transfers) buildStatusSync() {
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
 				comparedCount := t.Job.Count(append(status.Running, append(status.Ended, status.Compared)...)...)
+				comparedCount -= t.Job.Count(status.FolderCreated)
 				excludedCount := t.Job.Count(status.Excluded...)
 				return fmt.Sprintf("Syncing (%v files compared, %v files require transfer)", formatWithComma(comparedCount), formatWithComma(comparedCount-excludedCount))
 			},
@@ -775,6 +776,7 @@ func displayName(path string, terminalWidth int) string {
 
 func fileCounts(job *file.Job, rate float64) string {
 	includedCount := job.Count(status.Included...)
+	includedCount -= job.Count(status.FolderCreated)
 	if includedCount < 2 {
 		return ""
 	}
