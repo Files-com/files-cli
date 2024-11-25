@@ -311,52 +311,7 @@ A README is available on the GitHub link.
 
 ## File/Folder Operations
 
-### File Operations
-
-#### Return Root Folder Listing
-
-```shell
-files-cli folders list-for --fields path,type --format json
-```
-
-```json title="Example output"
-[{
-    "path": "document.docx",
-    "type": "file"
-},
-{
-    "path": "other",
-    "type": "directory"
-}]
-```
-
-#### List a Folder
-
-```shell
-files-cli folders list-for /path/to/folder
-```
-
-#### Download a File/Folder
-
-To download a file, use the command:
-
-```shell
-files-cli download /remote/path/to/file.txt /local/path/to/file.txt
-```
-
-or
-
-```shell
-files-cli download /remote/path/to/file.txt /local/path/to/folder/
-```
-
-To download a folder, use the command:
-
-```shell
-files-cli download /remote/path/to/folder/ /local/path/to/folder/
-```
-
-#### Upload a File/Folder
+### Upload
 
 To upload a file, use the command:
 
@@ -384,7 +339,52 @@ To create folders, use this command:
 files-cli folders create “/path/to/folder/to/be/created”
 ```
 
-### Syncing Files
+### Download
+
+To download a file, use the command:
+
+```shell
+files-cli download /remote/path/to/file.txt /local/path/to/file.txt
+```
+
+or
+
+```shell
+files-cli download /remote/path/to/file.txt /local/path/to/folder/
+```
+
+To download a folder, use the command:
+
+```shell
+files-cli download /remote/path/to/folder/ /local/path/to/folder/
+```
+
+### List
+
+#### Return Root Folder Listing
+
+```shell
+files-cli folders list-for --fields path,type --format json
+```
+
+```json title="Example output"
+[{
+    "path": "document.docx",
+    "type": "file"
+},
+{
+    "path": "other",
+    "type": "directory"
+}]
+```
+
+#### List a Folder
+
+```shell
+files-cli folders list-for /path/to/folder
+```
+
+### Sync
 
 To facilitate file-syncing workflows, the `--sync` flag can be used with the
 upload or download command to specify that only new files be transferred.
