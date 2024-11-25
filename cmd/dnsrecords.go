@@ -30,8 +30,8 @@ func DnsRecords() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "Show site DNS configuration",
-		Long:    `Show site DNS configuration`,
+		Short:   "Show Site DNS Configuration",
+		Long:    `Show Site DNS Configuration`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

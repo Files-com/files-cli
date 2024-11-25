@@ -207,8 +207,8 @@ func Automations() *cobra.Command {
 
 	cmdManualRun := &cobra.Command{
 		Use:   "manual-run",
-		Short: `Manually run automation`,
-		Long:  `Manually run automation`,
+		Short: `Manually Run Automation`,
+		Long:  `Manually Run Automation`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

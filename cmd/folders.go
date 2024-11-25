@@ -132,8 +132,8 @@ func Folders() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
-		Short: `Create folder`,
-		Long:  `Create folder`,
+		Short: `Create Folder`,
+		Long:  `Create Folder`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

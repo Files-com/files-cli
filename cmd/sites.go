@@ -26,8 +26,8 @@ func Sites() *cobra.Command {
 	usePagerGet := true
 	cmdGet := &cobra.Command{
 		Use:   "get",
-		Short: `Show site settings`,
-		Long:  `Show site settings`,
+		Short: `Show Site Settings`,
+		Long:  `Show Site Settings`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -162,8 +162,8 @@ func Sites() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update site settings`,
-		Long:  `Update site settings`,
+		Short: `Update Site Settings`,
+		Long:  `Update Site Settings`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

@@ -34,8 +34,8 @@ func Files() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
-		Short: `Upload file`,
-		Long:  `Upload file`,
+		Short: `Upload File`,
+		Long:  `Upload File`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -88,8 +88,8 @@ func Files() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
-		Short: `Update file/folder metadata`,
-		Long:  `Update file/folder metadata`,
+		Short: `Update File/Folder Metadata`,
+		Long:  `Update File/Folder Metadata`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -144,8 +144,8 @@ func Files() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete [path]",
-		Short: `Delete file/folder`,
-		Long:  `Delete file/folder`,
+		Short: `Delete File/Folder`,
+		Long:  `Delete File/Folder`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -184,8 +184,8 @@ func Files() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find [path]",
-		Short: `Find file/folder by path`,
-		Long:  `Find file/folder by path`,
+		Short: `Find File/Folder by Path`,
+		Long:  `Find File/Folder by Path`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -230,8 +230,8 @@ func Files() *cobra.Command {
 
 	cmdCopy := &cobra.Command{
 		Use:   "copy [path]",
-		Short: `Copy file/folder`,
-		Long:  `Copy file/folder`,
+		Short: `Copy File/Folder`,
+		Long:  `Copy File/Folder`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -285,8 +285,8 @@ func Files() *cobra.Command {
 
 	cmdMove := &cobra.Command{
 		Use:   "move [path]",
-		Short: `Move file/folder`,
-		Long:  `Move file/folder`,
+		Short: `Move File/Folder`,
+		Long:  `Move File/Folder`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

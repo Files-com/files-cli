@@ -223,8 +223,8 @@ func Behaviors() *cobra.Command {
 
 	cmdWebhookTest := &cobra.Command{
 		Use:   "webhook-test",
-		Short: `Test webhook`,
-		Long:  `Test webhook`,
+		Short: `Test Webhook`,
+		Long:  `Test Webhook`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
