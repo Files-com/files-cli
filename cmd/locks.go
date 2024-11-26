@@ -32,8 +32,8 @@ func Locks() *cobra.Command {
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
-		Short:   "List Locks by path",
-		Long:    `List Locks by path`,
+		Short:   "List Locks by Path",
+		Long:    `List Locks by Path`,
 		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

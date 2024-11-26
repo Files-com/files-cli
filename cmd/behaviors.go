@@ -115,8 +115,8 @@ func Behaviors() *cobra.Command {
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
-		Short:   "List Behaviors by path",
-		Long:    `List Behaviors by path`,
+		Short:   "List Behaviors by Path",
+		Long:    `List Behaviors by Path`,
 		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

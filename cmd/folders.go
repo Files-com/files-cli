@@ -41,8 +41,8 @@ func Folders() *cobra.Command {
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
-		Short:   "List Folders by path",
-		Long:    `List Folders by path`,
+		Short:   "List Folders by Path",
+		Long:    `List Folders by Path`,
 		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

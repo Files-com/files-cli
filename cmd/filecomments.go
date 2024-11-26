@@ -30,8 +30,8 @@ func FileComments() *cobra.Command {
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
-		Short:   "List File Comments by path",
-		Long:    `List File Comments by path`,
+		Short:   "List File Comments by Path",
+		Long:    `List File Comments by Path`,
 		Args:    cobra.RangeArgs(0, 1),
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
