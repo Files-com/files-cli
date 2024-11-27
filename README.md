@@ -291,52 +291,38 @@ Error: Not Found - `Not Found.  This may be related to your permissions.`
 
 To understand the types of errors that come back from the Files.com API and will be displayed by the CLI, see the [Rest API Errors](/rest/overview/errors/).
 
-## Mock Server
+## Examples
 
-Files.com publishes a Files.com API server, which is useful for testing your use of the Files.com
-SDKs and other direct integrations against the Files.com API in an integration test environment.
-
-It is a Ruby app that operates as a minimal server for the purpose of testing basic network
-operations and JSON encoding for your SDK or API client. It does not maintain state and it does not
-deeply inspect your submissions for correctness.
-
-Eventually we will add more features intended for integration testing, such as the ability to
-intentionally provoke errors.
-
-Download the server as a Docker image via [Docker Hub](https://hub.docker.com/r/filescom/files-mock-server).
-
-The Source Code is also available on [GitHub](https://github.com/Files-com/files-mock-server).
-
-A README is available on the GitHub link.
-
-## File/Folder Operations
+The CLI contains commands for uploading, downloading, syncing, listing, copying, moving, and
+deleting files and folders. Each CLI command supports a `--help` flag to display additional
+information about the command and its options.
 
 ### Upload
 
 To upload a file, use the command:
 
 ```shell
-files-cli upload /local/path/to/file.txt /remote/path/to/file.txt
+files-cli upload local/path/to/file.txt remote/path/to/file.txt
 ```
 
 or
 
 ```shell
-files-cli upload /local/path/to/file.txt /remote/path/to/folder/
+files-cli upload local/path/to/file.txt remote/path/to/folder/
 ```
 
 To upload a folder, use the command:
 
 ```shell
-files-cli upload /local/path/to/folder/ /remote/path/to/folder/
+files-cli upload local/path/to/folder/ remote/path/to/folder/
 ```
 
 #### Creating Folders
 
-To create folders, use this command:
+To create a folder, use this command:
 
 ```shell
-files-cli folders create “/path/to/folder/to/be/created”
+files-cli folders create path/to/folder/to/be/created
 ```
 
 ### Download
@@ -344,44 +330,19 @@ files-cli folders create “/path/to/folder/to/be/created”
 To download a file, use the command:
 
 ```shell
-files-cli download /remote/path/to/file.txt /local/path/to/file.txt
+files-cli download remote/path/to/file.txt local/path/to/file.txt
 ```
 
 or
 
 ```shell
-files-cli download /remote/path/to/file.txt /local/path/to/folder/
+files-cli download remote/path/to/file.txt local/path/to/folder/
 ```
 
 To download a folder, use the command:
 
 ```shell
-files-cli download /remote/path/to/folder/ /local/path/to/folder/
-```
-
-### List
-
-#### Return Root Folder Listing
-
-```shell
-files-cli folders list-for --fields path,type --format json
-```
-
-```json title="Example output"
-[{
-    "path": "document.docx",
-    "type": "file"
-},
-{
-    "path": "other",
-    "type": "directory"
-}]
-```
-
-#### List a Folder
-
-```shell
-files-cli folders list-for /path/to/folder
+files-cli download remote/path/to/folder/ local/path/to/folder/
 ```
 
 ### Sync
@@ -401,6 +362,81 @@ folder from a Files.com folder of the same name:
 
 ```shell
 files-cli download Documents Documents --sync --send-logs-to-cloud
+```
+
+### List
+
+To list files and folders in a remote directory, use the command:
+
+```shell
+files-cli folders list-for remote/path/to/folder
+```
+
+<div></div>
+
+The response content and format can be customized. For example:
+
+```shell
+files-cli folders list-for --fields path,type --format json
+```
+
+```json title="Example output"
+[{
+    "path": "document.docx",
+    "type": "file"
+},
+{
+    "path": "other",
+    "type": "directory"
+}]
+```
+
+### Copy
+
+To copy a file, use the command:
+
+```shell
+files-cli files copy --path remote/path/to/file.txt --destination remote/path/to/file-copy.txt
+```
+
+This also works for folders:
+
+```shell
+files-cli files copy --path remote/path/to/folder/ --destination remote/path/to/folder-copy/
+```
+
+### Move
+
+To move a file, use the command:
+
+```shell
+files-cli files move --path remote/path/to/file.txt --destination remote/path/to/file-moved.txt
+```
+
+This also works for folders:
+
+```shell
+files-cli files move --path remote/path/to/folder/ --destination remote/path/to/folder-moved/
+```
+
+### Delete
+
+To delete a file, use the command:
+
+```shell
+files-cli files delete remote/path/to/file.txt
+```
+
+This also works for folders:
+
+```shell
+files-cli files delete remote/path/to/folder/
+```
+
+In case the folder is not empty, you can use the `--recursive` flag:
+
+```shell
+files-cli files delete remote/path/to/folder/ --recursive
 ```
 
 ### Sending Operation/Run Logs to the Cloud
@@ -438,10 +474,28 @@ using the following command:
 
 ```shell
 files-cli behaviors create \
-  path "/path/to/folder" \
-  behavior "create_user_folders" \
-  value '{ "permission":"full", "additional_permission":"bundle", "existing_users":false, "group_id":1, "new_folder_name":"username", "subfolders":[]}'
+  --path "/path/to/folder" \
+  --behavior "create_user_folders" \
+  --value '{ "permission":"full", "additional_permission":"bundle", "existing_users":false, "group_id":1, "new_folder_name":"username", "subfolders":[]}'
 ```
+
+## Mock Server
+
+Files.com publishes a Files.com API server, which is useful for testing your use of the Files.com
+SDKs and other direct integrations against the Files.com API in an integration test environment.
+
+It is a Ruby app that operates as a minimal server for the purpose of testing basic network
+operations and JSON encoding for your SDK or API client. It does not maintain state and it does not
+deeply inspect your submissions for correctness.
+
+Eventually we will add more features intended for integration testing, such as the ability to
+intentionally provoke errors.
+
+Download the server as a Docker image via [Docker Hub](https://hub.docker.com/r/filescom/files-mock-server).
+
+The Source Code is also available on [GitHub](https://github.com/Files-com/files-mock-server).
+
+A README is available on the GitHub link.
 
 ## Output Formatting
 
