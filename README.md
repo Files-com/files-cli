@@ -291,6 +291,11 @@ Error: Not Found - `Not Found.  This may be related to your permissions.`
 
 To understand the types of errors that come back from the Files.com API and will be displayed by the CLI, see the [Rest API Errors](/rest/overview/errors/).
 
+## Case Sensitivity
+
+The Files.com API compares files and paths in a case-insensitive manner.
+ For related documentation see [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/file-system-semantics/case-sensitivity).
+
 ## Examples
 
 The CLI contains commands for uploading, downloading, syncing, listing, copying, moving, and
@@ -439,6 +444,8 @@ In case the folder is not empty, you can use the `--recursive` flag:
 files-cli files delete remote/path/to/folder/ --recursive
 ```
 
+## Logs
+
 ### Sending Operation/Run Logs to the Cloud
 
 If you are running scripted operations, you can have the CLI send a report of
@@ -447,37 +454,6 @@ run. To do this add the flag `--send-logs-to-cloud`.
 
 The operation logs will be made available in the web interface at
 **Settings > Logs > External logs**.
-
-### Administrator Actions
-
-If you have administrator privileges for your Files.com account, you can use the
-CLI App to perform administrator actions.
-
-For example, you can create a user account with this command:
-
-```shell
-files-cli users create \
-  --username amy \
-  --authentication-method password \
-  --password "S0meRea11yLongP@ssw0rd" \
-  --name "Amy Anybody" \
-  --company "Amy’s Company Name" \
-  --user-root "/users/amy" \
-  --notes "Some notes about Amy."
-```
-
-You can also configure various items, such as Folder Settings, using the CLI App.
-
-For example, you can configure
-[automatic new user folders](https://www.files.com/docs/files-and-folders/folder-settings#automatically-create-new-user-folders-here-when-users-are-created)
-using the following command:
-
-```shell
-files-cli behaviors create \
-  --path "/path/to/folder" \
-  --behavior "create_user_folders" \
-  --value '{ "permission":"full", "additional_permission":"bundle", "existing_users":false, "group_id":1, "new_folder_name":"username", "subfolders":[]}'
-```
 
 ## Mock Server
 
