@@ -296,154 +296,6 @@ To understand the types of errors that come back from the Files.com API and will
 The Files.com API compares files and paths in a case-insensitive manner.
  For related documentation see [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/file-system-semantics/case-sensitivity).
 
-## Examples
-
-The CLI contains commands for uploading, downloading, syncing, listing, copying, moving, and
-deleting files and folders. Each CLI command supports a `--help` flag to display additional
-information about the command and its options.
-
-### Upload
-
-To upload a file, use the command:
-
-```shell
-files-cli upload local/path/to/file.txt remote/path/to/file.txt
-```
-
-or
-
-```shell
-files-cli upload local/path/to/file.txt remote/path/to/folder/
-```
-
-To upload a folder, use the command:
-
-```shell
-files-cli upload local/path/to/folder/ remote/path/to/folder/
-```
-
-#### Creating Folders
-
-To create a folder, use this command:
-
-```shell
-files-cli folders create path/to/folder/to/be/created
-```
-
-### Download
-
-To download a file, use the command:
-
-```shell
-files-cli download remote/path/to/file.txt local/path/to/file.txt
-```
-
-or
-
-```shell
-files-cli download remote/path/to/file.txt local/path/to/folder/
-```
-
-To download a folder, use the command:
-
-```shell
-files-cli download remote/path/to/folder/ local/path/to/folder/
-```
-
-### Sync
-
-To facilitate file-syncing workflows, the `--sync` flag can be used with the
-upload or download command to specify that only new files be transferred.
-
-Here is a "push" (upload) example for syncing files from a local Documents
-folder to a Files.com folder of the same name:
-
-```shell
-files-cli upload Documents Documents --sync --send-logs-to-cloud
-```
-
-Here is a "pull" (download) example for syncing files to a local Documents
-folder from a Files.com folder of the same name:
-
-```shell
-files-cli download Documents Documents --sync --send-logs-to-cloud
-```
-
-### List
-
-To list files and folders in a remote directory, use the command:
-
-```shell
-files-cli folders list-for remote/path/to/folder
-```
-
-<div></div>
-
-The response content and format can be customized. For example:
-
-```shell
-files-cli folders list-for --fields path,type --format json
-```
-
-```json title="Example output"
-[{
-    "path": "document.docx",
-    "type": "file"
-},
-{
-    "path": "other",
-    "type": "directory"
-}]
-```
-
-### Copy
-
-To copy a file, use the command:
-
-```shell
-files-cli files copy --path remote/path/to/file.txt --destination remote/path/to/file-copy.txt
-```
-
-This also works for folders:
-
-```shell
-files-cli files copy --path remote/path/to/folder/ --destination remote/path/to/folder-copy/
-```
-
-### Move
-
-To move a file, use the command:
-
-```shell
-files-cli files move --path remote/path/to/file.txt --destination remote/path/to/file-moved.txt
-```
-
-This also works for folders:
-
-```shell
-files-cli files move --path remote/path/to/folder/ --destination remote/path/to/folder-moved/
-```
-
-### Delete
-
-To delete a file, use the command:
-
-```shell
-files-cli files delete remote/path/to/file.txt
-```
-
-This also works for folders:
-
-```shell
-files-cli files delete remote/path/to/folder/
-```
-
-In case the folder is not empty, you can use the `--recursive` flag:
-
-```shell
-files-cli files delete remote/path/to/folder/ --recursive
-```
-
 ## Logs
 
 ### Sending Operation/Run Logs to the Cloud
@@ -515,4 +367,25 @@ You can configure a preferred format as the default for a profile.
 
 ```shell
 files-cli config set --profile=interactive --format=table,interactive
+```
+
+### Customizing Output
+
+You can customize the output by specifying the fields to include in the
+response. Simply use the `--fields` option followed by a comma-separated list
+of the desired field names.
+
+```shell
+files-cli folders list-for --fields path,type --format json
+```
+
+```json title="Example output"
+[{
+    "path": "document.docx",
+    "type": "file"
+},
+{
+    "path": "other",
+    "type": "directory"
+}]
 ```
