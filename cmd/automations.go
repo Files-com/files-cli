@@ -320,6 +320,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("exclude-pattern") {
 				lib.FlagUpdate(cmd, "exclude_pattern", paramsAutomationUpdate.ExcludePattern, mapParams)
 			}
+			if cmd.Flags().Changed("import-urls") {
+				lib.FlagUpdateLen(cmd, "import_urls", paramsAutomationUpdate.ImportUrls, mapParams)
+			}
 			if cmd.Flags().Changed("flatten-destination-structure") {
 				mapParams["flatten_destination_structure"] = updateFlattenDestinationStructure
 			}
