@@ -8,7 +8,6 @@ require (
 	github.com/Files-com/files-sdk-go/v3 v3.2.97
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
-	github.com/aquilax/truncate v1.0.0
 	github.com/atotto/clipboard v0.1.4
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/charmbracelet/bubbles v0.18.0

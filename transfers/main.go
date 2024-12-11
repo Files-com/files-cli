@@ -23,7 +23,6 @@ import (
 	"github.com/Files-com/files-sdk-go/v3/lib/direction"
 	"github.com/Files-com/files-sdk-go/v3/lib/keyvalue"
 	"github.com/VividCortex/ewma"
-	"github.com/aquilax/truncate"
 	"github.com/dustin/go-humanize"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
@@ -660,7 +659,7 @@ func (t *Transfers) buildStatusTransfer() {
 						tw = int(math.Min(float64(width-len(fmt.Sprint(fileCounts(t.Job, t.FilesRateValue()), statusWithColor(endedFile.Status), "-", displayName(endedFile.Path, remainingWidth)))), float64(width)))
 					}
 					if tw > 0 {
-						io.WriteString(w, fmt.Sprintf("%v %v - %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), truncate.Truncate(endedFile.Err.Error(), tw, "...", truncate.PositionStart)))
+						io.WriteString(w, fmt.Sprintf("%v %v - %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), truncateStart(endedFile.Err.Error(), tw, "...")))
 					}
 				} else {
 					io.WriteString(w, fmt.Sprintf("%v %v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), t.transferProgress(endedFile.JobFile)))
@@ -840,6 +839,17 @@ func (t *Transfers) transferProgress(file file.JobFile) string {
 	}
 
 	return ""
+}
+
+func truncateStart(str string, length int, omission string) string {
+	if length >= len(str) {
+		return str
+	}
+	if length < len(omission) {
+		return omission[:length]
+	}
+
+	return string(omission + string(str[len(str)-length+len(omission):]))
 }
 
 func (t *Transfers) CommonFlags(cmd *cobra.Command) {
