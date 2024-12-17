@@ -66,7 +66,7 @@ require (
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
 	github.com/yuin/goldmark v1.7.1 // indirect
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
-	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e // indirect
+	golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
