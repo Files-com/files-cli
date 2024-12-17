@@ -342,6 +342,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("disallowed-countries") {
 				lib.FlagUpdate(cmd, "disallowed_countries", paramsSiteUpdate.DisallowedCountries, mapParams)
 			}
+			if cmd.Flags().Changed("days-before-deleting-disabled-users") {
+				lib.FlagUpdate(cmd, "days_before_deleting_disabled_users", paramsSiteUpdate.DaysBeforeDeletingDisabledUsers, mapParams)
+			}
 			if cmd.Flags().Changed("days-to-retain-backups") {
 				lib.FlagUpdate(cmd, "days_to_retain_backups", paramsSiteUpdate.DaysToRetainBackups, mapParams)
 			}
@@ -714,6 +717,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.AllowedCountries, "allowed-countries", "", "Comma separated list of allowed Country codes")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.AllowedIps, "allowed-ips", "", "List of allowed IP addresses")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DisallowedCountries, "disallowed-countries", "", "Comma separated list of disallowed Country codes")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DaysBeforeDeletingDisabledUsers, "days-before-deleting-disabled-users", 0, "Number of days to keep disabled users before deleting them. If set to 0, disabled users will not be deleted.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DaysToRetainBackups, "days-to-retain-backups", 0, "Number of days to keep deleted files")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.MaxPriorPasswords, "max-prior-passwords", 0, "Number of prior passwords to disallow")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days password is valid")
