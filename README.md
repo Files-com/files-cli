@@ -101,12 +101,14 @@ To initiate a support conversation, you can send an [Authenticated Support Reque
 
 ## Authentication
 
+There are two ways to authenticate: API Key authentication and Session-based authentication.
+
 ### Authenticate with an API Key
 
 Authenticating with an API key is the recommended authentication method for most scenarios, and is
 the method used in the examples on this site.
 
-To use the API or SDKs with an API Key, first generate an API key from the [web
+To use an API Key, first generate an API key from the [web
 interface](https://www.files.com/docs/sdk-and-apis/api-keys) or [via the API or an
 SDK](/cli/resources/developers/api-keys).
 
@@ -136,14 +138,14 @@ Don't forget to replace the placeholder, `YOUR_API_KEY`, with your actual API ke
 
 ### Authenticate with a Session
 
-You can also authenticate to the REST API or SDKs by creating a user session using the username and
+You can also authenticate by creating a user session using the username and
 password of an active user. If the user is an administrator, the session will have full access to
-the entire API. Sessions created from regular user accounts will only be able to access files that
+all capabilities of Files.com. Sessions created from regular user accounts will only be able to access files that
 user can access, and no access will be granted to site administration functions.
 
-API sessions use the exact same session timeout settings as web interface sessions. When an API
+Sessions use the exact same session timeout settings as web interface sessions. When a
 session times out, simply create a new session and resume where you left off. This process is not
-automatically handled by SDKs because we do not want to store password information in memory without
+automatically handled by our SDKs because we do not want to store password information in memory without
 your explicit consent.
 
 #### Logging In
