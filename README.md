@@ -126,7 +126,7 @@ export FILES_API_KEY="YOUR_API_KEY"
 set FILES_API_KEY="YOUR_API_KEY"
 ```
 
-```shellsession title="Example Request"
+```shell title="Example Request"
 files-cli --api-key=YOUR_API_KEY folders list-for ''
 ## After the key has been provided once it will be written to the files-cli configuration file.
 ## You do not need to include the same API key for future commands.
@@ -154,7 +154,7 @@ Once you've specified your subdomain information and username, you do not need t
 
 You will be prompted for the password when a command is run that requires authentication.  Once the password is entered, subsequent calls will not require a password, unless the session is no longer valid (ie, expired).
 
-```shellsession title="Example Request"
+```shell title="Example Request"
 files-cli config set --subdomain SUBDOMAIN --username motor
 files-cli folders list-for ''
 > password: vroom
@@ -164,7 +164,7 @@ files-cli folders list-for ''
 
 Once a the password has been verified by the first run command, all subsequent commands can be run and the current verified session will be used.
 
-```shellsession title="Example Request"
+```shell title="Example Request"
 files-cli folders list-for ''
 ```
 
@@ -255,10 +255,9 @@ An example of cli command line filter argument:
 
 ```--filter-by="field_name=*.jpg"```
 
-```shellsession title="Example Filter Request" hasDataFormatSelector
+```shell title="Example Filter Request" hasDataFormatSelector
 files-cli users list \
-  --filter-by="not_site_admin=true" \
-  --api-key=my-key
+  --filter-by="not_site_admin=true"
 ```
 
 ## Errors
