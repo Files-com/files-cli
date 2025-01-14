@@ -190,6 +190,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Name, "name", "", "Name for this automation.")
 	cmdCreate.Flags().BoolVar(&createOverwriteFiles, "overwrite-files", createOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.PathTimeZone, "path-time-zone", "", "Timezone to use when rendering timestamps in paths.")
+	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).")
+	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
@@ -341,6 +343,12 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("path-time-zone") {
 				lib.FlagUpdate(cmd, "path_time_zone", paramsAutomationUpdate.PathTimeZone, mapParams)
 			}
+			if cmd.Flags().Changed("retry-on-failure-interval-in-minutes") {
+				lib.FlagUpdate(cmd, "retry_on_failure_interval_in_minutes", paramsAutomationUpdate.RetryOnFailureIntervalInMinutes, mapParams)
+			}
+			if cmd.Flags().Changed("retry-on-failure-number-of-attempts") {
+				lib.FlagUpdate(cmd, "retry_on_failure_number_of_attempts", paramsAutomationUpdate.RetryOnFailureNumberOfAttempts, mapParams)
+			}
 			if cmd.Flags().Changed("trigger") {
 				lib.FlagUpdate(cmd, "trigger", paramsAutomationUpdate.Trigger, mapParams)
 			}
@@ -388,6 +396,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Name, "name", "", "Name for this automation.")
 	cmdUpdate.Flags().BoolVar(&updateOverwriteFiles, "overwrite-files", updateOverwriteFiles, "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.PathTimeZone, "path-time-zone", "", "Timezone to use when rendering timestamps in paths.")
+	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).")
+	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
