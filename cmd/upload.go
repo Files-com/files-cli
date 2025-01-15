@@ -69,16 +69,17 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 				transfer.StartLog("upload")
 				return client.Uploader(
 					file.UploaderParams{
-						LocalPaths:  transfer.ExactPaths,
-						LocalPath:   sourcePath,
-						RemotePath:  remotePath,
-						Sync:        transfer.SyncFlag,
-						Manager:     transfer.Manager,
-						Ignore:      *transfer.Ignore,
-						Include:     *transfer.Include,
-						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:      transfer.DryRun,
-						NoOverwrite: transfer.NoOverwrite,
+						LocalPaths:    transfer.ExactPaths,
+						LocalPath:     sourcePath,
+						RemotePath:    remotePath,
+						Sync:          transfer.SyncFlag,
+						Manager:       transfer.Manager,
+						Ignore:        *transfer.Ignore,
+						Include:       *transfer.Include,
+						PreserveTimes: transfer.PreserveTimes,
+						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						DryRun:        transfer.DryRun,
+						NoOverwrite:   transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)

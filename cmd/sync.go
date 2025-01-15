@@ -35,15 +35,16 @@ func Sync() *cobra.Command {
 				transfer.StartLog("upload")
 				return client.Uploader(
 					file.UploaderParams{
-						LocalPath:   localPath,
-						RemotePath:  remotePath,
-						Sync:        transfer.SyncFlag,
-						Manager:     transfer.Manager,
-						Ignore:      *transfer.Ignore,
-						Include:     *transfer.Include,
-						RetryPolicy: file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:      transfer.DryRun,
-						NoOverwrite: transfer.NoOverwrite,
+						LocalPath:     localPath,
+						RemotePath:    remotePath,
+						Sync:          transfer.SyncFlag,
+						Manager:       transfer.Manager,
+						Ignore:        *transfer.Ignore,
+						Include:       *transfer.Include,
+						PreserveTimes: transfer.PreserveTimes,
+						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						DryRun:        transfer.DryRun,
+						NoOverwrite:   transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)
