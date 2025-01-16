@@ -125,6 +125,7 @@ func Permissions() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.UserId, "user-id", 0, "User ID.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Username, "username", "", "User username.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.GroupName, "group-name", "", "Group name.  Provide `group_name` or `group_id`")
+	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.SiteId, "site-id", 0, "Site ID. If not provided, will default to current site. Used when creating a permission for a child site.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
