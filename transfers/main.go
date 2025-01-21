@@ -45,7 +45,8 @@ type Transfers struct {
 	SyncFlag                      bool
 	SendLogsToCloud               bool
 	DisableProgressOutput         bool
-	PreserveTimes                 bool
+	DownloadPreserveTimes         bool
+	UploadPreserveTimes           bool
 	DryRun                        bool
 	NoOverwrite                   bool
 	DownloadFilesAsSingleStream   bool
@@ -888,13 +889,13 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
 	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
-	cmd.Flags().BoolVarP(&t.PreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
+	cmd.Flags().BoolVarP(&t.UploadPreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
 }
 
 func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
-	cmd.Flags().BoolVarP(&t.PreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
+	cmd.Flags().BoolVarP(&t.DownloadPreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
 }
 
 func formatWithComma(i int) string {

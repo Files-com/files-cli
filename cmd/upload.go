@@ -76,7 +76,7 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 						Manager:       transfer.Manager,
 						Ignore:        *transfer.Ignore,
 						Include:       *transfer.Include,
-						PreserveTimes: transfer.PreserveTimes,
+						PreserveTimes: transfer.UploadPreserveTimes,
 						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:        transfer.DryRun,
 						NoOverwrite:   transfer.NoOverwrite,
