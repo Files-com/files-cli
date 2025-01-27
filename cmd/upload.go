@@ -60,6 +60,10 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 				remotePath = args[len(args)-1]
 			}
 
+			if err := convertWildcardToInclude(&sourcePath, transfer); err != nil {
+				return err
+			}
+
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
