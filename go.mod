@@ -1,8 +1,6 @@
 module github.com/Files-com/files-cli
 
-go 1.22.0
-
-toolchain go1.22.3
+go 1.21
 
 require (
 	github.com/Files-com/files-sdk-go/v3 v3.2.123
@@ -22,11 +20,11 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
-	github.com/samber/lo v1.49.1
+	github.com/samber/lo v1.39.0
 	github.com/sc0vu/didyoumean v0.0.0-20230904130613-22d315697818
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.9.0
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v8 v8.3.0
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
@@ -44,7 +42,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/fatih/color v1.17.0 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -66,12 +63,12 @@ require (
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
 	github.com/yuin/goldmark v1.7.1 // indirect
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
