@@ -687,7 +687,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateMobileApp, "mobile-app", updateMobileApp, "Is the mobile app enabled?")
 	cmdUpdate.Flags().BoolVar(&updateMobileAppSessionIpPinning, "mobile-app-session-ip-pinning", updateMobileAppSessionIpPinning, "Is mobile app session IP pinning enabled?")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.MobileAppSessionLifetime, "mobile-app-session-lifetime", 0, "Mobile app session lifetime (in hours)")
-	cmdUpdate.Flags().BoolVar(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.")
+	cmdUpdate.Flags().BoolVar(&updateFolderPermissionsGroupsOnly, "folder-permissions-groups-only", updateFolderPermissionsGroupsOnly, "If true, permissions for this site must be bound to a group (not a user).")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.WelcomeScreen, "welcome-screen", "", "Does the welcome screen appear?")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationAvailable, "office-integration-available", updateOfficeIntegrationAvailable, "If true, allows users to use a document editing integration.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.OfficeIntegrationType, "office-integration-type", "", "Which document editing integration to support. Files.com Editor or Microsoft Office for the Web.")
