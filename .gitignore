@@ -7,3 +7,6 @@ setup.sh
 build.sh
 release.sh
 pre_commit.sh
+gon-amd64.hcl
+gon-arm64.hcl
+sign.sh
