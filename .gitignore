@@ -9,5 +9,5 @@ build.sh
 release.sh
 pre_commit.sh
 sign.sh
-gon-amd64.hcl
 gon-arm64.hcl
+gon-amd64.hcl
