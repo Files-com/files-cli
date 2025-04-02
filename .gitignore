@@ -1,8 +1,8 @@
+completions/
+dist/
 .goreleaser.yml
 go.work
 go.work.sum
-completions/
-dist/
 test.sh
 setup.sh
 build.sh
