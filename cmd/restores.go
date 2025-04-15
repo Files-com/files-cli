@@ -83,6 +83,7 @@ func Restores() *cobra.Command {
 	usePagerCreate := true
 	createRestoreDeletedPermissions := true
 	createRestoreInPlace := true
+	createUpdateTimestamps := true
 	paramsRestoreCreate := files_sdk.RestoreCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -101,6 +102,9 @@ func Restores() *cobra.Command {
 			if cmd.Flags().Changed("restore-in-place") {
 				paramsRestoreCreate.RestoreInPlace = flib.Bool(createRestoreInPlace)
 			}
+			if cmd.Flags().Changed("update-timestamps") {
+				paramsRestoreCreate.UpdateTimestamps = flib.Bool(createUpdateTimestamps)
+			}
 
 			if paramsRestoreCreate.EarliestDate.IsZero() {
 				paramsRestoreCreate.EarliestDate = nil
@@ -113,10 +117,11 @@ func Restores() *cobra.Command {
 		},
 	}
 	paramsRestoreCreate.EarliestDate = &time.Time{}
-	lib.TimeVar(cmdCreate.Flags(), paramsRestoreCreate.EarliestDate, "earliest-date", "Restore all files deleted after this date/time. Don't set this earlier than you need. Can not be greater than 365")
+	lib.TimeVar(cmdCreate.Flags(), paramsRestoreCreate.EarliestDate, "earliest-date", "Restore all files deleted after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request.")
+	cmdCreate.Flags().StringVar(&paramsRestoreCreate.Prefix, "prefix", "", "Prefix of the files/folders to restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items, specify an empty string (`''`) in the prefix field or omit the field from the request.")
 	cmdCreate.Flags().BoolVar(&createRestoreDeletedPermissions, "restore-deleted-permissions", createRestoreDeletedPermissions, "If true, we will also restore any Permissions that match the same path prefix from the same dates.")
 	cmdCreate.Flags().BoolVar(&createRestoreInPlace, "restore-in-place", createRestoreInPlace, "If true, we will restore the files in place (into their original paths). If false, we will create a new restoration folder in the root and restore files there.")
-	cmdCreate.Flags().StringVar(&paramsRestoreCreate.Prefix, "prefix", "", "Prefix of the files/folders to restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash.")
+	cmdCreate.Flags().BoolVar(&createUpdateTimestamps, "update-timestamps", createUpdateTimestamps, "If true, we will update the last modified timestamp of restored files to today's date. If false, we might trigger File Expiration to delete the file again.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
