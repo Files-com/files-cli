@@ -262,6 +262,16 @@ files-cli users list \
   --filter-by="not_site_admin=true"
 ```
 
+## Foreign Language Support
+
+The Files.com CLI App will soon be updated to support localized responses by using a configuration
+method. When available, it can be used to guide the API in selecting a preferred language for applicable response content.
+
+Language support currently applies to select human-facing fields only, such as notification messages
+and error descriptions.
+
+If the specified language is not supported or the value is omitted, the API defaults to English.
+
 ## Errors
 
 The Files.com CLI will detect errors coming back from the API and provide a detailed message to the current
