@@ -126,6 +126,7 @@ func Sites() *cobra.Command {
 	updateNonSsoGroupsAllowed := true
 	updateNonSsoUsersAllowed := true
 	updateSharingEnabled := true
+	updateSnapshotSharingEnabled := true
 	updateUserRequestsEnabled := true
 	updateUserRequestsNotifyAdmins := true
 	updateDavEnabled := true
@@ -438,6 +439,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("sharing-enabled") {
 				mapParams["sharing_enabled"] = updateSharingEnabled
 			}
+			if cmd.Flags().Changed("snapshot-sharing-enabled") {
+				mapParams["snapshot_sharing_enabled"] = updateSnapshotSharingEnabled
+			}
 			if cmd.Flags().Changed("user-requests-enabled") {
 				mapParams["user_requests_enabled"] = updateUserRequestsEnabled
 			}
@@ -749,6 +753,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateNonSsoGroupsAllowed, "non-sso-groups-allowed", updateNonSsoGroupsAllowed, "If true, groups can be manually created / modified / deleted by Site Admins. Otherwise, groups can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVar(&updateNonSsoUsersAllowed, "non-sso-users-allowed", updateNonSsoUsersAllowed, "If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVar(&updateSharingEnabled, "sharing-enabled", updateSharingEnabled, "Allow bundle creation")
+	cmdUpdate.Flags().BoolVar(&updateSnapshotSharingEnabled, "snapshot-sharing-enabled", updateSnapshotSharingEnabled, "Allow snapshot share links creation")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsEnabled, "user-requests-enabled", updateUserRequestsEnabled, "Enable User Requests feature")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
 	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")

@@ -248,6 +248,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage Container name")
 	cmdCreate.Flags().BoolVar(&createAzureBlobStorageHierarchicalNamespace, "azure-blob-storage-hierarchical-namespace", createAzureBlobStorageHierarchicalNamespace, "Enable when storage account has hierarchical namespace feature enabled")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageDnsSuffix, "azure-blob-storage-dns-suffix", "", "Custom DNS suffix")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageDnsSuffix, "azure-files-storage-dns-suffix", "", "Custom DNS suffix")
@@ -500,6 +501,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("azure-blob-storage-sas-token") {
 				lib.FlagUpdate(cmd, "azure_blob_storage_sas_token", paramsRemoteServerUpdate.AzureBlobStorageSasToken, mapParams)
 			}
+			if cmd.Flags().Changed("azure-blob-storage-dns-suffix") {
+				lib.FlagUpdate(cmd, "azure_blob_storage_dns_suffix", paramsRemoteServerUpdate.AzureBlobStorageDnsSuffix, mapParams)
+			}
 			if cmd.Flags().Changed("azure-files-storage-account") {
 				lib.FlagUpdate(cmd, "azure_files_storage_account", paramsRemoteServerUpdate.AzureFilesStorageAccount, mapParams)
 			}
@@ -624,6 +628,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage Container name")
 	cmdUpdate.Flags().BoolVar(&updateAzureBlobStorageHierarchicalNamespace, "azure-blob-storage-hierarchical-namespace", updateAzureBlobStorageHierarchicalNamespace, "Enable when storage account has hierarchical namespace feature enabled")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageSasToken, "azure-blob-storage-sas-token", "", "Shared Access Signature (SAS) token")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageDnsSuffix, "azure-blob-storage-dns-suffix", "", "Custom DNS suffix")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure File Storage Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure File Storage Share name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageDnsSuffix, "azure-files-storage-dns-suffix", "", "Custom DNS suffix")
