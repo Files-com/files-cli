@@ -18,7 +18,7 @@ func YubiResponse(paramsSessionCreate files_sdk.SessionCreateParams, responseErr
 	}
 	fmt.Fprintf(out, "\n")
 	password := string(bytePassword)
-	paramsSessionCreate.Otp = strings.Replace(password, "\n", "", -1)
+	paramsSessionCreate.Otp = strings.ReplaceAll(password, "\n", "")
 	paramsSessionCreate.Password = ""
 	paramsSessionCreate.PartialSessionId = responseError.Data.PartialSessionId
 

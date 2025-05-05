@@ -62,7 +62,7 @@ func TestSyncCmd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			key := strings.Replace(tt.name, " ", "_", -1)
+			key := strings.ReplaceAll(tt.name, " ", "_")
 			uploadTemp, err := os.Create("uploadFile" + key)
 			defer os.Remove(uploadTemp.Name())
 			if err != nil {
@@ -74,7 +74,7 @@ func TestSyncCmd(t *testing.T) {
 			if len(tt.outputFile) > 0 {
 				tt.args = append(tt.args, "--output", outputPath)
 			}
-			progressBarFileName := strings.Replace(tt.name, " ", "_", -1) + "-progressbar"
+			progressBarFileName := strings.ReplaceAll(tt.name, " ", "_") + "-progressbar"
 			tt.args = append(tt.args, "--test-progress-bar-out", progressBarFileName)
 			tt.args = append(tt.args, "--local-path", uploadFile)
 			remotePath := filepath.Join("cli-test", "sync", uploadFile)

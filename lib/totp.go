@@ -14,6 +14,6 @@ func TotpResponse(paramsSessionCreate files_sdk.SessionCreateParams, out io.Writ
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Fprintf(out, "totp: ")
 	text, _ := reader.ReadString('\n')
-	paramsSessionCreate.Otp = strings.Replace(text, "\n", "", -1)
+	paramsSessionCreate.Otp = strings.ReplaceAll(text, "\n", "")
 	return paramsSessionCreate, nil
 }

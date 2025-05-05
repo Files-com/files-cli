@@ -34,9 +34,9 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 	var subtractFields []string
 	for _, key := range unparsedFields {
 		if strings.HasPrefix(key, "-") {
-			subtractFields = append(subtractFields, strings.ToLower(strings.Replace(strings.TrimPrefix(key, "-"), "-", "_", -1)))
+			subtractFields = append(subtractFields, strings.ToLower(strings.ReplaceAll(strings.TrimPrefix(key, "-"), "-", "_")))
 		} else {
-			fields = append(fields, strings.ToLower(strings.Replace(key, "-", "_", -1)))
+			fields = append(fields, strings.ToLower(strings.ReplaceAll(key, "-", "_")))
 		}
 	}
 

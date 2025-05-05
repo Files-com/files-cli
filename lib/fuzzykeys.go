@@ -8,6 +8,6 @@ func FuzzyKeys[V any](m map[string]V, key string) (V, bool) {
 		return value, ok
 	}
 
-	value, ok = m[strings.ToLower(strings.Replace(key, "-", "_", -1))]
+	value, ok = m[strings.ToLower(strings.ReplaceAll(key, "-", "_"))]
 	return value, ok
 }

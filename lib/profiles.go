@@ -418,8 +418,8 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 }
 
 func parseTermInput(text string) string {
-	text = strings.Replace(text, "\r", "", -1)
-	text = strings.Replace(text, "\n", "", -1) // Windows command prompt
+	text = strings.ReplaceAll(text, "\r", "")
+	text = strings.ReplaceAll(text, "\n", "") // Windows command prompt
 	return text
 }
 
