@@ -249,7 +249,6 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageRegion, "google-cloud-storage-region", "", "Google Cloud Storage: Region")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Hostname, "hostname", "", "Hostname or IP address")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeAccessKey, "linode-access-key", "", "Linode: Access Key")
@@ -507,9 +506,6 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("google-cloud-storage-project-id") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_project_id", paramsRemoteServerUpdate.GoogleCloudStorageProjectId, mapParams)
 			}
-			if cmd.Flags().Changed("google-cloud-storage-region") {
-				lib.FlagUpdate(cmd, "google_cloud_storage_region", paramsRemoteServerUpdate.GoogleCloudStorageRegion, mapParams)
-			}
 			if cmd.Flags().Changed("google-cloud-storage-s3-compatible-access-key") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_s3_compatible_access_key", paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey, mapParams)
 			}
@@ -641,7 +637,6 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageRegion, "google-cloud-storage-region", "", "Google Cloud Storage: Region")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Hostname, "hostname", "", "Hostname or IP address")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeAccessKey, "linode-access-key", "", "Linode: Access Key")
