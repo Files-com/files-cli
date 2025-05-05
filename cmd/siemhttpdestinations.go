@@ -120,6 +120,7 @@ func SiemHttpDestinations() *cobra.Command {
 	createPublicHostingRequestSendEnabled := true
 	createEmailSendEnabled := true
 	createExavaultApiRequestSendEnabled := true
+	createSettingsChangeSendEnabled := true
 	paramsSiemHttpDestinationCreate := files_sdk.SiemHttpDestinationCreateParams{}
 	SiemHttpDestinationCreateGenericPayloadType := ""
 	SiemHttpDestinationCreateDestinationType := ""
@@ -178,6 +179,9 @@ func SiemHttpDestinations() *cobra.Command {
 			if cmd.Flags().Changed("exavault-api-request-send-enabled") {
 				paramsSiemHttpDestinationCreate.ExavaultApiRequestSendEnabled = flib.Bool(createExavaultApiRequestSendEnabled)
 			}
+			if cmd.Flags().Changed("settings-change-send-enabled") {
+				paramsSiemHttpDestinationCreate.SettingsChangeSendEnabled = flib.Bool(createSettingsChangeSendEnabled)
+			}
 
 			var siemHttpDestination interface{}
 			var err error
@@ -209,6 +213,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createPublicHostingRequestSendEnabled, "public-hosting-request-send-enabled", createPublicHostingRequestSendEnabled, "Whether or not sending is enabled for public_hosting_request logs.")
 	cmdCreate.Flags().BoolVar(&createEmailSendEnabled, "email-send-enabled", createEmailSendEnabled, "Whether or not sending is enabled for email logs.")
 	cmdCreate.Flags().BoolVar(&createExavaultApiRequestSendEnabled, "exavault-api-request-send-enabled", createExavaultApiRequestSendEnabled, "Whether or not sending is enabled for exavault_api_request logs.")
+	cmdCreate.Flags().BoolVar(&createSettingsChangeSendEnabled, "settings-change-send-enabled", createSettingsChangeSendEnabled, "Whether or not sending is enabled for settings_change logs.")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.DestinationType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.DestinationUrl, "destination-url", "", "Destination Url")
 
@@ -231,6 +236,7 @@ func SiemHttpDestinations() *cobra.Command {
 	sendTestEntryPublicHostingRequestSendEnabled := true
 	sendTestEntryEmailSendEnabled := true
 	sendTestEntryExavaultApiRequestSendEnabled := true
+	sendTestEntrySettingsChangeSendEnabled := true
 	paramsSiemHttpDestinationSendTestEntry := files_sdk.SiemHttpDestinationSendTestEntryParams{}
 	SiemHttpDestinationSendTestEntryDestinationType := ""
 	SiemHttpDestinationSendTestEntryGenericPayloadType := ""
@@ -289,6 +295,9 @@ func SiemHttpDestinations() *cobra.Command {
 			if cmd.Flags().Changed("exavault-api-request-send-enabled") {
 				paramsSiemHttpDestinationSendTestEntry.ExavaultApiRequestSendEnabled = flib.Bool(sendTestEntryExavaultApiRequestSendEnabled)
 			}
+			if cmd.Flags().Changed("settings-change-send-enabled") {
+				paramsSiemHttpDestinationSendTestEntry.SettingsChangeSendEnabled = flib.Bool(sendTestEntrySettingsChangeSendEnabled)
+			}
 
 			var err error
 			err = client.SendTestEntry(paramsSiemHttpDestinationSendTestEntry, files_sdk.WithContext(ctx))
@@ -325,6 +334,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryPublicHostingRequestSendEnabled, "public-hosting-request-send-enabled", sendTestEntryPublicHostingRequestSendEnabled, "Whether or not sending is enabled for public_hosting_request logs.")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryEmailSendEnabled, "email-send-enabled", sendTestEntryEmailSendEnabled, "Whether or not sending is enabled for email logs.")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryExavaultApiRequestSendEnabled, "exavault-api-request-send-enabled", sendTestEntryExavaultApiRequestSendEnabled, "Whether or not sending is enabled for exavault_api_request logs.")
+	cmdSendTestEntry.Flags().BoolVar(&sendTestEntrySettingsChangeSendEnabled, "settings-change-send-enabled", sendTestEntrySettingsChangeSendEnabled, "Whether or not sending is enabled for settings_change logs.")
 
 	cmdSendTestEntry.Flags().StringSliceVar(&fieldsSendTestEntry, "fields", []string{}, "comma separated list of field names")
 	cmdSendTestEntry.Flags().StringSliceVar(&formatSendTestEntry, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -345,6 +355,7 @@ func SiemHttpDestinations() *cobra.Command {
 	updatePublicHostingRequestSendEnabled := true
 	updateEmailSendEnabled := true
 	updateExavaultApiRequestSendEnabled := true
+	updateSettingsChangeSendEnabled := true
 	paramsSiemHttpDestinationUpdate := files_sdk.SiemHttpDestinationUpdateParams{}
 	SiemHttpDestinationUpdateGenericPayloadType := ""
 	SiemHttpDestinationUpdateDestinationType := ""
@@ -452,6 +463,9 @@ func SiemHttpDestinations() *cobra.Command {
 			if cmd.Flags().Changed("exavault-api-request-send-enabled") {
 				mapParams["exavault_api_request_send_enabled"] = updateExavaultApiRequestSendEnabled
 			}
+			if cmd.Flags().Changed("settings-change-send-enabled") {
+				mapParams["settings_change_send_enabled"] = updateSettingsChangeSendEnabled
+			}
 			if cmd.Flags().Changed("destination-type") {
 				lib.FlagUpdate(cmd, "destination_type", paramsSiemHttpDestinationUpdate.DestinationType, mapParams)
 			}
@@ -490,6 +504,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updatePublicHostingRequestSendEnabled, "public-hosting-request-send-enabled", updatePublicHostingRequestSendEnabled, "Whether or not sending is enabled for public_hosting_request logs.")
 	cmdUpdate.Flags().BoolVar(&updateEmailSendEnabled, "email-send-enabled", updateEmailSendEnabled, "Whether or not sending is enabled for email logs.")
 	cmdUpdate.Flags().BoolVar(&updateExavaultApiRequestSendEnabled, "exavault-api-request-send-enabled", updateExavaultApiRequestSendEnabled, "Whether or not sending is enabled for exavault_api_request logs.")
+	cmdUpdate.Flags().BoolVar(&updateSettingsChangeSendEnabled, "settings-change-send-enabled", updateSettingsChangeSendEnabled, "Whether or not sending is enabled for settings_change logs.")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.DestinationType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.DestinationUrl, "destination-url", "", "Destination Url")
 
