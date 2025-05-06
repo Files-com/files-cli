@@ -114,8 +114,10 @@ func merge(format []string, defaultFormat []string) []string {
 	return format
 }
 
-var FormatHelpText = `'{format} {style} {direction}' - formats: {json, csv, table}
-table-styles: {interactive, light, dark, bright} table-directions: {vertical, horizontal}
+var FormatHelpText = `'format,style,direction' e.g. --format='table,dark'
+formats: {table, json, csv}
+table-styles: {light, interactive, dark, bright}
+table-directions: {vertical, horizontal}
 json-styles: {raw, pretty}`
 
 var FormatDefaults = []string{"table", "light"}
