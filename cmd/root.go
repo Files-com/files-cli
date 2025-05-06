@@ -16,6 +16,18 @@ import (
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 )
 
+const (
+	flagNameNonInteractive   = "non-interactive"
+	flagNameReauthentication = "reauthentication"
+	flagNameUsePager         = "use-pager"
+	flagNameFormat           = "format"
+	flagNameInteractive      = "interactive"
+)
+
+var (
+	errNonInteractiveRequiresInput = fmt.Errorf("--%s provided without valid profile or API key", flagNameNonInteractive)
+)
+
 var (
 	commit                 string
 	date                   string
@@ -26,6 +38,7 @@ var (
 	APIKey                 string
 	debug                  string
 	ignoreVersionCheck     bool
+	nonInteractive         bool
 	OutputPath             string
 	Reauthentication       bool
 	featureFlags           []string
@@ -91,6 +104,12 @@ var (
 				cmd.SetOut(output)
 			}
 
+			// check the non-interactive flag combinations before any 'return nil' statements
+			// to make sure any incorrect combinations are not missed by returning early.
+			if err := checkNonInteractiveMode(cmd); err != nil {
+				return err
+			}
+
 			if lib.Includes(cmd.Use, []string{"login", "logout"}) {
 				return nil
 			}
@@ -120,6 +139,13 @@ var (
 				}
 				return nil
 			}
+
+			// check the non-interactive flag alone, because at this point the only
+			// option is to prompt for input.
+			if nonInteractive {
+				return errNonInteractiveRequiresInput
+			}
+
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
@@ -142,19 +168,22 @@ func Init(version string, _commit string, _date string, config files.Config) {
 	Version = version
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
 	config.UserAgent = "Files.com CLI" + " " + strings.TrimSpace(Version)
-	RootCmd.ExecuteContext(context.WithValue(context.Background(), "config", config))
+	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), "config", config)); err != nil {
+		cobra.CheckErr(err)
+	}
 }
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Enable verbose logging. Use --debug=[LOG FILE NAME] to specify a log file or --debug=STDOUT to display logs directly on the screen.")
 	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "files-cli_[command]_[timestamp].log"
 	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
+	RootCmd.PersistentFlags().BoolVar(&nonInteractive, flagNameNonInteractive, false, "Do not prompt for user input")
 	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
 	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")
 	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "Set API Key for single use")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "File path to save output")
-	RootCmd.PersistentFlags().BoolVar(&Reauthentication, "reauthentication", Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
+	RootCmd.PersistentFlags().BoolVar(&Reauthentication, flagNameReauthentication, Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
