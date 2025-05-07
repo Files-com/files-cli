@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	errNonInteractiveLogin = fmt.Errorf("login subcommand does not support --%s", flagNameNonInteractive)
+	errNonInteractiveLogin = fmt.Errorf("login command does not support --%s", flagNameNonInteractive)
 )
 
 func init() {
