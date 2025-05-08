@@ -17,15 +17,52 @@ import (
 )
 
 const (
-	flagNameNonInteractive   = "non-interactive"
-	flagNameReauthentication = "reauthentication"
-	flagNameUsePager         = "use-pager"
-	flagNameFormat           = "format"
-	flagNameInteractive      = "interactive"
+	flagNameApiKey             = "api-key"
+	flagNameDebug              = "debug"
+	flagNameEnvironment        = "environment"
+	flagNameFeatreFlag         = "feature-flag"
+	flagNameFormat             = "format"
+	flagNameIgnoreVersionCheck = "ignore-version-check"
+	flagNameInteractive        = "interactive"
+	flagNameNonInteractive     = "non-interactive"
+	flagNameOutputPath         = "output"
+	flagNameOutputPathShort    = "o"
+	flagNameProfile            = "profile"
+	flagNameReauthentication   = "reauthentication"
+	flagNameUsePager           = "use-pager"
+)
+
+const (
+	flagValueStdout = "stdout"
+)
+
+const (
+	commandNameLogin       = "login"
+	commandNameLogout      = "logout"
+	commandNameVersion     = "version"
+	commandNameAgent       = "agent"
+	commandNameConfig      = "config"
+	commandNameConfigSet   = "config-set"
+	commandNameConfigReset = "config-reset"
+	commandNameConfigShow  = "config-show"
+	commandNameCompletion  = "completion"
+)
+
+const (
+	contextKeyProfile = "profile"
+	contextKeyConfig  = "config"
+)
+
+const (
+	userAgentPattern = "Files.com CLI %s"
 )
 
 var (
 	errNonInteractiveRequiresInput = fmt.Errorf("--%s provided without valid profile or API key", flagNameNonInteractive)
+)
+
+var (
+	noAuthCmds = []string{commandNameConfigSet, commandNameConfigReset, commandNameConfigShow, commandNameVersion, commandNameAgent}
 )
 
 var (
@@ -45,7 +82,7 @@ var (
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			sdkConfig := cmd.Context().Value("config").(files.Config)
+			sdkConfig := cmd.Context().Value(contextKeyConfig).(files.Config)
 			for _, flag := range featureFlags {
 				sdkConfig.FeatureFlag(flag) // panic unknown flag
 				sdkConfig.FeatureFlags[flag] = true
@@ -55,7 +92,7 @@ var (
 			}
 
 			sdkConfig.Environment = files.NewEnvironment(Environment)
-			debugFlag := cmd.Flag("debug")
+			debugFlag := cmd.Flag(flagNameDebug)
 			if debugFlag.Changed {
 				if debug == "files-cli_[command]_[timestamp].log" {
 					debug = fmt.Sprintf(
@@ -64,7 +101,7 @@ var (
 						time.Now().Format("20060102_150405"),
 					)
 				}
-				if strings.ToLower(debug) == "stdout" {
+				if strings.ToLower(debug) == flagValueStdout {
 					sdkConfig.Logger = log.New(os.Stdout, "", log.LstdFlags)
 				} else {
 					logFile, err := os.Create(debug)
@@ -85,8 +122,8 @@ var (
 				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
-			cmd.SetContext(context.WithValue(cmd.Context(), "profile", profile))
-			cmd.SetContext(context.WithValue(cmd.Context(), "config", sdkConfig))
+			cmd.SetContext(context.WithValue(cmd.Context(), contextKeyProfile, profile))
+			cmd.SetContext(context.WithValue(cmd.Context(), contextKeyConfig, sdkConfig))
 			if sdkConfig.Debug {
 				sdkConfig.Logger.Printf("Environment: %v", sdkConfig.Environment.String())
 				if transport, ok := sdkConfig.Client.HTTPClient.Transport.(*lib2.Transport); ok {
@@ -110,15 +147,18 @@ var (
 				return err
 			}
 
-			if lib.Includes(cmd.Use, []string{"login", "logout"}) {
+			// the login and logout commands don't need any further validation.
+			if lib.Includes(cmd.Use, []string{commandNameLogin, commandNameLogout}) {
 				return nil
 			}
 
+			// if the command is in the list of commands that ignore credentials, there's no need to do further validation.
 			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) || lib.Includes(cmd.Parent().Use, IgnoreCredentialsCheck) {
 				return nil
 			}
 
-			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], []string{"config-set", "config-reset", "config-show", "version", "agent"}) {
+			// if the command has an alias that is in the list of commands that don't require credentials, there's no need to do further validation.
+			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], noAuthCmds) {
 				return nil
 			}
 
@@ -167,31 +207,31 @@ func Init(version string, _commit string, _date string, config files.Config) {
 	date = _date
 	Version = version
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
-	config.UserAgent = "Files.com CLI" + " " + strings.TrimSpace(Version)
-	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), "config", config)); err != nil {
+	config.UserAgent = fmt.Sprintf(userAgentPattern, strings.TrimSpace(Version))
+	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), contextKeyConfig, config)); err != nil {
 		cobra.CheckErr(err)
 	}
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVar(&debug, "debug", "", "Enable verbose logging. Use --debug=[LOG FILE NAME] to specify a log file or --debug=STDOUT to display logs directly on the screen.")
-	RootCmd.PersistentFlags().Lookup("debug").NoOptDefVal = "files-cli_[command]_[timestamp].log"
-	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, "ignore-version-check", false, "Do not check for a new version of the CLI")
+	RootCmd.PersistentFlags().StringVar(&debug, flagNameDebug, "", "Enable verbose logging. Use --debug=[LOG FILE NAME] to specify a log file or --debug=STDOUT to display logs directly on the screen.")
+	RootCmd.PersistentFlags().Lookup(flagNameDebug).NoOptDefVal = "files-cli_[command]_[timestamp].log"
+	RootCmd.PersistentFlags().BoolVar(&ignoreVersionCheck, flagNameIgnoreVersionCheck, false, "Do not check for a new version of the CLI")
 	RootCmd.PersistentFlags().BoolVar(&nonInteractive, flagNameNonInteractive, false, "Do not prompt for user input")
-	RootCmd.PersistentFlags().StringVar(&ProfileValue, "profile", ProfileValue, "Setup a connection profile")
-	RootCmd.PersistentFlags().StringVar(&Environment, "environment", Environment, "Set connection to an environment or site")
-	RootCmd.PersistentFlags().Lookup("environment").Hidden = true
-	RootCmd.PersistentFlags().StringVar(&APIKey, "api-key", "", "Set API Key for single use")
-	RootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "File path to save output")
+	RootCmd.PersistentFlags().StringVar(&ProfileValue, flagNameProfile, ProfileValue, "Setup a connection profile")
+	RootCmd.PersistentFlags().StringVar(&Environment, flagNameEnvironment, Environment, "Set connection to an environment or site")
+	RootCmd.PersistentFlags().Lookup(flagNameEnvironment).Hidden = true
+	RootCmd.PersistentFlags().StringVar(&APIKey, flagNameApiKey, "", "Set API Key for single use")
+	RootCmd.PersistentFlags().StringVarP(&OutputPath, flagNameOutputPath, flagNameOutputPathShort, "", "File path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, flagNameReauthentication, Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
-	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, "feature-flag", featureFlags, "Enable feature flags")
+	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, flagNameFeatreFlag, featureFlags, "Enable feature flags")
 	RootCmd.SuggestionsMinimumDistance = 1
 	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
-	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, "completion")
+	IgnoreCredentialsCheck = append(IgnoreCredentialsCheck, commandNameCompletion)
 }
 
 func Profile(cmd *cobra.Command) *lib.Profiles {
-	if profile, ok := cmd.Context().Value("profile").(*lib.Profiles); ok {
+	if profile, ok := cmd.Context().Value(contextKeyProfile).(*lib.Profiles); ok {
 		return profile
 	}
 	return &lib.Profiles{}
