@@ -5,12 +5,13 @@ import (
 	"os"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files "github.com/Files-com/files-sdk-go/v3"
 	"github.com/spf13/cobra"
 )
 
 var (
-	errNonInteractiveLogin = fmt.Errorf("login command does not support --%s", flagNameNonInteractive)
+	errNonInteractiveLogin = clierr.Errorf(clierr.ErrorCodeUsage, "login command does not support --%s", flagNameNonInteractive)
 )
 
 func init() {

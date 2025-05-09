@@ -37,10 +37,12 @@ func (p *PretextInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			p.textInput, cmd = p.textInput.Update(msg)
+			p.textInput, _ = p.textInput.Update(msg)
 			return p, tea.Quit
 		case tea.KeyCtrlC, tea.KeyEsc:
-			p.err = errors.New("exited session loging")
+			// this runs in a subprocess, so there's no need to
+			// use the clierr package
+			p.err = errors.New("exited session logging")
 			return p, tea.Quit
 		}
 	case error:

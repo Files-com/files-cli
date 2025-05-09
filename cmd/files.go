@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
@@ -21,7 +21,7 @@ func Files() *cobra.Command {
 		Use:  "files [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command files\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command files\n\t%v", args[0])
 		},
 	}
 	Files.AddCommand(Download())
@@ -162,7 +162,7 @@ func Files() *cobra.Command {
 			var err error
 			err = client.Delete(paramsFileDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

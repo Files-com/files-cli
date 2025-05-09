@@ -2,10 +2,11 @@ package lib
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"reflect"
+
+	"github.com/Files-com/files-cli/lib/clierr"
 )
 
 type Iter interface {
@@ -49,7 +50,7 @@ func Format(ctx context.Context, result interface{}, format []string, fields []s
 	case "table-v2":
 		return TableMarshalV2(format[1], result, fields, usePager, out[0], format[2])
 	default:
-		return fmt.Errorf("Unknown format `" + format[0] + "`")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `"+format[0]+"`")
 	}
 }
 
@@ -81,7 +82,7 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 	case "":
 		return nil
 	default:
-		return fmt.Errorf("Unknown format `" + format[0] + "`")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `"+format[0]+"`")
 	}
 }
 

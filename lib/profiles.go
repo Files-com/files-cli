@@ -18,6 +18,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/Files-com/files-cli/lib/version"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/lib"
@@ -283,7 +284,7 @@ func FetchLatestVersionNumber(config files_sdk.Config, parentCtx context.Context
 			config.Logger.Printf("Latest version: %v", latestVersion)
 			return latestVersion, true
 		} else {
-			checkingFailed(fmt.Errorf("failed to parse tag_name from releases - %v", releases))
+			checkingFailed(clierr.Errorf(clierr.ErrorCodeFatal, "failed to parse tag_name from releases - %v", releases))
 			return version.Version{}, false
 		}
 	}
@@ -411,7 +412,7 @@ func SessionUnauthorizedError(paramsSessionCreate files_sdk.SessionCreateParams,
 			return SmsResponse(paramsSessionCreate, config.Out)
 		}
 
-		return paramsSessionCreate, fmt.Errorf("%v is unsupported as login method", responseError.Data.TwoFactorAuthenticationMethod)
+		return paramsSessionCreate, clierr.Errorf(clierr.ErrorCodeUsage, "%v is unsupported as login method", responseError.Data.TwoFactorAuthenticationMethod)
 	}
 
 	return paramsSessionCreate, err
@@ -465,7 +466,7 @@ func CreateSession(ctx context.Context, paramsSessionCreate files_sdk.SessionCre
 		customDomain := profile.Current().Subdomain
 		_, err = url.Parse(files_sdk.Config{EndpointOverride: customDomain}.Endpoint())
 		if err != nil {
-			return fmt.Errorf("invalid domain or subdomain: %v", profile.Current().Subdomain)
+			return clierr.Errorf(clierr.ErrorCodeFatal, "invalid domain or subdomain: %v", profile.Current().Subdomain)
 		}
 		profile.Current().Subdomain = ""
 		profile.Current().Endpoint = customDomain

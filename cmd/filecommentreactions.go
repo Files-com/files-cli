@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	file_comment_reaction "github.com/Files-com/files-sdk-go/v3/filecommentreaction"
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ func FileCommentReactions() *cobra.Command {
 		Use:  "file-comment-reactions [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command file-comment-reactions\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-comment-reactions\n\t%v", args[0])
 		},
 	}
 	var fieldsCreate []string
@@ -69,7 +68,7 @@ func FileCommentReactions() *cobra.Command {
 			var err error
 			err = client.Delete(paramsFileCommentReactionDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/site"
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ func Sites() *cobra.Command {
 		Use:  "sites [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command sites\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sites\n\t%v", args[0])
 		},
 	}
 	var fieldsGet []string

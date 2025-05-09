@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/webhooktest"
@@ -19,7 +18,7 @@ func WebhookTests() *cobra.Command {
 		Use:  "webhook-tests [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command webhook-tests\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command webhook-tests\n\t%v", args[0])
 		},
 	}
 	var fieldsCreate []string

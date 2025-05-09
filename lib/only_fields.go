@@ -2,11 +2,11 @@ package lib
 
 import (
 	"encoding/json"
-	"errors"
 	"reflect"
 	"sort"
 	"strings"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/fatih/structs"
 )
 
@@ -51,7 +51,7 @@ func OnlyFields(unparsedFields []string, structure interface{}) (map[string]inte
 					continue
 				}
 
-				return returnMap, orderedKeys, errors.New("field: `" + key + "` is not valid.")
+				return returnMap, orderedKeys, clierr.Error(clierr.ErrorCodeDefault, "field: `"+key+"` is not valid.")
 			}
 		}
 	} else {

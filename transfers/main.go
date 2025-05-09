@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/directory"
 	external_event "github.com/Files-com/files-sdk-go/v3/externalevent"
@@ -254,7 +255,7 @@ func (t *Transfers) TextFilterFormat() lib.FilterIter {
 func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	switch t.OutFormat[0] {
 	case "none", "progress":
-		return fmt.Errorf("''--output-format %v' unsupported", t.OutFormat[0])
+		return clierr.Errorf(clierr.ErrorCodeFatal, "''--output-format %v' unsupported", t.OutFormat[0])
 	}
 
 	// Deprecated fallback
@@ -285,7 +286,7 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 			t.OutFormat[0] = ""
 		}
 		if t.OutFormat[0] != "" {
-			return fmt.Errorf("'--format %v' with '--output-format %v' unsupported", t.Format[0], t.OutFormat[0])
+			return clierr.Errorf(clierr.ErrorCodeFatal, "'--format %v' with '--output-format %v' unsupported", t.Format[0], t.OutFormat[0])
 		}
 	}
 
@@ -864,7 +865,7 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	}
 	cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		if t.SyncFlag && t.NoOverwrite {
-			return fmt.Errorf("cannot use both --sync and --no-overwrite flags together")
+			return clierr.Error(clierr.ErrorCodeUsage, "cannot use both --sync and --no-overwrite flags together")
 		}
 		return nil
 	}

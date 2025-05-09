@@ -7,11 +7,21 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/lib/errors"
 )
 
-func ClientError(profile *Profiles, err error, out ...io.Writer) error {
+// CliClientError is a wrapper around errors that are specific to sdk responses.
+func CliClientError(profile *Profiles, err error, out ...io.Writer) error {
+	clientErr := clientError(profile, err, out...)
+	if clientErr == nil {
+		return nil
+	}
+	return clierr.New(clierr.ErrorCodeFatal, clientErr)
+}
+
+func clientError(profile *Profiles, err error, out ...io.Writer) error {
 	if len(out) == 0 {
 		out = append(out, os.Stdout)
 	}

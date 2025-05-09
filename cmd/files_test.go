@@ -171,7 +171,7 @@ func callCmd(command *cobra.Command, config files_sdk.Config, args []string) ([]
 		if OutputPath != "" {
 			output, err := os.Create(OutputPath)
 			if err != nil {
-				return cliLib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return cliLib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			cmd.SetOut(output)
 		}

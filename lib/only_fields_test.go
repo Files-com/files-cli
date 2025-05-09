@@ -30,7 +30,7 @@ func TestOnlyFields(t *testing.T) {
 
 		_, _, err1 := OnlyFields([]string{"d"}, a)
 
-		assert.EqualError(err1, "field: `d` is not valid.")
+		assert.EqualError(err1, "field: `d` is not valid. - status (1)")
 
 		b := testStruct{A: "hello", B: "I'm B"}
 

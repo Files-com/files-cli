@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	siem_http_destination "github.com/Files-com/files-sdk-go/v3/siemhttpdestination"
@@ -20,7 +21,7 @@ func SiemHttpDestinations() *cobra.Command {
 		Use:  "siem-http-destinations [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command siem-http-destinations\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command siem-http-destinations\n\t%v", args[0])
 		},
 	}
 	var fieldsList []string
@@ -54,7 +55,7 @@ func SiemHttpDestinations() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyList) > 0 {
@@ -64,7 +65,7 @@ func SiemHttpDestinations() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -302,7 +303,7 @@ func SiemHttpDestinations() *cobra.Command {
 			var err error
 			err = client.SendTestEntry(paramsSiemHttpDestinationSendTestEntry, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -531,7 +532,7 @@ func SiemHttpDestinations() *cobra.Command {
 			var err error
 			err = client.Delete(paramsSiemHttpDestinationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

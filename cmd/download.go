@@ -51,7 +51,7 @@ func Download() *cobra.Command {
 				)
 			})
 
-			return lib.ClientError(
+			return lib.CliClientError(
 				Profile(cmd),
 				lib.FormatIter(ctx, transfer.Iter(ctx, config), transfer.Format, transfer.FormatIterFields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
 			)

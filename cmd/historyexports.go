@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	history_export "github.com/Files-com/files-sdk-go/v3/historyexport"
 	"github.com/spf13/cobra"
@@ -19,7 +19,7 @@ func HistoryExports() *cobra.Command {
 		Use:  "history-exports [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command history-exports\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command history-exports\n\t%v", args[0])
 		},
 	}
 	var fieldsFind []string

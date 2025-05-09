@@ -54,5 +54,5 @@ func TestExternalEventsCreateInvalidStatus(t *testing.T) {
 	event := files_sdk.ExternalEvent{}
 	err = event.UnmarshalJSON(stdOut)
 	assert.Error(err)
-	assert.Equal("Error: unknown flag \"taco\" for \"status\"\n", string(errOut))
+	assert.Equal("Error: unknown flag \"taco\" for \"status\" - status (7)\n", string(errOut))
 }

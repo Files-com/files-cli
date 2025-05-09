@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files "github.com/Files-com/files-sdk-go/v3"
 	lib2 "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
@@ -58,7 +60,7 @@ const (
 )
 
 var (
-	errNonInteractiveRequiresInput = fmt.Errorf("--%s provided without valid profile or API key", flagNameNonInteractive)
+	errNonInteractiveRequiresInput = clierr.Errorf(clierr.ErrorCodeUsage, "--%s provided without valid profile or API key", flagNameNonInteractive)
 )
 
 var (
@@ -106,8 +108,7 @@ var (
 				} else {
 					logFile, err := os.Create(debug)
 					if err != nil {
-						fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-						os.Exit(1)
+						return clierr.New(clierr.ErrorCodeFatal, err)
 					}
 					sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
 				}
@@ -119,7 +120,7 @@ var (
 			err := profile.Load(&sdkConfig, ProfileValue)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			profile.Overrides = lib.Overrides{In: cmd.InOrStdin(), Out: cmd.OutOrStdout()}
 			cmd.SetContext(context.WithValue(cmd.Context(), contextKeyProfile, profile))
@@ -136,7 +137,7 @@ var (
 			if OutputPath != "" {
 				output, err := os.Create(OutputPath)
 				if err != nil {
-					return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+					return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 				}
 				cmd.SetOut(output)
 			}
@@ -172,9 +173,8 @@ var (
 
 			if Profile(cmd).ValidSession() {
 				if Reauthentication {
-					err = lib.Reauthenicate(Profile(cmd))
-					if err != nil {
-						return err
+					if err = lib.Reauthenicate(Profile(cmd)); err != nil {
+						return clierr.New(clierr.ErrorCodeFatal, err)
 					}
 				}
 				return nil
@@ -189,13 +189,13 @@ var (
 			if Profile(cmd).SessionExpired() {
 				fmt.Fprintf(cmd.ErrOrStderr(), "The session has expired, you must log in again.\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
 			if Profile(cmd).Config.GetAPIKey() == "" {
 				fmt.Fprintf(cmd.ErrOrStderr(), "No API Key found.\nTo use an API key, provide it with the --api-key=FILES_API_KEY flag.\nFalling back to session login...\n")
 				err = lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -209,7 +209,7 @@ func Init(version string, _commit string, _date string, config files.Config) {
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
 	config.UserAgent = fmt.Sprintf(userAgentPattern, strings.TrimSpace(Version))
 	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), contextKeyConfig, config)); err != nil {
-		cobra.CheckErr(err)
+		checkErr(err)
 	}
 }
 
@@ -235,4 +235,16 @@ func Profile(cmd *cobra.Command) *lib.Profiles {
 		return profile
 	}
 	return &lib.Profiles{}
+}
+
+// checkErr prints the error message to stderr and exits with the appropriate status code if available.
+func checkErr(err error) {
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err)
+		var statusError *clierr.CliError
+		if errors.As(err, &statusError) {
+			os.Exit(int(statusError.Code))
+		}
+		os.Exit(int(clierr.ErrorCodeDefault))
+	}
 }

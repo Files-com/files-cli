@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/behavior"
 	"github.com/Files-com/files-sdk-go/v3/folder"
@@ -119,11 +120,11 @@ func RemoteMounts() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -153,7 +154,7 @@ func RemoteMounts() *cobra.Command {
 			var err error
 			resource, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
@@ -183,7 +184,7 @@ func RemoteMounts() *cobra.Command {
 
 			var err error
 			err = client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
@@ -217,7 +218,7 @@ func RemoteMounts() *cobra.Command {
 
 			resource, err := client.Update(updateParams, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var expandedResource interface{}
 			expandedResource, _, err = expandBehavior()(resource)
@@ -254,7 +255,7 @@ func findRemoteServer(cmd *cobra.Command, remoteServerName string) (int64, error
 			return it.RemoteServer().Id, nil
 		}
 	}
-	return 0, fmt.Errorf("no remote server found '%v", remoteServerName)
+	return 0, clierr.Errorf(clierr.ErrorCodeFatal, "no remote server found '%v", remoteServerName)
 }
 
 type RemoteMount struct {

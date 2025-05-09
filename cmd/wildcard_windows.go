@@ -3,11 +3,11 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/Files-com/files-cli/transfers"
 )
 
@@ -18,7 +18,7 @@ func convertWildcardToInclude(sourcePath *string, transfer *transfers.Transfers)
 
 	for _, path := range transfer.ExactPaths {
 		if strings.ContainsAny(path, "*?") {
-			return fmt.Errorf("Cannot use wildcard with multiple source paths")
+			return clierr.Errorf(clierr.ErrorCodeUsage, "cannot use wildcard with multiple source paths")
 		}
 	}
 
@@ -30,7 +30,7 @@ func convertWildcardToInclude(sourcePath *string, transfer *transfers.Transfers)
 	}
 
 	if len(*transfer.Include) > 0 {
-		return fmt.Errorf("Cannot use wildcard with --include flag")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "cannot use wildcard with --include flag")
 	}
 
 	rootPath := filepath.Dir(path[:wildcardIndex])

@@ -33,5 +33,5 @@ func HandleResponse(ctx context.Context, profile *Profiles, i interface{}, errIn
 		err = Format(ctx, i, format, fields, usePager, stdout)
 	}
 
-	return ClientError(profile, err, stderr)
+	return CliClientError(profile, err, stderr)
 }

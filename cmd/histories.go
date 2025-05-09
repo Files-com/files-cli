@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/history"
 	"github.com/spf13/cobra"
@@ -19,7 +19,7 @@ func Histories() *cobra.Command {
 		Use:  "histories [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command histories\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command histories\n\t%v", args[0])
 		},
 	}
 	var fieldsListForFile []string
@@ -62,7 +62,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyListForFile) > 0 {
@@ -72,7 +72,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFile), fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -132,7 +132,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyListForFolder) > 0 {
@@ -142,7 +142,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFolder), fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -199,7 +199,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyListForUser) > 0 {
@@ -209,7 +209,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForUser), fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -266,7 +266,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyListLogins) > 0 {
@@ -276,7 +276,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListLogins), fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -333,7 +333,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyList) > 0 {
@@ -343,7 +343,7 @@ func Histories() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 

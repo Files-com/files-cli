@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	file_comment "github.com/Files-com/files-sdk-go/v3/filecomment"
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ func FileComments() *cobra.Command {
 		Use:  "file-comments [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command file-comments\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-comments\n\t%v", args[0])
 		},
 	}
 	var fieldsListFor []string
@@ -55,7 +54,7 @@ func FileComments() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyListFor) > 0 {
@@ -65,7 +64,7 @@ func FileComments() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -171,7 +170,7 @@ func FileComments() *cobra.Command {
 			var err error
 			err = client.Delete(paramsFileCommentDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

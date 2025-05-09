@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/request"
@@ -19,7 +18,7 @@ func Requests() *cobra.Command {
 		Use:  "requests [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command requests\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command requests\n\t%v", args[0])
 		},
 	}
 	var fieldsList []string
@@ -61,7 +60,7 @@ func Requests() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyList) > 0 {
@@ -71,7 +70,7 @@ func Requests() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -125,7 +124,7 @@ func Requests() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyGetFolder) > 0 {
@@ -135,7 +134,7 @@ func Requests() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetFolder), fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -203,7 +202,7 @@ func Requests() *cobra.Command {
 			var err error
 			err = client.Delete(paramsRequestDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

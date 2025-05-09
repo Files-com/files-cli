@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	file_migration "github.com/Files-com/files-sdk-go/v3/filemigration"
 	"github.com/vbauerster/mpb/v8"
@@ -72,7 +73,7 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 
 	if err == nil {
 		if result.Status == "failed" {
-			err = fmt.Errorf("%v - %v - %v", result.Operation, result.Path, result.Status)
+			err = clierr.Errorf(clierr.ErrorCodeFatal, "%v - %v - %v", result.Operation, result.Path, result.Status)
 		}
 	}
 

@@ -1,15 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/spf13/cobra"
 )
 
 var (
-	errNonInteractivePagingUnavailable = fmt.Errorf("--%s not supported in non-interactive mode", flagNameUsePager)
-	errNonInteractiveReauthentication  = fmt.Errorf("--%s not supported in non-interactive mode", flagNameReauthentication)
+	errNonInteractivePagingUnavailable = clierr.Errorf(clierr.ErrorCodeUsage, "--%s not supported in non-interactive mode", flagNameUsePager)
+	errNonInteractiveReauthentication  = clierr.Errorf(clierr.ErrorCodeUsage, "--%s not supported in non-interactive mode", flagNameReauthentication)
 )
 
 // checkNonInteractiveMode checks the various combinations of the non-interactive
@@ -56,7 +56,7 @@ func checkNonInteractiveMode(cmd *cobra.Command) error {
 			// the actual format string.
 			format = strings.ReplaceAll(format, "[", "")
 			format = strings.ReplaceAll(format, "]", "")
-			return fmt.Errorf("--%s='%s' is not supported in non-interactive mode", flagNameFormat, format)
+			return clierr.Errorf(clierr.ErrorCodeUsage, "--%s='%s' is not supported in non-interactive mode", flagNameFormat, format)
 		}
 	}
 

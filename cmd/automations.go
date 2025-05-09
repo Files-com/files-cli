@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/automation"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
@@ -20,7 +21,7 @@ func Automations() *cobra.Command {
 		Use:  "automations [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command automations\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command automations\n\t%v", args[0])
 		},
 	}
 	var fieldsList []string
@@ -54,7 +55,7 @@ func Automations() *cobra.Command {
 				}
 			}
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			var listFilter lib.FilterIter
 			if len(filterbyList) > 0 {
@@ -64,7 +65,7 @@ func Automations() *cobra.Command {
 				}
 			}
 			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
-			return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
 
@@ -220,7 +221,7 @@ func Automations() *cobra.Command {
 			var err error
 			err = client.ManualRun(paramsAutomationManualRun, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},
@@ -426,7 +427,7 @@ func Automations() *cobra.Command {
 			var err error
 			err = client.Delete(paramsAutomationDelete, files_sdk.WithContext(ctx))
 			if err != nil {
-				return lib.ClientError(Profile(cmd), err, cmd.ErrOrStderr())
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 			return nil
 		},

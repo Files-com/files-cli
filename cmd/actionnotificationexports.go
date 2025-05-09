@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	action_notification_export "github.com/Files-com/files-sdk-go/v3/actionnotificationexport"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
@@ -20,7 +20,7 @@ func ActionNotificationExports() *cobra.Command {
 		Use:  "action-notification-exports [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command action-notification-exports\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command action-notification-exports\n\t%v", args[0])
 		},
 	}
 	var fieldsFind []string

@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	file_migration "github.com/Files-com/files-sdk-go/v3/filemigration"
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ func FileMigrations() *cobra.Command {
 		Use:  "file-migrations [command]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("invalid command file-migrations\n\t%v", args[0])
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-migrations\n\t%v", args[0])
 		},
 	}
 	var fieldsFind []string
