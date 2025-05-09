@@ -264,13 +264,17 @@ files-cli users list \
 
 ## Foreign Language Support
 
-The Files.com CLI App will soon be updated to support localized responses by using a configuration
-method. When available, it can be used to guide the API in selecting a preferred language for applicable response content.
+The Files.com CLI supports localized responses by setting the `files-cli config set -l` option.  The language can be reset by using `files-cli config reset -l`.
+When configured, this guides the API in selecting a preferred language for applicable response content.
 
 Language support currently applies to select human-facing fields only, such as notification messages
 and error descriptions.
 
 If the specified language is not supported or the value is omitted, the API defaults to English.
+
+```shell title="Example Request"
+files-cli config set -l es
+```
 
 ## Errors
 

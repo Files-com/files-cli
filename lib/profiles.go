@@ -54,6 +54,7 @@ type Profile struct {
 	Subdomain                 string    `json:"subdomain"`
 	Username                  string    `json:"username"`
 	APIKey                    string    `json:"api_key"`
+	Language                  string    `json:"language"`
 	Endpoint                  string    `json:"endpoint,omitempty"`
 	configPathOverride        string
 	files_sdk.Environment     `json:"environment"`
@@ -73,6 +74,7 @@ type ResetConfig struct {
 	Username                  bool
 	APIKey                    bool
 	Endpoint                  bool
+	Language                  bool
 	Session                   bool
 	VersionCheck              bool
 	ConcurrentConnectionLimit bool
@@ -105,6 +107,9 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 	}
 	if reset.Endpoint {
 		p.Current().Endpoint = ""
+	}
+	if reset.Language {
+		p.Current().Language = ""
 	}
 	if reset.Session {
 		p.Current().SessionId = ""
@@ -195,6 +200,7 @@ func (p *Profiles) SetOnConfig() {
 		p.Current().APIKey = p.Config.APIKey
 	}
 	p.Config.Environment = p.Current().Environment
+	p.Config.Language = p.Current().Language
 }
 
 func (p *Profiles) Save() error {
