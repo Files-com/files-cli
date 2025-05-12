@@ -68,6 +68,7 @@ func BundleRecipients() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
 
+	cmdList.Flags().Int64Var(&paramsBundleRecipientList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsBundleRecipientList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBundleRecipientList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsBundleRecipientList.BundleId, "bundle-id", 0, "List recipients for the bundle with this ID.")
@@ -103,6 +104,7 @@ func BundleRecipients() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), bundleRecipient, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64Var(&paramsBundleRecipientCreate.BundleId, "bundle-id", 0, "Bundle to share.")
 	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Recipient, "recipient", "", "Email addresses to share this bundle with.")
 	cmdCreate.Flags().StringVar(&paramsBundleRecipientCreate.Name, "name", "", "Name of recipient.")
