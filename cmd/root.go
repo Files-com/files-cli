@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -84,6 +83,13 @@ var (
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			// configure non-interactive flag combinations before anything else
+			// because non-interactive influences the format of the output if
+			// there are any errors.
+			if err := configureNonInteractiveMode(cmd); err != nil {
+				return err
+			}
+
 			sdkConfig := cmd.Context().Value(contextKeyConfig).(files.Config)
 			for _, flag := range featureFlags {
 				sdkConfig.FeatureFlag(flag) // panic unknown flag
@@ -140,12 +146,6 @@ var (
 					return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 				}
 				cmd.SetOut(output)
-			}
-
-			// check the non-interactive flag combinations before any 'return nil' statements
-			// to make sure any incorrect combinations are not missed by returning early.
-			if err := checkNonInteractiveMode(cmd); err != nil {
-				return err
 			}
 
 			// the login and logout commands don't need any further validation.
@@ -237,14 +237,11 @@ func Profile(cmd *cobra.Command) *lib.Profiles {
 	return &lib.Profiles{}
 }
 
-// checkErr prints the error message to stderr and exits with the appropriate status code if available.
+// checkErr exits with the appropriate status code if available.
 func checkErr(err error) {
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error:", err)
-		var statusError *clierr.CliError
-		if errors.As(err, &statusError) {
-			os.Exit(int(statusError.Code))
-		}
-		os.Exit(int(clierr.ErrorCodeDefault))
+	if err == nil {
+		return
 	}
+	statusError := clierr.From(err)
+	os.Exit(int(statusError.Code))
 }

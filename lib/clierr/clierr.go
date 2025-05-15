@@ -68,3 +68,12 @@ func Errorf(code ErrorCode, format string, args ...any) *CliError {
 		Err:  fmt.Errorf(format, args...),
 	}
 }
+
+// From checks if the error is a CliError and returns it.
+// If not, it creates a new CliError with the default code.
+func From(err error) *CliError {
+	if cliErr, ok := err.(*CliError); ok {
+		return cliErr
+	}
+	return New(ErrorCodeDefault, err)
+}

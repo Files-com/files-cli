@@ -12,13 +12,16 @@ var (
 	errNonInteractiveReauthentication  = clierr.Errorf(clierr.ErrorCodeUsage, "--%s not supported in non-interactive mode", flagNameReauthentication)
 )
 
-// checkNonInteractiveMode checks the various combinations of the non-interactive
+// configureNonInteractiveMode checks the various combinations of the non-interactive
 // flag with other flags and returns an error if the combination is not supported.
-func checkNonInteractiveMode(cmd *cobra.Command) error {
+func configureNonInteractiveMode(cmd *cobra.Command) error {
 	// non-interactive is not set, no need to check anything else.
 	if !nonInteractive {
 		return nil
 	}
+
+	// silence usage in non-interactive mode.
+	cmd.SilenceUsage = true
 
 	// a valid session, with reauthentication will cause a prompt. If the non-interactive
 	// flag is set, return an error that the combination is not supported.
@@ -51,7 +54,7 @@ func checkNonInteractiveMode(cmd *cobra.Command) error {
 	if formatFlag != nil {
 		// e.g. --format 'table,interactive,vertical' or --format='table,interactive,vertical'
 		format := formatFlag.Value.String()
-		if formatFlag != nil && strings.Contains(format, flagNameInteractive) && nonInteractive {
+		if strings.Contains(format, flagNameInteractive) && nonInteractive {
 			// [ and ] are added in the string representation of the flag so remove them to get
 			// the actual format string.
 			format = strings.ReplaceAll(format, "[", "")
