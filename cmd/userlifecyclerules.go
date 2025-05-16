@@ -161,6 +161,78 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	UserLifecycleRules.AddCommand(cmdCreate)
+	var fieldsUpdate []string
+	var formatUpdate []string
+	usePagerUpdate := true
+	updateIncludeSiteAdmins := true
+	updateIncludeFolderAdmins := true
+	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
+	UserLifecycleRuleUpdateAction := ""
+	UserLifecycleRuleUpdateAuthenticationMethod := ""
+
+	cmdUpdate := &cobra.Command{
+		Use:   "update",
+		Short: `Update User Lifecycle Rule`,
+		Long:  `Update User Lifecycle Rule`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user_lifecycle_rule.Client{Config: config}
+
+			mapParams, convertErr := lib.StructToMap(files_sdk.UserLifecycleRuleUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			var UserLifecycleRuleUpdateActionErr error
+			paramsUserLifecycleRuleUpdate.Action, UserLifecycleRuleUpdateActionErr = lib.FetchKey("action", paramsUserLifecycleRuleUpdate.Action.Enum(), UserLifecycleRuleUpdateAction)
+			if UserLifecycleRuleUpdateAction != "" && UserLifecycleRuleUpdateActionErr != nil {
+				return UserLifecycleRuleUpdateActionErr
+			}
+			var UserLifecycleRuleUpdateAuthenticationMethodErr error
+			paramsUserLifecycleRuleUpdate.AuthenticationMethod, UserLifecycleRuleUpdateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum(), UserLifecycleRuleUpdateAuthenticationMethod)
+			if UserLifecycleRuleUpdateAuthenticationMethod != "" && UserLifecycleRuleUpdateAuthenticationMethodErr != nil {
+				return UserLifecycleRuleUpdateAuthenticationMethodErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsUserLifecycleRuleUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("action") {
+				lib.FlagUpdate(cmd, "action", paramsUserLifecycleRuleUpdate.Action, mapParams)
+			}
+			if cmd.Flags().Changed("authentication-method") {
+				lib.FlagUpdate(cmd, "authentication_method", paramsUserLifecycleRuleUpdate.AuthenticationMethod, mapParams)
+			}
+			if cmd.Flags().Changed("inactivity-days") {
+				lib.FlagUpdate(cmd, "inactivity_days", paramsUserLifecycleRuleUpdate.InactivityDays, mapParams)
+			}
+			if cmd.Flags().Changed("include-site-admins") {
+				mapParams["include_site_admins"] = updateIncludeSiteAdmins
+			}
+			if cmd.Flags().Changed("include-folder-admins") {
+				mapParams["include_folder_admins"] = updateIncludeFolderAdmins
+			}
+
+			var userLifecycleRule interface{}
+			var err error
+			userLifecycleRule, err = client.UpdateWithMap(mapParams, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), userLifecycleRule, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdate), fieldsUpdate, usePagerUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.Id, "id", 0, "User Lifecycle Rule ID.")
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.Action.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for the rule %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
+	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
+	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "Include site admins in the rule")
+	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "Include folder admins in the rule")
+
+	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
+
+	UserLifecycleRules.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
 	usePagerDelete := true
