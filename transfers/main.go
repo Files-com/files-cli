@@ -896,6 +896,8 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
+	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during download. See https://git-scm.com/docs/gitignore#_pattern_format")
+	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during download. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().BoolVarP(&t.DownloadPreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
 }
 

@@ -74,6 +74,8 @@ func Sync() *cobra.Command {
 						LocalPath:     localPath,
 						Sync:          transfer.SyncFlag,
 						Manager:       transfer.Manager,
+						Ignore:        *transfer.Ignore,
+						Include:       *transfer.Include,
 						PreserveTimes: transfer.DownloadPreserveTimes,
 						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						DryRun:        transfer.DryRun,
