@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -149,17 +150,17 @@ var (
 			}
 
 			// the login and logout commands don't need any further validation.
-			if lib.Includes(cmd.Use, []string{commandNameLogin, commandNameLogout}) {
+			if slices.Contains([]string{commandNameLogin, commandNameLogout}, cmd.Use) {
 				return nil
 			}
 
 			// if the command is in the list of commands that ignore credentials, there's no need to do further validation.
-			if lib.Includes(cmd.Use, IgnoreCredentialsCheck) || lib.Includes(cmd.Parent().Use, IgnoreCredentialsCheck) {
+			if slices.Contains(IgnoreCredentialsCheck, cmd.Use) || slices.Contains(IgnoreCredentialsCheck, cmd.Parent().Use) {
 				return nil
 			}
 
 			// if the command has an alias that is in the list of commands that don't require credentials, there's no need to do further validation.
-			if len(cmd.Aliases) != 0 && lib.Includes(cmd.Aliases[0], noAuthCmds) {
+			if len(cmd.Aliases) != 0 && slices.Contains(noAuthCmds, cmd.Aliases[0]) {
 				return nil
 			}
 
