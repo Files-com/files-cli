@@ -575,20 +575,15 @@ func (t *Transfers) buildMainTotalTransfer() {
 		mpb.PrependDecorators(
 			decor.Any(func(d decor.Statistics) string {
 				return directionFmt(t.Job.Direction, t.finishedForDisplay.Load())
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
-			),
-			decor.Counters(decor.UnitKB, " (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
+			}),
+			decor.CountersKiloByte(" (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
 			decor.Any(func(d decor.Statistics) string {
 				if t.Job.Finished.Called() {
 					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.Job.FinalTransferRate())), directionSymbolFmt(t.Job.Direction))
 				} else {
 					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.TransferRateValue())), directionSymbolFmt(t.Job.Direction))
 				}
-
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
-			),
+			}),
 		),
 		mpb.AppendDecorators(
 			decor.Percentage(decor.WCSyncSpace),
@@ -674,7 +669,7 @@ func (t *Transfers) buildStatusTransfer() {
 			decor.Any(func(d decor.Statistics) string {
 				return fileCounts(t.Job, t.FilesRateValue())
 			},
-				decor.WC{W: 0, C: decor.DidentRight},
+				decor.WC{W: 0, C: decor.DindentRight},
 			),
 		),
 		mpb.BarPriority(4),
@@ -696,7 +691,7 @@ func (t *Transfers) buildStatusSync() {
 				excludedCount := t.Job.Count(status.Excluded...)
 				return fmt.Sprintf("Syncing (%v files compared, %v files require transfer)", formatWithComma(comparedCount), formatWithComma(comparedCount-excludedCount))
 			},
-				decor.WC{W: 0, C: decor.DidentRight},
+				decor.WC{W: 0, C: decor.DindentRight},
 			),
 		),
 	)
@@ -714,12 +709,12 @@ func (t *Transfers) buildOpenConnections() {
 			decor.Any(func(d decor.Statistics) string {
 				return "Open Connections ↕ "
 			},
-				decor.WC{W: 0, C: decor.DidentRight},
+				decor.WC{W: 0, C: decor.DindentRight},
 			),
 			decor.Any(func(d decor.Statistics) string {
 				return t.openConnections.Load().(string)
 			},
-				decor.WC{W: 0, C: decor.DidentRight},
+				decor.WC{W: 0, C: decor.DindentRight},
 			),
 		),
 		mpb.BarPriority(3),
