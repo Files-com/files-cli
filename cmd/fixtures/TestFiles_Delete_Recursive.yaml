@@ -5,32 +5,54 @@ interactions:
     body: '{}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/test-dir-files-delete-r
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"88996494-4ea2-44b1-9f72-105308cf912f","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"d0a14acc66a8d73461ffd5b1e7570f12","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "177"
+      - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 00:53:21 GMT
+      - Fri, 23 May 2025 19:48:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 88996494-4ea2-44b1-9f72-105308cf912f
+      - d0a14acc66a8d73461ffd5b1e7570f12
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -38,31 +60,49 @@ interactions:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/test-dir-files-delete-r/1.text
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2022-11-30T01:08:41Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-18","upload_uri":"https://s3.amazonaws.com/dev.brickftp.com/metadata/1/1b42c5fd-a701-4355-b310-9aa856e3f1b0?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIM45HSA52WL42SVA%2F20221130%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20221130T005341Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=lsElnkw56aEOucFulHL42LujyEq1e_nvtT05.S5OJSkzvzBI2YQJtK7YMfU1CJsbfOsCITIh1pMUL5gC3UARpJy0KVAiqYIF4bhamWPrp_.W6NVYphmSF8J7MVEXBrd9\u0026X-Amz-Signature=f489dbf4bb8f22574f7c549b6d8cc974dd3f824053da70e06dea779deb2720bf"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T20:03:05Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457523715","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/6f4818b7-f45c-45f7-aa97-919a5edde255?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T194805Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=xwA6BuyJd3LraWTYia.OMs7aFPxv28xfiFOkNiACWU2Q21P7XKER.__K9jWATfhYrvlf0vwcTNVFLFSOcQ4Wkrnx0pyHfvwFMMf1wnfM.Ac7PdBi4NMfqRwHJopuxWYk\u0026X-Amz-Signature=155357415d4795118b37aee11d8458bca77cfa93e70b413742d0ec92c7b2da35"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "937"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 00:53:41 GMT
+      - Fri, 23 May 2025 19:48:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 5d6ce5f2-c9c7-4df4-a445-2679554b4e2d
+      - 2fd6589937334ef5326a11b9a3a4bbba
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -70,11 +110,9 @@ interactions:
     body: testing 1
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/dev.brickftp.com/metadata/1/1b42c5fd-a701-4355-b310-9aa856e3f1b0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIM45HSA52WL42SVA%2F20221130%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221130T005341Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=lsElnkw56aEOucFulHL42LujyEq1e_nvtT05.S5OJSkzvzBI2YQJtK7YMfU1CJsbfOsCITIh1pMUL5gC3UARpJy0KVAiqYIF4bhamWPrp_.W6NVYphmSF8J7MVEXBrd9&X-Amz-Signature=f489dbf4bb8f22574f7c549b6d8cc974dd3f824053da70e06dea779deb2720bf
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/6f4818b7-f45c-45f7-aa97-919a5edde255?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T194805Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=xwA6BuyJd3LraWTYia.OMs7aFPxv28xfiFOkNiACWU2Q21P7XKER.__K9jWATfhYrvlf0vwcTNVFLFSOcQ4Wkrnx0pyHfvwFMMf1wnfM.Ac7PdBi4NMfqRwHJopuxWYk&X-Amz-Signature=155357415d4795118b37aee11d8458bca77cfa93e70b413742d0ec92c7b2da35
     method: PUT
   response:
     body: ""
@@ -82,49 +120,73 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Wed, 30 Nov 2022 00:53:42 GMT
+      - Fri, 23 May 2025 19:48:06 GMT
       Etag:
       - '"ab6e3983b98e417df77242b035504638"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - /wdCLMywOVHGlX0EpC4wZpm7tNC4incuIwDTJsumoJr/5g7Ucdk81tU2RilHKD44TzrMz/oCc2Y=
+      - O0z9ZNuhfsEIrVbXDQf9HUozb6nvwO71traH6moBPhiOmzlD02kjtb+tKNEpefo4fB6Z/BFvcP8=
       X-Amz-Request-Id:
-      - SFZY65JFTZ8KHAV5
+      - T9YTNH92RFWJQ5TA
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"provided_mtime":"2010-11-17T20:34:58.651387237Z","ref":"put-18","size":9}'
+    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"provided_mtime":"2010-11-17T20:34:58.651387237Z","ref":"put-13457523715","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete-r/1.text
     method: POST
   response:
-    body: '{"path":"test-dir-files-delete-r/1.text","display_name":"1.text","type":"file","size":9,"created_at":"2022-11-30T00:53:41Z","mtime":"2022-11-30T00:53:41Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"test-dir-files-delete-r/1.text","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"1.text","type":"file","size":9,"created_at":"2025-05-23T19:48:06Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:48:06Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "300"
+      - "854"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 00:53:41 GMT
+      - Fri, 23 May 2025 19:48:06 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - b1016fc9-933b-47fc-9619-a648393d9fc1
+      - e8c3b9bbf7f7a812afb3f2e4f73f031e
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -132,10 +194,8 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete-r?recursive=true
     method: DELETE
   response:
@@ -143,14 +203,36 @@ interactions:
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Date:
-      - Wed, 30 Nov 2022 00:53:47 GMT
+      - Fri, 23 May 2025 19:48:06 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 612a0458-376e-4bf1-8540-b18ada7f37f4
+      - 2c0471c4445f84392bb291a32b76181b
+      X-Xss-Protection:
+      - 1; mode=block
     status: 204 No Content
     code: 204
     duration: ""

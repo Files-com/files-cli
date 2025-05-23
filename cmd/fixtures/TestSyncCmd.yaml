@@ -10,25 +10,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_DisableProgressOutput
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"65ca151bdda17c241217800e9c18d989","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"75219db8a792f5981cf2861b0303a3bc","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:12 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 65ca151bdda17c241217800e9c18d989
+      - 75219db8a792f5981cf2861b0303a3bc
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -41,25 +61,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_DisableProgressOutput
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"20d85891abba2c4e0941f845e0fdbc17","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"155d10b295c04ff10c193133633133f7","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:12 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 20d85891abba2c4e0941f845e0fdbc17
+      - 155d10b295c04ff10c193133633133f7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -74,22 +114,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/cli-test/sync/uploadFilepush_DisableProgressOutput
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-05-31T17:05:13Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9024414180","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/98c84b4a-d46e-4192-8f89-4d9499314dbd?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240531T165013Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=pQl.uo3QOs_x1SnQarqJDoiHkOxnzcAxrmbEdxKsYrEaDplej5QvjZzMd_wyqvqxMp2u2I4W0nEPdIHhbT1KBB0LWC.2rjO3hCocmyST_BD6bFQu0kgaHfprMeFbqk3U\u0026X-Amz-Signature=dbd757a881ecf998a6a2557668382caa8951e62671bbbf2f78644c3de60a52fd"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T19:45:50Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457354757","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/ad4df548-9efa-445c-b341-f1b963cbe04f?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T193050Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=6bVr0X7EA3IEp_F.z.7FuaA4HPg_urCkp94h4aJPQ0V6mWzDMJwXrUaLTEQtzStlANxhKPtboinBNVhxBNzq5rCe_8WTye1zEGC2P0IZZNUwc3oArJUWvMyuIZupZjJO\u0026X-Amz-Signature=7dc21f9d98ea2e85b097f26c2d1336aa7e05a91744de3d67210e9488b83fb6b6"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:13 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - d0e95df4a9e5e4f43725adc2902743a6
+      - 76a0b5ebea35c89103f36bf6894606c1
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -99,7 +159,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/98c84b4a-d46e-4192-8f89-4d9499314dbd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240531T165013Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=pQl.uo3QOs_x1SnQarqJDoiHkOxnzcAxrmbEdxKsYrEaDplej5QvjZzMd_wyqvqxMp2u2I4W0nEPdIHhbT1KBB0LWC.2rjO3hCocmyST_BD6bFQu0kgaHfprMeFbqk3U&X-Amz-Signature=dbd757a881ecf998a6a2557668382caa8951e62671bbbf2f78644c3de60a52fd
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/ad4df548-9efa-445c-b341-f1b963cbe04f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T193050Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=6bVr0X7EA3IEp_F.z.7FuaA4HPg_urCkp94h4aJPQ0V6mWzDMJwXrUaLTEQtzStlANxhKPtboinBNVhxBNzq5rCe_8WTye1zEGC2P0IZZNUwc3oArJUWvMyuIZupZjJO&X-Amz-Signature=7dc21f9d98ea2e85b097f26c2d1336aa7e05a91744de3d67210e9488b83fb6b6
     method: PUT
   response:
     body: ""
@@ -107,22 +167,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Etag:
       - '"f20d9f2072bbeb6691c0f9c5099b01f3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - RoGOR4uCDKtmPt1f1lmMeUOuVqf+ln7dqV/zMdXNI4LL2m8691BhlipLBzShxo67fiV3tV1XhzU=
+      - Q6dXeMmacyf+JYR1GMvo6zZmMu/vm2yWr5z56lIY3yfbZd2W8c0h2bjUv44MZWb0nnpKFDtevZI=
       X-Amz-Request-Id:
-      - XFAB6PYW0DM55HTW
+      - A9F0F3X5XNQZK8DX
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"ref":"put-9024414180","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2025-05-23T15:30:50.042256235-04:00","ref":"put-13457354757","size":9}'
     form: {}
     headers:
       Content-Type:
@@ -132,28 +192,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/cli-test/sync/uploadFilepush_DisableProgressOutput
     method: POST
   response:
-    body: '{"path":"cli-test/sync/uploadFilepush_DisableProgressOutput","created_by_id":null,"created_by_api_key_id":32962,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_DisableProgressOutput","type":"file","size":9,"created_at":"2024-05-31T16:50:13Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-05-31T16:50:13Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"cli-test/sync/uploadFilepush_DisableProgressOutput","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_DisableProgressOutput","type":"file","size":9,"created_at":"2025-05-23T19:30:50Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:30:50Z","provided_mtime":"2025-05-23T19:30:50Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "855"
+      - "904"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:13 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 2a843ecce72a84460dde198bd9d62995
+      - 81ad653290ab56930fe2ab00d17ea64a
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -166,25 +246,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_DisableProgressOutput
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"9f9162a9b2c0e7d93709651f3a8de68c","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"18d4004c69baf7707cc1988f88d2d05a","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:13 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 9f9162a9b2c0e7d93709651f3a8de68c
+      - 18d4004c69baf7707cc1988f88d2d05a
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -197,25 +297,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_format_none
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"3824b59a489a40dc3a0119021cb3ef20","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"59df693cd2018be45710c86b0784b30d","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:13 GMT
+      - Fri, 23 May 2025 19:30:50 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 3824b59a489a40dc3a0119021cb3ef20
+      - 59df693cd2018be45710c86b0784b30d
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -228,25 +348,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_format_none
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"7f91639aae3fc86827d26cf6f9154f59","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"d5799e9871308bb9e562da06ef83ce01","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 7f91639aae3fc86827d26cf6f9154f59
+      - d5799e9871308bb9e562da06ef83ce01
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -261,22 +401,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/cli-test/sync/uploadFilepush_format_none
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-05-31T17:05:14Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9024414488","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/a6b7e340-c909-4eb0-ac2a-995751d0c54c?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240531T165014Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=_E6ZKSwDw9CDa0OiwersqAAzmF4caw9EeoRQ.SHRd.3i4fLC33_dEfR.WqXU8YRsTjd.0HaaFtv0r3Bq_i5EjbeCRlCkKAVSdUIMSmYq9QJnH.y.qciTkZRtmKY.zn3a\u0026X-Amz-Signature=0d1788058b3a5bb9075fa8f0abfe7de6bdb2abd2dcf5e0fb10ff48a2ce925329"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T19:45:51Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457354895","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/ab20e4ff-ad6d-4594-8ab8-e83d6b26b883?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T193051Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=7PwHUsSlTPDl3ea12NJ0EcCMOMHgU.Y3guo.L7uGSPwBoECm4t.0QkrcJFYAOIiQJs6LjzBFgFuKF29t_dVZ64rUXi1_G6iDv4wuZf5UBgQuEWUAm4EebiL.Dgw1kHHh\u0026X-Amz-Signature=41609b60343422e68ada8cadaf435e2c11854333ae05b49343633ba864ed062c"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 155d4b87f3ed4eaf4107ca0827325d17
+      - af94555993034c8ab88ec1f2f57e6ce7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -286,7 +446,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/a6b7e340-c909-4eb0-ac2a-995751d0c54c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240531T165014Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=_E6ZKSwDw9CDa0OiwersqAAzmF4caw9EeoRQ.SHRd.3i4fLC33_dEfR.WqXU8YRsTjd.0HaaFtv0r3Bq_i5EjbeCRlCkKAVSdUIMSmYq9QJnH.y.qciTkZRtmKY.zn3a&X-Amz-Signature=0d1788058b3a5bb9075fa8f0abfe7de6bdb2abd2dcf5e0fb10ff48a2ce925329
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/ab20e4ff-ad6d-4594-8ab8-e83d6b26b883?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T193051Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=7PwHUsSlTPDl3ea12NJ0EcCMOMHgU.Y3guo.L7uGSPwBoECm4t.0QkrcJFYAOIiQJs6LjzBFgFuKF29t_dVZ64rUXi1_G6iDv4wuZf5UBgQuEWUAm4EebiL.Dgw1kHHh&X-Amz-Signature=41609b60343422e68ada8cadaf435e2c11854333ae05b49343633ba864ed062c
     method: PUT
   response:
     body: ""
@@ -294,22 +454,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Etag:
       - '"f20d9f2072bbeb6691c0f9c5099b01f3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - IT/o8+hO4EDwyA+6z057i8k7DUiwGC1ffDWuY2WTVEsXt0d8PigWckrGqjlrPJZwI3/s8g6l87s=
+      - uw4+rwvOw+KQ00t3uCR4PM2OZXcXxhylsmD5dACAoAsvuiQpIdE4NgXgsPtA7BjeQfK5TsITsNw=
       X-Amz-Request-Id:
-      - WQZA3TC9J7X4Z7KQ
+      - EJ7VE4V7M40NMTGG
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"ref":"put-9024414488","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2025-05-23T15:30:50.874745504-04:00","ref":"put-13457354895","size":9}'
     form: {}
     headers:
       Content-Type:
@@ -319,28 +479,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/cli-test/sync/uploadFilepush_format_none
     method: POST
   response:
-    body: '{"path":"cli-test/sync/uploadFilepush_format_none","created_by_id":null,"created_by_api_key_id":32962,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_format_none","type":"file","size":9,"created_at":"2024-05-31T16:50:14Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-05-31T16:50:14Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"cli-test/sync/uploadFilepush_format_none","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_format_none","type":"file","size":9,"created_at":"2025-05-23T19:30:51Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:30:51Z","provided_mtime":"2025-05-23T19:30:50Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "835"
+      - "884"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 1e6b32eecbb9c3f157c9921e61f3d91a
+      - 0fa002ba79b6e368cd12c7ec1b08c2b4
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -353,25 +533,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_format_none
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"feec99426542fdc4d80b6996741642c4","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"a64ac72a31d843af4eef3a0da63b7ea7","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - feec99426542fdc4d80b6996741642c4
+      - a64ac72a31d843af4eef3a0da63b7ea7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -384,25 +584,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_format
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"b223599eda54dc9f3c68dc1723019acb","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"47664061da57acdc549e3728eeaf57ef","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - b223599eda54dc9f3c68dc1723019acb
+      - 47664061da57acdc549e3728eeaf57ef
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -415,25 +635,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_format
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"984191414285f26e08454e1565509a05","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"7faeb526ba42e8b8466e7e8232a155b4","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:14 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 984191414285f26e08454e1565509a05
+      - 7faeb526ba42e8b8466e7e8232a155b4
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -448,22 +688,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/cli-test/sync/uploadFilepush_format
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-05-31T17:05:15Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9024414816","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/a0d7c50b-5906-463a-883f-6915fc1db4c6?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240531T165015Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=PmPrf7IMN3RUbBVJthwTgxK5FmFTw8UqY5mWRPW37J.3MvfgCiQcnsVJ5Fty1nrIl9Cy84AX.3y.xGgTEPl1BIKOWR6X3xkVmzMG2YBv1ylTBbStYaP.iAybaw7iBk54\u0026X-Amz-Signature=09682ae2f5a7910c6ffa3e499edab7faca744f03e3fc689b1317e74350806d3f"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T19:45:51Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457354982","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/738ed286-9f21-4e66-b702-b1472b07b8d4?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T193051Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=FUeTXNcxIwe43weipZjSul9Y3D8dPx6puIKMEkbYQNH.VVso4h5dtqaVHiC.JEpTUmEv9XvwcHb2C8tXQqDDPzzuBxBi9bQW5hjapDWORMlokZ2K1KHrt9kLdrZ6CUVJ\u0026X-Amz-Signature=e779e0732e9fc4b309ebc01648541d2de6ea0cb99acaab413b6bc7adc23454bb"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 2e83ff0833f4b5f423809f4855d41751
+      - b8f25751ce86463d5e646ef912e75957
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -473,7 +733,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/a0d7c50b-5906-463a-883f-6915fc1db4c6?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240531T165015Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=PmPrf7IMN3RUbBVJthwTgxK5FmFTw8UqY5mWRPW37J.3MvfgCiQcnsVJ5Fty1nrIl9Cy84AX.3y.xGgTEPl1BIKOWR6X3xkVmzMG2YBv1ylTBbStYaP.iAybaw7iBk54&X-Amz-Signature=09682ae2f5a7910c6ffa3e499edab7faca744f03e3fc689b1317e74350806d3f
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/738ed286-9f21-4e66-b702-b1472b07b8d4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T193051Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=FUeTXNcxIwe43weipZjSul9Y3D8dPx6puIKMEkbYQNH.VVso4h5dtqaVHiC.JEpTUmEv9XvwcHb2C8tXQqDDPzzuBxBi9bQW5hjapDWORMlokZ2K1KHrt9kLdrZ6CUVJ&X-Amz-Signature=e779e0732e9fc4b309ebc01648541d2de6ea0cb99acaab413b6bc7adc23454bb
     method: PUT
   response:
     body: ""
@@ -481,22 +741,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Etag:
       - '"f20d9f2072bbeb6691c0f9c5099b01f3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - LGvP5PN7XprAUbSvWdCpjDuAO665L3zqT/478Gr/q22TYXaaX3lOBpntP6H98Ljsa7UIyfDK0Sk=
+      - BNX6Rzafe6p3XRE/mngrepgykj4ybCMK7lpX5LnpR6xSVb9KDEo7nvRFQGOLaObqsqOsD0ujbKo=
       X-Amz-Request-Id:
-      - 03V32M9YEWTHMN41
+      - EJ7GY2TSVEGKD1Z3
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"ref":"put-9024414816","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2025-05-23T15:30:51.404879954-04:00","ref":"put-13457354982","size":9}'
     form: {}
     headers:
       Content-Type:
@@ -506,28 +766,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/cli-test/sync/uploadFilepush_format
     method: POST
   response:
-    body: '{"path":"cli-test/sync/uploadFilepush_format","created_by_id":null,"created_by_api_key_id":32962,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_format","type":"file","size":9,"created_at":"2024-05-31T16:50:15Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-05-31T16:50:15Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"cli-test/sync/uploadFilepush_format","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_format","type":"file","size":9,"created_at":"2025-05-23T19:30:51Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:30:51Z","provided_mtime":"2025-05-23T19:30:51Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "825"
+      - "874"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - a748a08cf1ef61edd64a2fbdf7e1d4e9
+      - 558de927445e1176c3470bac9e369be2
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -540,25 +820,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_format
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"126d65d197058ccf2871f43ee026b654","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"f59884ba8831e6b7c1ee46f68962f502","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:51 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 126d65d197058ccf2871f43ee026b654
+      - f59884ba8831e6b7c1ee46f68962f502
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -571,25 +871,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_with_output_and_output-format
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"0a2c59681c8955cb2df5569719b8cecf","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"cc050c83cdb785361ebb6c82592d9b90","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 0a2c59681c8955cb2df5569719b8cecf
+      - cc050c83cdb785361ebb6c82592d9b90
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -602,25 +922,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_with_output_and_output-format
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"93c735c6fee9e6a1d432e29e2afdb239","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"fc75bfd73053efcc740aed4d274ab343","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 93c735c6fee9e6a1d432e29e2afdb239
+      - fc75bfd73053efcc740aed4d274ab343
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -635,22 +975,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/cli-test/sync/uploadFilepush_with_output_and_output-format
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-05-31T17:05:15Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9024415118","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/fc934c2f-85bf-4696-b98c-fb873087a790?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240531T165015Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=lN2MrfOxxC6ahSqvF9Yhl9gvI7rE2m1delg4TUrG_8I4CgNeS6932iAeXZ2Y0C.xa7somypvv1zz44O6a.BiQIVrLwcKSxQ2SWkM9Zdyft.BQWGD8GX9SL4vbZQjN2.L\u0026X-Amz-Signature=24d012646f2c193a1985b035c3aee8ba584c84917198ff1c47757217f4f55c12"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T19:45:52Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457355075","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/bb9fb7f6-c1a5-4b1a-9c93-4a7869c424fb?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T193052Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=yXmlJLzPNnDnZqZ.A9C98wgXQ5wsqI4JEjqBtsmC2SR.b7vkrK8TZLtZexT5JlMuuM8AFykavGJWH3IdIzjRsMO_fZe1sTPtkEhLrP3ECBs9pRLzKEDAKe4L8aq78sQ8\u0026X-Amz-Signature=3dc19494b2f750319d9fa65c32833f3debb776ba8064bddc12be99a70c2a28a3"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:15 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 21c113f6e8a93aaa60699833da93d765
+      - 3db26354333cd4ace806ab8e2301cff4
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -660,7 +1020,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/fc934c2f-85bf-4696-b98c-fb873087a790?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240531T165015Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=lN2MrfOxxC6ahSqvF9Yhl9gvI7rE2m1delg4TUrG_8I4CgNeS6932iAeXZ2Y0C.xa7somypvv1zz44O6a.BiQIVrLwcKSxQ2SWkM9Zdyft.BQWGD8GX9SL4vbZQjN2.L&X-Amz-Signature=24d012646f2c193a1985b035c3aee8ba584c84917198ff1c47757217f4f55c12
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/bb9fb7f6-c1a5-4b1a-9c93-4a7869c424fb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T193052Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=yXmlJLzPNnDnZqZ.A9C98wgXQ5wsqI4JEjqBtsmC2SR.b7vkrK8TZLtZexT5JlMuuM8AFykavGJWH3IdIzjRsMO_fZe1sTPtkEhLrP3ECBs9pRLzKEDAKe4L8aq78sQ8&X-Amz-Signature=3dc19494b2f750319d9fa65c32833f3debb776ba8064bddc12be99a70c2a28a3
     method: PUT
   response:
     body: ""
@@ -668,22 +1028,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Fri, 31 May 2024 16:50:17 GMT
+      - Fri, 23 May 2025 19:30:53 GMT
       Etag:
       - '"f20d9f2072bbeb6691c0f9c5099b01f3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - NhS0xgHT6IUhwKQr64P21dsS7Mjz08TvThV+K+NaQnrR+g6aJi1707WBO/vVaRIlGMdZIGVR2Jg=
+      - lf4N9mFhliuW8mhOcMN6SNLJiB+BDvebJuw5xHRuDebNdqncXd1hJ8RCRc/mY2s/6sVWajN1UTI=
       X-Amz-Request-Id:
-      - A242NB5VSTPSH45B
+      - 6FZCKVB89VHP4S3C
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"ref":"put-9024415118","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2025-05-23T15:30:51.889925051-04:00","ref":"put-13457355075","size":9}'
     form: {}
     headers:
       Content-Type:
@@ -693,28 +1053,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/cli-test/sync/uploadFilepush_with_output_and_output-format
     method: POST
   response:
-    body: '{"path":"cli-test/sync/uploadFilepush_with_output_and_output-format","created_by_id":null,"created_by_api_key_id":32962,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_with_output_and_output-format","type":"file","size":9,"created_at":"2024-05-31T16:50:16Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-05-31T16:50:16Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"cli-test/sync/uploadFilepush_with_output_and_output-format","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_with_output_and_output-format","type":"file","size":9,"created_at":"2025-05-23T19:30:52Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:30:52Z","provided_mtime":"2025-05-23T19:30:51Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "871"
+      - "920"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 9344459fabdfe18ef1e13f2fc16698e8
+      - 25b586ea167d9fc3a0355a3499333727
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -727,25 +1107,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_with_output_and_output-format
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"9587b6bfac8d2dedcc876c10f24cc3d8","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"8227ad3b21278ed510b4745ef132d1ac","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 9587b6bfac8d2dedcc876c10f24cc3d8
+      - 8227ad3b21278ed510b4745ef132d1ac
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -758,25 +1158,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_with_output_output-format_progress
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"4cbe8e777bfc606efbeb574404d31048","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"f0766120881d7134a7f36f42a1778b02","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 4cbe8e777bfc606efbeb574404d31048
+      - f0766120881d7134a7f36f42a1778b02
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -789,25 +1209,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_with_progress_and_output_csv
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"502757517536080b388e75a039563c35","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"c44733863505e47329e36e0d073f72d6","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 502757517536080b388e75a039563c35
+      - c44733863505e47329e36e0d073f72d6
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -820,25 +1260,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/cli-test/sync/uploadFilepush_with_progress_and_output_csv
     method: GET
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"22968441dc23ab11d31e5fc1b5631025","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"5a9e430881ab81da1a38b273bdb9655b","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 22968441dc23ab11d31e5fc1b5631025
+      - 5a9e430881ab81da1a38b273bdb9655b
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -853,22 +1313,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/cli-test/sync/uploadFilepush_with_progress_and_output_csv
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-05-31T17:05:16Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9024415329","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/4a61e9ce-317d-4112-8d41-265d676310f7?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240531T165016Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=7VJbhu3W20Umo_qSbhMSoz2nlKzSbytrattc5AFcvvKhN4rPxmbmZZdSbApHXAbTcYF3260kxWOAkbR_pAEDHX423NgSaLkSxSV22vHIi9A80D8faeK07UfFHsfv73xW\u0026X-Amz-Signature=65f6fc13cacce918a4419511c0fa11058814ec0b6c4fd7ae043b31fb792e0c59"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T19:45:52Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13457355169","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/8b6e61f3-97a1-4d75-8bc4-09749ac4465b?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T193052Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=BOWtZ3SVkKH7XMG_cj3g4XNlWJiimK_bwcfMeD4CwZ5e8CY9nzX0WMmSIW3Ia3TrXntLlZ3l5kABTfCulni3X07iV3pvzXUc.vi.wRjkSIsoJ7hH1tCuyRkU5FU8x9_4\u0026X-Amz-Signature=c222e0bd539b9d6fa363c2f8853b8a0c7ec7e70e682b45badcda4d048c21c16b"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:16 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 1141a89a3871ab7e97c12ab8e2ac6fd4
+      - 054da55d382ae41c901af0d53b404f70
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -878,7 +1358,7 @@ interactions:
     headers:
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37868/4a61e9ce-317d-4112-8d41-265d676310f7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240531T165016Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=7VJbhu3W20Umo_qSbhMSoz2nlKzSbytrattc5AFcvvKhN4rPxmbmZZdSbApHXAbTcYF3260kxWOAkbR_pAEDHX423NgSaLkSxSV22vHIi9A80D8faeK07UfFHsfv73xW&X-Amz-Signature=65f6fc13cacce918a4419511c0fa11058814ec0b6c4fd7ae043b31fb792e0c59
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/8b6e61f3-97a1-4d75-8bc4-09749ac4465b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T193052Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=BOWtZ3SVkKH7XMG_cj3g4XNlWJiimK_bwcfMeD4CwZ5e8CY9nzX0WMmSIW3Ia3TrXntLlZ3l5kABTfCulni3X07iV3pvzXUc.vi.wRjkSIsoJ7hH1tCuyRkU5FU8x9_4&X-Amz-Signature=c222e0bd539b9d6fa363c2f8853b8a0c7ec7e70e682b45badcda4d048c21c16b
     method: PUT
   response:
     body: ""
@@ -886,22 +1366,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Fri, 31 May 2024 16:50:18 GMT
+      - Fri, 23 May 2025 19:30:53 GMT
       Etag:
       - '"f20d9f2072bbeb6691c0f9c5099b01f3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - Jc43LPEv+JuZOa+RyGZa3VfsoinHOz85F+Oh48SJ5NfxHwMgrGsuoZpwe5yJREaEk9E94bRsOZ4=
+      - hDqIwurcHndjnKb4CXV4Za2sDAxNpdowcr4p3aNaxpL6Agk1wmZssHZkl8qK3xCP25h/BcbcMmc=
       X-Amz-Request-Id:
-      - ABNN593BJ24G71R2
+      - 6FZ5Q1JH4WN3T2M3
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"ref":"put-9024415329","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f20d9f2072bbeb6691c0f9c5099b01f3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2025-05-23T15:30:52.426491598-04:00","ref":"put-13457355169","size":9}'
     form: {}
     headers:
       Content-Type:
@@ -911,28 +1391,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/cli-test/sync/uploadFilepush_with_progress_and_output_csv
     method: POST
   response:
-    body: '{"path":"cli-test/sync/uploadFilepush_with_progress_and_output_csv","created_by_id":null,"created_by_api_key_id":32962,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_with_progress_and_output_csv","type":"file","size":9,"created_at":"2024-05-31T16:50:17Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-05-31T16:50:17Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"cli-test/sync/uploadFilepush_with_progress_and_output_csv","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"uploadFilepush_with_progress_and_output_csv","type":"file","size":9,"created_at":"2025-05-23T19:30:52Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T19:30:52Z","provided_mtime":"2025-05-23T19:30:52Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "869"
+      - "918"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:17 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 6f809cbb1405eaa41b86e322af120ee9
+      - a750eb2cdea485c1a8472155bc4db2b1
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -945,25 +1445,45 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/uploadFilepush_with_progress_and_output_csv
     method: DELETE
   response:
-    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"2aa0c0ed68287b97a48b124221365c79","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"e9ad7e5be11c78dc5f09f571a43db5f7","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 May 2024 16:50:17 GMT
+      - Fri, 23 May 2025 19:30:52 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 2aa0c0ed68287b97a48b124221365c79
+      - e9ad7e5be11c78dc5f09f571a43db5f7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""

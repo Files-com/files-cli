@@ -5,31 +5,45 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
-    url: https://app.files.com/api/rest/v1/users/642111
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users/1203319
     method: DELETE
   response:
-    body: '{"error":"Not Found","http-code":404,"instance":"81e4b63e-d778-49f0-8ccf-6fca35dd3af1","title":"Not
-      Found","type":"not-found"}'
+    body: ""
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Date:
-      - Thu, 15 Dec 2022 00:20:54 GMT
+      - Fri, 23 May 2025 19:42:14 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 81e4b63e-d778-49f0-8ccf-6fca35dd3af1
-      - 70dd82903cf9eec50f94b785f9f79873
-    status: 404 Not Found
-    code: 404
+      - 111c22a234e10fd8bdaa712b901acb42
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 204 No Content
+    code: 204
     duration: ""

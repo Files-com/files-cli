@@ -7,28 +7,50 @@ interactions:
     headers:
       Content-Type:
       - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/external_events
     method: POST
   response:
-    body: '{"id":28105598,"event_type":"client_log","status":"success","body":"this
-      is a success test","created_at":"2021-09-20T18:55:55-04:00","body_url":null,"folder_behavior_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"remote_server_type":""}'
+    body: '{"id":259050472,"event_type":"client_log","status":"success","body":"this
+      is a success test","created_at":"2025-05-23T13:47:09-04:00","body_url":null,"folder_behavior_id":null,"siem_http_destination_id":null,"successful_files":0,"errored_files":0,"bytes_synced":0,"compared_files":0,"compared_folders":0,"remote_server_type":null}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "255"
+      - "330"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 20 Sep 2021 22:55:55 GMT
+      - Fri, 23 May 2025 17:47:09 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 8d37d532-8fc9-4150-b2af-5a7118c45704
+      - 77c59f0dda45bb38010de682df7542da
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""

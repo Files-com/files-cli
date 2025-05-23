@@ -12,7 +12,7 @@ import (
 )
 
 func TestUsers(t *testing.T) {
-	user, err := findOrCreateTestUser(files_sdk.UserCreateParams{Username: "test-automations-user", Password: "foo123456789"})
+	user, err := findOrCreateTestUser(files_sdk.UserCreateParams{Username: "test-automations-user", Password: "Foo123456789!"})
 	require.NoError(t, err)
 	defer deleteUser(user)
 
@@ -34,7 +34,7 @@ func TestUsers(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r, config, err := CreateConfig(tt.name)
+			r, config, err := CreateConfig(t.Name())
 			if err != nil {
 				t.Fatal(err)
 			}

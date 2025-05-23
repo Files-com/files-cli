@@ -12,27 +12,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"06293831a91d0e5c4572451d45c4c1dd","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"81b435c8e8c71db3d145f4aa4ec92f90","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:03 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 06293831a91d0e5c4572451d45c4c1dd
+      - 81b435c8e8c71db3d145f4aa4ec92f90
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -47,24 +67,44 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes
     method: POST
   response:
-    body: '{"display_name":"TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes","type":"directory","size":null,"created_at":"2024-04-22T21:39:41Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes","type":"directory","size":null,"created_at":"2025-05-23T17:31:03Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:03Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "222"
+      - "931"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:03 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 2152d1acb44feddaaab3de09db8dfb50
+      - c98014636fc3eab9a8836b65b9286ab7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -79,27 +119,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"778e20c7e0163f607cd2ad3b5e870cf4","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"b0e02dc0d18ea1350183aa77a981fe7b","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 778e20c7e0163f607cd2ad3b5e870cf4
+      - b0e02dc0d18ea1350183aa77a981fe7b
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -114,27 +174,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"f5e206ee6504d3218c4172f28e8d8c6d","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"68d7fea383481e1c0db9c424bbd5290d","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - f5e206ee6504d3218c4172f28e8d8c6d
+      - 68d7fea383481e1c0db9c424bbd5290d
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -149,24 +229,44 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root
     method: POST
   response:
-    body: '{"display_name":"src-root","type":"directory","size":null,"created_at":"2024-04-22T21:39:41Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"src-root","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:04Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "163"
+      - "881"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - ec94d09eaea811ac9756edc813e30c5c
+      - 191b0720a8adcf5a2b37c9d1027ffe87
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -181,27 +281,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"bf246b18915b7c654c0977c421425aed","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"10975d4ac084688780dc0c71ade4f59c","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - bf246b18915b7c654c0977c421425aed
+      - 10975d4ac084688780dc0c71ade4f59c
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -216,27 +336,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"a09dcead1733ebe9826946a2dd044507","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"c405bfcaea3ca7290400f492d48d2ecf","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:41 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - a09dcead1733ebe9826946a2dd044507
+      - c405bfcaea3ca7290400f492d48d2ecf
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -251,27 +391,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"e8b73569b59251876ccf0e3beb14eb59","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"c586206bafe981e91bfef4cb253e0dc5","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - e8b73569b59251876ccf0e3beb14eb59
+      - c586206bafe981e91bfef4cb253e0dc5
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -286,24 +446,44 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src
     method: POST
   response:
-    body: '{"display_name":"Src","type":"directory","size":null,"created_at":"2024-04-22T21:39:42Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"Src","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:04Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "158"
+      - "880"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 32f6dc86cfcd66e5822b7a4a6b7cd753
+      - 84263e638f9257746ba3bd68896d69c4
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -318,27 +498,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"2660741b9979d13bf6d1c6650c9e315a","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"006b8e6fe87b4e75fceaa0987914ebb7","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 2660741b9979d13bf6d1c6650c9e315a
+      - 006b8e6fe87b4e75fceaa0987914ebb7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -353,27 +553,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"b0f732eb7f1dc799099eba09f84e6560","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"0a5ed9f14d0e0e1232d494d21d0c024c","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - b0f732eb7f1dc799099eba09f84e6560
+      - 0a5ed9f14d0e0e1232d494d21d0c024c
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -388,27 +608,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"88494a73e1bb2542ad0e9ce40cfc28f2","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"8fd18a4c0ff9a6dd6c808f19ec809641","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 88494a73e1bb2542ad0e9ce40cfc28f2
+      - 8fd18a4c0ff9a6dd6c808f19ec809641
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -423,27 +663,47 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src
     method: POST
   response:
-    body: '{"error":"The destination exists.","http-code":422,"instance":"1c891d96594df82553045d2aff1d89ab","title":"Destination
+    body: '{"error":"The destination exists.","http-code":422,"instance":"39f727a3d5cb30c8979f7166ad4d2766","title":"Destination
       Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
       - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 1c891d96594df82553045d2aff1d89ab
+      - 39f727a3d5cb30c8979f7166ad4d2766
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -458,24 +718,44 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: POST
   response:
-    body: '{"display_name":"foo","type":"directory","size":null,"created_at":"2024-04-22T21:39:42Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"foo","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:04Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "158"
+      - "884"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:04 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 3aff564371d2db77bdd108b5e03c0683
+      - 5b7fe10373ba44eaa882ca5d9cb158b2
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -490,22 +770,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-04-22T21:54:42Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-8590436108","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/6ab9bb54-45e5-497f-96c4-55e8f718c46b?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240422%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240422T213942Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=mYgcP68WC8e40tra18qi64SA9rzlDEM1JznvnV0oJI7dnGTgncfUHBckHXre8dblhWrlqK_YiwUDq4.PSfXpHMtSdwm8Gv4Q__WBCE8EuEv7krbeR.Lh3ef9aG1hf22r\u0026X-Amz-Signature=216995abbbf425dff5bdbf4e5d945135e001b5e8f24c7710de4e2a3a09c855e8"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T17:46:05Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456071235","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f14d9476-34e1-4b41-922e-51dfa6888cfe?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T173105Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=Ebwsq65UunRB2XbOVc.jTR7MrjZjcMRv6Ko2VKz25lQGsSoyEXZycPjK3UglaKEcUdoMMS0w7pL2Z5dFCgyeouGGC4yECelQM7ozzvyNqwDmvTQDqEoERQ1Jc4JUTeuD\u0026X-Amz-Signature=ae63602f2f53c05c4ff796615814552b3e6fb28b08e24e006eeda762fd5843f0"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:42 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 9578b532414df02d208aed7b0a76a30d
+      - 0bde9ed6940ebc97d64ee0416cc3424c
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -515,7 +815,7 @@ interactions:
     headers:
       Content-Length:
       - "0"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/6ab9bb54-45e5-497f-96c4-55e8f718c46b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240422%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240422T213942Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=mYgcP68WC8e40tra18qi64SA9rzlDEM1JznvnV0oJI7dnGTgncfUHBckHXre8dblhWrlqK_YiwUDq4.PSfXpHMtSdwm8Gv4Q__WBCE8EuEv7krbeR.Lh3ef9aG1hf22r&X-Amz-Signature=216995abbbf425dff5bdbf4e5d945135e001b5e8f24c7710de4e2a3a09c855e8
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f14d9476-34e1-4b41-922e-51dfa6888cfe?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T173105Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=Ebwsq65UunRB2XbOVc.jTR7MrjZjcMRv6Ko2VKz25lQGsSoyEXZycPjK3UglaKEcUdoMMS0w7pL2Z5dFCgyeouGGC4yECelQM7ozzvyNqwDmvTQDqEoERQ1Jc4JUTeuD&X-Amz-Signature=ae63602f2f53c05c4ff796615814552b3e6fb28b08e24e006eeda762fd5843f0
     method: PUT
   response:
     body: ""
@@ -523,22 +823,22 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:06 GMT
       Etag:
       - '"d41d8cd98f00b204e9800998ecf8427e"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - OLVxy5lNXr6CqTyuTAW/fGs+0yci7K0NXmfb6brw6G92TgaGRnQEMmFX9av2WHOf1gOhjVjQfHI=
+      - 1zRLAzsMkKRG81aer8P9wsnYiKaYb3QnuA7oRyR4kH8wVi2a5mIbQWJ8Y8aaaHnzgKjmdWNt1Gqt8Wva4YBIONg7nLxAi7L+
       X-Amz-Request-Id:
-      - N3N6M9D90H737E9Y
+      - 3Q5KHRC7NG33FCJB
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"d41d8cd98f00b204e9800998ecf8427e","part":"1"}],"mkdir_parents":true,"ref":"put-8590436108"}'
+    body: '{"action":"end","etags":[{"etag":"d41d8cd98f00b204e9800998ecf8427e","part":"1"}],"mkdir_parents":true,"ref":"put-13456071235"}'
     form: {}
     headers:
       Content-Type:
@@ -548,28 +848,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt
     method: POST
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:39:43Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"baz.txt","type":"file","size":0,"created_at":"2025-05-23T17:31:05Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "335"
+      - "889"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:43 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 7221f6972b95f28828acf99f2dc50b12
+      - 5d3d9f17c8a57de4cc8e7974762f4f93
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -584,22 +904,42 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt
     method: PATCH
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:39:43Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"baz.txt","type":"file","size":0,"created_at":"2025-05-23T17:31:05Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:43 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 7b5b6f6ba35a638b4edf8db58b975722
+      - ec7f9d76edf18d18f1add3d81fdd4ff0
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -612,26 +952,46 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: GET
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","display_name":"foo","type":"directory","size":null,"created_at":"2024-04-22T21:39:42Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"foo","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:43 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 054c9b1419b76667bbc8e76757e770bc
+      - 440c9cd98787e5f9fe36f4c9a2f2ec04
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -644,26 +1004,46 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: GET
   response:
-    body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:39:43Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"baz.txt","type":"file","size":0,"created_at":"2025-05-23T17:31:05Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - f547f32db7d4ad4794c289083bd45c3c
+      - 3bc35f22e6d6fea1c64bb407a458aa19
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -676,26 +1056,46 @@ interactions:
     url: https://app.files.com/api/rest/v1/files/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt
     method: GET
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:39:43Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","download_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/6ab9bb54-45e5-497f-96c4-55e8f718c46b?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240422%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240422T213944Z\u0026X-Amz-Expires=60\u0026X-Amz-SignedHeaders=host\u0026response-cache-control=no-cache%2C%20no-store\u0026response-content-disposition=attachment%3B%20filename%3D%22baz.txt%22\u0026response-content-type=text%2Fplain\u0026X-Amz-Signature=128ff63fd834ac84034c8afa6ca52d987392905cf14b991698526f6b500b1242"}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"baz.txt","type":"file","size":0,"created_at":"2025-05-23T17:31:05Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","download_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f14d9476-34e1-4b41-922e-51dfa6888cfe?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T173105Z\u0026X-Amz-Expires=60\u0026X-Amz-SignedHeaders=host\u0026response-cache-control=no-cache%2C%20no-store\u0026response-content-disposition=attachment%3B%20filename%3D%22baz.txt%22\u0026response-content-type=text%2Fplain\u0026X-Amz-Signature=c3e1ee98035fba1b3745910be1559e41e76842da1c42234c6a5558ecd97920cb"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - ee43f521c1821e539a32eb61ade1de44
+      - 9c7da79351a2d47df0bc91dc08a68802
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -705,7 +1105,7 @@ interactions:
     headers:
       User-Agent:
       - Files.com Go SDK 1.0
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/6ab9bb54-45e5-497f-96c4-55e8f718c46b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240422%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240422T213944Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&response-cache-control=no-cache%2C%20no-store&response-content-disposition=attachment%3B%20filename%3D%22baz.txt%22&response-content-type=text%2Fplain&X-Amz-Signature=128ff63fd834ac84034c8afa6ca52d987392905cf14b991698526f6b500b1242
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f14d9476-34e1-4b41-922e-51dfa6888cfe?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T173105Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&response-cache-control=no-cache%2C%20no-store&response-content-disposition=attachment%3B%20filename%3D%22baz.txt%22&response-content-type=text%2Fplain&X-Amz-Signature=c3e1ee98035fba1b3745910be1559e41e76842da1c42234c6a5558ecd97920cb
     method: GET
   response:
     body: ""
@@ -721,15 +1121,15 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Mon, 22 Apr 2024 21:39:45 GMT
+      - Fri, 23 May 2025 17:31:06 GMT
       Etag:
       - '"59adb24ef3cdbe0297f05b395827453f-1"'
       Last-Modified:
-      - Mon, 22 Apr 2024 21:39:43 GMT
+      - Fri, 23 May 2025 17:31:06 GMT
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - 4pTCiLd1Az4NAYGnmTuqsmOBgFBHDw1GTRzdrg903x9Json421Fi7qU9xFyf3p5zcsAGxpcffCg=
+      - GBODP7GlzjuQaTFX44H++IZPTFGQ6hZ2zQcUQxN5EWQtX6KbZiMwxrGyrEYecbSkWLvhlRhDjAEcK1d0QuTo7RMnzcY7w7Cz
       X-Amz-Meta-X-Amz-Meta-Gid:
       - "65534"
       X-Amz-Meta-X-Amz-Meta-Mode:
@@ -737,7 +1137,7 @@ interactions:
       X-Amz-Meta-X-Amz-Meta-Uid:
       - "65534"
       X-Amz-Request-Id:
-      - 6J6WX73S3Y0XVVYQ
+      - 3Q5YHN8TF306YZB0
       X-Amz-Server-Side-Encryption:
       - AES256
       X-Amz-Version-Id:
@@ -754,26 +1154,46 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: GET
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","display_name":"foo","type":"directory","size":null,"created_at":"2024-04-22T21:39:42Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"foo","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 9b0fe45968fec9f8c50eeb532e05b7ed
+      - 50b52da349be13b5ee616eedcc7b113c
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -786,26 +1206,46 @@ interactions:
     url: https://app.files.com/api/rest/v1/file_actions/metadata/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: GET
   response:
-    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","display_name":"foo","type":"directory","size":null,"created_at":"2024-04-22T21:39:42Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"foo","type":"directory","size":null,"created_at":"2025-05-23T17:31:04Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 38b59fa928dfe07bcc00aeeaaef893cb
+      - a50ce8c218ea940ada484a5d8ee2ad1b
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -818,28 +1258,48 @@ interactions:
     url: https://app.files.com/api/rest/v1/folders/tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo
     method: GET
   response:
-    body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","display_name":"baz.txt","type":"file","size":0,"created_at":"2024-04-22T21:39:43Z","mtime":"2024-04-22T21:39:43Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":"0","md5":"d41d8cd98f00b204e9800998ecf8427e","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"tmp/TestDownload-files-cli_download-copy_foo_to_Dest_with_PreserveTimes/src-root/Src/foo/baz.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"baz.txt","type":"file","size":0,"created_at":"2025-05-23T17:31:05Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:31:05Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:05 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Cache-For-Seconds:
       - "900"
       X-Files-Cached-Response:
-      - "1713821984"
+      - "1748021465"
       X-Files-Safe-To-Cache:
       - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - a7d8affa2c2e41229f8b77959f8a1bfe
+      - 5fda0543d36eb7ca0d257a5f1ba1a034
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -856,16 +1316,36 @@ interactions:
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Date:
-      - Mon, 22 Apr 2024 21:39:44 GMT
+      - Fri, 23 May 2025 17:31:06 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 0a786b502cd2531c284756b2302aa6a9
+      - c9f820d496d85dce78987580fcb320f0
+      X-Xss-Protection:
+      - 1; mode=block
     status: 204 No Content
     code: 204
     duration: ""

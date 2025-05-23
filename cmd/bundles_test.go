@@ -75,6 +75,6 @@ func TestBundles_Create(t *testing.T) {
 			"create", "--paths", "folder1",
 		})
 
-		assert.Equal(t, "Error: Model Save Error - `Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension doesn't exist or can't be read by you` - status (7)\n", string(stderr))
+		assert.Equal(t, "Error: Model Save Error - `Filename folder1 doesn't exist or can't be read and/or shared by you` - status (7)\n", string(stderr))
 	})
 }

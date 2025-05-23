@@ -8,33 +8,55 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 3.2.30
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/bundles
     method: POST
   response:
-    body: >
-      {"error":"Filename Departments/Sales/Sales Prospect Upload/1099 Agents/FirstNameExtension
-      doesn't exist or can't be read by you","http-code":422,"instance":"ccfc1c11d53f2ae88e06b44b16ff09c8",
-      "title":"Model Save Error","type":"processing-failure/model-save-error"}
+    body: '{"error":"Filename folder1 doesn''t exist or can''t be read and/or shared
+      by you","http-code":422,"instance":"1aefb0f9bf8388961b4ac9c29965014a","model_errors":{"filename":["Filename
+      folder1 doesn''t exist or can''t be read and/or shared by you"]},"model_error_keys":{"filename":["folder1
+      doesn''t exist or can''t be read and/or shared by you"]},"errors":["Filename
+      folder1 doesn''t exist or can''t be read and/or shared by you"],"title":"Model
+      Save Error","type":"processing-failure/model-save-error"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "263"
+      - "493"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 09 Aug 2024 16:34:49 GMT
+      - Fri, 23 May 2025 17:47:09 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
       - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
-      - not-authenticated/invalid-credentials
+      - processing-failure/model-save-error
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - ccfc1c11d53f2ae88e06b44b16ff09c8
+      - 1aefb0f9bf8388961b4ac9c29965014a
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""

@@ -5,63 +5,104 @@ interactions:
     body: '{}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/test-dir-files-delete
     method: POST
   response:
-    body: '{"display_name":"test-dir-files-delete","type":"directory","size":null,"created_at":"2022-11-30T01:04:10Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"error":"The destination exists.","http-code":422,"instance":"af6cf2912387b3bb3662963200f4b860","title":"Destination
+      Exists","type":"processing-failure/destination-exists"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "176"
+      - "173"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 01:04:10 GMT
+      - Fri, 23 May 2025 17:50:43 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Error-Class:
+      - processing-failure/destination-exists
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 070555a3-e509-4b3e-ac9a-68b1accb0f38
-    status: 201 Created
-    code: 201
+      - af6cf2912387b3bb3662963200f4b860
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 422 Unprocessable Entity
+    code: 422
     duration: ""
 - request:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/test-dir-files-delete/1.text
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2022-11-30T01:19:11Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-22","upload_uri":"https://s3.amazonaws.com/dev.brickftp.com/metadata/1/a7d0dac2-b161-4428-9066-7d76024969c5?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIM45HSA52WL42SVA%2F20221130%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20221130T010411Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=W4R.0MwtC_l8nt8ckJTwVvKtdUoZN2vVhe.Nv4TUBu0AskMEnlNNpl1SROJjIGFS7vEEvphLohQtDVb2cmAasCMCnYusbbzbzZtysHL3m9nOkHIbGPrKZjSpqbKfh6rm\u0026X-Amz-Signature=fa18a3f132646c7c77430c20e288c4fe4a8c7c6b09d822e3908c40f6611b412c"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T18:05:43Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456296679","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/6fed297a-2b79-4e72-8f67-d73583bf91c0?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T175043Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=..xGTMThaXMsyGjKU4huFMy5jDiznl4f4uVk1__qYLczzJ3ciO9TqF_OblGNoVtbyVqKSWnsbkcw.jKSn6o8tSU8CfmRsEhdQ2Z.MsAE75t5pUsbwdBjtB9oqJ0O4Qjo\u0026X-Amz-Signature=21fb8ccddd1833c4a2e4fe0bc8f1258e1b610879a1384e62e778440c81539165"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "937"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 01:04:11 GMT
+      - Fri, 23 May 2025 17:50:43 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - f6633d85-65cd-4bee-ab3e-7e563ae6f552
+      - 4408b74740aa73f79c4902ebc80ae628
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -69,11 +110,9 @@ interactions:
     body: testing 1
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/dev.brickftp.com/metadata/1/a7d0dac2-b161-4428-9066-7d76024969c5?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIM45HSA52WL42SVA%2F20221130%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20221130T010411Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=W4R.0MwtC_l8nt8ckJTwVvKtdUoZN2vVhe.Nv4TUBu0AskMEnlNNpl1SROJjIGFS7vEEvphLohQtDVb2cmAasCMCnYusbbzbzZtysHL3m9nOkHIbGPrKZjSpqbKfh6rm&X-Amz-Signature=fa18a3f132646c7c77430c20e288c4fe4a8c7c6b09d822e3908c40f6611b412c
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/6fed297a-2b79-4e72-8f67-d73583bf91c0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T175043Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=..xGTMThaXMsyGjKU4huFMy5jDiznl4f4uVk1__qYLczzJ3ciO9TqF_OblGNoVtbyVqKSWnsbkcw.jKSn6o8tSU8CfmRsEhdQ2Z.MsAE75t5pUsbwdBjtB9oqJ0O4Qjo&X-Amz-Signature=21fb8ccddd1833c4a2e4fe0bc8f1258e1b610879a1384e62e778440c81539165
     method: PUT
   response:
     body: ""
@@ -81,80 +120,124 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Wed, 30 Nov 2022 01:04:12 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Etag:
       - '"ab6e3983b98e417df77242b035504638"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - XJIHEYAf3ppm0fZyE1lgUdv3KJdoVOB1eA3FgK5Y758x0g+lKeTUPsU9IScFOHS1XPcUPWlD7Xo=
+      - V6VpA2xyvolJvXXjM1fG7ZKUqCpifpI+TLSgyQ5h6fnrui4dM3i4HMcp5y2L6Bh+1B+CrRXIaZI=
       X-Amz-Request-Id:
-      - 1A9W5SCSJA320A74
+      - W3WR0GKK6E6TMKPR
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"provided_mtime":"2010-11-17T20:34:58.651387237Z","ref":"put-22","size":9}'
+    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"ref":"put-13456296679","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete/1.text
     method: POST
   response:
-    body: '{"path":"test-dir-files-delete/1.text","display_name":"1.text","type":"file","size":9,"created_at":"2022-11-30T01:04:12Z","mtime":"2022-11-30T01:04:12Z","provided_mtime":"2010-11-17T20:34:58Z","crc32":null,"md5":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"test-dir-files-delete/1.text","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"1.text","type":"file","size":9,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"application/octet-stream","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "298"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 01:04:12 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 73f419ab-abc0-4c7b-83a2-6ca7ec64434b
-    status: 201 Created
-    code: 201
+      - 5c1dcec2a3287cf6a9d17ce291be0221
+      X-Xss-Protection:
+      - 1; mode=block
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/test-dir-files-delete
     method: DELETE
   response:
-    body: '{"error":"Folder test-dir-files-delete not empty","http-code":422,"instance":"da1d6f20-512c-4c0d-8eb5-eeae15a21acc","title":"Folder
+    body: '{"error":"Folder test-dir-files-delete not empty","http-code":422,"instance":"10448b8b2e16469a29dc21961e155145","title":"Folder
       Not Empty","type":"processing-failure/folder-not-empty"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "188"
+      - "184"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Wed, 30 Nov 2022 01:04:12 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
+      Server:
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Error-Class:
+      - processing-failure/folder-not-empty
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - da1d6f20-512c-4c0d-8eb5-eeae15a21acc
+      - 10448b8b2e16469a29dc21961e155145
+      X-Xss-Protection:
+      - 1; mode=block
     status: 422 Unprocessable Entity
     code: 422
     duration: ""

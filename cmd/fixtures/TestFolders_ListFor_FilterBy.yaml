@@ -5,34 +5,51 @@ interactions:
     body: '{}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy
     method: POST
   response:
-    body: '{"display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"TestFolders_ListFor_FilterBy","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "183"
+      - "849"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:14 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 268806bc-14f3-4ecb-bd61-06024d1d2c85
-      - 156145e6873d563aeb46388b847101d3
+      - bc5c7d46a93d22efa99a0a8b51734863
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -40,34 +57,51 @@ interactions:
     body: '{}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars
     method: POST
   response:
-    body: '{"display_name":"cars","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","crc32":null,"md5":null,"subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"TestFolders_ListFor_FilterBy/cars","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"cars","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "159"
+      - "830"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:14 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - e067389d-2ee8-40e7-ba3a-f146a9a2988e
-      - 6adeb2301ab0ce0dd03fae62cd63c128
+      - 9ea2aca00d66f605566e8d8415301687
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -75,32 +109,49 @@ interactions:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/TestFolders_ListFor_FilterBy/space.txt
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2023-01-26T00:47:15Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-3954828176","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/45d6604b-4fdf-462d-ad8c-21ca419095fc?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20230126T003215Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=kKcJUGFQSiI0TI_cCMEUF8h256Vf.kvlB711rsU5EzDmQHy1iQ4aRdIqxM5PgypJj55wyUBvr2ItUejuNmHXCJBGD2PF7n0LpJsEqpMKWACYuaGfmRk_TYhGzWvlkEOO\u0026X-Amz-Signature=78ac7015a0028ea0ef23672f90a2cc4c717219af63a4bff254b4c939e3020a0c"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T18:05:44Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456296830","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/1bc6c8e7-6cca-41dd-ba78-98a93dd81895?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T175044Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=hvPuqr67WUvFcBbCIIUfdut_9ODQWkheTaZ7Ih8Mxv16MRJqe.536qwZl_hIWIAVJYqNUsrDY8OV0XHNWHQJpq0BP.KFIRd83D0rgHdr5OEPEI4ZpzbJ6Mob51ccF9N1\u0026X-Amz-Signature=4f92e94ab086226b93dad32f67008bc1691d1524d371094e05297aa1b869a5fd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:15 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 87ba71a5-965d-44d7-9466-454179c6dfb2
-      - 13a5a28455659e7583753bf0dbdce9d5
+      - f63d8eee556e31ef5b417f27e9d65b13
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -108,11 +159,9 @@ interactions:
     body: testing 0
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/45d6604b-4fdf-462d-ad8c-21ca419095fc?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230126T003215Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=kKcJUGFQSiI0TI_cCMEUF8h256Vf.kvlB711rsU5EzDmQHy1iQ4aRdIqxM5PgypJj55wyUBvr2ItUejuNmHXCJBGD2PF7n0LpJsEqpMKWACYuaGfmRk_TYhGzWvlkEOO&X-Amz-Signature=78ac7015a0028ea0ef23672f90a2cc4c717219af63a4bff254b4c939e3020a0c
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/1bc6c8e7-6cca-41dd-ba78-98a93dd81895?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T175044Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=hvPuqr67WUvFcBbCIIUfdut_9ODQWkheTaZ7Ih8Mxv16MRJqe.536qwZl_hIWIAVJYqNUsrDY8OV0XHNWHQJpq0BP.KFIRd83D0rgHdr5OEPEI4ZpzbJ6Mob51ccF9N1&X-Amz-Signature=4f92e94ab086226b93dad32f67008bc1691d1524d371094e05297aa1b869a5fd
     method: PUT
   response:
     body: ""
@@ -120,52 +169,73 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Thu, 26 Jan 2023 00:32:16 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Etag:
       - '"17522b7187d4320a39cc5f674f45d7dc"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - GzCAg/ZJyR41IczmnDhZdwEwjh9Rp1Eh9+mNOo2BNnEuQt+EYKkQ9APpch1Ex3fUZljMo9b6XnU=
+      - aPMTblduRRlGWgULF1PVdeoqnPqy3RlfDFDIFQE1IiiiRBx/fwp5zpq/OtDdJUAwaAzOjHNX5pQ=
       X-Amz-Request-Id:
-      - X3PVFGH21KHQ970T
+      - QHJEZ8P096KPDDED
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"17522b7187d4320a39cc5f674f45d7dc","part":"1"}],"mkdir_parents":true,"provided_mtime":"2023-01-25T16:32:14.80354-08:00","ref":"put-3954828176","size":9}'
+    body: '{"action":"end","etags":[{"etag":"17522b7187d4320a39cc5f674f45d7dc","part":"1"}],"mkdir_parents":true,"ref":"put-13456296830","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/TestFolders_ListFor_FilterBy/space.txt
     method: POST
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy/space.txt","display_name":"space.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:16Z","mtime":"2023-01-26T00:32:16Z","provided_mtime":"2023-01-26T00:32:14Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"TestFolders_ListFor_FilterBy/space.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"space.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "297"
+      - "833"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:16 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 31f032dc-5168-43c1-bb1b-e3051f429ac5
-      - 7af23849f7dd5005b4e17f80fc1375ea
+      - 54194fab8ec320cd2062fc2193c0adce
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -173,32 +243,49 @@ interactions:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/TestFolders_ListFor_FilterBy/food.txt
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2023-01-26T00:47:16Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-3954828321","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/74138fa0-fc69-4031-ae63-0b9f5f1172a2?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20230126T003216Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=6N.PyMQ1PyMs15fvELGXq3aYSRPmdaNy7DMbXIAiMNDZy7sbc8RJHS_aPttdkQuFOQJ6L7vlpjYtPzAJMlfxpgJ_NbCNjngWV8bEuH0FuT7YETsiKk98bWWSDiH4KWhx\u0026X-Amz-Signature=5f083f2eed36acbc28bfc5f06cdbcdba9657713fd34fa5b17611c24ade927f79"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T18:05:44Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456296971","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/7484d915-014c-4902-85df-43c65ddf8c7f?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T175044Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=Vm.YJOSBbOXdcD9T_r3DATxoLylFwgV9WUn.9N1NxcQvPmdy0px4e0.g4W8bJYbUeKpDd57SoVkVnRwEPC9zOPWIsfDkq8Nm3ajNQrNc4mypHZOkRvILkXxF47a_K6SO\u0026X-Amz-Signature=44810f516b5bcc559eb8a84f4fb05941b9f13c3ac9b6f560a00e28a709d3750c"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:16 GMT
+      - Fri, 23 May 2025 17:50:44 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 6b5683d7-0976-4926-86eb-270606bdb448
-      - 58b916b9e15e056db979ad53d69f77e9
+      - 3c343f7a53c57d9a7f966f0d02a44022
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -206,11 +293,9 @@ interactions:
     body: testing 1
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/74138fa0-fc69-4031-ae63-0b9f5f1172a2?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230126T003216Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=6N.PyMQ1PyMs15fvELGXq3aYSRPmdaNy7DMbXIAiMNDZy7sbc8RJHS_aPttdkQuFOQJ6L7vlpjYtPzAJMlfxpgJ_NbCNjngWV8bEuH0FuT7YETsiKk98bWWSDiH4KWhx&X-Amz-Signature=5f083f2eed36acbc28bfc5f06cdbcdba9657713fd34fa5b17611c24ade927f79
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/7484d915-014c-4902-85df-43c65ddf8c7f?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T175044Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=Vm.YJOSBbOXdcD9T_r3DATxoLylFwgV9WUn.9N1NxcQvPmdy0px4e0.g4W8bJYbUeKpDd57SoVkVnRwEPC9zOPWIsfDkq8Nm3ajNQrNc4mypHZOkRvILkXxF47a_K6SO&X-Amz-Signature=44810f516b5bcc559eb8a84f4fb05941b9f13c3ac9b6f560a00e28a709d3750c
     method: PUT
   response:
     body: ""
@@ -218,52 +303,73 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Thu, 26 Jan 2023 00:32:18 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Etag:
       - '"ab6e3983b98e417df77242b035504638"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - n5TXv77L6CBqpytFqVdiP4ZU7hbH664kWEIDzaZoDE0SgrbTTddoQNTF6Jtr6+c/G4ISLKJVxX0=
+      - Yrbu6cRCI901NUKWOKw7ACHU5JGZ3TA+YXg3KbeZUZ2hBp5TXcWZbsYLnJ2DbcrsODzgT19gd1A=
       X-Amz-Request-Id:
-      - CFXGQR03GX3SSNFS
+      - QHJ6VAYVJNGPRXNY
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"provided_mtime":"2023-01-25T16:32:16.358236-08:00","ref":"put-3954828321","size":9}'
+    body: '{"action":"end","etags":[{"etag":"ab6e3983b98e417df77242b035504638","part":"1"}],"mkdir_parents":true,"ref":"put-13456296971","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/TestFolders_ListFor_FilterBy/food.txt
     method: POST
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy/food.txt","display_name":"food.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:17Z","mtime":"2023-01-26T00:32:17Z","provided_mtime":"2023-01-26T00:32:16Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"TestFolders_ListFor_FilterBy/food.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"food.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "295"
+      - "831"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:17 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 4528d660-d5a3-4046-aca9-33e092b54e3d
-      - 9e0f884ca004b880802d1c281fabe92c
+      - f668a3605e815e2998fa549b95db6d3f
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -271,32 +377,49 @@ interactions:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/TestFolders_ListFor_FilterBy/cars/car.jpg
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2023-01-26T00:47:18Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-3954828441","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/1795aced-8cb5-4f67-b00f-7900eaac4489?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20230126T003218Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=Gkf3CP3Aj5t01tVXVsSOaGDCEtXmVeTp3xDnEGJpV63Azo8QYyl10KER3MjEJC8eOdEU6tBWIvWov0K2Qn5fo_y5NR1D5q4rc2o6L5NsgmGmLqlV3qDWoTkkQnqMHHjm\u0026X-Amz-Signature=7fee965deb39837f41ce288dc4d4d0719d32995afe36d3ad95ab6a56497d1e8e"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T18:05:45Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456297042","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/bdc4be15-396d-4cef-a787-33c3bd53488e?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T175045Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=oA_T65k626a3OneEFxGwDOt1ztTb_TMoWYgVixVryigQNAZz14eBo1iba11p_zLm0NiLfD09aQK0rJ3arNQ_Vh2E_kMFM8LOofjdyX48hY2jK7jB5XIpmCQJfLHADcRr\u0026X-Amz-Signature=66606b84f7632e2ccdc3428613e1f872802704aea4a00d1d07a59bdbf961241a"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:18 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 8b2e087f-33cc-4862-a460-2a3a627fb910
-      - be3459ce76c70fcd5799c824d07acbfe
+      - a264397aa2136fca8b0214a52a53c03a
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -304,11 +427,9 @@ interactions:
     body: testing 2
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/1795aced-8cb5-4f67-b00f-7900eaac4489?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230126T003218Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=Gkf3CP3Aj5t01tVXVsSOaGDCEtXmVeTp3xDnEGJpV63Azo8QYyl10KER3MjEJC8eOdEU6tBWIvWov0K2Qn5fo_y5NR1D5q4rc2o6L5NsgmGmLqlV3qDWoTkkQnqMHHjm&X-Amz-Signature=7fee965deb39837f41ce288dc4d4d0719d32995afe36d3ad95ab6a56497d1e8e
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/bdc4be15-396d-4cef-a787-33c3bd53488e?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T175045Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=oA_T65k626a3OneEFxGwDOt1ztTb_TMoWYgVixVryigQNAZz14eBo1iba11p_zLm0NiLfD09aQK0rJ3arNQ_Vh2E_kMFM8LOofjdyX48hY2jK7jB5XIpmCQJfLHADcRr&X-Amz-Signature=66606b84f7632e2ccdc3428613e1f872802704aea4a00d1d07a59bdbf961241a
     method: PUT
   response:
     body: ""
@@ -316,52 +437,73 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Thu, 26 Jan 2023 00:32:19 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Etag:
       - '"f29e2ea37b89dc6c1a7522523109e5c0"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - uO65ZhpHOhLtLS+VGsKAFYaikjdMDKx49a2OHSnZtXfjheRwOWlB+PcufJacBONNzWaCLTJMvKs=
+      - /ElLQ2YcN6n41uSj5btCc/qiByh0Nhx0rSzFxtlt+3TuplRhXKgKo/fHj4nsztMWxpHENXfVeJU=
       X-Amz-Request-Id:
-      - 5ZWFXRJH6WJESYW0
+      - JKD3HFYWXATRKNVA
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"f29e2ea37b89dc6c1a7522523109e5c0","part":"1"}],"mkdir_parents":true,"provided_mtime":"2023-01-25T16:32:17.664785-08:00","ref":"put-3954828441","size":9}'
+    body: '{"action":"end","etags":[{"etag":"f29e2ea37b89dc6c1a7522523109e5c0","part":"1"}],"mkdir_parents":true,"ref":"put-13456297042","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/TestFolders_ListFor_FilterBy/cars/car.jpg
     method: POST
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","display_name":"car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:18Z","mtime":"2023-01-26T00:32:18Z","provided_mtime":"2023-01-26T00:32:17Z","crc32":null,"md5":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "298"
+      - "834"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:18 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 54ce9db8-6670-4ab0-a8ab-a5d02f4e8b46
-      - bc06df31db16007d0d96ad0b100afab3
+      - 89f935d0ba1d78359ff7ee159812b53b
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -369,32 +511,49 @@ interactions:
     body: '{"mkdir_parents":true,"size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/begin_upload/TestFolders_ListFor_FilterBy/cars/super-car.jpg
     method: POST
   response:
-    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2023-01-26T00:47:19Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-3954828540","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/e73ea505-2eb5-4988-b2d2-a58fbd2204ec?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20230126T003219Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=WxBFip.dNeyUfSOvGHz5Rk8u3PFqmVTj0fUeifbDOaWF0pZ.r0Ve8Kr.DluZ9_FgfhDYf.kq4vWXNpSmjGSwKVn16oFaSifiEcL77AnFnQJvTE8UFNYwHCUePJY_b6bv\u0026X-Amz-Signature=1be9f5f87babac59b04d2174ec8ca34deb3b62b7d9b83bf8c7929c4a0b50527c"}]'
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2025-05-23T18:05:45Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-13456297127","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f46f2e25-0fc0-4662-8421-b23ea14323f6?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20250523T175045Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=DFpK64ZPCJL8lOurmOD9i.ul7.kZ.g9LZmZeovrW3Ohjv82TdYsFS5J8faGzqYFO.RjojrWTBRzc8oxh8a4c1H8PlZChL56LG0MzPI7i7G1XZWvk6tCRciJUQz.txkUB\u0026X-Amz-Signature=0fe6ae90b6e84f8780dffd55e0f281469db5b20677595209213b6c0aaee427bf"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:19 GMT
+      - Fri, 23 May 2025 17:50:45 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 6d24402e-4ab4-4594-91a0-1a3d5766fc11
-      - 5151b07b3999e82619d23254cd058e16
+      - a6c9dc97555ab558360210fdf3bab81d
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -402,11 +561,9 @@ interactions:
     body: testing 3
     form: {}
     headers:
-      Connection:
-      - close
       Content-Length:
       - "9"
-    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/37263/e73ea505-2eb5-4988-b2d2-a58fbd2204ec?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20230126%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230126T003219Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=WxBFip.dNeyUfSOvGHz5Rk8u3PFqmVTj0fUeifbDOaWF0pZ.r0Ve8Kr.DluZ9_FgfhDYf.kq4vWXNpSmjGSwKVn16oFaSifiEcL77AnFnQJvTE8UFNYwHCUePJY_b6bv&X-Amz-Signature=1be9f5f87babac59b04d2174ec8ca34deb3b62b7d9b83bf8c7929c4a0b50527c
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/134942/f46f2e25-0fc0-4662-8421-b23ea14323f6?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20250523%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250523T175045Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=DFpK64ZPCJL8lOurmOD9i.ul7.kZ.g9LZmZeovrW3Ohjv82TdYsFS5J8faGzqYFO.RjojrWTBRzc8oxh8a4c1H8PlZChL56LG0MzPI7i7G1XZWvk6tCRciJUQz.txkUB&X-Amz-Signature=0fe6ae90b6e84f8780dffd55e0f281469db5b20677595209213b6c0aaee427bf
     method: PUT
   response:
     body: ""
@@ -414,52 +571,73 @@ interactions:
       Content-Length:
       - "0"
       Date:
-      - Thu, 26 Jan 2023 00:32:20 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Etag:
       - '"15e081c59a53cf6aadd83c7dc0e831d3"'
       Server:
       - AmazonS3
       X-Amz-Id-2:
-      - u62fomE2iNT/v/OO5Srzz589MoJKli8AYQsH1QvV7Z7K4q/mmmWwpXjJLofOIY0ZjhHy9vXuB0Q=
+      - Oz4zF6tNlxLNPk8jGouWGfEEvtjfQkoKqcXO4sXdey9J6LK6mWcj0CFrZ1UBt5cD48zZDeX6Dxs=
       X-Amz-Request-Id:
-      - MBQ4FB746WT1Y4YX
+      - JKD5BR6N7S4J3H16
       X-Amz-Server-Side-Encryption:
       - AES256
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"action":"end","etags":[{"etag":"15e081c59a53cf6aadd83c7dc0e831d3","part":"1"}],"mkdir_parents":true,"provided_mtime":"2023-01-25T16:32:18.969001-08:00","ref":"put-3954828540","size":9}'
+    body: '{"action":"end","etags":[{"etag":"15e081c59a53cf6aadd83c7dc0e831d3","part":"1"}],"mkdir_parents":true,"ref":"put-13456297127","size":9}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/TestFolders_ListFor_FilterBy/cars/super-car.jpg
     method: POST
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","display_name":"super-car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:20Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":"2023-01-26T00:32:18Z","crc32":null,"md5":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}'
+    body: '{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"super-car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:46Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "310"
+      - "846"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:20 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 1761cf24-c74e-4fe9-9a69-ccc176ca7935
-      - 56c61ad5ea3a9b97f734b5d943fbfb16
+      - 58ee6d2491e246fc8e3190b71cd31ff7
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""
@@ -467,30 +645,51 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/metadata/TestFolders_ListFor_FilterBy
     method: GET
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy","display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"TestFolders_ListFor_FilterBy","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:20 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 301022bd-de42-4686-a9bc-e56db36c610e
-      - 601bb18751a945884e6f0dddfe9c37f7
+      - f5258245c30e604c3cf8212153b5e8a0
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -498,30 +697,51 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy
     method: GET
   response:
-    body: '[{"path":"TestFolders_ListFor_FilterBy/cars","display_name":"cars","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","display_name":"food.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:17Z","mtime":"2023-01-26T00:32:17Z","provided_mtime":"2023-01-26T00:32:16Z","crc32":"5867c1f8","md5":"ab6e3983b98e417df77242b035504638","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","display_name":"space.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:16Z","mtime":"2023-01-26T00:32:16Z","provided_mtime":"2023-01-26T00:32:14Z","crc32":"2f60f16e","md5":"17522b7187d4320a39cc5f674f45d7dc","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"TestFolders_ListFor_FilterBy/cars","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"cars","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"food.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"space.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:21 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 3d720328-0723-41f5-8df2-74b8eeb76228
-      - 3efada2a893d1e1a8048cfdd64064d8f
+      - 318d6da8877a01a772247f0c0da2f956
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -529,30 +749,51 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars
     method: GET
   response:
-    body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","display_name":"car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:18Z","mtime":"2023-01-26T00:32:18Z","provided_mtime":"2023-01-26T00:32:17Z","crc32":"c16e9042","md5":"f29e2ea37b89dc6c1a7522523109e5c0","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","display_name":"super-car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:20Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":"2023-01-26T00:32:18Z","crc32":"b669a0d4","md5":"15e081c59a53cf6aadd83c7dc0e831d3","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"super-car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:46Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:21 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - c63b8fba-8192-4e0e-b6f6-68aa9eafa54c
-      - dfcc937d83cea7ac9232d1c7fa6f5dd9
+      - 134c23b1d7b7ad7ee110c87193c283de
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -560,30 +801,51 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/metadata/TestFolders_ListFor_FilterBy
     method: GET
   response:
-    body: '{"path":"TestFolders_ListFor_FilterBy","display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
+    body: '{"path":"TestFolders_ListFor_FilterBy","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"TestFolders_ListFor_FilterBy","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:22 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - e7d184cc-ceac-4038-b2e7-25296c6a7ef8
-      - eb5b261244331b2ca2f6cb1f5e17daae
+      - fe69afc0c054f56419285210a8803336
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -591,32 +853,53 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy
     method: GET
   response:
-    body: '[{"path":"TestFolders_ListFor_FilterBy/cars","display_name":"cars","type":"directory","size":null,"created_at":"2023-01-26T00:32:14Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":null,"crc32":null,"md5":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","display_name":"food.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:17Z","mtime":"2023-01-26T00:32:17Z","provided_mtime":"2023-01-26T00:32:16Z","crc32":"5867c1f8","md5":"ab6e3983b98e417df77242b035504638","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","display_name":"space.txt","type":"file","size":9,"created_at":"2023-01-26T00:32:16Z","mtime":"2023-01-26T00:32:16Z","provided_mtime":"2023-01-26T00:32:14Z","crc32":"2f60f16e","md5":"17522b7187d4320a39cc5f674f45d7dc","mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"TestFolders_ListFor_FilterBy/cars","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"cars","type":"directory","size":null,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"permissions":"lrwd","subfolders_locked?":false,"is_locked":false},{"path":"TestFolders_ListFor_FilterBy/food.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"food.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/space.txt","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"space.txt","type":"file","size":9,"created_at":"2025-05-23T17:50:44Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:44Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:22 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
       X-Files-Cached-Response:
-      - "1674693141"
+      - "1748022646"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 12c4f2ef-f43c-443b-81f2-de7c1e20a18e
-      - 4e1b6e456e38e7c4f61b840bac683d58
+      - 5c847519a694082bd73fa4ba2e76a3b8
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -624,32 +907,53 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/folders/TestFolders_ListFor_FilterBy/cars
     method: GET
   response:
-    body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","display_name":"car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:18Z","mtime":"2023-01-26T00:32:18Z","provided_mtime":"2023-01-26T00:32:17Z","crc32":"c16e9042","md5":"f29e2ea37b89dc6c1a7522523109e5c0","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","display_name":"super-car.jpg","type":"file","size":9,"created_at":"2023-01-26T00:32:20Z","mtime":"2023-01-26T00:32:20Z","provided_mtime":"2023-01-26T00:32:18Z","crc32":"b669a0d4","md5":"15e081c59a53cf6aadd83c7dc0e831d3","mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'
+    body: '[{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:45Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:45Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"},{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","created_by_id":null,"created_by_api_key_id":3708528,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"super-car.jpg","type":"file","size":9,"created_at":"2025-05-23T17:50:46Z","last_modified_by_id":null,"last_modified_by_api_key_id":3708528,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2025-05-23T17:50:46Z","provided_mtime":null,"crc32":null,"md5":null,"sha1":null,"sha256":null,"mime_type":"image/jpeg","region":"us-east-1","permissions":"lrwd"}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 Jan 2023 00:32:22 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Files-Cache-For-Seconds:
+      - "900"
       X-Files-Cached-Response:
-      - "1674693141"
+      - "1748022646"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - b3323778-3b10-406b-af85-ccbfd877ee4f
-      - 78b7a34ec3d81731b653b9cf1b64c23c
+      - 6e74f1647c0fd8cd7345391cb6b6cefd
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
@@ -657,10 +961,8 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/files/TestFolders_ListFor_FilterBy?recursive=true
     method: DELETE
   response:
@@ -668,17 +970,36 @@ interactions:
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Date:
-      - Thu, 26 Jan 2023 00:32:23 GMT
+      - Fri, 23 May 2025 17:50:46 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - ea869f14-de48-4402-bb86-612b6f7576d7
-      - 1d15b432f92da92f6275282bf8f81f2a
+      - 8c76c0fc081fe14f8cb5cca0d93db205
+      X-Xss-Protection:
+      - 1; mode=block
     status: 204 No Content
     code: 204
     duration: ""

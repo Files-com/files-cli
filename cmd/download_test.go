@@ -46,7 +46,7 @@ func TestDownload(t *testing.T) {
 			downloadCmd.SetErr(stderr)
 			downloadCmd.SetOut(stdout)
 			require.NoError(t, downloadCmd.Run())
-			assert.Contains(t, stdout.String(), "errored open you will never find me: Not Found - `Not Found`")
+			assert.Contains(t, stdout.String(), "errored open you will never find me: Not Found - `Not Found.  This may be related to your permissions.`\n")
 			assert.Equal(t, stderr.String(), "")
 			r.Stop()
 		})

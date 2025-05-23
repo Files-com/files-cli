@@ -14,36 +14,10 @@ interactions:
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
       Content-Length:
       - "0"
-      Location:
-      - http://testdomain.com/api/rest/v1/sessions
-      Set-Cookie:
-      - mtmssl=1; path=/;
-    status: 302 Found
-    code: 302
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Files.com Go SDK 1.0
-    url: http://testdomain.com/api/rest/v1/sessions
-    method: GET
-  response:
-    body: Invalid Request
-    headers:
-      Content-Type:
-      - text/plan
       Date:
-      - Thu, 07 Dec 2023 17:42:41 GMT
-      Server:
-      - openresty/1.13.6.1
-    status: 400 Bad Request
-    code: 400
+      - Fri, 23 May 2025 17:38:25 GMT
+    status: 405 Method Not Allowed
+    code: 405
     duration: ""

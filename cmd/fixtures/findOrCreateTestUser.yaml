@@ -5,73 +5,102 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/users
     method: GET
   response:
-    body: '[{"id":401963,"username":"dustin","admin_group_ids":[],"allowed_ips":null,"attachments_permission":true,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2020-04-02T16:17:28-04:00","dav_permission":true,"disabled":false,"email":"dustin@zeisler.net","first_login_at":"2022-02-11T18:05:19-05:00","ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":"2022-12-14T15:23:45-05:00","last_web_login_at":"2022-12-14T15:23:22-05:00","last_ftp_login_at":"2022-12-14T15:23:45-05:00","last_sftp_login_at":"2022-07-06T12:29:08-04:00","last_dav_login_at":"2022-10-20T19:31:56-04:00","last_desktop_login_at":"2020-04-14T11:32:56-04:00","last_restapi_login_at":"2022-11-28T19:03:19-05:00","last_api_use_at":"2022-01-13T13:55:13-05:00","last_active_at":"2022-12-14T15:23:45-05:00","last_protocol_cipher":"TLSv1.2;
-      TLS_DHE_RSA_WITH_AES_128_CBC_SHA","lockout_expires":null,"name":null,"company":null,"notes":null,"notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":"2020-04-02T16:18:34-04:00","password_validity_days":0,"public_keys_count":2,"receive_admin_alerts":true,"require_2fa":"never_require","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":true,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"subscribe_to_newsletter":false,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":"","updated_at":"2022-12-14T15:23:45-05:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2020-04-02T16:18:34-04:00"},{"id":479491,"username":"dustinrecoveryuser","admin_group_ids":[],"allowed_ips":null,"attachments_permission":false,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2021-06-13T21:40:22-04:00","dav_permission":true,"disabled":false,"email":"dustin@zeisler.net","first_login_at":"2021-06-14T13:10:47-04:00","ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":"2021-06-14T13:10:47-04:00","last_web_login_at":"2021-06-14T13:10:47-04:00","last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":"2021-06-14T13:10:26-04:00","last_api_use_at":null,"last_active_at":"2021-06-14T13:10:47-04:00","last_protocol_cipher":"TLSv1.2;
-      ECDHE-RSA-AES256-GCM-SHA384","lockout_expires":null,"name":"Recovery User","company":null,"notes":null,"notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":"2021-06-14T13:10:26-04:00","password_validity_days":0,"public_keys_count":0,"receive_admin_alerts":false,"require_2fa":"use_system_setting","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":true,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"subscribe_to_newsletter":false,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":null,"updated_at":"2021-06-14T13:10:48-04:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2021-06-14T13:10:26-04:00"},{"id":413384,"username":"login-test","admin_group_ids":[],"allowed_ips":null,"attachments_permission":true,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2020-05-27T11:23:07-04:00","dav_permission":true,"disabled":false,"email":null,"first_login_at":null,"ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":null,"last_web_login_at":null,"last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2022-09-07T13:22:54-04:00","last_protocol_cipher":null,"lockout_expires":null,"name":null,"company":null,"notes":"","notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":null,"password_validity_days":0,"public_keys_count":0,"require_2fa":"use_system_setting","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":false,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":null,"updated_at":"2022-09-07T13:22:54-04:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2020-05-27T11:23:07-04:00"},{"id":404743,"username":"test-user","admin_group_ids":[],"allowed_ips":null,"attachments_permission":true,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2020-04-15T17:10:33-04:00","dav_permission":false,"disabled":false,"email":null,"first_login_at":null,"ftp_permission":false,"group_ids":"","header_text":null,"language":"","last_login_at":null,"last_web_login_at":null,"last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2020-04-15T17:10:33-04:00","last_protocol_cipher":null,"lockout_expires":null,"name":null,"company":null,"notes":"","notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":null,"password_validity_days":0,"public_keys_count":0,"require_2fa":"use_system_setting","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":false,"site_admin":false,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":null,"updated_at":"2022-12-13T20:12:21-05:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2020-04-15T17:10:33-04:00"},{"id":524247,"username":"zeisler","admin_group_ids":[],"allowed_ips":null,"attachments_permission":false,"api_keys_count":0,"authenticate_until":null,"authentication_method":"email_signup","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2022-03-01T18:13:11-05:00","dav_permission":true,"disabled":false,"email":"taco@example.com","first_login_at":null,"ftp_permission":true,"group_ids":"","header_text":"","language":"","last_login_at":null,"last_web_login_at":null,"last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2022-03-01T18:13:11-05:00","last_protocol_cipher":null,"lockout_expires":null,"name":"","company":"","notes":"","notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":null,"password_validity_days":0,"public_keys_count":0,"require_2fa":"use_system_setting","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":false,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":null,"updated_at":"2022-03-01T18:13:11-05:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2022-03-01T18:13:11-05:00"}]'
+    body: '[{"id":1177882,"username":"adam.v.duke@gmail.com","admin_group_ids":[],"allowed_ips":null,"attachments_permission":true,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billable":true,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2025-03-17T16:21:25-04:00","dav_permission":true,"disabled":false,"disabled_expired_or_inactive":false,"email":"adam.v.duke@gmail.com","first_login_at":"2025-03-17T16:21:26-04:00","ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":"2025-05-14T16:12:05-04:00","last_web_login_at":"2025-05-14T16:12:05-04:00","last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2025-05-14T16:12:05-04:00","last_protocol_cipher":"TLSv1.3;
+      TLS_AES_256_GCM_SHA384","lockout_expires":null,"name":null,"company":null,"notes":null,"notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":null,"password_validity_days":0,"public_keys_count":0,"receive_admin_alerts":true,"require_2fa":"use_system_setting","require_login_by":null,"active_2fa":false,"require_password_change":false,"password_expired":false,"readonly_site_admin":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":true,"site_id":134942,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"subscribe_to_newsletter":false,"externally_managed":false,"time_zone":"Eastern
+      Time (US \u0026 Canada)","type_of_2fa":null,"type_of_2fa_for_display":null,"user_root":"","user_home":"","days_remaining_until_password_expire":null,"password_expire_at":null}]'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 15 Dec 2022 00:17:18 GMT
+      - Fri, 23 May 2025 17:50:48 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 0df71580-0f0b-4102-b731-63e9ab83ade7
-      - 44b81d2288c51cde23a831e1234ff44c
+      - 1f6213f9059ac9c939cf013c4701b891
+      X-Xss-Protection:
+      - 1; mode=block
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"password":"foo123456789","username":"test-automations-user"}'
+    body: '{"password":"Foo123456789!","username":"test-automations-user"}'
     form: {}
     headers:
-      Connection:
-      - close
       Content-Type:
       - application/json
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/users
     method: POST
   response:
-    body: '{"id":642111,"username":"test-automations-user","admin_group_ids":[],"allowed_ips":null,"attachments_permission":false,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2022-12-14T19:17:18-05:00","dav_permission":true,"disabled":false,"email":null,"first_login_at":null,"ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":null,"last_web_login_at":null,"last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2022-12-14T19:17:18-05:00","last_protocol_cipher":null,"lockout_expires":null,"name":null,"company":null,"notes":null,"notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":"2022-12-14T19:17:18-05:00","password_validity_days":0,"public_keys_count":0,"require_2fa":"use_system_setting","active_2fa":false,"require_password_change":false,"password_expired":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":false,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"externally_managed":false,"time_zone":"Eastern
-      Time (US \u0026 Canada)","type_of_2fa":null,"updated_at":"2022-12-14T19:17:18-05:00","user_root":"","days_remaining_until_password_expire":0,"password_expire_at":"2022-12-14T19:17:18-05:00"}'
+    body: '{"id":1203319,"username":"test-automations-user","admin_group_ids":[],"allowed_ips":null,"attachments_permission":false,"api_keys_count":0,"authenticate_until":null,"authentication_method":"password","avatar_url":null,"billable":false,"billing_permission":false,"bypass_site_allowed_ips":false,"bypass_inactive_disable":false,"created_at":"2025-05-23T13:50:48-04:00","dav_permission":true,"disabled":false,"disabled_expired_or_inactive":false,"email":null,"first_login_at":null,"ftp_permission":true,"group_ids":"","header_text":null,"language":"","last_login_at":null,"last_web_login_at":null,"last_ftp_login_at":null,"last_sftp_login_at":null,"last_dav_login_at":null,"last_desktop_login_at":null,"last_restapi_login_at":null,"last_api_use_at":null,"last_active_at":"2025-05-23T13:50:48-04:00","last_protocol_cipher":null,"lockout_expires":null,"name":null,"company":null,"notes":null,"notification_daily_send_time":null,"office_integration_enabled":true,"password_set_at":"2025-05-23T13:50:48-04:00","password_validity_days":0,"public_keys_count":0,"require_2fa":"use_system_setting","require_login_by":null,"active_2fa":false,"require_password_change":false,"password_expired":false,"readonly_site_admin":false,"restapi_permission":true,"self_managed":true,"sftp_permission":true,"site_admin":false,"site_id":134942,"skip_welcome_screen":false,"ssl_required":"use_system_setting","sso_strategy_id":null,"externally_managed":false,"time_zone":"Eastern
+      Time (US \u0026 Canada)","type_of_2fa":null,"type_of_2fa_for_display":null,"user_root":"","user_home":"","days_remaining_until_password_expire":null,"password_expire_at":null}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Length:
-      - "1521"
+      - "1630"
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Thu, 15 Dec 2022 00:17:18 GMT
+      - Fri, 23 May 2025 17:50:48 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 39e7bd0e-a3c3-460d-a4c8-3b6d35b22b20
-      - 3c9a01ee64d4a9b2fb9499d6472235ad
+      - 259b4e218b65cc126014d046964e5016
+      X-Xss-Protection:
+      - 1; mode=block
     status: 201 Created
     code: 201
     duration: ""

@@ -5,33 +5,50 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/metadata/you%20will%20never%20find%20me
     method: GET
   response:
-    body: '{"error":"Not Found","http-code":404,"instance":"44a92484-81e8-4e29-bfe2-5bc8f67e36cf","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"a0c6bb91c909b810fb9c0ad5f79006a0","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 10 Mar 2023 23:05:47 GMT
+      - Fri, 23 May 2025 17:31:42 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - 44a92484-81e8-4e29-bfe2-5bc8f67e36cf
-      - 5f8b3f3b0455a3262f0c06ced7199ee9
+      - a0c6bb91c909b810fb9c0ad5f79006a0
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
@@ -39,33 +56,50 @@ interactions:
     body: ""
     form: {}
     headers:
-      Connection:
-      - close
       User-Agent:
-      - Files.com Go SDK 2.0.0-beta
+      - Files.com Go SDK 1.0
     url: https://app.files.com/api/rest/v1/file_actions/metadata/you%20will%20never%20find%20me
     method: GET
   response:
-    body: '{"error":"Not Found","http-code":404,"instance":"f909e302-fa42-4aba-bc8e-802155efb981","title":"Not
+    body: '{"error":"Not Found.  This may be related to your permissions.","http-code":404,"instance":"f2bcbee4bcdf2a339c0bc354acbebfdc","title":"Not
       Found","type":"not-found"}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
+      Content-Security-Policy:
+      - 'default-src ''self''; base-uri ''self''; block-all-mixed-content; child-src
+        ''none''; connect-src ''self''; font-src ''self'' data:; form-action ''self'';
+        frame-ancestors ''none''; img-src ''self'' data: https:; media-src ''self'';
+        object-src ''self''; plugin-types application/pdf; script-src ''self'' ''unsafe-eval''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; upgrade-insecure-requests'
       Content-Type:
       - application/json
       Date:
-      - Fri, 10 Mar 2023 23:05:47 GMT
+      - Fri, 23 May 2025 17:31:42 GMT
       Expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
       Pragma:
       - no-cache
+      Referrer-Policy:
+      - same-origin
       Server:
-      - nginx
+      - files.com
+      Strict-Transport-Security:
+      - max-age=631139040; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
       X-Files-Error-Class:
       - not-found
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
       X-Request-Id:
-      - f909e302-fa42-4aba-bc8e-802155efb981
-      - 29522273d5f088631bedf01246e93fed
+      - f2bcbee4bcdf2a339c0bc354acbebfdc
+      X-Xss-Protection:
+      - 1; mode=block
     status: 404 Not Found
     code: 404
     duration: ""
