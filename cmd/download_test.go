@@ -3,13 +3,13 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"strings"
 	"sync"
 	"testing"
 
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestDownload(t *testing.T) {
@@ -17,7 +17,7 @@ func TestDownload(t *testing.T) {
 	t.Run("files-cli download", func(t *testing.T) {
 		sourceFs := &file.FS{Context: context.Background()}
 		destinationFs := lib.ReadWriteFs(lib.LocalFileSystem{})
-		for _, tt := range lib.PathSpec(sourceFs.PathSeparator(), destinationFs.PathSeparator()) {
+		for _, tt := range lib.PathSpec(t, sourceFs.PathSeparator(), destinationFs.PathSeparator()) {
 			t.Run(tt.Name, func(t *testing.T) {
 				r, config, err := CreateConfig(t.Name())
 				if err != nil {
@@ -45,9 +45,14 @@ func TestDownload(t *testing.T) {
 			stderr := bytes.NewBufferString("")
 			downloadCmd.SetErr(stderr)
 			downloadCmd.SetOut(stdout)
-			require.NoError(t, downloadCmd.Run())
-			assert.Contains(t, stdout.String(), "errored open you will never find me: Not Found - `Not Found.  This may be related to your permissions.`\n")
-			assert.Equal(t, stderr.String(), "")
+
+			err = downloadCmd.Run()
+
+			assert.Error(t, err)
+			assert.Equal(t, err.Error(), "open you will never find me: Not Found - `Not Found.  This may be related to your permissions.` - status (7)")
+
+			assert.True(t, strings.HasPrefix(stdout.String(), "Usage:"))
+			assert.Equal(t, stderr.String(), "Error: open you will never find me: Not Found - `Not Found.  This may be related to your permissions.` - status (7)\n")
 			r.Stop()
 		})
 	})

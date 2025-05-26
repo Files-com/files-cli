@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/Files-com/files-cli/lib/errcheck"
 	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
@@ -159,6 +160,11 @@ func TableMarshalIter(parentCtx context.Context, style string, it Iter, fields [
 		}
 
 		current := it.Current()
+
+		if err := errcheck.CheckEmbeddedErrors(current); err != nil {
+			return err
+		}
+
 		filter := true
 		if filterIter != nil {
 			current, filter, err = filterIter(current)

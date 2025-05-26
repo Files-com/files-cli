@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/Files-com/files-cli/lib/errcheck"
 )
 
 func JSONMarshal(t interface{}, prefix, indent string) ([]byte, error) {
@@ -36,6 +38,11 @@ func JsonMarshalIter(parentCtx context.Context, it Iter, fields []string, filter
 			return nil
 		}
 		current := it.Current()
+
+		if err := errcheck.CheckEmbeddedErrors(current); err != nil {
+			return err
+		}
+
 		if filterIter != nil {
 			var ok bool
 			current, ok, err = filterIter(current)

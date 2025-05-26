@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+
+	"github.com/Files-com/files-cli/lib/errcheck"
 )
 
 func CSVMarshal(result interface{}, fields []string, out io.Writer, settings string) error {
@@ -62,6 +64,11 @@ func CSVMarshalIter(it Iter, fields []string, filterIter FilterIter, out io.Writ
 	}
 	for it.Next() {
 		current := it.Current()
+
+		if err := errcheck.CheckEmbeddedErrors(current); err != nil {
+			return err
+		}
+
 		if filterIter != nil {
 			var ok bool
 			var err error

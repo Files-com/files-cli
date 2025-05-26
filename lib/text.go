@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+
+	"github.com/Files-com/files-cli/lib/errcheck"
 )
 
 func TextMarshalIter(_ context.Context, it Iter, _usePager bool, out io.Writer, filterIter FilterIter) error {
@@ -13,6 +15,11 @@ func TextMarshalIter(_ context.Context, it Iter, _usePager bool, out io.Writer, 
 		}
 
 		current := it.Current()
+
+		if err := errcheck.CheckEmbeddedErrors(current); err != nil {
+			return err
+		}
+
 		filter := true
 		if filterIter != nil {
 			var err error

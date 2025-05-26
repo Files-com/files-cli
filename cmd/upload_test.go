@@ -29,9 +29,8 @@ func TestUploadCmd(t *testing.T) {
 
 	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "--format", "text"})
 	assert.Equal("", string(stdErr))
-	assert.ElementsMatch([]string{
-		fmt.Sprintf("upload_test.go complete size %v", humanize.Bytes(uint64(info.Size()))),
-	}, strings.Split(string(stdOut), "\n")[0:1])
+	want := fmt.Sprintf("upload_test.go complete size %v", humanize.Bytes(uint64(info.Size())))
+	assert.Equal(want, strings.Split(string(stdOut), "\n")[0])
 }
 
 func TestUploadCmdCloudLog(t *testing.T) {
@@ -53,9 +52,10 @@ func TestUploadCmdCloudLog(t *testing.T) {
 	file.Close()
 	out, stdErr := callCmd(Upload(), config, []string{file.Name(), "--format", "text", "-l"})
 	assert.Equal("", string(stdErr))
-	assert.ElementsMatch([]string{
-		fmt.Sprintf("upload_test.text complete size 24 B"),
-	}, strings.Split(string(out), "\n")[0:1])
+	trimmed := strings.TrimSpace(string(out))
+	lines := strings.Split(trimmed, "\n")
+	assert.Equal(2, len(lines))
+	assert.Equal("upload_test.text complete size 24 B", lines[0])
 }
 
 func TestUploadCmdBadPath(t *testing.T) {
@@ -66,8 +66,9 @@ func TestUploadCmdBadPath(t *testing.T) {
 	}
 	defer r.Stop()
 
-	out, _ := callCmd(Upload(), config, []string{"bad-path", "--format", "text"})
-	assert.Contains(strings.Split(string(out), "\n")[0], "bad-path errored stat")
+	stdout, stderr := callCmd(Upload(), config, []string{"bad-path", "--format", "text"})
+	assert.Contains(strings.Split(string(stderr), "\n")[0], "bad-path: no such file or directory")
+	assert.Contains(strings.Split(string(stdout), "\n")[0], "Usage:")
 }
 
 func TestUploadCmdShellExpansion(t *testing.T) {
@@ -88,7 +89,10 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 		name   string
 		status string
 		size   int
-	}{{name: "1 (1).text", status: "complete", size: 24}, {name: "2.text", status: "complete", size: 24}, {name: "3.pdf", status: "ignored"}}
+	}{
+		{name: "1 (1).text", status: "complete", size: 24}, {name: "2.text", status: "complete", size: 24},
+		{name: "3.pdf", status: "ignored"},
+	}
 	var filePaths []string
 	var expectation []string
 	for _, file := range filesAndStatus {
@@ -116,7 +120,7 @@ func TestUpload(t *testing.T) {
 	t.Run("files-cli upload", func(t *testing.T) {
 		sourceFs := lib.ReadWriteFs(lib.LocalFileSystem{})
 		destinationFs := lib.ReadWriteFs(&file.FS{Context: context.Background()})
-		for _, tt := range lib.PathSpec(sourceFs.PathSeparator(), destinationFs.PathSeparator()) {
+		for _, tt := range lib.PathSpec(t, sourceFs.PathSeparator(), destinationFs.PathSeparator()) {
 			t.Run(tt.Name, func(t *testing.T) {
 				r, config, err := CreateConfig(t.Name())
 				if err != nil {
