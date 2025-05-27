@@ -27,7 +27,7 @@ func TestUploadCmd(t *testing.T) {
 	info, err := os.Stat("upload_test.go")
 	require.NoError(t, err)
 
-	stdOut, stdErr := callCmd(Upload(), config, []string{"upload_test.go", "--format", "text"})
+	stdOut, stdErr, _ := callCmd(Upload(), config, []string{"upload_test.go", "--format", "text"})
 	assert.Equal("", string(stdErr))
 	want := fmt.Sprintf("upload_test.go complete size %v", humanize.Bytes(uint64(info.Size())))
 	assert.Equal(want, strings.Split(string(stdOut), "\n")[0])
@@ -50,7 +50,7 @@ func TestUploadCmdCloudLog(t *testing.T) {
 	assert.NoError(err)
 	file.Write([]byte("hello how are you doing?"))
 	file.Close()
-	out, stdErr := callCmd(Upload(), config, []string{file.Name(), "--format", "text", "-l"})
+	out, stdErr, _ := callCmd(Upload(), config, []string{file.Name(), "--format", "text", "-l"})
 	assert.Equal("", string(stdErr))
 	trimmed := strings.TrimSpace(string(out))
 	lines := strings.Split(trimmed, "\n")
@@ -66,9 +66,9 @@ func TestUploadCmdBadPath(t *testing.T) {
 	}
 	defer r.Stop()
 
-	stdout, stderr := callCmd(Upload(), config, []string{"bad-path", "--format", "text"})
+	stdout, stderr, _ := callCmd(Upload(), config, []string{"bad-path", "--format", "text"})
 	assert.Contains(strings.Split(string(stderr), "\n")[0], "bad-path: no such file or directory")
-	assert.Contains(strings.Split(string(stdout), "\n")[0], "Usage:")
+	assert.Equal(string(stdout), "")
 }
 
 func TestUploadCmdShellExpansion(t *testing.T) {
@@ -109,7 +109,7 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 	args := filePaths
 	args = append(args, "/", "--format", "text")
 
-	stdOut, stdErr := callCmd(Upload(), config, args)
+	stdOut, stdErr, _ := callCmd(Upload(), config, args)
 	assert.Equal("", string(stdErr))
 
 	assert.ElementsMatch(expectation, strings.Split(string(stdOut), "\n")[0:2])

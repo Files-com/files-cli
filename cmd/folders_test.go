@@ -22,7 +22,7 @@ func TestFolders_ListFor_WithPreviews(t *testing.T) {
 
 	config.Logger = logger
 	config.Debug = true
-	stdout, stderr := callCmd(Folders(), config, []string{
+	stdout, stderr, _ := callCmd(Folders(), config, []string{
 		"ls", "--with-previews",
 	})
 

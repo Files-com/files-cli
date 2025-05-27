@@ -80,7 +80,7 @@ func TestSyncCmd(t *testing.T) {
 			remotePath := filepath.Join("cli-test", "sync", uploadFile)
 			tt.args = append(tt.args, "--remote-path", remotePath)
 			t.Log(tt.args)
-			stdOut, stdErr := callCmd(Sync(), config, tt.args)
+			stdOut, stdErr, _ := callCmd(Sync(), config, tt.args)
 			assert.Contains(t, string(stdErr), maybeInsert(tt.stderr, uploadFile))
 			if tt.outputFile != "" {
 				temp, err := os.Open(outputPath)

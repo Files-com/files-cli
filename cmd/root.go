@@ -67,6 +67,10 @@ var (
 	noAuthCmds = []string{commandNameConfigSet, commandNameConfigReset, commandNameConfigShow, commandNameVersion, commandNameAgent}
 )
 
+// silenceUsageFunc exists to allow overriding the default behavior of cobra
+// usage in tests.
+var silenceUsageFunc = func() bool { return true }
+
 var (
 	commit                 string
 	date                   string
@@ -84,6 +88,7 @@ var (
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = silenceUsageFunc()
 			// configure non-interactive flag combinations before anything else
 			// because non-interactive influences the format of the output if
 			// there are any errors.

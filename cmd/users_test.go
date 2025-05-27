@@ -41,7 +41,7 @@ func TestUsers(t *testing.T) {
 
 			args := append(tt.args, "--format", "json,raw", "--id", fmt.Sprintf("%v", user.Id))
 			t.Log(args)
-			stdOut, stdErr := callCmd(Users(), config, args)
+			stdOut, stdErr, _ := callCmd(Users(), config, args)
 
 			j, err := json.Marshal(&tt.want)
 			require.NoError(t, err)

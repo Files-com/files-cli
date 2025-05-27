@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -88,7 +89,7 @@ func TestFiles_Delete_Recursive(t *testing.T) {
 		file.UploadWithProvidedMtime(time.Date(2010, 11, 17, 20, 34, 58, 651387237, time.UTC)),
 	)
 	assert.NoError(err)
-	out, stdErr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
+	out, stdErr, _ := callCmd(Files(), config, []string{"delete", "test-dir-files-delete-r", "--recursive", "--format", "json", "--fields", "mtime,provided_mtime"})
 	assert.Equal("", string(stdErr))
 
 	assert.Contains(string(out), "")
@@ -112,7 +113,7 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 	)
 	assert.NoError(err)
 
-	_, stderr := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
+	_, stderr, _ := callCmd(Files(), config, []string{"delete", "test-dir-files-delete", "--format", "csv"})
 
 	assert.Contains(string(stderr), "Folder Not Empty - `Folder test-dir-files-delete not empty`")
 }
@@ -143,7 +144,7 @@ func TestFolders_ListFor_FilterBy(t *testing.T) {
 	}
 
 	t.Run("filter-by extension name", func(t *testing.T) {
-		stdout, stderr := callCmd(Folders(), config, []string{
+		stdout, stderr, _ := callCmd(Folders(), config, []string{
 			"ls", "TestFolders_ListFor_FilterBy", "--format", "csv,no-headers", `--filter-by="path=*.txt"`, "--fields", "path", "--recursive",
 		})
 
@@ -154,7 +155,7 @@ TestFolders_ListFor_FilterBy/space.txt`)
 	})
 
 	t.Run("filter-by word", func(t *testing.T) {
-		stdout, stderr := callCmd(Folders(), config, []string{
+		stdout, stderr, _ := callCmd(Folders(), config, []string{
 			"ls", "TestFolders_ListFor_FilterBy", "--format", "csv,no-headers", `--filter-by="path=*car*"`, "--fields", "path", "--recursive",
 		})
 
@@ -165,7 +166,8 @@ TestFolders_ListFor_FilterBy/cars/super-car.jpg`)
 	})
 }
 
-func callCmd(command *cobra.Command, config files_sdk.Config, args []string) ([]byte, []byte) {
+// TODO (adam.duke): audit the usage of this function to ensure callers are checking the returned error
+func callCmd(command *cobra.Command, config files_sdk.Config, args []string) ([]byte, []byte, error) {
 	command.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "file path to save output")
 	command.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if OutputPath != "" {
@@ -178,12 +180,13 @@ func callCmd(command *cobra.Command, config files_sdk.Config, args []string) ([]
 		return nil
 	}
 	cmd := Cmd(config, command, args, []string{})
-	errOut := &cliLib.Buffer{}
-	stdOut := &cliLib.Buffer{}
+	errOut := &bytes.Buffer{}
+	stdOut := &bytes.Buffer{}
 	cmd.SetOut(stdOut)
 	cmd.SetErr(errOut)
-	cmd.Run()
-	return stdOut.Bytes(), errOut.Bytes()
+
+	err := cmd.Run()
+	return stdOut.Bytes(), errOut.Bytes(), err
 }
 
 func Cmd(config files_sdk.Config, command *cobra.Command, displayArgs []string, hiddenArgs []string) lib.Cmd {
@@ -204,6 +207,7 @@ type CobraCommand struct {
 }
 
 func (c CobraCommand) Run() error {
+	c.Command.SilenceUsage = silenceUsageFunc()
 	return c.Command.ExecuteContext(c.Context)
 }
 

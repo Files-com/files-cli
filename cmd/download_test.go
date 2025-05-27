@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"context"
-	"strings"
 	"sync"
 	"testing"
 
@@ -51,7 +50,7 @@ func TestDownload(t *testing.T) {
 			assert.Error(t, err)
 			assert.Equal(t, err.Error(), "open you will never find me: Not Found - `Not Found.  This may be related to your permissions.` - status (7)")
 
-			assert.True(t, strings.HasPrefix(stdout.String(), "Usage:"))
+			assert.Equal(t, stdout.String(), "")
 			assert.Equal(t, stderr.String(), "Error: open you will never find me: Not Found - `Not Found.  This may be related to your permissions.` - status (7)\n")
 			r.Stop()
 		})

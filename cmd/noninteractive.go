@@ -20,9 +20,6 @@ func configureNonInteractiveMode(cmd *cobra.Command) error {
 		return nil
 	}
 
-	// silence usage in non-interactive mode.
-	cmd.SilenceUsage = true
-
 	// a valid session, with reauthentication will cause a prompt. If the non-interactive
 	// flag is set, return an error that the combination is not supported.
 	if Reauthentication && nonInteractive {

@@ -57,7 +57,7 @@ func TestBundles_Create(t *testing.T) {
 	t.Run("it requires value for time flag", func(t *testing.T) {
 		config := files_sdk.Config{}.Init()
 
-		_, stderr := callCmd(Bundles(), config, []string{
+		_, stderr, _ := callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1", "--expires-at",
 		})
 
@@ -71,7 +71,7 @@ func TestBundles_Create(t *testing.T) {
 		}
 		defer r.Stop()
 
-		_, stderr := callCmd(Bundles(), config, []string{
+		_, stderr, _ := callCmd(Bundles(), config, []string{
 			"create", "--paths", "folder1",
 		})
 
