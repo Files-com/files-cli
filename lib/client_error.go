@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
-	"github.com/Files-com/files-sdk-go/v3/lib/errors"
 )
 
 // CliClientError is a wrapper around errors that are specific to sdk responses.
@@ -22,16 +22,19 @@ func CliClientError(profile *Profiles, err error, out ...io.Writer) error {
 }
 
 func clientError(profile *Profiles, err error, out ...io.Writer) error {
-	if len(out) == 0 {
-		out = append(out, os.Stdout)
-	}
 	if err == nil {
 		return nil
 	}
-	responseError, ok := errors.As[files_sdk.ResponseError](err, files_sdk.ResponseError{})
+
+	if len(out) == 0 {
+		out = append(out, os.Stdout)
+	}
+
+	var responseError files_sdk.ResponseError
+	ok := errors.As(err, &responseError)
 
 	if ok && responseError.Type == "not-authorized/reauthentication-needed-action" {
-		fmt.Fprintf(out[0], "You are authenicated via a session ID (as opposed to an API key), we require that you provide the session user’s password/2FA again for certain types of requests where we want to add an additional level of security. We call this process Reauthentication. \n")
+		fmt.Fprintf(out[0], "You are authenicated via a session ID (as opposed to an API key), we require that you provide the session user's password/2FA again for certain types of requests where we want to add an additional level of security. We call this process Reauthentication. \n")
 		fmt.Fprintf(out[0], "Use --reauthentication flag to be prompted for password/2FA authentication\n")
 		path, err := os.Executable()
 		if err != nil {
