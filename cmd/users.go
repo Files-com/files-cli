@@ -678,6 +678,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.Id, "id", 0, "User ID.")
+	cmdDelete.Flags().Int64Var(&paramsUserDelete.NewOwnerId, "new-owner-id", 0, "Provide a User ID here to transfer ownership of certain resources such as Automations and Share Links (Bundles) to that new user.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
