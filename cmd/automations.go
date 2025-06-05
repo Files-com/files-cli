@@ -111,6 +111,7 @@ func Automations() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createAlwaysOverwriteSizeMatchingFiles := true
+	createAlwaysSerializeJobs := true
 	createDisabled := true
 	createFlattenDestinationStructure := true
 	createIgnoreLockedFolders := true
@@ -143,6 +144,9 @@ func Automations() *cobra.Command {
 
 			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
 				paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = flib.Bool(createAlwaysOverwriteSizeMatchingFiles)
+			}
+			if cmd.Flags().Changed("always-serialize-jobs") {
+				paramsAutomationCreate.AlwaysSerializeJobs = flib.Bool(createAlwaysSerializeJobs)
 			}
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
@@ -182,6 +186,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
+	cmdCreate.Flags().BoolVar(&createAlwaysSerializeJobs, "always-serialize-jobs", createAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
@@ -237,6 +242,7 @@ func Automations() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateAlwaysOverwriteSizeMatchingFiles := true
+	updateAlwaysSerializeJobs := true
 	updateDisabled := true
 	updateFlattenDestinationStructure := true
 	updateIgnoreLockedFolders := true
@@ -314,6 +320,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
 				mapParams["always_overwrite_size_matching_files"] = updateAlwaysOverwriteSizeMatchingFiles
 			}
+			if cmd.Flags().Changed("always-serialize-jobs") {
+				mapParams["always_serialize_jobs"] = updateAlwaysSerializeJobs
+			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsAutomationUpdate.Description, mapParams)
 			}
@@ -388,6 +397,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
+	cmdUpdate.Flags().BoolVar(&updateAlwaysSerializeJobs, "always-serialize-jobs", updateAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
