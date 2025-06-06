@@ -123,7 +123,7 @@ func Users() *cobra.Command {
 	createAnnouncementsRead := true
 	createAttachmentsPermission := true
 	createBillingPermission := true
-	createBypassInactiveDisable := true
+	createBypassUserLifecycleRules := true
 	createBypassSiteAllowedIps := true
 	createDavPermission := true
 	createDisabled := true
@@ -181,8 +181,8 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("billing-permission") {
 				paramsUserCreate.BillingPermission = flib.Bool(createBillingPermission)
 			}
-			if cmd.Flags().Changed("bypass-inactive-disable") {
-				paramsUserCreate.BypassInactiveDisable = flib.Bool(createBypassInactiveDisable)
+			if cmd.Flags().Changed("bypass-user-lifecycle-rules") {
+				paramsUserCreate.BypassUserLifecycleRules = flib.Bool(createBypassUserLifecycleRules)
 			}
 			if cmd.Flags().Changed("bypass-site-allowed-ips") {
 				paramsUserCreate.BypassSiteAllowedIps = flib.Bool(createBypassSiteAllowedIps)
@@ -257,7 +257,7 @@ func Users() *cobra.Command {
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdCreate.Flags().StringVar(&UserCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createBillingPermission, "billing-permission", createBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
-	cmdCreate.Flags().BoolVar(&createBypassInactiveDisable, "bypass-inactive-disable", createBypassInactiveDisable, "Exempt this user from being disabled based on inactivity?")
+	cmdCreate.Flags().BoolVar(&createBypassUserLifecycleRules, "bypass-user-lifecycle-rules", createBypassUserLifecycleRules, "Exempt this user from user lifecycle rules?")
 	cmdCreate.Flags().BoolVar(&createBypassSiteAllowedIps, "bypass-site-allowed-ips", createBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "Can the user connect with WebDAV?")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
@@ -391,7 +391,7 @@ func Users() *cobra.Command {
 	updateAnnouncementsRead := true
 	updateAttachmentsPermission := true
 	updateBillingPermission := true
-	updateBypassInactiveDisable := true
+	updateBypassUserLifecycleRules := true
 	updateBypassSiteAllowedIps := true
 	updateDavPermission := true
 	updateDisabled := true
@@ -495,8 +495,8 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("billing-permission") {
 				mapParams["billing_permission"] = updateBillingPermission
 			}
-			if cmd.Flags().Changed("bypass-inactive-disable") {
-				mapParams["bypass_inactive_disable"] = updateBypassInactiveDisable
+			if cmd.Flags().Changed("bypass-user-lifecycle-rules") {
+				mapParams["bypass_user_lifecycle_rules"] = updateBypassUserLifecycleRules
 			}
 			if cmd.Flags().Changed("bypass-site-allowed-ips") {
 				mapParams["bypass_site_allowed_ips"] = updateBypassSiteAllowedIps
@@ -617,7 +617,7 @@ func Users() *cobra.Command {
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdUpdate.Flags().StringVar(&UserUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateBillingPermission, "billing-permission", updateBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
-	cmdUpdate.Flags().BoolVar(&updateBypassInactiveDisable, "bypass-inactive-disable", updateBypassInactiveDisable, "Exempt this user from being disabled based on inactivity?")
+	cmdUpdate.Flags().BoolVar(&updateBypassUserLifecycleRules, "bypass-user-lifecycle-rules", updateBypassUserLifecycleRules, "Exempt this user from user lifecycle rules?")
 	cmdUpdate.Flags().BoolVar(&updateBypassSiteAllowedIps, "bypass-site-allowed-ips", updateBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "Can the user connect with WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")

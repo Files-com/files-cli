@@ -427,9 +427,6 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("custom-namespace") {
 				mapParams["custom_namespace"] = updateCustomNamespace
 			}
-			if cmd.Flags().Changed("disable-users-from-inactivity-period-days") {
-				lib.FlagUpdate(cmd, "disable_users_from_inactivity_period_days", paramsSiteUpdate.DisableUsersFromInactivityPeriodDays, mapParams)
-			}
 			if cmd.Flags().Changed("non-sso-groups-allowed") {
 				mapParams["non_sso_groups_allowed"] = updateNonSsoGroupsAllowed
 			}
@@ -752,7 +749,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")
 	cmdUpdate.Flags().BoolVar(&updateUseProvidedModifiedAt, "use-provided-modified-at", updateUseProvidedModifiedAt, "Allow uploaders to set `provided_modified_at` for uploaded files?")
 	cmdUpdate.Flags().BoolVar(&updateCustomNamespace, "custom-namespace", updateCustomNamespace, "Is this site using a custom namespace for users?")
-	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DisableUsersFromInactivityPeriodDays, "disable-users-from-inactivity-period-days", 0, "If greater than zero, users will unable to login if they do not show activity within this number of days.")
 	cmdUpdate.Flags().BoolVar(&updateNonSsoGroupsAllowed, "non-sso-groups-allowed", updateNonSsoGroupsAllowed, "If true, groups can be manually created / modified / deleted by Site Admins. Otherwise, groups can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVar(&updateNonSsoUsersAllowed, "non-sso-users-allowed", updateNonSsoUsersAllowed, "If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.")
 	cmdUpdate.Flags().BoolVar(&updateSharingEnabled, "sharing-enabled", updateSharingEnabled, "Allow bundle creation")
