@@ -113,6 +113,7 @@ func As2Partners() *cobra.Command {
 	createEnableDedicatedIps := true
 	paramsAs2PartnerCreate := files_sdk.As2PartnerCreateParams{}
 	As2PartnerCreateMdnValidationLevel := ""
+	As2PartnerCreateSignatureValidationLevel := ""
 	As2PartnerCreateServerCertificate := ""
 
 	cmdCreate := &cobra.Command{
@@ -129,6 +130,11 @@ func As2Partners() *cobra.Command {
 			paramsAs2PartnerCreate.MdnValidationLevel, As2PartnerCreateMdnValidationLevelErr = lib.FetchKey("mdn-validation-level", paramsAs2PartnerCreate.MdnValidationLevel.Enum(), As2PartnerCreateMdnValidationLevel)
 			if As2PartnerCreateMdnValidationLevel != "" && As2PartnerCreateMdnValidationLevelErr != nil {
 				return As2PartnerCreateMdnValidationLevelErr
+			}
+			var As2PartnerCreateSignatureValidationLevelErr error
+			paramsAs2PartnerCreate.SignatureValidationLevel, As2PartnerCreateSignatureValidationLevelErr = lib.FetchKey("signature-validation-level", paramsAs2PartnerCreate.SignatureValidationLevel.Enum(), As2PartnerCreateSignatureValidationLevel)
+			if As2PartnerCreateSignatureValidationLevel != "" && As2PartnerCreateSignatureValidationLevelErr != nil {
+				return As2PartnerCreateSignatureValidationLevelErr
 			}
 			var As2PartnerCreateServerCertificateErr error
 			paramsAs2PartnerCreate.ServerCertificate, As2PartnerCreateServerCertificateErr = lib.FetchKey("server-certificate", paramsAs2PartnerCreate.ServerCertificate.Enum(), As2PartnerCreateServerCertificate)
@@ -149,7 +155,8 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
-	cmdCreate.Flags().StringVar(&As2PartnerCreateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. %v", reflect.ValueOf(paramsAs2PartnerCreate.MdnValidationLevel.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&As2PartnerCreateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received. %v", reflect.ValueOf(paramsAs2PartnerCreate.MdnValidationLevel.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&As2PartnerCreateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerCreate.SignatureValidationLevel.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&As2PartnerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "ID of the AS2 Station associated with this partner.")
@@ -168,6 +175,7 @@ func As2Partners() *cobra.Command {
 	updateEnableDedicatedIps := true
 	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
 	As2PartnerUpdateMdnValidationLevel := ""
+	As2PartnerUpdateSignatureValidationLevel := ""
 	As2PartnerUpdateServerCertificate := ""
 
 	cmdUpdate := &cobra.Command{
@@ -190,6 +198,11 @@ func As2Partners() *cobra.Command {
 			if As2PartnerUpdateMdnValidationLevel != "" && As2PartnerUpdateMdnValidationLevelErr != nil {
 				return As2PartnerUpdateMdnValidationLevelErr
 			}
+			var As2PartnerUpdateSignatureValidationLevelErr error
+			paramsAs2PartnerUpdate.SignatureValidationLevel, As2PartnerUpdateSignatureValidationLevelErr = lib.FetchKey("signature-validation-level", paramsAs2PartnerUpdate.SignatureValidationLevel.Enum(), As2PartnerUpdateSignatureValidationLevel)
+			if As2PartnerUpdateSignatureValidationLevel != "" && As2PartnerUpdateSignatureValidationLevelErr != nil {
+				return As2PartnerUpdateSignatureValidationLevelErr
+			}
 			var As2PartnerUpdateServerCertificateErr error
 			paramsAs2PartnerUpdate.ServerCertificate, As2PartnerUpdateServerCertificateErr = lib.FetchKey("server-certificate", paramsAs2PartnerUpdate.ServerCertificate.Enum(), As2PartnerUpdateServerCertificate)
 			if As2PartnerUpdateServerCertificate != "" && As2PartnerUpdateServerCertificateErr != nil {
@@ -210,6 +223,9 @@ func As2Partners() *cobra.Command {
 			}
 			if cmd.Flags().Changed("mdn-validation-level") {
 				lib.FlagUpdate(cmd, "mdn_validation_level", paramsAs2PartnerUpdate.MdnValidationLevel, mapParams)
+			}
+			if cmd.Flags().Changed("signature-validation-level") {
+				lib.FlagUpdate(cmd, "signature_validation_level", paramsAs2PartnerUpdate.SignatureValidationLevel, mapParams)
 			}
 			if cmd.Flags().Changed("server-certificate") {
 				lib.FlagUpdate(cmd, "server_certificate", paramsAs2PartnerUpdate.ServerCertificate, mapParams)
@@ -239,7 +255,8 @@ func As2Partners() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
-	cmdUpdate.Flags().StringVar(&As2PartnerUpdateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. %v", reflect.ValueOf(paramsAs2PartnerUpdate.MdnValidationLevel.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&As2PartnerUpdateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received. %v", reflect.ValueOf(paramsAs2PartnerUpdate.MdnValidationLevel.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&As2PartnerUpdateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Name, "name", "", "The partner's formal AS2 name.")

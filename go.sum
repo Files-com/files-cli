@@ -1,5 +1,5 @@
-github.com/Files-com/files-sdk-go/v3 v3.2.176 h1:Yyx/OlHoR1vb5LPLNDOc4ulmouLMn4RdgtzslVFth04=
-github.com/Files-com/files-sdk-go/v3 v3.2.176/go.mod h1:HnPrW1lljxOjdkR5Wm6DjtdHwWdcm/afts2N6O+iiJo=
+github.com/Files-com/files-sdk-go/v3 v3.2.177 h1:9OHLP9L/XsMHeYm9bMnZ7Z6KCmfS67CgUi8HX5HuG2Q=
+github.com/Files-com/files-sdk-go/v3 v3.2.177/go.mod h1:HnPrW1lljxOjdkR5Wm6DjtdHwWdcm/afts2N6O+iiJo=
 github.com/IGLOU-EU/go-wildcard v1.0.3 h1:r8T46+8/9V1STciXJomTWRpPEv4nGJATDbJkdU0Nou0=
 github.com/IGLOU-EU/go-wildcard v1.0.3/go.mod h1:/qeV4QLmydCbwH0UMQJmXDryrFKJknWi/jjO8IiuQfY=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
@@ -161,8 +161,8 @@ github.com/rogpeppe/go-internal v1.9.0/go.mod h1:WtVeX8xhTBvf0smdhujwtBcq4Qrzq/f
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 h1:OkMGxebDjyw0ULyrTYWeN0UNCCkmCWfjPnIA2W6oviI=
 github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06/go.mod h1:+ePHsJ1keEjQtpvf9HHw0f4ZeJ0TLRsxhunSI2hYJSs=
-github.com/samber/lo v1.50.0 h1:XrG0xOeHs+4FQ8gJR97zDz5uOFMW7OwFWiFVzqopKgY=
-github.com/samber/lo v1.50.0/go.mod h1:RjZyNk6WSnUFRKK6EyOhsRJMqft3G+pg7dCWHQCWvsc=
+github.com/samber/lo v1.51.0 h1:kysRYLbHy/MB7kQZf5DSN50JHmMsNEdeY24VzJFu7wI=
+github.com/samber/lo v1.51.0/go.mod h1:4+MXEGsJzbKGaUEQFKBq2xtfuznW9oz/WrgyzMzRoM0=
 github.com/sc0vu/didyoumean v0.0.0-20230904130613-22d315697818 h1:ThfJ2kjsEddzXuNaAGKUNKEhWyWOPTi/uXKK6rE4QSU=
 github.com/sc0vu/didyoumean v0.0.0-20230904130613-22d315697818/go.mod h1:Icwkx20j17VxegJIa/NIWQY4im93J/CEUL11T3Qh9oI=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=

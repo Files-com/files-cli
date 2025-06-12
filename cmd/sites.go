@@ -96,6 +96,7 @@ func Sites() *cobra.Command {
 	updateCalculateFileChecksumsSha1 := true
 	updateCalculateFileChecksumsSha256 := true
 	updateLegacyChecksumsMode := true
+	updateMigrateRemoteServerSyncToSync := true
 	updateSslRequired := true
 	updateTlsDisabled := true
 	updateSftpInsecureCiphers := true
@@ -300,6 +301,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("legacy-checksums-mode") {
 				mapParams["legacy_checksums_mode"] = updateLegacyChecksumsMode
+			}
+			if cmd.Flags().Changed("migrate-remote-server-sync-to-sync") {
+				mapParams["migrate_remote_server_sync_to_sync"] = updateMigrateRemoteServerSyncToSync
 			}
 			if cmd.Flags().Changed("session-expiry") {
 				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
@@ -707,6 +711,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha1, "calculate-file-checksums-sha1", updateCalculateFileChecksumsSha1, "Calculate SHA1 checksums for files?")
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha256, "calculate-file-checksums-sha256", updateCalculateFileChecksumsSha256, "Calculate SHA256 checksums for files?")
 	cmdUpdate.Flags().BoolVar(&updateLegacyChecksumsMode, "legacy-checksums-mode", updateLegacyChecksumsMode, "Use legacy checksums mode?")
+	cmdUpdate.Flags().BoolVar(&updateMigrateRemoteServerSyncToSync, "migrate-remote-server-sync-to-sync", updateMigrateRemoteServerSyncToSync, "If true, we will migrate all remote server syncs to the new Sync model.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateTlsDisabled, "tls-disabled", updateTlsDisabled, "DO NOT ENABLE. This setting allows TLSv1.0 and TLSv1.1 to be used on your site.  We intend to remove this capability entirely in early 2024.  If set, the `sftp_insecure_ciphers` flag will be automatically set to true.")
