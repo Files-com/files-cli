@@ -192,6 +192,36 @@ func Syncs() *cobra.Command {
 	cmdCreateMigrateTo.Flags().BoolVar(&usePagerCreateMigrateTo, "use-pager", usePagerCreateMigrateTo, "Use $PAGER (.ie less, more, etc)")
 
 	Syncs.AddCommand(cmdCreateMigrateTo)
+	var fieldsManualRun []string
+	var formatManualRun []string
+	usePagerManualRun := true
+	paramsSyncManualRun := files_sdk.SyncManualRunParams{}
+
+	cmdManualRun := &cobra.Command{
+		Use:   "manual-run",
+		Short: `Manually Run Sync`,
+		Long:  `Manually Run Sync`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sync.Client{Config: config}
+
+			var err error
+			err = client.ManualRun(paramsSyncManualRun, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdManualRun.Flags().Int64Var(&paramsSyncManualRun.Id, "id", 0, "Sync ID.")
+
+	cmdManualRun.Flags().StringSliceVar(&fieldsManualRun, "fields", []string{}, "comma separated list of field names")
+	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdManualRun.Flags().BoolVar(&usePagerManualRun, "use-pager", usePagerManualRun, "Use $PAGER (.ie less, more, etc)")
+
+	Syncs.AddCommand(cmdManualRun)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
