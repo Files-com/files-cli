@@ -18,7 +18,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/evertras/bubble-table v0.17.1
 	github.com/fatih/structs v1.1.0
-	github.com/hashicorp/go-retryablehttp v0.7.7
+	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/jedib0t/go-pretty/v6 v6.6.7
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
