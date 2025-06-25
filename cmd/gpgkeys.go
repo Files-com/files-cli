@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	gpg_key "github.com/Files-com/files-sdk-go/v3/gpgkey"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -107,6 +110,7 @@ func GpgKeys() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createGenerateKeypair := true
 	paramsGpgKeyCreate := files_sdk.GpgKeyCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -119,6 +123,14 @@ func GpgKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := gpg_key.Client{Config: config}
 
+			if cmd.Flags().Changed("generate-keypair") {
+				paramsGpgKeyCreate.GenerateKeypair = flib.Bool(createGenerateKeypair)
+			}
+
+			if paramsGpgKeyCreate.GenerateExpiresAt.IsZero() {
+				paramsGpgKeyCreate.GenerateExpiresAt = nil
+			}
+
 			var gpgKey interface{}
 			var err error
 			gpgKey, err = client.Create(paramsGpgKeyCreate, files_sdk.WithContext(ctx))
@@ -130,6 +142,11 @@ func GpgKeys() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKey, "private-key", "", "Your GPG private key.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKeyPassword, "private-key-password", "", "Your GPG private key password. Only required for password protected keys.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.Name, "name", "", "Your GPG key name.")
+	paramsGpgKeyCreate.GenerateExpiresAt = &time.Time{}
+	lib.TimeVar(cmdCreate.Flags(), paramsGpgKeyCreate.GenerateExpiresAt, "generate-expires-at", "Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
+	cmdCreate.Flags().BoolVar(&createGenerateKeypair, "generate-keypair", createGenerateKeypair, "If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`")
+	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.GenerateFullName, "generate-full-name", "", "Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
+	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.GenerateEmail, "generate-email", "", "Email address of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

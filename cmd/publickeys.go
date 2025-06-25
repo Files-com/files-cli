@@ -4,6 +4,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	public_key "github.com/Files-com/files-sdk-go/v3/publickey"
 	"github.com/spf13/cobra"
 )
@@ -107,6 +108,7 @@ func PublicKeys() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createGenerateKeypair := true
 	paramsPublicKeyCreate := files_sdk.PublicKeyCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -119,6 +121,10 @@ func PublicKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := public_key.Client{Config: config}
 
+			if cmd.Flags().Changed("generate-keypair") {
+				paramsPublicKeyCreate.GenerateKeypair = flib.Bool(createGenerateKeypair)
+			}
+
 			var publicKey interface{}
 			var err error
 			publicKey, err = client.Create(paramsPublicKeyCreate, files_sdk.WithContext(ctx))
@@ -128,6 +134,10 @@ func PublicKeys() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.Title, "title", "", "Internal reference for key.")
 	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.PublicKey, "public-key", "", "Actual contents of SSH key.")
+	cmdCreate.Flags().BoolVar(&createGenerateKeypair, "generate-keypair", createGenerateKeypair, "If true, generate a new SSH key pair. Can not be used with `public_key`")
+	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.GeneratePrivateKeyPassword, "generate-private-key-password", "", "Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
+	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.GenerateAlgorithm, "generate-algorithm", "", "Type of key to generate.  One of rsa, dsa, ecdsa, ed25519. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
+	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.GenerateLength, "generate-length", 0, "Length of key to generate. If algorithm is ecdsa, this is the signature size. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
