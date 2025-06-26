@@ -115,6 +115,7 @@ func UserLifecycleRules() *cobra.Command {
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
 	UserLifecycleRuleCreateAction := ""
 	UserLifecycleRuleCreateAuthenticationMethod := ""
+	UserLifecycleRuleCreateUserState := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -136,6 +137,11 @@ func UserLifecycleRules() *cobra.Command {
 			if UserLifecycleRuleCreateAuthenticationMethod != "" && UserLifecycleRuleCreateAuthenticationMethodErr != nil {
 				return UserLifecycleRuleCreateAuthenticationMethodErr
 			}
+			var UserLifecycleRuleCreateUserStateErr error
+			paramsUserLifecycleRuleCreate.UserState, UserLifecycleRuleCreateUserStateErr = lib.FetchKey("user-state", paramsUserLifecycleRuleCreate.UserState.Enum(), UserLifecycleRuleCreateUserState)
+			if UserLifecycleRuleCreateUserState != "" && UserLifecycleRuleCreateUserStateErr != nil {
+				return UserLifecycleRuleCreateUserStateErr
+			}
 
 			if cmd.Flags().Changed("include-site-admins") {
 				paramsUserLifecycleRuleCreate.IncludeSiteAdmins = flib.Bool(createIncludeSiteAdmins)
@@ -155,6 +161,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "Include site admins in the rule")
 	cmdCreate.Flags().BoolVar(&createIncludeFolderAdmins, "include-folder-admins", createIncludeFolderAdmins, "Include folder admins in the rule")
+	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -169,6 +176,7 @@ func UserLifecycleRules() *cobra.Command {
 	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
 	UserLifecycleRuleUpdateAction := ""
 	UserLifecycleRuleUpdateAuthenticationMethod := ""
+	UserLifecycleRuleUpdateUserState := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -195,6 +203,11 @@ func UserLifecycleRules() *cobra.Command {
 			if UserLifecycleRuleUpdateAuthenticationMethod != "" && UserLifecycleRuleUpdateAuthenticationMethodErr != nil {
 				return UserLifecycleRuleUpdateAuthenticationMethodErr
 			}
+			var UserLifecycleRuleUpdateUserStateErr error
+			paramsUserLifecycleRuleUpdate.UserState, UserLifecycleRuleUpdateUserStateErr = lib.FetchKey("user-state", paramsUserLifecycleRuleUpdate.UserState.Enum(), UserLifecycleRuleUpdateUserState)
+			if UserLifecycleRuleUpdateUserState != "" && UserLifecycleRuleUpdateUserStateErr != nil {
+				return UserLifecycleRuleUpdateUserStateErr
+			}
 
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsUserLifecycleRuleUpdate.Id, mapParams)
@@ -214,6 +227,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("include-folder-admins") {
 				mapParams["include_folder_admins"] = updateIncludeFolderAdmins
 			}
+			if cmd.Flags().Changed("user-state") {
+				lib.FlagUpdate(cmd, "user_state", paramsUserLifecycleRuleUpdate.UserState, mapParams)
+			}
 
 			var userLifecycleRule interface{}
 			var err error
@@ -227,6 +243,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "Include site admins in the rule")
 	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "Include folder admins in the rule")
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
