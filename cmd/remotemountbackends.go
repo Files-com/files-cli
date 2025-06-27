@@ -144,9 +144,6 @@ func RemoteMountBackends() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), remoteMountBackend, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.CanaryFilePath, "canary-file-path", "", "Path to the canary file used for health checks.")
-	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerMountId, "remote-server-mount-id", 0, "The mount ID of the Remote Server Mount that this backend is associated with.")
-	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerId, "remote-server-id", 0, "The remote server that this backend is associated with.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "True if this backend is enabled.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Fall, "fall", 0, "Number of consecutive failures before considering the backend unhealthy.")
 	cmdCreate.Flags().BoolVar(&createHealthCheckEnabled, "health-check-enabled", createHealthCheckEnabled, "True if health checks are enabled for this backend.")
@@ -157,6 +154,9 @@ func RemoteMountBackends() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Priority, "priority", 0, "Priority of this backend.")
 	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Rise, "rise", 0, "Number of consecutive successes before considering the backend healthy.")
+	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.CanaryFilePath, "canary-file-path", "", "Path to the canary file used for health checks.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerMountId, "remote-server-mount-id", 0, "The mount ID of the Remote Server Mount that this backend is associated with.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerId, "remote-server-id", 0, "The remote server that this backend is associated with.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -225,15 +225,6 @@ func RemoteMountBackends() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsRemoteMountBackendUpdate.Id, mapParams)
 			}
-			if cmd.Flags().Changed("canary-file-path") {
-				lib.FlagUpdate(cmd, "canary_file_path", paramsRemoteMountBackendUpdate.CanaryFilePath, mapParams)
-			}
-			if cmd.Flags().Changed("remote-server-mount-id") {
-				lib.FlagUpdate(cmd, "remote_server_mount_id", paramsRemoteMountBackendUpdate.RemoteServerMountId, mapParams)
-			}
-			if cmd.Flags().Changed("remote-server-id") {
-				lib.FlagUpdate(cmd, "remote_server_id", paramsRemoteMountBackendUpdate.RemoteServerId, mapParams)
-			}
 			if cmd.Flags().Changed("enabled") {
 				mapParams["enabled"] = updateEnabled
 			}
@@ -264,6 +255,12 @@ func RemoteMountBackends() *cobra.Command {
 			if cmd.Flags().Changed("rise") {
 				lib.FlagUpdate(cmd, "rise", paramsRemoteMountBackendUpdate.Rise, mapParams)
 			}
+			if cmd.Flags().Changed("canary-file-path") {
+				lib.FlagUpdate(cmd, "canary_file_path", paramsRemoteMountBackendUpdate.CanaryFilePath, mapParams)
+			}
+			if cmd.Flags().Changed("remote-server-id") {
+				lib.FlagUpdate(cmd, "remote_server_id", paramsRemoteMountBackendUpdate.RemoteServerId, mapParams)
+			}
 
 			var remoteMountBackend interface{}
 			var err error
@@ -272,9 +269,6 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Id, "id", 0, "Remote Mount Backend ID.")
-	cmdUpdate.Flags().StringVar(&paramsRemoteMountBackendUpdate.CanaryFilePath, "canary-file-path", "", "Path to the canary file used for health checks.")
-	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.RemoteServerMountId, "remote-server-mount-id", 0, "The mount ID of the Remote Server Mount that this backend is associated with.")
-	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.RemoteServerId, "remote-server-id", 0, "The remote server that this backend is associated with.")
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "True if this backend is enabled.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Fall, "fall", 0, "Number of consecutive failures before considering the backend unhealthy.")
 	cmdUpdate.Flags().BoolVar(&updateHealthCheckEnabled, "health-check-enabled", updateHealthCheckEnabled, "True if health checks are enabled for this backend.")
@@ -285,6 +279,8 @@ func RemoteMountBackends() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Priority, "priority", 0, "Priority of this backend.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteMountBackendUpdate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Rise, "rise", 0, "Number of consecutive successes before considering the backend healthy.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteMountBackendUpdate.CanaryFilePath, "canary-file-path", "", "Path to the canary file used for health checks.")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.RemoteServerId, "remote-server-id", 0, "The remote server that this backend is associated with.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
