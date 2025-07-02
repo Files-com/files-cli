@@ -185,6 +185,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.")
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdCreate.Flags().BoolVar(&createAlwaysSerializeJobs, "always-serialize-jobs", createAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
@@ -317,6 +318,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("schedule-time-zone") {
 				lib.FlagUpdate(cmd, "schedule_time_zone", paramsAutomationUpdate.ScheduleTimeZone, mapParams)
 			}
+			if cmd.Flags().Changed("holiday-region") {
+				lib.FlagUpdate(cmd, "holiday_region", paramsAutomationUpdate.HolidayRegion, mapParams)
+			}
 			if cmd.Flags().Changed("always-overwrite-size-matching-files") {
 				mapParams["always_overwrite_size_matching_files"] = updateAlwaysOverwriteSizeMatchingFiles
 			}
@@ -396,6 +400,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`. A list of times of day to run this automation. 24-hour time format.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`. Time zone for the schedule.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysSerializeJobs, "always-serialize-jobs", updateAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")

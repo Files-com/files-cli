@@ -155,6 +155,8 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
@@ -288,6 +290,12 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("trigger-file") {
 				lib.FlagUpdate(cmd, "trigger_file", paramsSyncUpdate.TriggerFile, mapParams)
 			}
+			if cmd.Flags().Changed("holiday-region") {
+				lib.FlagUpdate(cmd, "holiday_region", paramsSyncUpdate.HolidayRegion, mapParams)
+			}
+			if cmd.Flags().Changed("sync-interval-minutes") {
+				lib.FlagUpdate(cmd, "sync_interval_minutes", paramsSyncUpdate.SyncIntervalMinutes, mapParams)
+			}
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsSyncUpdate.RecurringDay, mapParams)
 			}
@@ -321,6 +329,8 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
