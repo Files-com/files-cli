@@ -162,6 +162,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "Include site admins in the rule")
 	cmdCreate.Flags().BoolVar(&createIncludeFolderAdmins, "include-folder-admins", createIncludeFolderAdmins, "Include folder admins in the rule")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.Name, "name", "", "User Lifecycle Rule name")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -230,6 +231,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("user-state") {
 				lib.FlagUpdate(cmd, "user_state", paramsUserLifecycleRuleUpdate.UserState, mapParams)
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsUserLifecycleRuleUpdate.Name, mapParams)
+			}
 
 			var userLifecycleRule interface{}
 			var err error
@@ -244,6 +248,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "Include site admins in the rule")
 	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "Include folder admins in the rule")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.Name, "name", "", "User Lifecycle Rule name")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
