@@ -538,6 +538,12 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("site-footer") {
 				lib.FlagUpdate(cmd, "site_footer", paramsSiteUpdate.SiteFooter, mapParams)
 			}
+			if cmd.Flags().Changed("site-public-header") {
+				lib.FlagUpdate(cmd, "site_public_header", paramsSiteUpdate.SitePublicHeader, mapParams)
+			}
+			if cmd.Flags().Changed("site-public-footer") {
+				lib.FlagUpdate(cmd, "site_public_footer", paramsSiteUpdate.SitePublicFooter, mapParams)
+			}
 			if cmd.Flags().Changed("login-help-text") {
 				lib.FlagUpdate(cmd, "login_help_text", paramsSiteUpdate.LoginHelpText, mapParams)
 			}
@@ -784,8 +790,10 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2Link, "color2-link", "", "Top bar link color")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2Text, "color2-text", "", "Page link and button color")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2TopText, "color2-top-text", "", "Top bar text color")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteHeader, "site-header", "", "Custom site header text")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteFooter, "site-footer", "", "Custom site footer text")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteHeader, "site-header", "", "Custom site header text for authenticated pages")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SiteFooter, "site-footer", "", "Custom site footer text for authenticated pages")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SitePublicHeader, "site-public-header", "", "Custom site header text for public pages")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SitePublicFooter, "site-public-footer", "", "Custom site footer text for public pages")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LoginHelpText, "login-help-text", "", "Login help text")
 	cmdUpdate.Flags().BoolVar(&updateUseDedicatedIpsForSmtp, "use-dedicated-ips-for-smtp", updateUseDedicatedIpsForSmtp, "If using custom SMTP, should we use dedicated IPs to deliver emails?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpAddress, "smtp-address", "", "SMTP server hostname or IP")
