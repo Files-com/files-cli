@@ -54,6 +54,10 @@ func Folders() *cobra.Command {
 				params.Path = args[0]
 			}
 
+			if params.ModifiedAtDatetime.IsZero() {
+				params.ModifiedAtDatetime = nil
+			}
+
 			if cmd.Flags().Changed("search-all") {
 				params.SearchAll = flib.Bool(listForSearchAll)
 			}
@@ -119,6 +123,9 @@ func Folders() *cobra.Command {
 	cmdListFor.Flags().BoolVar(&listForSearchAll, "search-all", listForSearchAll, "Search entire site?  If set, we will ignore the folder path provided and search the entire site.  This is the same API used by the search bar in the web UI when running 'Search All Files'.  Search results are a best effort, not real time, and not guaranteed to match every file.  This field should only be used for ad-hoc (human) searching, and not as part of an automated process.")
 	cmdListFor.Flags().BoolVar(&listForWithPreviews, "with-previews", listForWithPreviews, "Include file previews?")
 	cmdListFor.Flags().BoolVar(&listForWithPriorityColor, "with-priority-color", listForWithPriorityColor, "Include file priority color information?")
+	cmdListFor.Flags().StringVar(&paramsFolderListFor.Type, "type", "", "Type of objects to return.  Can be `folder` or `file`.")
+	paramsFolderListFor.ModifiedAtDatetime = &time.Time{}
+	lib.TimeVar(cmdListFor.Flags(), paramsFolderListFor.ModifiedAtDatetime, "modified-at-datetime", "If provided, will only return files/folders modified after this time. Can be used only in combination with `type` filter.")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
