@@ -167,33 +167,6 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Syncs.AddCommand(cmdCreate)
-	var fieldsCreateMigrateTo []string
-	var formatCreateMigrateTo []string
-	usePagerCreateMigrateTo := true
-	cmdCreateMigrateTo := &cobra.Command{
-		Use:   "create-migrate-to",
-		Short: `Migrate Legacy Syncs to Syncs`,
-		Long:  `Migrate Legacy Syncs to Syncs`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := sync.Client{Config: config}
-
-			var err error
-			err = client.CreateMigrateTo(files_sdk.WithContext(ctx))
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
-		},
-	}
-
-	cmdCreateMigrateTo.Flags().StringSliceVar(&fieldsCreateMigrateTo, "fields", []string{}, "comma separated list of field names")
-	cmdCreateMigrateTo.Flags().StringSliceVar(&formatCreateMigrateTo, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdCreateMigrateTo.Flags().BoolVar(&usePagerCreateMigrateTo, "use-pager", usePagerCreateMigrateTo, "Use $PAGER (.ie less, more, etc)")
-
-	Syncs.AddCommand(cmdCreateMigrateTo)
 	var fieldsManualRun []string
 	var formatManualRun []string
 	usePagerManualRun := true
