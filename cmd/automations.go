@@ -179,6 +179,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Interval, "interval", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Path, "path", "", "Path on which this Automation runs.  Supports globs, except on remote mounts.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.LegacySyncIds, "legacy-sync-ids", "", "A list of legacy sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
@@ -300,6 +301,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("path") {
 				lib.FlagUpdate(cmd, "path", paramsAutomationUpdate.Path, mapParams)
 			}
+			if cmd.Flags().Changed("legacy-sync-ids") {
+				lib.FlagUpdate(cmd, "legacy_sync_ids", paramsAutomationUpdate.LegacySyncIds, mapParams)
+			}
 			if cmd.Flags().Changed("sync-ids") {
 				lib.FlagUpdate(cmd, "sync_ids", paramsAutomationUpdate.SyncIds, mapParams)
 			}
@@ -394,6 +398,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceTo, "destination-replace-to", "", "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Interval, "interval", "", "How often to run this automation? One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Path, "path", "", "Path on which this Automation runs.  Supports globs, except on remote mounts.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.LegacySyncIds, "legacy-sync-ids", "", "A list of legacy sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
