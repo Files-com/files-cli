@@ -262,6 +262,61 @@ files-cli users list \
   --filter-by="not_site_admin=true"
 ```
 
+## Paths
+
+Working with paths in Files.com involves several important considerations. Understanding how path comparisons are applied helps developers ensure consistency and accuracy across all interactions with the platform.
+<div></div>
+
+### Capitalization
+
+Files.com compares paths in a **case-insensitive** manner. This means path segments are treated as equivalent regardless of letter casing.
+
+For example, all of the following resolve to the same internal path:
+
+| Path Variant                          | Interpreted As              |
+|---------------------------------------|------------------------------|
+| `Documents/Reports/Q1.pdf`            | `documents/reports/q1.pdf`  |
+| `documents/reports/q1.PDF`            | `documents/reports/q1.pdf`  |
+| `DOCUMENTS/REPORTS/Q1.PDF`            | `documents/reports/q1.pdf`  |
+
+This behavior applies across:
+- API requests
+- Folder and file lookup operations
+- Automations and workflows
+
+See also: [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/case-sensitivity/)
+
+### Slashes
+
+All path parameters in Files.com (API, SDKs, CLI, automations, integrations) must **omit leading and trailing slashes**. Paths are always treated as **absolute and slash-delimited**, so only internal `/` separators are used and never at the start or end of the string.
+
+####  Path Slash Examples
+| Path                              | Valid? | Notes                         |
+|-----------------------------------|--------|-------------------------------|
+| `folder/subfolder/file.txt`       |   ✅   | Correct, internal separators only |
+| `/folder/subfolder/file.txt`      |   ❌   | Leading slash not allowed     |
+| `folder/subfolder/file.txt/`      |   ❌   | Trailing slash not allowed    |
+| `//folder//file.txt`              |   ❌   | Duplicate separators not allowed |
+
+<div></div>
+
+### Unicode Normalization
+
+Files.com normalizes all paths using [Unicode NFC (Normalization Form C)](https://www.unicode.org/reports/tr15/#Norm_Forms) before comparison. This ensures consistency across different representations of the same characters.
+
+For example, the following two paths are treated as equivalent after NFC normalization:
+
+| Input                                  | Normalized Form       |
+|----------------------------------------|------------------------|
+| `uploads/\u0065\u0301.txt`             | `uploads/é.txt`        |
+| `docs/Café/Report.txt`                 | `docs/Café/Report.txt` |
+
+- All input must be UTF‑8 encoded.
+- Precomposed and decomposed characters are unified.
+- This affects search, deduplication, and comparisons across SDKs.
+
+<div></div>
+
 ## Foreign Language Support
 
 The Files.com CLI supports localized responses by setting the `files-cli config set -l` option.  The language can be reset by using `files-cli config reset -l`.
@@ -305,10 +360,6 @@ Error: Not Found - `Not Found.  This may be related to your permissions.`
 ### API Error Types
 
 To understand the types of errors that come back from the Files.com API and will be displayed by the CLI, see the [Rest API Errors](/rest/overview/errors/).
-
-## Case Sensitivity
-
-The Files.com API compares files and paths in a case-insensitive manner. For related documentation see [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/file-system-semantics/case-sensitivity).
 
 ## Logs
 
