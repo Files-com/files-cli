@@ -225,7 +225,6 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson, "google-cloud-storage-credentials-json", "", "Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleSecretKey, "google-cloud-storage-s3-compatible-secret-key", "", "Google Cloud Storage: S3-compatible secret key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.RackspaceApiKey, "rackspace-api-key", "", "Rackspace: API key from the Rackspace Cloud Control Panel")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -260,9 +259,6 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPinToSiteRegion, "pin-to-site-region", createPinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.RackspaceContainer, "rackspace-container", "", "Rackspace: The name of the container (top level directory) where files will sync.")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.RackspaceRegion, "rackspace-region", "", "Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.RackspaceUsername, "rackspace-username", "", "Rackspace: username used to login to the Rackspace Cloud Control Panel.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
@@ -432,9 +428,6 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("linode-secret-key") {
 				lib.FlagUpdate(cmd, "linode_secret_key", paramsRemoteServerUpdate.LinodeSecretKey, mapParams)
 			}
-			if cmd.Flags().Changed("rackspace-api-key") {
-				lib.FlagUpdate(cmd, "rackspace_api_key", paramsRemoteServerUpdate.RackspaceApiKey, mapParams)
-			}
 			if cmd.Flags().Changed("s3-compatible-secret-key") {
 				lib.FlagUpdate(cmd, "s3_compatible_secret_key", paramsRemoteServerUpdate.S3CompatibleSecretKey, mapParams)
 			}
@@ -537,15 +530,6 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("port") {
 				lib.FlagUpdate(cmd, "port", paramsRemoteServerUpdate.Port, mapParams)
 			}
-			if cmd.Flags().Changed("rackspace-container") {
-				lib.FlagUpdate(cmd, "rackspace_container", paramsRemoteServerUpdate.RackspaceContainer, mapParams)
-			}
-			if cmd.Flags().Changed("rackspace-region") {
-				lib.FlagUpdate(cmd, "rackspace_region", paramsRemoteServerUpdate.RackspaceRegion, mapParams)
-			}
-			if cmd.Flags().Changed("rackspace-username") {
-				lib.FlagUpdate(cmd, "rackspace_username", paramsRemoteServerUpdate.RackspaceUsername, mapParams)
-			}
 			if cmd.Flags().Changed("s3-bucket") {
 				lib.FlagUpdate(cmd, "s3_bucket", paramsRemoteServerUpdate.S3Bucket, mapParams)
 			}
@@ -613,7 +597,6 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson, "google-cloud-storage-credentials-json", "", "Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey, "google-cloud-storage-s3-compatible-secret-key", "", "Google Cloud Storage: S3-compatible secret key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.RackspaceApiKey, "rackspace-api-key", "", "Rackspace: API key from the Rackspace Cloud Control Panel")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
@@ -648,9 +631,6 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePinToSiteRegion, "pin-to-site-region", updatePinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.RackspaceContainer, "rackspace-container", "", "Rackspace: The name of the container (top level directory) where files will sync.")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.RackspaceRegion, "rackspace-region", "", "Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.RackspaceUsername, "rackspace-username", "", "Rackspace: username used to login to the Rackspace Cloud Control Panel.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
