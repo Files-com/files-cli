@@ -167,6 +167,36 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Syncs.AddCommand(cmdCreate)
+	var fieldsDryRun []string
+	var formatDryRun []string
+	usePagerDryRun := true
+	paramsSyncDryRun := files_sdk.SyncDryRunParams{}
+
+	cmdDryRun := &cobra.Command{
+		Use:   "dry-run",
+		Short: `Dry Run Sync`,
+		Long:  `Dry Run Sync`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sync.Client{Config: config}
+
+			var err error
+			err = client.DryRun(paramsSyncDryRun, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdDryRun.Flags().Int64Var(&paramsSyncDryRun.Id, "id", 0, "Sync ID.")
+
+	cmdDryRun.Flags().StringSliceVar(&fieldsDryRun, "fields", []string{}, "comma separated list of field names")
+	cmdDryRun.Flags().StringSliceVar(&formatDryRun, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdDryRun.Flags().BoolVar(&usePagerDryRun, "use-pager", usePagerDryRun, "Use $PAGER (.ie less, more, etc)")
+
+	Syncs.AddCommand(cmdDryRun)
 	var fieldsManualRun []string
 	var formatManualRun []string
 	usePagerManualRun := true
