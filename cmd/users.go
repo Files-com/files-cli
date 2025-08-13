@@ -406,6 +406,7 @@ func Users() *cobra.Command {
 	updateSiteAdmin := true
 	updateSkipWelcomeScreen := true
 	updateSubscribeToNewsletter := true
+	updateClear2fa := true
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	UserUpdateAuthenticationMethod := ""
 	UserUpdateSslRequired := ""
@@ -585,6 +586,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
 			}
+			if cmd.Flags().Changed("clear-2fa") {
+				mapParams["clear_2fa"] = updateClear2fa
+			}
 
 			if paramsUserUpdate.AuthenticateUntil.IsZero() {
 				paramsUserUpdate.AuthenticateUntil = nil
@@ -648,6 +652,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
+	cmdUpdate.Flags().BoolVar(&updateClear2fa, "clear-2fa", updateClear2fa, "If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
