@@ -107,7 +107,6 @@ func Syncs() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
-	createTwoWay := true
 	createKeepAfterCopy := true
 	createDeleteEmptyFolders := true
 	createDisabled := true
@@ -123,9 +122,6 @@ func Syncs() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := sync.Client{Config: config}
 
-			if cmd.Flags().Changed("two-way") {
-				paramsSyncCreate.TwoWay = flib.Bool(createTwoWay)
-			}
 			if cmd.Flags().Changed("keep-after-copy") {
 				paramsSyncCreate.KeepAfterCopy = flib.Bool(createKeepAfterCopy)
 			}
@@ -148,7 +144,6 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.DestPath, "dest-path", "", "Absolute destination path")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination")
-	cmdCreate.Flags().BoolVar(&createTwoWay, "two-way", createTwoWay, "Is this a two-way sync?")
 	cmdCreate.Flags().BoolVar(&createKeepAfterCopy, "keep-after-copy", createKeepAfterCopy, "Keep files after copying?")
 	cmdCreate.Flags().BoolVar(&createDeleteEmptyFolders, "delete-empty-folders", createDeleteEmptyFolders, "Delete empty folders after sync?")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is this sync disabled?")
@@ -230,7 +225,6 @@ func Syncs() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
-	updateTwoWay := true
 	updateKeepAfterCopy := true
 	updateDeleteEmptyFolders := true
 	updateDisabled := true
@@ -271,9 +265,6 @@ func Syncs() *cobra.Command {
 			}
 			if cmd.Flags().Changed("dest-remote-server-id") {
 				lib.FlagUpdate(cmd, "dest_remote_server_id", paramsSyncUpdate.DestRemoteServerId, mapParams)
-			}
-			if cmd.Flags().Changed("two-way") {
-				mapParams["two_way"] = updateTwoWay
 			}
 			if cmd.Flags().Changed("keep-after-copy") {
 				mapParams["keep_after_copy"] = updateKeepAfterCopy
@@ -325,7 +316,6 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.DestPath, "dest-path", "", "Absolute destination path")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination")
-	cmdUpdate.Flags().BoolVar(&updateTwoWay, "two-way", updateTwoWay, "Is this a two-way sync?")
 	cmdUpdate.Flags().BoolVar(&updateKeepAfterCopy, "keep-after-copy", updateKeepAfterCopy, "Keep files after copying?")
 	cmdUpdate.Flags().BoolVar(&updateDeleteEmptyFolders, "delete-empty-folders", updateDeleteEmptyFolders, "Delete empty folders after sync?")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is this sync disabled?")
