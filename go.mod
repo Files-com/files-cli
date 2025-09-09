@@ -18,15 +18,15 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/evertras/bubble-table v0.17.1
 	github.com/fatih/structs v1.1.0
-	github.com/hashicorp/go-retryablehttp v0.7.8
+	github.com/hashicorp/go-retryablehttp v0.7.7
 	github.com/jedib0t/go-pretty/v6 v6.6.7
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
-	github.com/samber/lo v1.51.0
+	github.com/samber/lo v1.50.0
 	github.com/sc0vu/didyoumean v0.0.0-20230904130613-22d315697818
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.10.0
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v8 v8.9.3
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
@@ -70,10 +70,10 @@ require (
 	github.com/yuin/goldmark v1.7.8 // indirect
 	github.com/yuin/goldmark-emoji v1.0.5 // indirect
 	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
