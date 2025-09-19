@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.2
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.2.235
+	github.com/Files-com/files-sdk-go/v3 v3.2.236
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/atotto/clipboard v0.1.4
