@@ -201,7 +201,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
-	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
+	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, archived_delete, copy")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().StringVar(&AutomationCreateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
 
@@ -420,7 +420,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
-	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy")
+	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, archived_delete, copy")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
 

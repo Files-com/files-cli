@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -107,6 +110,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
+	ChildSiteManagementPolicyCreatePolicyType := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -118,15 +122,23 @@ func ChildSiteManagementPolicies() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := child_site_management_policy.Client{Config: config}
 
+			var ChildSiteManagementPolicyCreatePolicyTypeErr error
+			paramsChildSiteManagementPolicyCreate.PolicyType, ChildSiteManagementPolicyCreatePolicyTypeErr = lib.FetchKey("policy-type", paramsChildSiteManagementPolicyCreate.PolicyType.Enum(), ChildSiteManagementPolicyCreatePolicyType)
+			if ChildSiteManagementPolicyCreatePolicyType != "" && ChildSiteManagementPolicyCreatePolicyTypeErr != nil {
+				return ChildSiteManagementPolicyCreatePolicyTypeErr
+			}
+
 			var childSiteManagementPolicy interface{}
 			var err error
 			childSiteManagementPolicy, err = client.Create(paramsChildSiteManagementPolicyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), childSiteManagementPolicy, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.SiteSettingName, "site-setting-name", "", "The name of the setting that is managed by the policy")
-	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.ManagedValue, "managed-value", "", "The value for the setting that will be enforced for all child sites that are not exempt")
-	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "The list of child site IDs that are exempt from this policy")
+	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Value, "value", "", "")
+	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
+	cmdCreate.Flags().StringVar(&ChildSiteManagementPolicyCreatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyCreate.PolicyType.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Name, "name", "", "Name for this policy.")
+	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Description, "description", "", "Description for this policy.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -137,6 +149,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
+	ChildSiteManagementPolicyUpdatePolicyType := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -153,17 +166,29 @@ func ChildSiteManagementPolicies() *cobra.Command {
 				return convertErr
 			}
 
+			var ChildSiteManagementPolicyUpdatePolicyTypeErr error
+			paramsChildSiteManagementPolicyUpdate.PolicyType, ChildSiteManagementPolicyUpdatePolicyTypeErr = lib.FetchKey("policy-type", paramsChildSiteManagementPolicyUpdate.PolicyType.Enum(), ChildSiteManagementPolicyUpdatePolicyType)
+			if ChildSiteManagementPolicyUpdatePolicyType != "" && ChildSiteManagementPolicyUpdatePolicyTypeErr != nil {
+				return ChildSiteManagementPolicyUpdatePolicyTypeErr
+			}
+
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsChildSiteManagementPolicyUpdate.Id, mapParams)
 			}
-			if cmd.Flags().Changed("site-setting-name") {
-				lib.FlagUpdate(cmd, "site_setting_name", paramsChildSiteManagementPolicyUpdate.SiteSettingName, mapParams)
-			}
-			if cmd.Flags().Changed("managed-value") {
-				lib.FlagUpdate(cmd, "managed_value", paramsChildSiteManagementPolicyUpdate.ManagedValue, mapParams)
+			if cmd.Flags().Changed("value") {
+				lib.FlagUpdate(cmd, "value", paramsChildSiteManagementPolicyUpdate.Value, mapParams)
 			}
 			if cmd.Flags().Changed("skip-child-site-ids") {
 				lib.FlagUpdateLen(cmd, "skip_child_site_ids", paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, mapParams)
+			}
+			if cmd.Flags().Changed("policy-type") {
+				lib.FlagUpdate(cmd, "policy_type", paramsChildSiteManagementPolicyUpdate.PolicyType, mapParams)
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsChildSiteManagementPolicyUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsChildSiteManagementPolicyUpdate.Description, mapParams)
 			}
 
 			var childSiteManagementPolicy interface{}
@@ -173,9 +198,11 @@ func ChildSiteManagementPolicies() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsChildSiteManagementPolicyUpdate.Id, "id", 0, "Child Site Management Policy ID.")
-	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.SiteSettingName, "site-setting-name", "", "The name of the setting that is managed by the policy")
-	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.ManagedValue, "managed-value", "", "The value for the setting that will be enforced for all child sites that are not exempt")
-	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "The list of child site IDs that are exempt from this policy")
+	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Value, "value", "", "")
+	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
+	cmdUpdate.Flags().StringVar(&ChildSiteManagementPolicyUpdatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Name, "name", "", "Name for this policy.")
+	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Description, "description", "", "Description for this policy.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
