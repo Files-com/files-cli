@@ -304,6 +304,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("migrate-remote-server-sync-to-sync") {
 				mapParams["migrate_remote_server_sync_to_sync"] = updateMigrateRemoteServerSyncToSync
 			}
+			if cmd.Flags().Changed("as2-message-retention-days") {
+				lib.FlagUpdate(cmd, "as2_message_retention_days", paramsSiteUpdate.As2MessageRetentionDays, mapParams)
+			}
 			if cmd.Flags().Changed("session-expiry") {
 				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
 			}
@@ -711,6 +714,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha256, "calculate-file-checksums-sha256", updateCalculateFileChecksumsSha256, "Calculate SHA256 checksums for files?")
 	cmdUpdate.Flags().BoolVar(&updateLegacyChecksumsMode, "legacy-checksums-mode", updateLegacyChecksumsMode, "Use legacy checksums mode?")
 	cmdUpdate.Flags().BoolVar(&updateMigrateRemoteServerSyncToSync, "migrate-remote-server-sync-to-sync", updateMigrateRemoteServerSyncToSync, "If true, we will migrate all remote server syncs to the new Sync model.")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.As2MessageRetentionDays, "as2-message-retention-days", 0, "Number of days to retain AS2 messages (incoming and outgoing).")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")
