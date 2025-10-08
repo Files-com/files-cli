@@ -140,6 +140,7 @@ func RemoteServers() *cobra.Command {
 	usePagerCreate := true
 	createResetAuthentication := true
 	createAzureBlobStorageHierarchicalNamespace := true
+	createBufferUploadsAlways := true
 	createDropboxTeams := true
 	createEnableDedicatedIps := true
 	createPinToSiteRegion := true
@@ -192,6 +193,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("azure-blob-storage-hierarchical-namespace") {
 				paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = flib.Bool(createAzureBlobStorageHierarchicalNamespace)
 			}
+			if cmd.Flags().Changed("buffer-uploads-always") {
+				paramsRemoteServerCreate.BufferUploadsAlways = flib.Bool(createBufferUploadsAlways)
+			}
 			if cmd.Flags().Changed("dropbox-teams") {
 				paramsRemoteServerCreate.DropboxTeams = flib.Bool(createDropboxTeams)
 			}
@@ -237,6 +241,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure Files:  Storage Share name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.BackblazeB2Bucket, "backblaze-b2-bucket", "", "Backblaze B2 Cloud Storage: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.BackblazeB2S3Endpoint, "backblaze-b2-s3-endpoint", "", "Backblaze B2 Cloud Storage: S3 Endpoint")
+	cmdCreate.Flags().BoolVar(&createBufferUploadsAlways, "buffer-uploads-always", createBufferUploadsAlways, "If true, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")
@@ -323,6 +328,7 @@ func RemoteServers() *cobra.Command {
 	usePagerUpdate := true
 	updateResetAuthentication := true
 	updateAzureBlobStorageHierarchicalNamespace := true
+	updateBufferUploadsAlways := true
 	updateDropboxTeams := true
 	updateEnableDedicatedIps := true
 	updatePinToSiteRegion := true
@@ -463,6 +469,9 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("backblaze-b2-s3-endpoint") {
 				lib.FlagUpdate(cmd, "backblaze_b2_s3_endpoint", paramsRemoteServerUpdate.BackblazeB2S3Endpoint, mapParams)
+			}
+			if cmd.Flags().Changed("buffer-uploads-always") {
+				mapParams["buffer_uploads_always"] = updateBufferUploadsAlways
 			}
 			if cmd.Flags().Changed("cloudflare-access-key") {
 				lib.FlagUpdate(cmd, "cloudflare_access_key", paramsRemoteServerUpdate.CloudflareAccessKey, mapParams)
@@ -609,6 +618,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureFilesStorageShareName, "azure-files-storage-share-name", "", "Azure Files:  Storage Share name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.BackblazeB2Bucket, "backblaze-b2-bucket", "", "Backblaze B2 Cloud Storage: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.BackblazeB2S3Endpoint, "backblaze-b2-s3-endpoint", "", "Backblaze B2 Cloud Storage: S3 Endpoint")
+	cmdUpdate.Flags().BoolVar(&updateBufferUploadsAlways, "buffer-uploads-always", updateBufferUploadsAlways, "If true, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")

@@ -30,6 +30,7 @@ func Files() *cobra.Command {
 	usePagerCreate := true
 	createMkdirParents := true
 	createWithRename := true
+	createBufferedUpload := true
 	paramsFileCreate := files_sdk.FileCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -47,6 +48,9 @@ func Files() *cobra.Command {
 			}
 			if cmd.Flags().Changed("with-rename") {
 				paramsFileCreate.WithRename = flib.Bool(createWithRename)
+			}
+			if cmd.Flags().Changed("buffered-upload") {
+				paramsFileCreate.BufferedUpload = flib.Bool(createBufferedUpload)
 			}
 
 			if paramsFileCreate.ProvidedMtime.IsZero() {
@@ -75,6 +79,7 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Size, "size", 0, "Size of file.")
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Structure, "structure", "", "If copying folder, copy just the structure?")
 	cmdCreate.Flags().BoolVar(&createWithRename, "with-rename", createWithRename, "Allow file rename instead of overwrite?")
+	cmdCreate.Flags().BoolVar(&createBufferedUpload, "buffered-upload", createBufferedUpload, "If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
