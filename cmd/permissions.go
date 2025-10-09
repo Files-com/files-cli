@@ -81,6 +81,7 @@ func Permissions() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsPermissionList.Path, "path", "", "Permission path.  If provided, will scope all permissions(including upward) to this path.")
 	cmdList.Flags().BoolVar(&listIncludeGroups, "include-groups", listIncludeGroups, "If searching by user or group, also include user's permissions that are inherited from its groups?")
 	cmdList.Flags().StringVar(&paramsPermissionList.GroupId, "group-id", "", "")
+	cmdList.Flags().StringVar(&paramsPermissionList.PartnerId, "partner-id", "", "")
 	cmdList.Flags().StringVar(&paramsPermissionList.UserId, "user-id", "", "")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -121,6 +122,7 @@ func Permissions() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.GroupId, "group-id", 0, "Group ID. Provide `group_name` or `group_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Permission, "permission", "", "Permission type.  Can be `admin`, `full`, `readonly`, `writeonly`, `list`, or `history`")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Apply to subfolders recursively?")
+	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.PartnerId, "partner-id", 0, "Partner ID if this Permission belongs to a partner.")
 	cmdCreate.Flags().Int64Var(&paramsPermissionCreate.UserId, "user-id", 0, "User ID.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.Username, "username", "", "User username.  Provide `username` or `user_id`")
 	cmdCreate.Flags().StringVar(&paramsPermissionCreate.GroupName, "group-name", "", "Group name.  Provide `group_name` or `group_id`")

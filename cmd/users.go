@@ -140,6 +140,7 @@ func Users() *cobra.Command {
 	createSubscribeToNewsletter := true
 	paramsUserCreate := files_sdk.UserCreateParams{}
 	UserCreateAuthenticationMethod := ""
+	UserCreateFilesystemLayout := ""
 	UserCreateSslRequired := ""
 	UserCreateRequire2fa := ""
 
@@ -157,6 +158,11 @@ func Users() *cobra.Command {
 			paramsUserCreate.AuthenticationMethod, UserCreateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserCreate.AuthenticationMethod.Enum(), UserCreateAuthenticationMethod)
 			if UserCreateAuthenticationMethod != "" && UserCreateAuthenticationMethodErr != nil {
 				return UserCreateAuthenticationMethodErr
+			}
+			var UserCreateFilesystemLayoutErr error
+			paramsUserCreate.FilesystemLayout, UserCreateFilesystemLayoutErr = lib.FetchKey("filesystem-layout", paramsUserCreate.FilesystemLayout.Enum(), UserCreateFilesystemLayout)
+			if UserCreateFilesystemLayout != "" && UserCreateFilesystemLayoutErr != nil {
+				return UserCreateFilesystemLayoutErr
 			}
 			var UserCreateSslRequiredErr error
 			paramsUserCreate.SslRequired, UserCreateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserCreate.SslRequired.Enum(), UserCreateSslRequired)
@@ -261,6 +267,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createBypassSiteAllowedIps, "bypass-site-allowed-ips", createBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "Can the user connect with WebDAV?")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
+	cmdCreate.Flags().StringVar(&UserCreateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserCreate.FilesystemLayout.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Language, "language", "", "Preferred language")
@@ -269,6 +276,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Company, "company", "", "User's company")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Notes, "notes", "", "Any internal notes on the user")
 	cmdCreate.Flags().BoolVar(&createOfficeIntegrationEnabled, "office-integration-enabled", createOfficeIntegrationEnabled, "Enable integration with Office for the web?")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdCreate.Flags().BoolVar(&createReadonlySiteAdmin, "readonly-site-admin", createReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
@@ -409,6 +417,7 @@ func Users() *cobra.Command {
 	updateClear2fa := true
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	UserUpdateAuthenticationMethod := ""
+	UserUpdateFilesystemLayout := ""
 	UserUpdateSslRequired := ""
 	UserUpdateRequire2fa := ""
 
@@ -431,6 +440,11 @@ func Users() *cobra.Command {
 			paramsUserUpdate.AuthenticationMethod, UserUpdateAuthenticationMethodErr = lib.FetchKey("authentication-method", paramsUserUpdate.AuthenticationMethod.Enum(), UserUpdateAuthenticationMethod)
 			if UserUpdateAuthenticationMethod != "" && UserUpdateAuthenticationMethodErr != nil {
 				return UserUpdateAuthenticationMethodErr
+			}
+			var UserUpdateFilesystemLayoutErr error
+			paramsUserUpdate.FilesystemLayout, UserUpdateFilesystemLayoutErr = lib.FetchKey("filesystem-layout", paramsUserUpdate.FilesystemLayout.Enum(), UserUpdateFilesystemLayout)
+			if UserUpdateFilesystemLayout != "" && UserUpdateFilesystemLayoutErr != nil {
+				return UserUpdateFilesystemLayoutErr
 			}
 			var UserUpdateSslRequiredErr error
 			paramsUserUpdate.SslRequired, UserUpdateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserUpdate.SslRequired.Enum(), UserUpdateSslRequired)
@@ -508,6 +522,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
+			if cmd.Flags().Changed("filesystem-layout") {
+				lib.FlagUpdate(cmd, "filesystem_layout", paramsUserUpdate.FilesystemLayout, mapParams)
+			}
 			if cmd.Flags().Changed("ftp-permission") {
 				mapParams["ftp_permission"] = updateFtpPermission
 			}
@@ -531,6 +548,9 @@ func Users() *cobra.Command {
 			}
 			if cmd.Flags().Changed("office-integration-enabled") {
 				mapParams["office_integration_enabled"] = updateOfficeIntegrationEnabled
+			}
+			if cmd.Flags().Changed("partner-id") {
+				lib.FlagUpdate(cmd, "partner_id", paramsUserUpdate.PartnerId, mapParams)
 			}
 			if cmd.Flags().Changed("password-validity-days") {
 				lib.FlagUpdate(cmd, "password_validity_days", paramsUserUpdate.PasswordValidityDays, mapParams)
@@ -625,6 +645,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateBypassSiteAllowedIps, "bypass-site-allowed-ips", updateBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "Can the user connect with WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
+	cmdUpdate.Flags().StringVar(&UserUpdateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserUpdate.FilesystemLayout.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Language, "language", "", "Preferred language")
@@ -633,6 +654,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Company, "company", "", "User's company")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Notes, "notes", "", "Any internal notes on the user")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationEnabled, "office-integration-enabled", updateOfficeIntegrationEnabled, "Enable integration with Office for the web?")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdUpdate.Flags().BoolVar(&updateReadonlySiteAdmin, "readonly-site-admin", updateReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
