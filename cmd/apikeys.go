@@ -9,6 +9,7 @@ import (
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	api_key "github.com/Files-com/files-sdk-go/v3/apikey"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -136,6 +137,7 @@ func ApiKeys() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createAwsStyleCredentials := true
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
 	ApiKeyCreatePermissionSet := ""
 
@@ -153,6 +155,10 @@ func ApiKeys() *cobra.Command {
 			paramsApiKeyCreate.PermissionSet, ApiKeyCreatePermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyCreate.PermissionSet.Enum(), ApiKeyCreatePermissionSet)
 			if ApiKeyCreatePermissionSet != "" && ApiKeyCreatePermissionSetErr != nil {
 				return ApiKeyCreatePermissionSetErr
+			}
+
+			if cmd.Flags().Changed("aws-style-credentials") {
+				paramsApiKeyCreate.AwsStyleCredentials = flib.Bool(createAwsStyleCredentials)
 			}
 
 			if paramsApiKeyCreate.ExpiresAt.IsZero() {
@@ -174,6 +180,7 @@ func ApiKeys() *cobra.Command {
 	lib.TimeVar(cmdCreate.Flags(), paramsApiKeyCreate.ExpiresAt, "expires-at", "API Key expiration date")
 	cmdCreate.Flags().StringVar(&ApiKeyCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know. %v", reflect.ValueOf(paramsApiKeyCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Name, "name", "", "Internal name for the API Key.  For your use.")
+	cmdCreate.Flags().BoolVar(&createAwsStyleCredentials, "aws-style-credentials", createAwsStyleCredentials, "If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.")
 	cmdCreate.Flags().StringVar(&paramsApiKeyCreate.Path, "path", "", "Folder path restriction for `office_integration` permission set API keys.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
