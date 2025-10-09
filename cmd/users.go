@@ -129,6 +129,7 @@ func Users() *cobra.Command {
 	createDisabled := true
 	createFtpPermission := true
 	createOfficeIntegrationEnabled := true
+	createPartnerAdmin := true
 	createReadonlySiteAdmin := true
 	createReceiveAdminAlerts := true
 	createRequirePasswordChange := true
@@ -205,6 +206,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("office-integration-enabled") {
 				paramsUserCreate.OfficeIntegrationEnabled = flib.Bool(createOfficeIntegrationEnabled)
 			}
+			if cmd.Flags().Changed("partner-admin") {
+				paramsUserCreate.PartnerAdmin = flib.Bool(createPartnerAdmin)
+			}
 			if cmd.Flags().Changed("readonly-site-admin") {
 				paramsUserCreate.ReadonlySiteAdmin = flib.Bool(createReadonlySiteAdmin)
 			}
@@ -276,6 +280,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Company, "company", "", "User's company")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Notes, "notes", "", "Any internal notes on the user")
 	cmdCreate.Flags().BoolVar(&createOfficeIntegrationEnabled, "office-integration-enabled", createOfficeIntegrationEnabled, "Enable integration with Office for the web?")
+	cmdCreate.Flags().BoolVar(&createPartnerAdmin, "partner-admin", createPartnerAdmin, "Is this user a Partner administrator?")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdCreate.Flags().BoolVar(&createReadonlySiteAdmin, "readonly-site-admin", createReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
@@ -405,6 +410,7 @@ func Users() *cobra.Command {
 	updateDisabled := true
 	updateFtpPermission := true
 	updateOfficeIntegrationEnabled := true
+	updatePartnerAdmin := true
 	updateReadonlySiteAdmin := true
 	updateReceiveAdminAlerts := true
 	updateRequirePasswordChange := true
@@ -549,6 +555,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("office-integration-enabled") {
 				mapParams["office_integration_enabled"] = updateOfficeIntegrationEnabled
 			}
+			if cmd.Flags().Changed("partner-admin") {
+				mapParams["partner_admin"] = updatePartnerAdmin
+			}
 			if cmd.Flags().Changed("partner-id") {
 				lib.FlagUpdate(cmd, "partner_id", paramsUserUpdate.PartnerId, mapParams)
 			}
@@ -654,6 +663,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Company, "company", "", "User's company")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Notes, "notes", "", "Any internal notes on the user")
 	cmdUpdate.Flags().BoolVar(&updateOfficeIntegrationEnabled, "office-integration-enabled", updateOfficeIntegrationEnabled, "Enable integration with Office for the web?")
+	cmdUpdate.Flags().BoolVar(&updatePartnerAdmin, "partner-admin", updatePartnerAdmin, "Is this user a Partner administrator?")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdUpdate.Flags().BoolVar(&updateReadonlySiteAdmin, "readonly-site-admin", updateReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
