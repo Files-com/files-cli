@@ -157,13 +157,15 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.Action.Enum()).MapKeys()))
-	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for the rule %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64SliceVar(&paramsUserLifecycleRuleCreate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
-	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "Include site admins in the rule")
-	cmdCreate.Flags().BoolVar(&createIncludeFolderAdmins, "include-folder-admins", createIncludeFolderAdmins, "Include folder admins in the rule")
-	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
+	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "If true, the rule will apply to site admins.")
+	cmdCreate.Flags().BoolVar(&createIncludeFolderAdmins, "include-folder-admins", createIncludeFolderAdmins, "If true, the rule will apply to folder admins.")
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.Name, "name", "", "User Lifecycle Rule name")
+	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
+	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -232,11 +234,17 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("include-folder-admins") {
 				mapParams["include_folder_admins"] = updateIncludeFolderAdmins
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsUserLifecycleRuleUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("partner-tag") {
+				lib.FlagUpdate(cmd, "partner_tag", paramsUserLifecycleRuleUpdate.PartnerTag, mapParams)
+			}
 			if cmd.Flags().Changed("user-state") {
 				lib.FlagUpdate(cmd, "user_state", paramsUserLifecycleRuleUpdate.UserState, mapParams)
 			}
-			if cmd.Flags().Changed("name") {
-				lib.FlagUpdate(cmd, "name", paramsUserLifecycleRuleUpdate.Name, mapParams)
+			if cmd.Flags().Changed("user-tag") {
+				lib.FlagUpdate(cmd, "user_tag", paramsUserLifecycleRuleUpdate.UserTag, mapParams)
 			}
 
 			var userLifecycleRule interface{}
@@ -247,13 +255,15 @@ func UserLifecycleRules() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.Id, "id", 0, "User Lifecycle Rule ID.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.Action.Enum()).MapKeys()))
-	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for the rule %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64SliceVar(&paramsUserLifecycleRuleUpdate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
-	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "Include site admins in the rule")
-	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "Include folder admins in the rule")
-	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
+	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "If true, the rule will apply to site admins.")
+	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "If true, the rule will apply to folder admins.")
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.Name, "name", "", "User Lifecycle Rule name")
+	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

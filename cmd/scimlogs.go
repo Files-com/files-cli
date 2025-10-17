@@ -75,5 +75,33 @@ func ScimLogs() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	ScimLogs.AddCommand(cmdList)
+	var fieldsFind []string
+	var formatFind []string
+	usePagerFind := true
+	paramsScimLogFind := files_sdk.ScimLogFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use:   "find",
+		Short: `Show Scim Log`,
+		Long:  `Show Scim Log`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := scim_log.Client{Config: config}
+
+			var scimLog interface{}
+			var err error
+			scimLog, err = client.Find(paramsScimLogFind, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), scimLog, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsScimLogFind.Id, "id", 0, "Scim Log ID.")
+
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
+	ScimLogs.AddCommand(cmdFind)
 	return ScimLogs
 }

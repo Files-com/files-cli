@@ -138,12 +138,13 @@ func Partners() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), partner, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", createAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
 	cmdCreate.Flags().BoolVar(&createAllowCredentialChanges, "allow-credential-changes", createAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
-	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Notes, "notes", "", "Notes about this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
+	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -176,6 +177,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsPartnerUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsPartnerUpdate.Name, mapParams)
+			}
 			if cmd.Flags().Changed("allow-bypassing-2fa-policies") {
 				mapParams["allow_bypassing_2fa_policies"] = updateAllowBypassing2faPolicies
 			}
@@ -185,14 +189,14 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("allow-user-creation") {
 				mapParams["allow_user_creation"] = updateAllowUserCreation
 			}
-			if cmd.Flags().Changed("name") {
-				lib.FlagUpdate(cmd, "name", paramsPartnerUpdate.Name, mapParams)
-			}
 			if cmd.Flags().Changed("notes") {
 				lib.FlagUpdate(cmd, "notes", paramsPartnerUpdate.Notes, mapParams)
 			}
 			if cmd.Flags().Changed("root-folder") {
 				lib.FlagUpdate(cmd, "root_folder", paramsPartnerUpdate.RootFolder, mapParams)
+			}
+			if cmd.Flags().Changed("tags") {
+				lib.FlagUpdate(cmd, "tags", paramsPartnerUpdate.Tags, mapParams)
 			}
 
 			var partner interface{}
@@ -202,12 +206,13 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.Id, "id", 0, "Partner ID.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
 	cmdUpdate.Flags().BoolVar(&updateAllowCredentialChanges, "allow-credential-changes", updateAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
-	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Notes, "notes", "", "Notes about this Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

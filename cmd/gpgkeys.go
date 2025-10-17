@@ -138,6 +138,7 @@ func GpgKeys() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.PartnerId, "partner-id", 0, "Partner ID who owns this GPG Key, if applicable.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PublicKey, "public-key", "", "MD5 hash of your GPG public key")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKey, "private-key", "", "MD5 hash of your GPG private key.")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKeyPassword, "private-key-password", "", "Your GPG private key password. Only required for password protected keys.")
@@ -176,6 +177,9 @@ func GpgKeys() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsGpgKeyUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("partner-id") {
+				lib.FlagUpdate(cmd, "partner_id", paramsGpgKeyUpdate.PartnerId, mapParams)
+			}
 			if cmd.Flags().Changed("public-key") {
 				lib.FlagUpdate(cmd, "public_key", paramsGpgKeyUpdate.PublicKey, mapParams)
 			}
@@ -196,6 +200,7 @@ func GpgKeys() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.Id, "id", 0, "Gpg Key ID.")
+	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.PartnerId, "partner-id", 0, "Partner ID who owns this GPG Key, if applicable.")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PublicKey, "public-key", "", "MD5 hash of your GPG public key")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKey, "private-key", "", "MD5 hash of your GPG private key.")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKeyPassword, "private-key-password", "", "Your GPG private key password. Only required for password protected keys.")
