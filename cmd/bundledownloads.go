@@ -29,8 +29,8 @@ func BundleDownloads() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Bundle Downloads",
-		Long:    `List Bundle Downloads`,
+		Short:   "List Share Link Downloads",
+		Long:    `List Share Link Downloads`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {

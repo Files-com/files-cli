@@ -30,8 +30,8 @@ func BundleNotifications() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Bundle Notifications",
-		Long:    `List Bundle Notifications`,
+		Short:   "List Share Link Notifications",
+		Long:    `List Share Link Notifications`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -84,8 +84,8 @@ func BundleNotifications() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Bundle Notification`,
-		Long:  `Show Bundle Notification`,
+		Short: `Show Share Link Notification`,
+		Long:  `Show Share Link Notification`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -114,8 +114,8 @@ func BundleNotifications() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Bundle Notification`,
-		Long:  `Create Bundle Notification`,
+		Short: `Create Share Link Notification`,
+		Long:  `Create Share Link Notification`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -155,8 +155,8 @@ func BundleNotifications() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Bundle Notification`,
-		Long:  `Update Bundle Notification`,
+		Short: `Update Share Link Notification`,
+		Long:  `Update Share Link Notification`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -200,8 +200,8 @@ func BundleNotifications() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Bundle Notification`,
-		Long:  `Delete Bundle Notification`,
+		Short: `Delete Share Link Notification`,
+		Long:  `Delete Share Link Notification`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

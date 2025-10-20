@@ -30,8 +30,8 @@ func BundleRecipients() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Bundle Recipients",
-		Long:    `List Bundle Recipients`,
+		Short:   "List Share Link Recipients",
+		Long:    `List Share Link Recipients`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -86,8 +86,8 @@ func BundleRecipients() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Bundle Recipient`,
-		Long:  `Create Bundle Recipient`,
+		Short: `Create Share Link Recipient`,
+		Long:  `Create Share Link Recipient`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

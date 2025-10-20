@@ -34,8 +34,8 @@ func Bundles() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Bundles",
-		Long:    `List Bundles`,
+		Short:   "List Share Links",
+		Long:    `List Share Links`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -88,8 +88,8 @@ func Bundles() *cobra.Command {
 
 	cmdFind := &cobra.Command{
 		Use:   "find",
-		Short: `Show Bundle`,
-		Long:  `Show Bundle`,
+		Short: `Show Share Link`,
+		Long:  `Show Share Link`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -126,8 +126,8 @@ func Bundles() *cobra.Command {
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
-		Short: `Create Bundle`,
-		Long:  `Create Bundle`,
+		Short: `Create Share Link`,
+		Long:  `Create Share Link`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -264,8 +264,8 @@ func Bundles() *cobra.Command {
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
-		Short: `Update Bundle`,
-		Long:  `Update Bundle`,
+		Short: `Update Share Link`,
+		Long:  `Update Share Link`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -414,8 +414,8 @@ func Bundles() *cobra.Command {
 
 	cmdDelete := &cobra.Command{
 		Use:   "delete",
-		Short: `Delete Bundle`,
-		Long:  `Delete Bundle`,
+		Short: `Delete Share Link`,
+		Long:  `Delete Share Link`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()

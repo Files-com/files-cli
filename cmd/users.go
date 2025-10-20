@@ -422,6 +422,7 @@ func Users() *cobra.Command {
 	updateSkipWelcomeScreen := true
 	updateSubscribeToNewsletter := true
 	updateClear2fa := true
+	updateConvertToPartnerUser := true
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	UserUpdateAuthenticationMethod := ""
 	UserUpdateFilesystemLayout := ""
@@ -622,6 +623,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("clear-2fa") {
 				mapParams["clear_2fa"] = updateClear2fa
 			}
+			if cmd.Flags().Changed("convert-to-partner-user") {
+				mapParams["convert_to_partner_user"] = updateConvertToPartnerUser
+			}
 
 			if paramsUserUpdate.AuthenticateUntil.IsZero() {
 				paramsUserUpdate.AuthenticateUntil = nil
@@ -690,6 +694,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
 	cmdUpdate.Flags().BoolVar(&updateClear2fa, "clear-2fa", updateClear2fa, "If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases.")
+	cmdUpdate.Flags().BoolVar(&updateConvertToPartnerUser, "convert-to-partner-user", updateConvertToPartnerUser, "If true, convert this user to a partner user by assigning the partner_id provided.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
