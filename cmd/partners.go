@@ -109,6 +109,7 @@ func Partners() *cobra.Command {
 	usePagerCreate := true
 	createAllowBypassing2faPolicies := true
 	createAllowCredentialChanges := true
+	createAllowProvidingGpgKeys := true
 	createAllowUserCreation := true
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
 
@@ -128,6 +129,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("allow-credential-changes") {
 				paramsPartnerCreate.AllowCredentialChanges = flib.Bool(createAllowCredentialChanges)
 			}
+			if cmd.Flags().Changed("allow-providing-gpg-keys") {
+				paramsPartnerCreate.AllowProvidingGpgKeys = flib.Bool(createAllowProvidingGpgKeys)
+			}
 			if cmd.Flags().Changed("allow-user-creation") {
 				paramsPartnerCreate.AllowUserCreation = flib.Bool(createAllowUserCreation)
 			}
@@ -141,6 +145,7 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", createAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
 	cmdCreate.Flags().BoolVar(&createAllowCredentialChanges, "allow-credential-changes", createAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
+	cmdCreate.Flags().BoolVar(&createAllowProvidingGpgKeys, "allow-providing-gpg-keys", createAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Notes, "notes", "", "Notes about this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
@@ -156,6 +161,7 @@ func Partners() *cobra.Command {
 	usePagerUpdate := true
 	updateAllowBypassing2faPolicies := true
 	updateAllowCredentialChanges := true
+	updateAllowProvidingGpgKeys := true
 	updateAllowUserCreation := true
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
 
@@ -186,6 +192,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("allow-credential-changes") {
 				mapParams["allow_credential_changes"] = updateAllowCredentialChanges
 			}
+			if cmd.Flags().Changed("allow-providing-gpg-keys") {
+				mapParams["allow_providing_gpg_keys"] = updateAllowProvidingGpgKeys
+			}
 			if cmd.Flags().Changed("allow-user-creation") {
 				mapParams["allow_user_creation"] = updateAllowUserCreation
 			}
@@ -209,6 +218,7 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
 	cmdUpdate.Flags().BoolVar(&updateAllowCredentialChanges, "allow-credential-changes", updateAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
+	cmdUpdate.Flags().BoolVar(&updateAllowProvidingGpgKeys, "allow-providing-gpg-keys", updateAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Notes, "notes", "", "Notes about this Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
