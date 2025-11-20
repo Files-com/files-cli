@@ -142,7 +142,7 @@ func Partners() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), partner, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().BoolVar(&createAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", createAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
+	cmdCreate.Flags().BoolVar(&createAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", createAllowBypassing2faPolicies, "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.")
 	cmdCreate.Flags().BoolVar(&createAllowCredentialChanges, "allow-credential-changes", createAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowProvidingGpgKeys, "allow-providing-gpg-keys", createAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
@@ -215,7 +215,7 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.Id, "id", 0, "Partner ID.")
-	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow users created under this Partner to bypass Two-Factor Authentication policies.")
+	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.")
 	cmdUpdate.Flags().BoolVar(&updateAllowCredentialChanges, "allow-credential-changes", updateAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowProvidingGpgKeys, "allow-providing-gpg-keys", updateAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
