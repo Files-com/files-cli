@@ -124,6 +124,7 @@ func SiemHttpDestinations() *cobra.Command {
 	createSettingsChangeSendEnabled := true
 	paramsSiemHttpDestinationCreate := files_sdk.SiemHttpDestinationCreateParams{}
 	SiemHttpDestinationCreateGenericPayloadType := ""
+	SiemHttpDestinationCreateFileFormat := ""
 	SiemHttpDestinationCreateDestinationType := ""
 
 	cmdCreate := &cobra.Command{
@@ -140,6 +141,11 @@ func SiemHttpDestinations() *cobra.Command {
 			paramsSiemHttpDestinationCreate.GenericPayloadType, SiemHttpDestinationCreateGenericPayloadTypeErr = lib.FetchKey("generic-payload-type", paramsSiemHttpDestinationCreate.GenericPayloadType.Enum(), SiemHttpDestinationCreateGenericPayloadType)
 			if SiemHttpDestinationCreateGenericPayloadType != "" && SiemHttpDestinationCreateGenericPayloadTypeErr != nil {
 				return SiemHttpDestinationCreateGenericPayloadTypeErr
+			}
+			var SiemHttpDestinationCreateFileFormatErr error
+			paramsSiemHttpDestinationCreate.FileFormat, SiemHttpDestinationCreateFileFormatErr = lib.FetchKey("file-format", paramsSiemHttpDestinationCreate.FileFormat.Enum(), SiemHttpDestinationCreateFileFormat)
+			if SiemHttpDestinationCreateFileFormat != "" && SiemHttpDestinationCreateFileFormatErr != nil {
+				return SiemHttpDestinationCreateFileFormatErr
 			}
 			var SiemHttpDestinationCreateDestinationTypeErr error
 			paramsSiemHttpDestinationCreate.DestinationType, SiemHttpDestinationCreateDestinationTypeErr = lib.FetchKey("destination-type", paramsSiemHttpDestinationCreate.DestinationType.Enum(), SiemHttpDestinationCreateDestinationType)
@@ -193,6 +199,9 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.Name, "name", "", "Name for this Destination")
 	cmdCreate.Flags().BoolVar(&createSendingActive, "sending-active", createSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.GenericPayloadType.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
+	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.FileFormat.Enum()).MapKeys()))
+	cmdCreate.Flags().Int64Var(&paramsSiemHttpDestinationCreate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
@@ -241,6 +250,7 @@ func SiemHttpDestinations() *cobra.Command {
 	paramsSiemHttpDestinationSendTestEntry := files_sdk.SiemHttpDestinationSendTestEntryParams{}
 	SiemHttpDestinationSendTestEntryDestinationType := ""
 	SiemHttpDestinationSendTestEntryGenericPayloadType := ""
+	SiemHttpDestinationSendTestEntryFileFormat := ""
 
 	cmdSendTestEntry := &cobra.Command{
 		Use:   "send-test-entry",
@@ -261,6 +271,11 @@ func SiemHttpDestinations() *cobra.Command {
 			paramsSiemHttpDestinationSendTestEntry.GenericPayloadType, SiemHttpDestinationSendTestEntryGenericPayloadTypeErr = lib.FetchKey("generic-payload-type", paramsSiemHttpDestinationSendTestEntry.GenericPayloadType.Enum(), SiemHttpDestinationSendTestEntryGenericPayloadType)
 			if SiemHttpDestinationSendTestEntryGenericPayloadType != "" && SiemHttpDestinationSendTestEntryGenericPayloadTypeErr != nil {
 				return SiemHttpDestinationSendTestEntryGenericPayloadTypeErr
+			}
+			var SiemHttpDestinationSendTestEntryFileFormatErr error
+			paramsSiemHttpDestinationSendTestEntry.FileFormat, SiemHttpDestinationSendTestEntryFileFormatErr = lib.FetchKey("file-format", paramsSiemHttpDestinationSendTestEntry.FileFormat.Enum(), SiemHttpDestinationSendTestEntryFileFormat)
+			if SiemHttpDestinationSendTestEntryFileFormat != "" && SiemHttpDestinationSendTestEntryFileFormatErr != nil {
+				return SiemHttpDestinationSendTestEntryFileFormatErr
 			}
 
 			if cmd.Flags().Changed("sending-active") {
@@ -314,6 +329,9 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.Name, "name", "", "Name for this Destination")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntrySendingActive, "sending-active", sendTestEntrySendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.GenericPayloadType.Enum()).MapKeys()))
+	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
+	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.FileFormat.Enum()).MapKeys()))
+	cmdSendTestEntry.Flags().Int64Var(&paramsSiemHttpDestinationSendTestEntry.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
@@ -359,6 +377,7 @@ func SiemHttpDestinations() *cobra.Command {
 	updateSettingsChangeSendEnabled := true
 	paramsSiemHttpDestinationUpdate := files_sdk.SiemHttpDestinationUpdateParams{}
 	SiemHttpDestinationUpdateGenericPayloadType := ""
+	SiemHttpDestinationUpdateFileFormat := ""
 	SiemHttpDestinationUpdateDestinationType := ""
 
 	cmdUpdate := &cobra.Command{
@@ -381,6 +400,11 @@ func SiemHttpDestinations() *cobra.Command {
 			if SiemHttpDestinationUpdateGenericPayloadType != "" && SiemHttpDestinationUpdateGenericPayloadTypeErr != nil {
 				return SiemHttpDestinationUpdateGenericPayloadTypeErr
 			}
+			var SiemHttpDestinationUpdateFileFormatErr error
+			paramsSiemHttpDestinationUpdate.FileFormat, SiemHttpDestinationUpdateFileFormatErr = lib.FetchKey("file-format", paramsSiemHttpDestinationUpdate.FileFormat.Enum(), SiemHttpDestinationUpdateFileFormat)
+			if SiemHttpDestinationUpdateFileFormat != "" && SiemHttpDestinationUpdateFileFormatErr != nil {
+				return SiemHttpDestinationUpdateFileFormatErr
+			}
 			var SiemHttpDestinationUpdateDestinationTypeErr error
 			paramsSiemHttpDestinationUpdate.DestinationType, SiemHttpDestinationUpdateDestinationTypeErr = lib.FetchKey("destination-type", paramsSiemHttpDestinationUpdate.DestinationType.Enum(), SiemHttpDestinationUpdateDestinationType)
 			if SiemHttpDestinationUpdateDestinationType != "" && SiemHttpDestinationUpdateDestinationTypeErr != nil {
@@ -400,6 +424,15 @@ func SiemHttpDestinations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("generic-payload-type") {
 				lib.FlagUpdate(cmd, "generic_payload_type", paramsSiemHttpDestinationUpdate.GenericPayloadType, mapParams)
+			}
+			if cmd.Flags().Changed("file-destination-path") {
+				lib.FlagUpdate(cmd, "file_destination_path", paramsSiemHttpDestinationUpdate.FileDestinationPath, mapParams)
+			}
+			if cmd.Flags().Changed("file-format") {
+				lib.FlagUpdate(cmd, "file_format", paramsSiemHttpDestinationUpdate.FileFormat, mapParams)
+			}
+			if cmd.Flags().Changed("file-interval-minutes") {
+				lib.FlagUpdate(cmd, "file_interval_minutes", paramsSiemHttpDestinationUpdate.FileIntervalMinutes, mapParams)
 			}
 			if cmd.Flags().Changed("splunk-token") {
 				lib.FlagUpdate(cmd, "splunk_token", paramsSiemHttpDestinationUpdate.SplunkToken, mapParams)
@@ -484,6 +517,9 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.Name, "name", "", "Name for this Destination")
 	cmdUpdate.Flags().BoolVar(&updateSendingActive, "sending-active", updateSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
+	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.FileFormat.Enum()).MapKeys()))
+	cmdUpdate.Flags().Int64Var(&paramsSiemHttpDestinationUpdate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
