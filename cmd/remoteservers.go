@@ -247,6 +247,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Description, "description", "", "Internal description for your reference")
 	cmdCreate.Flags().BoolVar(&createDropboxTeams, "dropbox-teams", createDropboxTeams, "Dropbox: If true, list Team folders in root?")
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
@@ -489,6 +490,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("cloudflare-endpoint") {
 				lib.FlagUpdate(cmd, "cloudflare_endpoint", paramsRemoteServerUpdate.CloudflareEndpoint, mapParams)
 			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsRemoteServerUpdate.Description, mapParams)
+			}
 			if cmd.Flags().Changed("dropbox-teams") {
 				mapParams["dropbox_teams"] = updateDropboxTeams
 			}
@@ -629,6 +633,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Description, "description", "", "Internal description for your reference")
 	cmdUpdate.Flags().BoolVar(&updateDropboxTeams, "dropbox-teams", updateDropboxTeams, "Dropbox: If true, list Team folders in root?")
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
