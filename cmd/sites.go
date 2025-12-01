@@ -549,6 +549,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("use-dedicated-ips-for-smtp") {
 				mapParams["use_dedicated_ips_for_smtp"] = updateUseDedicatedIpsForSmtp
 			}
+			if cmd.Flags().Changed("email-footer-custom-text") {
+				lib.FlagUpdate(cmd, "email_footer_custom_text", paramsSiteUpdate.EmailFooterCustomText, mapParams)
+			}
 			if cmd.Flags().Changed("smtp-address") {
 				lib.FlagUpdate(cmd, "smtp_address", paramsSiteUpdate.SmtpAddress, mapParams)
 			}
@@ -795,6 +798,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SitePublicFooter, "site-public-footer", "", "Custom site footer text for public pages")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LoginHelpText, "login-help-text", "", "Login help text")
 	cmdUpdate.Flags().BoolVar(&updateUseDedicatedIpsForSmtp, "use-dedicated-ips-for-smtp", updateUseDedicatedIpsForSmtp, "If using custom SMTP, should we use dedicated IPs to deliver emails?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.EmailFooterCustomText, "email-footer-custom-text", "", "Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpAddress, "smtp-address", "", "SMTP server hostname or IP")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpAuthentication, "smtp-authentication", "", "SMTP server authentication type")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpFrom, "smtp-from", "", "From address to use when mailing through custom SMTP")
