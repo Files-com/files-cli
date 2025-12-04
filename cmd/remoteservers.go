@@ -255,6 +255,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
@@ -514,6 +515,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("files-agent-version") {
 				lib.FlagUpdate(cmd, "files_agent_version", paramsRemoteServerUpdate.FilesAgentVersion, mapParams)
 			}
+			if cmd.Flags().Changed("outbound-agent-id") {
+				lib.FlagUpdate(cmd, "outbound_agent_id", paramsRemoteServerUpdate.OutboundAgentId, mapParams)
+			}
 			if cmd.Flags().Changed("google-cloud-storage-bucket") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_bucket", paramsRemoteServerUpdate.GoogleCloudStorageBucket, mapParams)
 			}
@@ -641,6 +645,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
