@@ -69,7 +69,6 @@ func As2OutgoingMessages() *cobra.Command {
 
 	cmdList.Flags().StringVar(&paramsAs2OutgoingMessageList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAs2OutgoingMessageList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
-	cmdList.Flags().Int64Var(&paramsAs2OutgoingMessageList.As2PartnerId, "as2-partner-id", 0, "As2 Partner ID.  If provided, will return message specific to that partner.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
