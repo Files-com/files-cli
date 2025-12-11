@@ -307,8 +307,8 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("as2-message-retention-days") {
 				lib.FlagUpdate(cmd, "as2_message_retention_days", paramsSiteUpdate.As2MessageRetentionDays, mapParams)
 			}
-			if cmd.Flags().Changed("session-expiry") {
-				lib.FlagUpdate(cmd, "session_expiry", paramsSiteUpdate.SessionExpiry, mapParams)
+			if cmd.Flags().Changed("session-expiry-minutes") {
+				lib.FlagUpdate(cmd, "session_expiry_minutes", paramsSiteUpdate.SessionExpiryMinutes, mapParams)
 			}
 			if cmd.Flags().Changed("ssl-required") {
 				mapParams["ssl_required"] = updateSslRequired
@@ -665,9 +665,6 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("smtp-password") {
 				lib.FlagUpdate(cmd, "smtp_password", paramsSiteUpdate.SmtpPassword, mapParams)
 			}
-			if cmd.Flags().Changed("session-expiry-minutes") {
-				lib.FlagUpdate(cmd, "session_expiry_minutes", paramsSiteUpdate.SessionExpiryMinutes, mapParams)
-			}
 
 			var site interface{}
 			var err error
@@ -718,7 +715,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateLegacyChecksumsMode, "legacy-checksums-mode", updateLegacyChecksumsMode, "Use legacy checksums mode?")
 	cmdUpdate.Flags().BoolVar(&updateMigrateRemoteServerSyncToSync, "migrate-remote-server-sync-to-sync", updateMigrateRemoteServerSyncToSync, "If true, we will migrate all remote server syncs to the new Sync model.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.As2MessageRetentionDays, "as2-message-retention-days", 0, "Number of days to retain AS2 messages (incoming and outgoing).")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SessionExpiry, "session-expiry", "", "Session expiry in hours")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureDiffieHellman, "sftp-insecure-diffie-hellman", updateSftpInsecureDiffieHellman, "If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.")
@@ -832,7 +829,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
-	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
