@@ -267,7 +267,8 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Name, "name", "", "Internal name for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPinToSiteRegion, "pin-to-site-region", createPinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
-	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
@@ -278,7 +279,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&RemoteServerCreateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Username, "username", "", "Remote server username.  Not needed for S3 buckets.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Username, "username", "", "Remote server username.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiBucket, "wasabi-bucket", "", "Wasabi: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiRegion, "wasabi-region", "", "Wasabi: Region")
@@ -554,6 +555,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("port") {
 				lib.FlagUpdate(cmd, "port", paramsRemoteServerUpdate.Port, mapParams)
 			}
+			if cmd.Flags().Changed("remote-server-credential-id") {
+				lib.FlagUpdate(cmd, "remote_server_credential_id", paramsRemoteServerUpdate.RemoteServerCredentialId, mapParams)
+			}
 			if cmd.Flags().Changed("s3-bucket") {
 				lib.FlagUpdate(cmd, "s3_bucket", paramsRemoteServerUpdate.S3Bucket, mapParams)
 			}
@@ -657,7 +661,8 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Name, "name", "", "Internal name for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePinToSiteRegion, "pin-to-site-region", updatePinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
-	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.  Not needed for S3.")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
@@ -668,7 +673,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Username, "username", "", "Remote server username.  Not needed for S3 buckets.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Username, "username", "", "Remote server username.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiBucket, "wasabi-bucket", "", "Wasabi: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiRegion, "wasabi-region", "", "Wasabi: Region")
