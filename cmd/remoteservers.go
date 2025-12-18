@@ -289,6 +289,43 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdCreate)
+	var fieldsAgentPushUpdate []string
+	var formatAgentPushUpdate []string
+	usePagerAgentPushUpdate := true
+	paramsRemoteServerAgentPushUpdate := files_sdk.RemoteServerAgentPushUpdateParams{}
+
+	cmdAgentPushUpdate := &cobra.Command{
+		Use:   "agent-push-update",
+		Short: `Push update to Files Agent`,
+		Long:  `Push update to Files Agent`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
+
+			mapParams, convertErr := lib.StructToMap(files_sdk.RemoteServerAgentPushUpdateParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsRemoteServerAgentPushUpdate.Id, mapParams)
+			}
+
+			var agentPushUpdate interface{}
+			var err error
+			agentPushUpdate, err = client.AgentPushUpdateWithMap(mapParams, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), agentPushUpdate, err, Profile(cmd).Current().SetResourceFormat(cmd, formatAgentPushUpdate), fieldsAgentPushUpdate, usePagerAgentPushUpdate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdAgentPushUpdate.Flags().Int64Var(&paramsRemoteServerAgentPushUpdate.Id, "id", 0, "Remote Server ID.")
+
+	cmdAgentPushUpdate.Flags().StringSliceVar(&fieldsAgentPushUpdate, "fields", []string{}, "comma separated list of field names")
+	cmdAgentPushUpdate.Flags().StringSliceVar(&formatAgentPushUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdAgentPushUpdate.Flags().BoolVar(&usePagerAgentPushUpdate, "use-pager", usePagerAgentPushUpdate, "Use $PAGER (.ie less, more, etc)")
+
+	RemoteServers.AddCommand(cmdAgentPushUpdate)
 	var fieldsConfigurationFile []string
 	var formatConfigurationFile []string
 	usePagerConfigurationFile := true
