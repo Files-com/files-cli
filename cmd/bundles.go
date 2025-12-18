@@ -355,6 +355,9 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("skip-name") {
 				mapParams["skip_name"] = updateSkipName
 			}
+			if cmd.Flags().Changed("user-id") {
+				lib.FlagUpdate(cmd, "user_id", paramsBundleUpdate.UserId, mapParams)
+			}
 			if cmd.Flags().Changed("watermark-attachment-delete") {
 				mapParams["watermark_attachment_delete"] = updateWatermarkAttachmentDelete
 			}
@@ -400,6 +403,7 @@ func Bundles() *cobra.Command {
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
+	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.UserId, "user-id", 0, "The owning user id. Only site admins can set this.")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
