@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
@@ -85,6 +87,7 @@ func Restores() *cobra.Command {
 	createRestoreInPlace := true
 	createUpdateTimestamps := true
 	paramsRestoreCreate := files_sdk.RestoreCreateParams{}
+	RestoreCreateRestorationType := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -95,6 +98,12 @@ func Restores() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := restore.Client{Config: config}
+
+			var RestoreCreateRestorationTypeErr error
+			paramsRestoreCreate.RestorationType, RestoreCreateRestorationTypeErr = lib.FetchKey("restoration-type", paramsRestoreCreate.RestorationType.Enum(), RestoreCreateRestorationType)
+			if RestoreCreateRestorationType != "" && RestoreCreateRestorationTypeErr != nil {
+				return RestoreCreateRestorationTypeErr
+			}
 
 			if cmd.Flags().Changed("restore-deleted-permissions") {
 				paramsRestoreCreate.RestoreDeletedPermissions = flib.Bool(createRestoreDeletedPermissions)
@@ -119,6 +128,7 @@ func Restores() *cobra.Command {
 	paramsRestoreCreate.EarliestDate = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsRestoreCreate.EarliestDate, "earliest-date", "Restore all files deleted after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request.")
 	cmdCreate.Flags().StringVar(&paramsRestoreCreate.Prefix, "prefix", "", "Prefix of the files/folders to restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items, specify an empty string (`''`) in the prefix field or omit the field from the request.")
+	cmdCreate.Flags().StringVar(&RestoreCreateRestorationType, "restoration-type", "", fmt.Sprintf("Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated access/authentication records. %v", reflect.ValueOf(paramsRestoreCreate.RestorationType.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createRestoreDeletedPermissions, "restore-deleted-permissions", createRestoreDeletedPermissions, "If true, we will also restore any Permissions that match the same path prefix from the same dates.")
 	cmdCreate.Flags().BoolVar(&createRestoreInPlace, "restore-in-place", createRestoreInPlace, "If true, we will restore the files in place (into their original paths). If false, we will create a new restoration folder in the root and restore files there.")
 	cmdCreate.Flags().BoolVar(&createUpdateTimestamps, "update-timestamps", createUpdateTimestamps, "If true, we will update the last modified timestamp of restored files to today's date. If false, we might trigger File Expiration to delete the file again.")
