@@ -152,6 +152,7 @@ func Groups() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.Notes, "notes", "", "Group notes.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdCreate.Flags().Int64Var(&paramsGroupCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
@@ -200,6 +201,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("admin-ids") {
 				lib.FlagUpdate(cmd, "admin_ids", paramsGroupUpdate.AdminIds, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsGroupUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("ftp-permission") {
 				mapParams["ftp_permission"] = updateFtpPermission
 			}
@@ -229,6 +233,7 @@ func Groups() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Notes, "notes", "", "Group notes.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.UserIds, "user-ids", "", "A list of user ids. If sent as a string, should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AdminIds, "admin-ids", "", "A list of group admin user ids. If sent as a string, should be comma-delimited.")
+	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
