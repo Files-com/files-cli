@@ -303,9 +303,6 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("schedule-times-of-day") {
 				lib.FlagUpdateLen(cmd, "schedule_times_of_day", paramsSyncUpdate.ScheduleTimesOfDay, mapParams)
 			}
-			if cmd.Flags().Changed("workspace-id") {
-				lib.FlagUpdate(cmd, "workspace_id", paramsSyncUpdate.WorkspaceId, mapParams)
-			}
 
 			var sync interface{}
 			var err error
@@ -332,7 +329,6 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID this sync belongs to")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

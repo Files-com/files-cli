@@ -134,7 +134,6 @@ func RemoteServerCredentials() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServerCredential, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Name, "name", "", "Internal name for your reference")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Description, "description", "", "Internal description for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCredentialCreateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialCreate.ServerType.Enum()).MapKeys()))
@@ -165,6 +164,7 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -200,9 +200,6 @@ func RemoteServerCredentials() *cobra.Command {
 
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsRemoteServerCredentialUpdate.Id, mapParams)
-			}
-			if cmd.Flags().Changed("workspace-id") {
-				lib.FlagUpdate(cmd, "workspace_id", paramsRemoteServerCredentialUpdate.WorkspaceId, mapParams)
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsRemoteServerCredentialUpdate.Name, mapParams)
@@ -302,7 +299,6 @@ func RemoteServerCredentials() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerCredentialUpdate.Id, "id", 0, "Remote Server Credential ID.")
-	cmdUpdate.Flags().Int64Var(&paramsRemoteServerCredentialUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Name, "name", "", "Internal name for your reference")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Description, "description", "", "Internal description for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerCredentialUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialUpdate.ServerType.Enum()).MapKeys()))

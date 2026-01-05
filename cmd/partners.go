@@ -150,6 +150,7 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
+	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this Partner.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

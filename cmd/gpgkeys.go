@@ -139,11 +139,11 @@ func GpgKeys() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.PartnerId, "partner-id", 0, "Partner ID who owns this GPG Key, if applicable.")
-	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace).")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PublicKey, "public-key", "", "The GPG public key")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKey, "private-key", "", "The GPG private key")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKeyPassword, "private-key-password", "", "The GPG private key password")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.Name, "name", "", "GPG key name.")
+	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace).")
 	paramsGpgKeyCreate.GenerateExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsGpgKeyCreate.GenerateExpiresAt, "generate-expires-at", "Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
 	cmdCreate.Flags().BoolVar(&createGenerateKeypair, "generate-keypair", createGenerateKeypair, "If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`")
@@ -181,9 +181,6 @@ func GpgKeys() *cobra.Command {
 			if cmd.Flags().Changed("partner-id") {
 				lib.FlagUpdate(cmd, "partner_id", paramsGpgKeyUpdate.PartnerId, mapParams)
 			}
-			if cmd.Flags().Changed("workspace-id") {
-				lib.FlagUpdate(cmd, "workspace_id", paramsGpgKeyUpdate.WorkspaceId, mapParams)
-			}
 			if cmd.Flags().Changed("public-key") {
 				lib.FlagUpdate(cmd, "public_key", paramsGpgKeyUpdate.PublicKey, mapParams)
 			}
@@ -205,7 +202,6 @@ func GpgKeys() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.Id, "id", 0, "Gpg Key ID.")
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.PartnerId, "partner-id", 0, "Partner ID who owns this GPG Key, if applicable.")
-	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace).")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PublicKey, "public-key", "", "The GPG public key")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKey, "private-key", "", "The GPG private key")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKeyPassword, "private-key-password", "", "The GPG private key password")

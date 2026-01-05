@@ -302,6 +302,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

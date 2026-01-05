@@ -283,6 +283,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiBucket, "wasabi-bucket", "", "Wasabi: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiRegion, "wasabi-region", "", "Wasabi: Region")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
