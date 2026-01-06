@@ -139,6 +139,7 @@ func Users() *cobra.Command {
 	createSiteAdmin := true
 	createSkipWelcomeScreen := true
 	createSubscribeToNewsletter := true
+	createWorkspaceAdmin := true
 	paramsUserCreate := files_sdk.UserCreateParams{}
 	UserCreateAuthenticationMethod := ""
 	UserCreateFilesystemLayout := ""
@@ -236,6 +237,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("subscribe-to-newsletter") {
 				paramsUserCreate.SubscribeToNewsletter = flib.Bool(createSubscribeToNewsletter)
 			}
+			if cmd.Flags().Changed("workspace-admin") {
+				paramsUserCreate.WorkspaceAdmin = flib.Bool(createWorkspaceAdmin)
+			}
 
 			if paramsUserCreate.AuthenticateUntil.IsZero() {
 				paramsUserCreate.AuthenticateUntil = nil
@@ -301,6 +305,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.TimeZone, "time-zone", "", "User time zone")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
+	cmdCreate.Flags().BoolVar(&createWorkspaceAdmin, "workspace-admin", createWorkspaceAdmin, "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 
@@ -422,6 +427,7 @@ func Users() *cobra.Command {
 	updateSiteAdmin := true
 	updateSkipWelcomeScreen := true
 	updateSubscribeToNewsletter := true
+	updateWorkspaceAdmin := true
 	updateClear2fa := true
 	updateConvertToPartnerUser := true
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
@@ -618,6 +624,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("user-home") {
 				lib.FlagUpdate(cmd, "user_home", paramsUserUpdate.UserHome, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-admin") {
+				mapParams["workspace_admin"] = updateWorkspaceAdmin
+			}
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
 			}
@@ -693,6 +702,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.TimeZone, "time-zone", "", "User time zone")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
+	cmdUpdate.Flags().BoolVar(&updateWorkspaceAdmin, "workspace-admin", updateWorkspaceAdmin, "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
 	cmdUpdate.Flags().BoolVar(&updateClear2fa, "clear-2fa", updateClear2fa, "If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases.")
 	cmdUpdate.Flags().BoolVar(&updateConvertToPartnerUser, "convert-to-partner-user", updateConvertToPartnerUser, "If true, convert this user to a partner user by assigning the partner_id provided.")
