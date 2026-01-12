@@ -117,6 +117,7 @@ func Bundles() *cobra.Command {
 	createFinalizeSnapshot := true
 	createRequireRegistration := true
 	createRequireShareRecipient := true
+	createSendOneTimePasswordToRecipientAtRegistration := true
 	createSendEmailReceiptToUploader := true
 	createSkipEmail := true
 	createSkipName := true
@@ -154,6 +155,9 @@ func Bundles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("require-share-recipient") {
 				paramsBundleCreate.RequireShareRecipient = flib.Bool(createRequireShareRecipient)
+			}
+			if cmd.Flags().Changed("send-one-time-password-to-recipient-at-registration") {
+				paramsBundleCreate.SendOneTimePasswordToRecipientAtRegistration = flib.Bool(createSendOneTimePasswordToRecipientAtRegistration)
 			}
 			if cmd.Flags().Changed("send-email-receipt-to-uploader") {
 				paramsBundleCreate.SendEmailReceiptToUploader = flib.Bool(createSendEmailReceiptToUploader)
@@ -201,6 +205,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdCreate.Flags().BoolVar(&createRequireShareRecipient, "require-share-recipient", createRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
+	cmdCreate.Flags().BoolVar(&createSendOneTimePasswordToRecipientAtRegistration, "send-one-time-password-to-recipient-at-registration", createSendOneTimePasswordToRecipientAtRegistration, "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.")
 	cmdCreate.Flags().BoolVar(&createSendEmailReceiptToUploader, "send-email-receipt-to-uploader", createSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "BundleRegistrations can be saved without providing name?")
@@ -254,6 +259,7 @@ func Bundles() *cobra.Command {
 	updateFinalizeSnapshot := true
 	updateRequireRegistration := true
 	updateRequireShareRecipient := true
+	updateSendOneTimePasswordToRecipientAtRegistration := true
 	updateSendEmailReceiptToUploader := true
 	updateSkipCompany := true
 	updateSkipEmail := true
@@ -340,6 +346,9 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("require-share-recipient") {
 				mapParams["require_share_recipient"] = updateRequireShareRecipient
 			}
+			if cmd.Flags().Changed("send-one-time-password-to-recipient-at-registration") {
+				mapParams["send_one_time_password_to_recipient_at_registration"] = updateSendOneTimePasswordToRecipientAtRegistration
+			}
 			if cmd.Flags().Changed("send-email-receipt-to-uploader") {
 				mapParams["send_email_receipt_to_uploader"] = updateSendEmailReceiptToUploader
 			}
@@ -397,6 +406,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
+	cmdUpdate.Flags().BoolVar(&updateSendOneTimePasswordToRecipientAtRegistration, "send-one-time-password-to-recipient-at-registration", updateSendOneTimePasswordToRecipientAtRegistration, "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.")
 	cmdUpdate.Flags().BoolVar(&updateSendEmailReceiptToUploader, "send-email-receipt-to-uploader", updateSendEmailReceiptToUploader, "Send delivery receipt to the uploader. Note: For writable share only")
 	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "BundleRegistrations can be saved without providing company?")
 	paramsBundleUpdate.StartAccessOnDate = &time.Time{}
