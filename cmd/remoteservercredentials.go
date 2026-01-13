@@ -138,8 +138,6 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Description, "description", "", "Internal description for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCredentialCreateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialCreate.ServerType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage: Account name")
-	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure Files: Storage Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
@@ -212,12 +210,6 @@ func RemoteServerCredentials() *cobra.Command {
 			}
 			if cmd.Flags().Changed("aws-access-key") {
 				lib.FlagUpdate(cmd, "aws_access_key", paramsRemoteServerCredentialUpdate.AwsAccessKey, mapParams)
-			}
-			if cmd.Flags().Changed("azure-blob-storage-account") {
-				lib.FlagUpdate(cmd, "azure_blob_storage_account", paramsRemoteServerCredentialUpdate.AzureBlobStorageAccount, mapParams)
-			}
-			if cmd.Flags().Changed("azure-files-storage-account") {
-				lib.FlagUpdate(cmd, "azure_files_storage_account", paramsRemoteServerCredentialUpdate.AzureFilesStorageAccount, mapParams)
 			}
 			if cmd.Flags().Changed("cloudflare-access-key") {
 				lib.FlagUpdate(cmd, "cloudflare_access_key", paramsRemoteServerCredentialUpdate.CloudflareAccessKey, mapParams)
@@ -303,8 +295,6 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Description, "description", "", "Internal description for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerCredentialUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialUpdate.ServerType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage: Account name")
-	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.AzureFilesStorageAccount, "azure-files-storage-account", "", "Azure Files: Storage Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
