@@ -268,6 +268,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createPinToSiteRegion, "pin-to-site-region", createPinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
@@ -593,6 +594,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("port") {
 				lib.FlagUpdate(cmd, "port", paramsRemoteServerUpdate.Port, mapParams)
 			}
+			if cmd.Flags().Changed("upload-staging-path") {
+				lib.FlagUpdate(cmd, "upload_staging_path", paramsRemoteServerUpdate.UploadStagingPath, mapParams)
+			}
 			if cmd.Flags().Changed("remote-server-credential-id") {
 				lib.FlagUpdate(cmd, "remote_server_credential_id", paramsRemoteServerUpdate.RemoteServerCredentialId, mapParams)
 			}
@@ -700,6 +704,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updatePinToSiteRegion, "pin-to-site-region", updatePinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
