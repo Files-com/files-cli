@@ -223,6 +223,37 @@ func Files() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Files.AddCommand(cmdFind)
+	var fieldsZipListContents []string
+	var formatZipListContents []string
+	usePagerZipListContents := true
+	paramsFileZipListContents := files_sdk.FileZipListContentsParams{}
+
+	cmdZipListContents := &cobra.Command{
+		Use:   "zip-list-contents [path]",
+		Short: `List the contents of a ZIP file`,
+		Long:  `List the contents of a ZIP file`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileZipListContents.Path = args[0]
+			}
+			var zipListEntryCollection interface{}
+			var err error
+			zipListEntryCollection, err = client.ZipListContents(paramsFileZipListContents, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), zipListEntryCollection, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZipListContents), fieldsZipListContents, usePagerZipListContents, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdZipListContents.Flags().StringVar(&paramsFileZipListContents.Path, "path", "", "Path to operate on.")
+
+	cmdZipListContents.Flags().StringSliceVar(&fieldsZipListContents, "fields", []string{}, "comma separated list of field names")
+	cmdZipListContents.Flags().StringSliceVar(&formatZipListContents, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdZipListContents.Flags().BoolVar(&usePagerZipListContents, "use-pager", usePagerZipListContents, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdZipListContents)
 	var fieldsCopy []string
 	var formatCopy []string
 	usePagerCopy := true
@@ -330,6 +361,80 @@ func Files() *cobra.Command {
 	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
 	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
 	Files.AddCommand(cmdMove)
+	var fieldsUnzip []string
+	var formatUnzip []string
+	usePagerUnzip := true
+	unzipOverwrite := true
+	paramsFileUnzip := files_sdk.FileUnzipParams{}
+
+	cmdUnzip := &cobra.Command{
+		Use:   "unzip [path]",
+		Short: `Extract a ZIP file to a destination folder`,
+		Long:  `Extract a ZIP file to a destination folder`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileUnzip.Overwrite = flib.Bool(unzipOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileUnzip.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.Unzip(paramsFileUnzip, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUnzip), fieldsUnzip, usePagerUnzip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Path, "path", "", "ZIP file path to extract.")
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Destination, "destination", "", "Destination folder path for extracted files.")
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Filename, "filename", "", "Optional single entry filename to extract.")
+	cmdUnzip.Flags().BoolVar(&unzipOverwrite, "overwrite", unzipOverwrite, "Overwrite existing files in the destination?")
+
+	cmdUnzip.Flags().StringSliceVar(&fieldsUnzip, "fields", []string{}, "comma separated list of field names")
+	cmdUnzip.Flags().StringSliceVar(&formatUnzip, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUnzip.Flags().BoolVar(&usePagerUnzip, "use-pager", usePagerUnzip, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdUnzip)
+	var fieldsZip []string
+	var formatZip []string
+	usePagerZip := true
+	zipOverwrite := true
+	paramsFileZip := files_sdk.FileZipParams{}
+
+	cmdZip := &cobra.Command{
+		Use:   "zip",
+		Short: `Create a ZIP from one or more paths and save it to a destination path`,
+		Long:  `Create a ZIP from one or more paths and save it to a destination path`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileZip.Overwrite = flib.Bool(zipOverwrite)
+			}
+
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.Zip(paramsFileZip, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZip), fieldsZip, usePagerZip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdZip.Flags().StringSliceVar(&paramsFileZip.Paths, "paths", []string{}, "Paths to include in the ZIP.")
+	cmdZip.Flags().StringVar(&paramsFileZip.Destination, "destination", "", "Destination file path for the ZIP.")
+	cmdZip.Flags().BoolVar(&zipOverwrite, "overwrite", zipOverwrite, "Overwrite existing file in the destination?")
+
+	cmdZip.Flags().StringSliceVar(&fieldsZip, "fields", []string{}, "comma separated list of field names")
+	cmdZip.Flags().StringSliceVar(&formatZip, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdZip.Flags().BoolVar(&usePagerZip, "use-pager", usePagerZip, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdZip)
 	var fieldsBeginUpload []string
 	var formatBeginUpload []string
 	usePagerBeginUpload := true

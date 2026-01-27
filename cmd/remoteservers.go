@@ -139,6 +139,7 @@ func RemoteServers() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createResetAuthentication := true
+	createAllowRelativePaths := true
 	createAzureBlobStorageHierarchicalNamespace := true
 	createDropboxTeams := true
 	createEnableDedicatedIps := true
@@ -195,6 +196,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("reset-authentication") {
 				paramsRemoteServerCreate.ResetAuthentication = flib.Bool(createResetAuthentication)
 			}
+			if cmd.Flags().Changed("allow-relative-paths") {
+				paramsRemoteServerCreate.AllowRelativePaths = flib.Bool(createAllowRelativePaths)
+			}
 			if cmd.Flags().Changed("azure-blob-storage-hierarchical-namespace") {
 				paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = flib.Bool(createAzureBlobStorageHierarchicalNamespace)
 			}
@@ -233,6 +237,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
+	cmdCreate.Flags().BoolVar(&createAllowRelativePaths, "allow-relative-paths", createAllowRelativePaths, "Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage: Account name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage: Container name")
@@ -371,6 +376,7 @@ func RemoteServers() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateResetAuthentication := true
+	updateAllowRelativePaths := true
 	updateAzureBlobStorageHierarchicalNamespace := true
 	updateDropboxTeams := true
 	updateEnableDedicatedIps := true
@@ -488,6 +494,9 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("wasabi-secret-key") {
 				lib.FlagUpdate(cmd, "wasabi_secret_key", paramsRemoteServerUpdate.WasabiSecretKey, mapParams)
+			}
+			if cmd.Flags().Changed("allow-relative-paths") {
+				mapParams["allow_relative_paths"] = updateAllowRelativePaths
 			}
 			if cmd.Flags().Changed("aws-access-key") {
 				lib.FlagUpdate(cmd, "aws_access_key", paramsRemoteServerUpdate.AwsAccessKey, mapParams)
@@ -669,6 +678,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
+	cmdUpdate.Flags().BoolVar(&updateAllowRelativePaths, "allow-relative-paths", updateAllowRelativePaths, "Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageAccount, "azure-blob-storage-account", "", "Azure Blob Storage: Account name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageContainer, "azure-blob-storage-container", "", "Azure Blob Storage: Container name")

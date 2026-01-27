@@ -111,6 +111,7 @@ func SiemHttpDestinations() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createSendingActive := true
+	createActionSendEnabled := true
 	createSftpActionSendEnabled := true
 	createFtpActionSendEnabled := true
 	createWebDavActionSendEnabled := true
@@ -155,6 +156,9 @@ func SiemHttpDestinations() *cobra.Command {
 
 			if cmd.Flags().Changed("sending-active") {
 				paramsSiemHttpDestinationCreate.SendingActive = flib.Bool(createSendingActive)
+			}
+			if cmd.Flags().Changed("action-send-enabled") {
+				paramsSiemHttpDestinationCreate.ActionSendEnabled = flib.Bool(createActionSendEnabled)
 			}
 			if cmd.Flags().Changed("sftp-action-send-enabled") {
 				paramsSiemHttpDestinationCreate.SftpActionSendEnabled = flib.Bool(createSftpActionSendEnabled)
@@ -213,6 +217,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.SolarWindsToken, "solar-winds-token", "", "Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.NewRelicApiKey, "new-relic-api-key", "", "Applicable only for destination type: new_relic. API key provided by New Relic.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.DatadogApiKey, "datadog-api-key", "", "Applicable only for destination type: datadog. API key provided by Datadog.")
+	cmdCreate.Flags().BoolVar(&createActionSendEnabled, "action-send-enabled", createActionSendEnabled, "Whether or not sending is enabled for action logs.")
 	cmdCreate.Flags().BoolVar(&createSftpActionSendEnabled, "sftp-action-send-enabled", createSftpActionSendEnabled, "Whether or not sending is enabled for sftp_action logs.")
 	cmdCreate.Flags().BoolVar(&createFtpActionSendEnabled, "ftp-action-send-enabled", createFtpActionSendEnabled, "Whether or not sending is enabled for ftp_action logs.")
 	cmdCreate.Flags().BoolVar(&createWebDavActionSendEnabled, "web-dav-action-send-enabled", createWebDavActionSendEnabled, "Whether or not sending is enabled for web_dav_action logs.")
@@ -236,6 +241,7 @@ func SiemHttpDestinations() *cobra.Command {
 	var formatSendTestEntry []string
 	usePagerSendTestEntry := true
 	sendTestEntrySendingActive := true
+	sendTestEntryActionSendEnabled := true
 	sendTestEntrySftpActionSendEnabled := true
 	sendTestEntryFtpActionSendEnabled := true
 	sendTestEntryWebDavActionSendEnabled := true
@@ -280,6 +286,9 @@ func SiemHttpDestinations() *cobra.Command {
 
 			if cmd.Flags().Changed("sending-active") {
 				paramsSiemHttpDestinationSendTestEntry.SendingActive = flib.Bool(sendTestEntrySendingActive)
+			}
+			if cmd.Flags().Changed("action-send-enabled") {
+				paramsSiemHttpDestinationSendTestEntry.ActionSendEnabled = flib.Bool(sendTestEntryActionSendEnabled)
 			}
 			if cmd.Flags().Changed("sftp-action-send-enabled") {
 				paramsSiemHttpDestinationSendTestEntry.SftpActionSendEnabled = flib.Bool(sendTestEntrySftpActionSendEnabled)
@@ -343,6 +352,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.SolarWindsToken, "solar-winds-token", "", "Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.NewRelicApiKey, "new-relic-api-key", "", "Applicable only for destination type: new_relic. API key provided by New Relic.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.DatadogApiKey, "datadog-api-key", "", "Applicable only for destination type: datadog. API key provided by Datadog.")
+	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryActionSendEnabled, "action-send-enabled", sendTestEntryActionSendEnabled, "Whether or not sending is enabled for action logs.")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntrySftpActionSendEnabled, "sftp-action-send-enabled", sendTestEntrySftpActionSendEnabled, "Whether or not sending is enabled for sftp_action logs.")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryFtpActionSendEnabled, "ftp-action-send-enabled", sendTestEntryFtpActionSendEnabled, "Whether or not sending is enabled for ftp_action logs.")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntryWebDavActionSendEnabled, "web-dav-action-send-enabled", sendTestEntryWebDavActionSendEnabled, "Whether or not sending is enabled for web_dav_action logs.")
@@ -364,6 +374,7 @@ func SiemHttpDestinations() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateSendingActive := true
+	updateActionSendEnabled := true
 	updateSftpActionSendEnabled := true
 	updateFtpActionSendEnabled := true
 	updateWebDavActionSendEnabled := true
@@ -467,6 +478,9 @@ func SiemHttpDestinations() *cobra.Command {
 			if cmd.Flags().Changed("datadog-api-key") {
 				lib.FlagUpdate(cmd, "datadog_api_key", paramsSiemHttpDestinationUpdate.DatadogApiKey, mapParams)
 			}
+			if cmd.Flags().Changed("action-send-enabled") {
+				mapParams["action_send_enabled"] = updateActionSendEnabled
+			}
 			if cmd.Flags().Changed("sftp-action-send-enabled") {
 				mapParams["sftp_action_send_enabled"] = updateSftpActionSendEnabled
 			}
@@ -531,6 +545,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.SolarWindsToken, "solar-winds-token", "", "Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.NewRelicApiKey, "new-relic-api-key", "", "Applicable only for destination type: new_relic. API key provided by New Relic.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.DatadogApiKey, "datadog-api-key", "", "Applicable only for destination type: datadog. API key provided by Datadog.")
+	cmdUpdate.Flags().BoolVar(&updateActionSendEnabled, "action-send-enabled", updateActionSendEnabled, "Whether or not sending is enabled for action logs.")
 	cmdUpdate.Flags().BoolVar(&updateSftpActionSendEnabled, "sftp-action-send-enabled", updateSftpActionSendEnabled, "Whether or not sending is enabled for sftp_action logs.")
 	cmdUpdate.Flags().BoolVar(&updateFtpActionSendEnabled, "ftp-action-send-enabled", updateFtpActionSendEnabled, "Whether or not sending is enabled for ftp_action logs.")
 	cmdUpdate.Flags().BoolVar(&updateWebDavActionSendEnabled, "web-dav-action-send-enabled", updateWebDavActionSendEnabled, "Whether or not sending is enabled for web_dav_action logs.")
