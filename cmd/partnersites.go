@@ -20,6 +20,31 @@ func PartnerSites() *cobra.Command {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partner-sites\n\t%v", args[0])
 		},
 	}
+	var fieldsLinkeds []string
+	var formatLinkeds []string
+	usePagerLinkeds := true
+	cmdLinkeds := &cobra.Command{
+		Use:   "linkeds",
+		Short: `Get Partner Sites linked to the current Site`,
+		Long:  `Get Partner Sites linked to the current Site`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := partner_site.Client{Config: config}
+
+			var partnerSiteCollection interface{}
+			var err error
+			partnerSiteCollection, err = client.Linkeds(files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), partnerSiteCollection, err, Profile(cmd).Current().SetResourceFormat(cmd, formatLinkeds), fieldsLinkeds, usePagerLinkeds, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+
+	cmdLinkeds.Flags().StringSliceVar(&fieldsLinkeds, "fields", []string{}, "comma separated list of field names")
+	cmdLinkeds.Flags().StringSliceVar(&formatLinkeds, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdLinkeds.Flags().BoolVar(&usePagerLinkeds, "use-pager", usePagerLinkeds, "Use $PAGER (.ie less, more, etc)")
+
+	PartnerSites.AddCommand(cmdLinkeds)
 	var fieldsList []string
 	var formatList []string
 	usePagerList := true
