@@ -275,6 +275,8 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
@@ -609,6 +611,12 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("remote-server-credential-id") {
 				lib.FlagUpdate(cmd, "remote_server_credential_id", paramsRemoteServerUpdate.RemoteServerCredentialId, mapParams)
 			}
+			if cmd.Flags().Changed("s3-assume-role-arn") {
+				lib.FlagUpdate(cmd, "s3_assume_role_arn", paramsRemoteServerUpdate.S3AssumeRoleArn, mapParams)
+			}
+			if cmd.Flags().Changed("s3-assume-role-duration-seconds") {
+				lib.FlagUpdate(cmd, "s3_assume_role_duration_seconds", paramsRemoteServerUpdate.S3AssumeRoleDurationSeconds, mapParams)
+			}
 			if cmd.Flags().Changed("s3-bucket") {
 				lib.FlagUpdate(cmd, "s3_bucket", paramsRemoteServerUpdate.S3Bucket, mapParams)
 			}
@@ -716,6 +724,8 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.RemoteServerCredentialId, "remote-server-credential-id", 0, "ID of Remote Server Credential, if applicable.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Bucket, "s3-bucket", "", "S3 bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")

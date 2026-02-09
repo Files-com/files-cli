@@ -138,6 +138,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Description, "description", "", "Internal description for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCredentialCreateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialCreate.ServerType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
@@ -210,6 +212,12 @@ func RemoteServerCredentials() *cobra.Command {
 			}
 			if cmd.Flags().Changed("aws-access-key") {
 				lib.FlagUpdate(cmd, "aws_access_key", paramsRemoteServerCredentialUpdate.AwsAccessKey, mapParams)
+			}
+			if cmd.Flags().Changed("s3-assume-role-arn") {
+				lib.FlagUpdate(cmd, "s3_assume_role_arn", paramsRemoteServerCredentialUpdate.S3AssumeRoleArn, mapParams)
+			}
+			if cmd.Flags().Changed("s3-assume-role-duration-seconds") {
+				lib.FlagUpdate(cmd, "s3_assume_role_duration_seconds", paramsRemoteServerCredentialUpdate.S3AssumeRoleDurationSeconds, mapParams)
 			}
 			if cmd.Flags().Changed("cloudflare-access-key") {
 				lib.FlagUpdate(cmd, "cloudflare_access_key", paramsRemoteServerCredentialUpdate.CloudflareAccessKey, mapParams)
@@ -295,6 +303,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Description, "description", "", "Internal description for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerCredentialUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialUpdate.ServerType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerCredentialUpdate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
