@@ -147,9 +147,9 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAllowProvidingGpgKeys, "allow-providing-gpg-keys", createAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Notes, "notes", "", "Notes about this Partner.")
-	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
+	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this Partner.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -199,14 +199,14 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("notes") {
 				lib.FlagUpdate(cmd, "notes", paramsPartnerUpdate.Notes, mapParams)
 			}
-			if cmd.Flags().Changed("root-folder") {
-				lib.FlagUpdate(cmd, "root_folder", paramsPartnerUpdate.RootFolder, mapParams)
-			}
 			if cmd.Flags().Changed("tags") {
 				lib.FlagUpdate(cmd, "tags", paramsPartnerUpdate.Tags, mapParams)
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsPartnerUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("root-folder") {
+				lib.FlagUpdate(cmd, "root_folder", paramsPartnerUpdate.RootFolder, mapParams)
 			}
 
 			var partner interface{}
@@ -221,9 +221,9 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowProvidingGpgKeys, "allow-providing-gpg-keys", updateAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Notes, "notes", "", "Notes about this Partner.")
-	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
