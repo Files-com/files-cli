@@ -103,6 +103,9 @@ func Sites() *cobra.Command {
 	updateDisableFilesCertificateGeneration := true
 	updateUserLockout := true
 	updateIncludePasswordInWelcomeEmail := true
+	updateAllowUserLevel2faOverride := true
+	updateAllowUserLevelAllowedIpOverride := true
+	updateAllowUserLevelSslOverride := true
 	updatePasswordRequireLetter := true
 	updatePasswordRequireMixed := true
 	updatePasswordRequireSpecial := true
@@ -342,6 +345,15 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("allowed-ips") {
 				lib.FlagUpdate(cmd, "allowed_ips", paramsSiteUpdate.AllowedIps, mapParams)
+			}
+			if cmd.Flags().Changed("allow-user-level-2fa-override") {
+				mapParams["allow_user_level_2fa_override"] = updateAllowUserLevel2faOverride
+			}
+			if cmd.Flags().Changed("allow-user-level-allowed-ip-override") {
+				mapParams["allow_user_level_allowed_ip_override"] = updateAllowUserLevelAllowedIpOverride
+			}
+			if cmd.Flags().Changed("allow-user-level-ssl-override") {
+				mapParams["allow_user_level_ssl_override"] = updateAllowUserLevelSslOverride
 			}
 			if cmd.Flags().Changed("disallowed-countries") {
 				lib.FlagUpdate(cmd, "disallowed_countries", paramsSiteUpdate.DisallowedCountries, mapParams)
@@ -727,6 +739,9 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateIncludePasswordInWelcomeEmail, "include-password-in-welcome-email", updateIncludePasswordInWelcomeEmail, "Include password in emails to new users?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.AllowedCountries, "allowed-countries", "", "Comma separated list of allowed Country codes")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.AllowedIps, "allowed-ips", "", "List of allowed IP addresses")
+	cmdUpdate.Flags().BoolVar(&updateAllowUserLevel2faOverride, "allow-user-level-2fa-override", updateAllowUserLevel2faOverride, "Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?")
+	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelAllowedIpOverride, "allow-user-level-allowed-ip-override", updateAllowUserLevelAllowedIpOverride, "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?")
+	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelSslOverride, "allow-user-level-ssl-override", updateAllowUserLevelSslOverride, "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DisallowedCountries, "disallowed-countries", "", "Comma separated list of disallowed Country codes")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DaysToRetainBackups, "days-to-retain-backups", 0, "Number of days to keep deleted files")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.MaxPriorPasswords, "max-prior-passwords", 0, "Number of prior passwords to disallow")
