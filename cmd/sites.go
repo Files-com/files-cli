@@ -134,6 +134,7 @@ func Sites() *cobra.Command {
 	updateDavEnabled := true
 	updateFtpEnabled := true
 	updateSftpEnabled := true
+	updateSftpFinalizePartialUploads := true
 	updateUsersCanCreateApiKeys := true
 	updateUsersCanCreateSshKeys := true
 	updateShowUserNotificationsLogInLink := true
@@ -466,6 +467,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("sftp-enabled") {
 				mapParams["sftp_enabled"] = updateSftpEnabled
 			}
+			if cmd.Flags().Changed("sftp-finalize-partial-uploads") {
+				mapParams["sftp_finalize_partial_uploads"] = updateSftpFinalizePartialUploads
+			}
 			if cmd.Flags().Changed("users-can-create-api-keys") {
 				mapParams["users_can_create_api_keys"] = updateUsersCanCreateApiKeys
 			}
@@ -779,6 +783,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
+	cmdUpdate.Flags().BoolVar(&updateSftpFinalizePartialUploads, "sftp-finalize-partial-uploads", updateSftpFinalizePartialUploads, "Finalize partial SFTP uploads from interrupted connections? Default: true.")
 	cmdUpdate.Flags().BoolVar(&updateUsersCanCreateApiKeys, "users-can-create-api-keys", updateUsersCanCreateApiKeys, "Allow users to create their own API keys?")
 	cmdUpdate.Flags().BoolVar(&updateUsersCanCreateSshKeys, "users-can-create-ssh-keys", updateUsersCanCreateSshKeys, "Allow users to create their own SSH keys?")
 	cmdUpdate.Flags().BoolVar(&updateShowUserNotificationsLogInLink, "show-user-notifications-log-in-link", updateShowUserNotificationsLogInLink, "Show log in link in user notifications?")
