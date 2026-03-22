@@ -141,6 +141,7 @@ func FormFieldSets() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsFormFieldSetCreate.Title, "title", "", "Title to be displayed")
+	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "Skip validating form email")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "Skip validating form name")
 	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "Skip validating company")
@@ -179,6 +180,9 @@ func FormFieldSets() *cobra.Command {
 			if cmd.Flags().Changed("title") {
 				lib.FlagUpdate(cmd, "title", paramsFormFieldSetUpdate.Title, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsFormFieldSetUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("skip-email") {
 				mapParams["skip_email"] = updateSkipEmail
 			}
@@ -200,6 +204,7 @@ func FormFieldSets() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
 	cmdUpdate.Flags().StringVar(&paramsFormFieldSetUpdate.Title, "title", "", "Title to be displayed")
+	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "Skip validating form email")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "Skip validating form name")
 	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "Skip validating company")
