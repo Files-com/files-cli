@@ -213,6 +213,7 @@ func Bundles() *cobra.Command {
 	paramsBundleCreate.StartAccessOnDate = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.SnapshotId, "snapshot-id", 0, "ID of the snapshot containing this bundle's contents.")
+	cmdCreate.Flags().Int64Var(&paramsBundleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -364,6 +365,9 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("skip-name") {
 				mapParams["skip_name"] = updateSkipName
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsBundleUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("user-id") {
 				lib.FlagUpdate(cmd, "user_id", paramsBundleUpdate.UserId, mapParams)
 			}
@@ -413,6 +417,7 @@ func Bundles() *cobra.Command {
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
+	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.UserId, "user-id", 0, "The owning user id. Only site admins can set this.")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
 
