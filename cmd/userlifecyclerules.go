@@ -110,6 +110,7 @@ func UserLifecycleRules() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createApplyToAllWorkspaces := true
 	createIncludeSiteAdmins := true
 	createIncludeFolderAdmins := true
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
@@ -143,6 +144,9 @@ func UserLifecycleRules() *cobra.Command {
 				return UserLifecycleRuleCreateUserStateErr
 			}
 
+			if cmd.Flags().Changed("apply-to-all-workspaces") {
+				paramsUserLifecycleRuleCreate.ApplyToAllWorkspaces = flib.Bool(createApplyToAllWorkspaces)
+			}
 			if cmd.Flags().Changed("include-site-admins") {
 				paramsUserLifecycleRuleCreate.IncludeSiteAdmins = flib.Bool(createIncludeSiteAdmins)
 			}
@@ -157,6 +161,7 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.Action.Enum()).MapKeys()))
+	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64SliceVar(&paramsUserLifecycleRuleCreate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
@@ -166,6 +171,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
+	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -175,6 +181,7 @@ func UserLifecycleRules() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateApplyToAllWorkspaces := true
 	updateIncludeSiteAdmins := true
 	updateIncludeFolderAdmins := true
 	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
@@ -219,6 +226,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("action") {
 				lib.FlagUpdate(cmd, "action", paramsUserLifecycleRuleUpdate.Action, mapParams)
 			}
+			if cmd.Flags().Changed("apply-to-all-workspaces") {
+				mapParams["apply_to_all_workspaces"] = updateApplyToAllWorkspaces
+			}
 			if cmd.Flags().Changed("authentication-method") {
 				lib.FlagUpdate(cmd, "authentication_method", paramsUserLifecycleRuleUpdate.AuthenticationMethod, mapParams)
 			}
@@ -246,6 +256,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("user-tag") {
 				lib.FlagUpdate(cmd, "user_tag", paramsUserLifecycleRuleUpdate.UserTag, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsUserLifecycleRuleUpdate.WorkspaceId, mapParams)
+			}
 
 			var userLifecycleRule interface{}
 			var err error
@@ -255,6 +268,7 @@ func UserLifecycleRules() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.Id, "id", 0, "User Lifecycle Rule ID.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.Action.Enum()).MapKeys()))
+	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64SliceVar(&paramsUserLifecycleRuleUpdate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
@@ -264,6 +278,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
+	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

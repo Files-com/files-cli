@@ -8,6 +8,7 @@ import (
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	key_lifecycle_rule "github.com/Files-com/files-sdk-go/v3/keylifecyclerule"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -109,6 +110,7 @@ func KeyLifecycleRules() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createApplyToAllWorkspaces := true
 	paramsKeyLifecycleRuleCreate := files_sdk.KeyLifecycleRuleCreateParams{}
 	KeyLifecycleRuleCreateKeyType := ""
 
@@ -128,15 +130,21 @@ func KeyLifecycleRules() *cobra.Command {
 				return KeyLifecycleRuleCreateKeyTypeErr
 			}
 
+			if cmd.Flags().Changed("apply-to-all-workspaces") {
+				paramsKeyLifecycleRuleCreate.ApplyToAllWorkspaces = flib.Bool(createApplyToAllWorkspaces)
+			}
+
 			var keyLifecycleRule interface{}
 			var err error
 			keyLifecycleRule, err = client.Create(paramsKeyLifecycleRuleCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), keyLifecycleRule, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
 	cmdCreate.Flags().StringVar(&KeyLifecycleRuleCreateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg or ssh). %v", reflect.ValueOf(paramsKeyLifecycleRuleCreate.KeyType.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdCreate.Flags().StringVar(&paramsKeyLifecycleRuleCreate.Name, "name", "", "Key Lifecycle Rule name")
+	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -146,6 +154,7 @@ func KeyLifecycleRules() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateApplyToAllWorkspaces := true
 	paramsKeyLifecycleRuleUpdate := files_sdk.KeyLifecycleRuleUpdateParams{}
 	KeyLifecycleRuleUpdateKeyType := ""
 
@@ -173,6 +182,9 @@ func KeyLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsKeyLifecycleRuleUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("apply-to-all-workspaces") {
+				mapParams["apply_to_all_workspaces"] = updateApplyToAllWorkspaces
+			}
 			if cmd.Flags().Changed("key-type") {
 				lib.FlagUpdate(cmd, "key_type", paramsKeyLifecycleRuleUpdate.KeyType, mapParams)
 			}
@@ -182,6 +194,9 @@ func KeyLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsKeyLifecycleRuleUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsKeyLifecycleRuleUpdate.WorkspaceId, mapParams)
+			}
 
 			var keyLifecycleRule interface{}
 			var err error
@@ -190,9 +205,11 @@ func KeyLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.Id, "id", 0, "Key Lifecycle Rule ID.")
+	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
 	cmdUpdate.Flags().StringVar(&KeyLifecycleRuleUpdateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg or ssh). %v", reflect.ValueOf(paramsKeyLifecycleRuleUpdate.KeyType.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdUpdate.Flags().StringVar(&paramsKeyLifecycleRuleUpdate.Name, "name", "", "Key Lifecycle Rule name")
+	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

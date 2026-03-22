@@ -132,6 +132,7 @@ func Restores() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createRestoreDeletedPermissions, "restore-deleted-permissions", createRestoreDeletedPermissions, "If true, we will also restore any Permissions that match the same path prefix from the same dates.")
 	cmdCreate.Flags().BoolVar(&createRestoreInPlace, "restore-in-place", createRestoreInPlace, "If true, we will restore the files in place (into their original paths). If false, we will create a new restoration folder in the root and restore files there.")
 	cmdCreate.Flags().BoolVar(&createUpdateTimestamps, "update-timestamps", createUpdateTimestamps, "If true, we will update the last modified timestamp of restored files to today's date. If false, we might trigger File Expiration to delete the file again.")
+	cmdCreate.Flags().Int64Var(&paramsRestoreCreate.WorkspaceId, "workspace-id", 0, "Workspace ID for a workspace-scoped restore. `0` means the default site-wide scope.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
