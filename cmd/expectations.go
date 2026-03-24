@@ -167,13 +167,13 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Expectations.AddCommand(cmdCreate)
-	var fieldsTrigger []string
-	var formatTrigger []string
-	usePagerTrigger := true
-	paramsExpectationTrigger := files_sdk.ExpectationTriggerParams{}
+	var fieldsTriggerEvaluation []string
+	var formatTriggerEvaluation []string
+	usePagerTriggerEvaluation := true
+	paramsExpectationTriggerEvaluation := files_sdk.ExpectationTriggerEvaluationParams{}
 
-	cmdTrigger := &cobra.Command{
-		Use:   "trigger",
+	cmdTriggerEvaluation := &cobra.Command{
+		Use:   "trigger-evaluation",
 		Short: `Manually open an Expectation window`,
 		Long:  `Manually open an Expectation window`,
 		Args:  cobra.NoArgs,
@@ -184,17 +184,17 @@ func Expectations() *cobra.Command {
 
 			var expectationEvaluation interface{}
 			var err error
-			expectationEvaluation, err = client.Trigger(paramsExpectationTrigger, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), expectationEvaluation, err, Profile(cmd).Current().SetResourceFormat(cmd, formatTrigger), fieldsTrigger, usePagerTrigger, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			expectationEvaluation, err = client.TriggerEvaluation(paramsExpectationTriggerEvaluation, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), expectationEvaluation, err, Profile(cmd).Current().SetResourceFormat(cmd, formatTriggerEvaluation), fieldsTriggerEvaluation, usePagerTriggerEvaluation, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdTrigger.Flags().Int64Var(&paramsExpectationTrigger.Id, "id", 0, "Expectation ID.")
+	cmdTriggerEvaluation.Flags().Int64Var(&paramsExpectationTriggerEvaluation.Id, "id", 0, "Expectation ID.")
 
-	cmdTrigger.Flags().StringSliceVar(&fieldsTrigger, "fields", []string{}, "comma separated list of field names")
-	cmdTrigger.Flags().StringSliceVar(&formatTrigger, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdTrigger.Flags().BoolVar(&usePagerTrigger, "use-pager", usePagerTrigger, "Use $PAGER (.ie less, more, etc)")
+	cmdTriggerEvaluation.Flags().StringSliceVar(&fieldsTriggerEvaluation, "fields", []string{}, "comma separated list of field names")
+	cmdTriggerEvaluation.Flags().StringSliceVar(&formatTriggerEvaluation, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdTriggerEvaluation.Flags().BoolVar(&usePagerTriggerEvaluation, "use-pager", usePagerTriggerEvaluation, "Use $PAGER (.ie less, more, etc)")
 
-	Expectations.AddCommand(cmdTrigger)
+	Expectations.AddCommand(cmdTriggerEvaluation)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
