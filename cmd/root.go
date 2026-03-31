@@ -118,14 +118,14 @@ var (
 				if strings.ToLower(debug) == flagValueStdout {
 					sdkConfig.Logger = log.New(os.Stdout, "", log.LstdFlags)
 				} else {
-					logFile, err := os.Create(debug)
+					logFile, err := openDebugLog(debug)
 					if err != nil {
 						return clierr.New(clierr.ErrorCodeFatal, err)
 					}
 					sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
 				}
 				sdkConfig.Debug = true
-				sdkConfig.Logger.Printf("Command: %v", strings.Join(os.Args, " "))
+				sdkConfig.Logger.Printf("Command: %v", strings.Join(lib.SanitizeArgsForDisplay(os.Args), " "))
 			}
 
 			profile := &lib.Profiles{}
@@ -250,4 +250,8 @@ func checkErr(err error) {
 	}
 	statusError := clierr.From(err)
 	os.Exit(int(statusError.Code))
+}
+
+func openDebugLog(path string) (*os.File, error) {
+	return os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 }

@@ -1,5 +1,7 @@
 package lib
 
+import "strings"
+
 const fullyRedactedValue = "<redacted>"
 const apiKeyVisiblePrefixLength = 16
 const apiKeyMaskSuffix = "****************"
@@ -21,6 +23,26 @@ func redactSessionIDForDisplay(value string) string {
 	}
 
 	return fullyRedactedValue
+}
+
+func SanitizeArgsForDisplay(args []string) []string {
+	displayArgs := append([]string(nil), args...)
+
+	for i := 0; i < len(displayArgs); i++ {
+		switch {
+		case displayArgs[i] == "--api-key" || displayArgs[i] == "-a":
+			if i+1 < len(displayArgs) && !strings.HasPrefix(displayArgs[i+1], "-") {
+				displayArgs[i+1] = maskAPIKeyForDisplay(displayArgs[i+1])
+				i++
+			}
+		case strings.HasPrefix(displayArgs[i], "--api-key="):
+			displayArgs[i] = "--api-key=" + maskAPIKeyForDisplay(strings.TrimPrefix(displayArgs[i], "--api-key="))
+		case strings.HasPrefix(displayArgs[i], "-a="):
+			displayArgs[i] = "-a=" + maskAPIKeyForDisplay(strings.TrimPrefix(displayArgs[i], "-a="))
+		}
+	}
+
+	return displayArgs
 }
 
 func (p *Profile) Display() *Profile {
