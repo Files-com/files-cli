@@ -31,6 +31,7 @@ func Folders() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
+	var listForSortByArgs string
 	listForSearchAll := true
 	listForWithPreviews := true
 	listForWithPriorityColor := true
@@ -56,6 +57,14 @@ func Folders() *cobra.Command {
 
 			if params.ModifiedAtDatetime.IsZero() {
 				params.ModifiedAtDatetime = nil
+			}
+
+			parsedListForSortBy, parseListForSortByErr := lib.ParseAPIListSortFlag("sort-by", listForSortByArgs)
+			if parseListForSortByErr != nil {
+				return parseListForSortByErr
+			}
+			if parsedListForSortBy != nil {
+				params.SortBy = parsedListForSortBy
 			}
 
 			if cmd.Flags().Changed("search-all") {
@@ -112,7 +121,10 @@ func Folders() *cobra.Command {
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
 	cmdListFor.Flags().BoolVar(&listRecursively, "recursive", listOnlyFolders, "list folders/files recursively")
 	cmdListFor.Flags().IntVar(&concurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentFileParts, "Limit the concurrent directory listings of remote directories.")
-	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter-by", "field=pattern")
+	cmdListFor.Flags().StringVar(&listForSortByArgs, "sort-by", "", "Sort folders by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "sort-by", "field=asc|desc")
 
 	cmdListFor.Flags().StringVar(&paramsFolderListFor.Cursor, "cursor", "", "Send cursor to resume an existing list from the point at which you left off.  Get a cursor from an existing list via the X-Files-Cursor-Next header or the X-Files-Cursor-Prev header.")
 	cmdListFor.Flags().Int64Var(&paramsFolderListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

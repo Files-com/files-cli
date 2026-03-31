@@ -29,6 +29,7 @@ func Clickwraps() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsClickwrapList := files_sdk.ClickwrapListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -41,6 +42,14 @@ func Clickwraps() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsClickwrapList
 			params.MaxPages = MaxPagesList
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
 
 			client := clickwrap.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -68,7 +77,10 @@ func Clickwraps() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort clickwraps by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
 
 	cmdList.Flags().StringVar(&paramsClickwrapList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsClickwrapList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

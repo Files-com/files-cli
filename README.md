@@ -249,23 +249,73 @@ resource. The List operations can be sorted and filtered.
 
 ### Sorting
 
-The CLI does not currently support sorting. Please see SDK documentation for other languages for
-sorting.
+To sort the returned data, use the `--sort-by` parameter.
+
+```shell title="Sort Syntax"
+--sort-by="field=asc"
+```
+
+Valid directions are `asc` and `desc`.
+
+#### Special note about the List Folder Endpoint
+
+For historical reasons, and to maintain compatibility
+with a variety of other cloud-based MFT and EFSS services, Folders will always be listed before Files
+when listing a Folder. This applies regardless of the sorting parameters you provide. These *will* be
+used, after the initial sort application of Folders before Files.
+
+```shell title="Sort Example" hasDataFormatSelector
+files-cli users list \
+  --sort-by="username=asc"
+```
 
 ### Filtering
 
-Filters apply selection criteria to the underlying query that returns the results. Filters can be
-applied individually to select resource fields and/or in a combination with each other.
+Filters apply selection criteria to the underlying query that returns the results. They can be
+applied individually or combined with other filters, and the resulting data can be sorted by a
+single field.
 
-```filter_by``` -  Client side filtering: eg. field_name=*.jpg) |
+Each resource supports a unique set of valid filter fields, filter combinations, and combinations of
+filters and sort fields.
 
-An example of cli command line filter argument:
+| Flag | Type | Description |
+| --------- | --------- | --------- |
+| `--filter="field=value"` | Exact | Find resources that have an exact field value match to a passed in value. (i.e., FIELD_VALUE = PASS_IN_VALUE). |
+| `--filter-prefix="field=value"` | Pattern | Find resources where the specified field is prefixed by the supplied value. This is applicable to values that are strings. |
+| `--filter-gt="field=value"` | Range | Find resources that have a field value that is greater than the passed in value. (i.e., FIELD_VALUE > PASS_IN_VALUE). |
+| `--filter-gteq="field=value"` | Range | Find resources that have a field value that is greater than or equal to the passed in value. (i.e., FIELD_VALUE >= PASS_IN_VALUE). |
+| `--filter-lt="field=value"` | Range | Find resources that have a field value that is less than the passed in value. (i.e., FIELD_VALUE &lt; PASS_IN_VALUE). |
+| `--filter-lteq="field=value"` | Range | Find resources that have a field value that is less than or equal to the passed in value. (i.e., FIELD_VALUE &lt;= PASS_IN_VALUE). |
+
+Use `--filter-by` for client-side wildcard filtering after records are fetched.
 
 ```--filter-by="field_name=*.jpg"```
 
-```shell title="Example Filter Request" hasDataFormatSelector
+```shell title="Exact Filter Example" hasDataFormatSelector
 files-cli users list \
-  --filter-by="not_site_admin=true"
+  --filter="not_site_admin=true"
+```
+
+```shell title="Pattern Filter Example" hasDataFormatSelector
+files-cli users list \
+  --filter-prefix="username=test"
+```
+
+```shell title="Range Filter Example" hasDataFormatSelector
+files-cli action-logs list \
+  --filter-gteq="created_at=2024-01-01"
+```
+
+```shell title="Combination Filter with Sort Example" hasDataFormatSelector
+files-cli users list \
+  --filter="not_site_admin=true" \
+  --filter-prefix="username=test" \
+  --sort-by="username=asc"
+```
+
+```shell title="Client-side Filter Example" hasDataFormatSelector
+files-cli folders ls some/path \
+  --filter-by="path=*.jpg"
 ```
 
 ## Paths

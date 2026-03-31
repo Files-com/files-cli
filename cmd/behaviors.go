@@ -27,6 +27,8 @@ func Behaviors() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
+	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -39,6 +41,21 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
 
 			client := behavior.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -66,7 +83,12 @@ func Behaviors() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort behaviors by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find behaviors where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
 
 	cmdList.Flags().StringVar(&paramsBehaviorList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBehaviorList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -110,6 +132,8 @@ func Behaviors() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
+	var listForSortByArgs string
+	var listForFilterArgs []string
 	listForAncestorBehaviors := true
 
 	cmdListFor := &cobra.Command{
@@ -125,6 +149,21 @@ func Behaviors() *cobra.Command {
 			params.MaxPages = MaxPagesListFor
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
+			}
+
+			parsedListForSortBy, parseListForSortByErr := lib.ParseAPIListSortFlag("sort-by", listForSortByArgs)
+			if parseListForSortByErr != nil {
+				return parseListForSortByErr
+			}
+			if parsedListForSortBy != nil {
+				params.SortBy = parsedListForSortBy
+			}
+			parsedListForFilter, parseListForFilterErr := lib.ParseAPIListQueryFlag("filter", listForFilterArgs)
+			if parseListForFilterErr != nil {
+				return parseListForFilterErr
+			}
+			if parsedListForFilter != nil {
+				params.Filter = parsedListForFilter
 			}
 
 			if cmd.Flags().Changed("ancestor-behaviors") {
@@ -157,7 +196,12 @@ func Behaviors() *cobra.Command {
 		},
 	}
 
-	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter-by", "field=pattern")
+	cmdListFor.Flags().StringVar(&listForSortByArgs, "sort-by", "", "Sort behaviors by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "sort-by", "field=asc|desc")
+	cmdListFor.Flags().StringArrayVar(&listForFilterArgs, "filter", []string{}, "Find behaviors where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter", "field=value")
 
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

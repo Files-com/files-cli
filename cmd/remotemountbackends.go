@@ -30,6 +30,7 @@ func RemoteMountBackends() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRemoteMountBackendList := files_sdk.RemoteMountBackendListParams{}
 	var MaxPagesList int64
+	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -42,6 +43,14 @@ func RemoteMountBackends() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteMountBackendList
 			params.MaxPages = MaxPagesList
+
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
 
 			client := remote_mount_backend.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -69,7 +78,10 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find remote mount backends where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
 
 	cmdList.Flags().StringVar(&paramsRemoteMountBackendList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsRemoteMountBackendList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

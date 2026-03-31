@@ -27,6 +27,9 @@ func Notifications() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsNotificationList := files_sdk.NotificationListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
+	var listFilterArgs []string
+	var listFilterPrefixArgs []string
 	listIncludeAncestors := true
 
 	cmdList := &cobra.Command{
@@ -42,6 +45,28 @@ func Notifications() *cobra.Command {
 			params.MaxPages = MaxPagesList
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
+			}
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
+			parsedListFilterPrefix, parseListFilterPrefixErr := lib.ParseAPIListQueryFlag("filter-prefix", listFilterPrefixArgs)
+			if parseListFilterPrefixErr != nil {
+				return parseListFilterPrefixErr
+			}
+			if parsedListFilterPrefix != nil {
+				params.FilterPrefix = parsedListFilterPrefix
 			}
 
 			if cmd.Flags().Changed("include-ancestors") {
@@ -74,7 +99,14 @@ func Notifications() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort notifications by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find notifications where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterPrefixArgs, "filter-prefix", []string{}, "Find notifications where field starts with value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-prefix", "field=value")
 
 	cmdList.Flags().StringVar(&paramsNotificationList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsNotificationList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

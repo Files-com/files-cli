@@ -64,7 +64,8 @@ func HolidayRegions() *cobra.Command {
 		},
 	}
 
-	cmdGetSupported.Flags().StringToStringVar(&filterbyGetSupported, "filter-by", filterbyGetSupported, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdGetSupported.Flags().StringToStringVar(&filterbyGetSupported, "filter-by", filterbyGetSupported, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdGetSupported.Flags(), "filter-by", "field=pattern")
 
 	cmdGetSupported.Flags().StringVar(&paramsHolidayRegionGetSupported.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdGetSupported.Flags().Int64Var(&paramsHolidayRegionGetSupported.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

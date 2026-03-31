@@ -65,7 +65,8 @@ func ShareGroups() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
 
 	cmdList.Flags().Int64Var(&paramsShareGroupList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsShareGroupList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")

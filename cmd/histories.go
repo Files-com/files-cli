@@ -28,6 +28,7 @@ func Histories() *cobra.Command {
 	filterbyListForFile := make(map[string]string)
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
 	var MaxPagesListForFile int64
+	var listForFileSortByArgs string
 
 	cmdListForFile := &cobra.Command{
 		Use:   "list-for-file",
@@ -48,6 +49,14 @@ func Histories() *cobra.Command {
 			}
 			if params.EndAt.IsZero() {
 				params.EndAt = nil
+			}
+
+			parsedListForFileSortBy, parseListForFileSortByErr := lib.ParseAPIListSortFlag("sort-by", listForFileSortByArgs)
+			if parseListForFileSortByErr != nil {
+				return parseListForFileSortByErr
+			}
+			if parsedListForFileSortBy != nil {
+				params.SortBy = parsedListForFileSortBy
 			}
 
 			client := history.Client{Config: config}
@@ -76,7 +85,10 @@ func Histories() *cobra.Command {
 		},
 	}
 
-	cmdListForFile.Flags().StringToStringVar(&filterbyListForFile, "filter-by", filterbyListForFile, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListForFile.Flags().StringToStringVar(&filterbyListForFile, "filter-by", filterbyListForFile, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListForFile.Flags(), "filter-by", "field=pattern")
+	cmdListForFile.Flags().StringVar(&listForFileSortByArgs, "sort-by", "", "Sort histories by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListForFile.Flags(), "sort-by", "field=asc|desc")
 
 	paramsHistoryListForFile.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForFile.Flags(), paramsHistoryListForFile.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
@@ -98,6 +110,7 @@ func Histories() *cobra.Command {
 	filterbyListForFolder := make(map[string]string)
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
 	var MaxPagesListForFolder int64
+	var listForFolderSortByArgs string
 
 	cmdListForFolder := &cobra.Command{
 		Use:   "list-for-folder",
@@ -118,6 +131,14 @@ func Histories() *cobra.Command {
 			}
 			if params.EndAt.IsZero() {
 				params.EndAt = nil
+			}
+
+			parsedListForFolderSortBy, parseListForFolderSortByErr := lib.ParseAPIListSortFlag("sort-by", listForFolderSortByArgs)
+			if parseListForFolderSortByErr != nil {
+				return parseListForFolderSortByErr
+			}
+			if parsedListForFolderSortBy != nil {
+				params.SortBy = parsedListForFolderSortBy
 			}
 
 			client := history.Client{Config: config}
@@ -146,7 +167,10 @@ func Histories() *cobra.Command {
 		},
 	}
 
-	cmdListForFolder.Flags().StringToStringVar(&filterbyListForFolder, "filter-by", filterbyListForFolder, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListForFolder.Flags().StringToStringVar(&filterbyListForFolder, "filter-by", filterbyListForFolder, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListForFolder.Flags(), "filter-by", "field=pattern")
+	cmdListForFolder.Flags().StringVar(&listForFolderSortByArgs, "sort-by", "", "Sort histories by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListForFolder.Flags(), "sort-by", "field=asc|desc")
 
 	paramsHistoryListForFolder.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForFolder.Flags(), paramsHistoryListForFolder.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
@@ -168,6 +192,7 @@ func Histories() *cobra.Command {
 	filterbyListForUser := make(map[string]string)
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
 	var MaxPagesListForUser int64
+	var listForUserSortByArgs string
 
 	cmdListForUser := &cobra.Command{
 		Use:   "list-for-user",
@@ -185,6 +210,14 @@ func Histories() *cobra.Command {
 			}
 			if params.EndAt.IsZero() {
 				params.EndAt = nil
+			}
+
+			parsedListForUserSortBy, parseListForUserSortByErr := lib.ParseAPIListSortFlag("sort-by", listForUserSortByArgs)
+			if parseListForUserSortByErr != nil {
+				return parseListForUserSortByErr
+			}
+			if parsedListForUserSortBy != nil {
+				params.SortBy = parsedListForUserSortBy
 			}
 
 			client := history.Client{Config: config}
@@ -213,7 +246,10 @@ func Histories() *cobra.Command {
 		},
 	}
 
-	cmdListForUser.Flags().StringToStringVar(&filterbyListForUser, "filter-by", filterbyListForUser, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListForUser.Flags().StringToStringVar(&filterbyListForUser, "filter-by", filterbyListForUser, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListForUser.Flags(), "filter-by", "field=pattern")
+	cmdListForUser.Flags().StringVar(&listForUserSortByArgs, "sort-by", "", "Sort histories by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListForUser.Flags(), "sort-by", "field=asc|desc")
 
 	paramsHistoryListForUser.StartAt = &time.Time{}
 	lib.TimeVar(cmdListForUser.Flags(), paramsHistoryListForUser.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
@@ -235,6 +271,7 @@ func Histories() *cobra.Command {
 	filterbyListLogins := make(map[string]string)
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
 	var MaxPagesListLogins int64
+	var listLoginsSortByArgs string
 
 	cmdListLogins := &cobra.Command{
 		Use:   "list-logins",
@@ -252,6 +289,14 @@ func Histories() *cobra.Command {
 			}
 			if params.EndAt.IsZero() {
 				params.EndAt = nil
+			}
+
+			parsedListLoginsSortBy, parseListLoginsSortByErr := lib.ParseAPIListSortFlag("sort-by", listLoginsSortByArgs)
+			if parseListLoginsSortByErr != nil {
+				return parseListLoginsSortByErr
+			}
+			if parsedListLoginsSortBy != nil {
+				params.SortBy = parsedListLoginsSortBy
 			}
 
 			client := history.Client{Config: config}
@@ -280,7 +325,10 @@ func Histories() *cobra.Command {
 		},
 	}
 
-	cmdListLogins.Flags().StringToStringVar(&filterbyListLogins, "filter-by", filterbyListLogins, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdListLogins.Flags().StringToStringVar(&filterbyListLogins, "filter-by", filterbyListLogins, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListLogins.Flags(), "filter-by", "field=pattern")
+	cmdListLogins.Flags().StringVar(&listLoginsSortByArgs, "sort-by", "", "Sort histories by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdListLogins.Flags(), "sort-by", "field=asc|desc")
 
 	paramsHistoryListLogins.StartAt = &time.Time{}
 	lib.TimeVar(cmdListLogins.Flags(), paramsHistoryListLogins.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")
@@ -301,6 +349,9 @@ func Histories() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsHistoryList := files_sdk.HistoryListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
+	var listFilterArgs []string
+	var listFilterPrefixArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -319,6 +370,28 @@ func Histories() *cobra.Command {
 			}
 			if params.EndAt.IsZero() {
 				params.EndAt = nil
+			}
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
+			parsedListFilterPrefix, parseListFilterPrefixErr := lib.ParseAPIListQueryFlag("filter-prefix", listFilterPrefixArgs)
+			if parseListFilterPrefixErr != nil {
+				return parseListFilterPrefixErr
+			}
+			if parsedListFilterPrefix != nil {
+				params.FilterPrefix = parsedListFilterPrefix
 			}
 
 			client := history.Client{Config: config}
@@ -347,7 +420,14 @@ func Histories() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort histories by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find histories where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterPrefixArgs, "filter-prefix", []string{}, "Find histories where field starts with value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-prefix", "field=value")
 
 	paramsHistoryList.StartAt = &time.Time{}
 	lib.TimeVar(cmdList.Flags(), paramsHistoryList.StartAt, "start-at", "Leave blank or set to a date/time to filter earlier entries.")

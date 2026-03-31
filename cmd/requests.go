@@ -27,6 +27,7 @@ func Requests() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
 	listMine := true
 
 	cmdList := &cobra.Command{
@@ -42,6 +43,14 @@ func Requests() *cobra.Command {
 			params.MaxPages = MaxPagesList
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
+			}
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
 			}
 
 			if cmd.Flags().Changed("mine") {
@@ -74,7 +83,10 @@ func Requests() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort requests by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
 
 	cmdList.Flags().StringVar(&paramsRequestList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsRequestList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
@@ -92,6 +104,7 @@ func Requests() *cobra.Command {
 	filterbyGetFolder := make(map[string]string)
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
 	var MaxPagesGetFolder int64
+	var getFolderSortByArgs string
 	getFolderMine := true
 
 	cmdGetFolder := &cobra.Command{
@@ -106,6 +119,14 @@ func Requests() *cobra.Command {
 			params.MaxPages = MaxPagesGetFolder
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
+			}
+
+			parsedGetFolderSortBy, parseGetFolderSortByErr := lib.ParseAPIListSortFlag("sort-by", getFolderSortByArgs)
+			if parseGetFolderSortByErr != nil {
+				return parseGetFolderSortByErr
+			}
+			if parsedGetFolderSortBy != nil {
+				params.SortBy = parsedGetFolderSortBy
 			}
 
 			if cmd.Flags().Changed("mine") {
@@ -138,7 +159,10 @@ func Requests() *cobra.Command {
 		},
 	}
 
-	cmdGetFolder.Flags().StringToStringVar(&filterbyGetFolder, "filter-by", filterbyGetFolder, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdGetFolder.Flags().StringToStringVar(&filterbyGetFolder, "filter-by", filterbyGetFolder, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdGetFolder.Flags(), "filter-by", "field=pattern")
+	cmdGetFolder.Flags().StringVar(&getFolderSortByArgs, "sort-by", "", "Sort requests by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdGetFolder.Flags(), "sort-by", "field=asc|desc")
 
 	cmdGetFolder.Flags().StringVar(&paramsRequestGetFolder.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdGetFolder.Flags().Int64Var(&paramsRequestGetFolder.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")

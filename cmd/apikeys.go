@@ -31,6 +31,12 @@ func ApiKeys() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsApiKeyList := files_sdk.ApiKeyListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
+	var listFilterArgs []string
+	var listFilterGtArgs []string
+	var listFilterGteqArgs []string
+	var listFilterLtArgs []string
+	var listFilterLteqArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -43,6 +49,49 @@ func ApiKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsApiKeyList
 			params.MaxPages = MaxPagesList
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
+			parsedListFilterGt, parseListFilterGtErr := lib.ParseAPIListQueryFlag("filter-gt", listFilterGtArgs)
+			if parseListFilterGtErr != nil {
+				return parseListFilterGtErr
+			}
+			if parsedListFilterGt != nil {
+				params.FilterGt = parsedListFilterGt
+			}
+			parsedListFilterGteq, parseListFilterGteqErr := lib.ParseAPIListQueryFlag("filter-gteq", listFilterGteqArgs)
+			if parseListFilterGteqErr != nil {
+				return parseListFilterGteqErr
+			}
+			if parsedListFilterGteq != nil {
+				params.FilterGteq = parsedListFilterGteq
+			}
+			parsedListFilterLt, parseListFilterLtErr := lib.ParseAPIListQueryFlag("filter-lt", listFilterLtArgs)
+			if parseListFilterLtErr != nil {
+				return parseListFilterLtErr
+			}
+			if parsedListFilterLt != nil {
+				params.FilterLt = parsedListFilterLt
+			}
+			parsedListFilterLteq, parseListFilterLteqErr := lib.ParseAPIListQueryFlag("filter-lteq", listFilterLteqArgs)
+			if parseListFilterLteqErr != nil {
+				return parseListFilterLteqErr
+			}
+			if parsedListFilterLteq != nil {
+				params.FilterLteq = parsedListFilterLteq
+			}
 
 			client := api_key.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -70,7 +119,20 @@ func ApiKeys() *cobra.Command {
 		},
 	}
 
-	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, `Client side filtering: field-name=*.jpg,field-name=?ello`)
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort api keys by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find api keys where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterGtArgs, "filter-gt", []string{}, "Find api keys where field is greater than value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-gt", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterGteqArgs, "filter-gteq", []string{}, "Find api keys where field is greater than or equal to value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-gteq", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterLtArgs, "filter-lt", []string{}, "Find api keys where field is less than value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-lt", "field=value")
+	cmdList.Flags().StringArrayVar(&listFilterLteqArgs, "filter-lteq", []string{}, "Find api keys where field is less than or equal to value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-lteq", "field=value")
 
 	cmdList.Flags().Int64Var(&paramsApiKeyList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsApiKeyList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
