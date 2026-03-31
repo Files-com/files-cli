@@ -208,6 +208,31 @@ func TestProfiles_Load(t *testing.T) {
 	}
 }
 
+func TestProfiles_Display(t *testing.T) {
+	profiles := &Profiles{
+		Profiles: map[string]*Profile{
+			"default": {
+				APIKey:    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+				SessionId: "session-token",
+				Username:  "test-user",
+			},
+			"short": {
+				APIKey: "abcd",
+			},
+		},
+	}
+
+	display := profiles.Display()
+
+	require.Equal(t, "0123456789abcdef****************", display.Profiles["default"].APIKey)
+	require.Equal(t, "<redacted>", display.Profiles["default"].SessionId)
+	require.Equal(t, "test-user", display.Profiles["default"].Username)
+	require.Equal(t, "<redacted>", display.Profiles["short"].APIKey)
+
+	require.Equal(t, "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", profiles.Profiles["default"].APIKey)
+	require.Equal(t, "session-token", profiles.Profiles["default"].SessionId)
+}
+
 func TestCreateSession_CustomDomain(t *testing.T) {
 	assert := assert.New(t)
 
