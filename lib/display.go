@@ -3,7 +3,7 @@ package lib
 import "strings"
 
 const fullyRedactedValue = "<redacted>"
-const apiKeyVisiblePrefixLength = 16
+const apiKeyVisiblePrefixLength = 4
 const apiKeyMaskSuffix = "****************"
 
 func maskAPIKeyForDisplay(value string) string {

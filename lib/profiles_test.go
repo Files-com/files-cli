@@ -224,7 +224,7 @@ func TestProfiles_Display(t *testing.T) {
 
 	display := profiles.Display()
 
-	require.Equal(t, "0123456789abcdef****************", display.Profiles["default"].APIKey)
+	require.Equal(t, "0123****************", display.Profiles["default"].APIKey)
 	require.Equal(t, "<redacted>", display.Profiles["default"].SessionId)
 	require.Equal(t, "test-user", display.Profiles["default"].Username)
 	require.Equal(t, "<redacted>", display.Profiles["short"].APIKey)
