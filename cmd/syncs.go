@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"reflect"
-
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -136,7 +133,6 @@ func Syncs() *cobra.Command {
 	createDisabled := true
 	createKeepAfterCopy := true
 	paramsSyncCreate := files_sdk.SyncCreateParams{}
-	SyncCreateTrigger := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -147,12 +143,6 @@ func Syncs() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := sync.Client{Config: config}
-
-			var SyncCreateTriggerErr error
-			paramsSyncCreate.Trigger, SyncCreateTriggerErr = lib.FetchKey("trigger", paramsSyncCreate.Trigger.Enum(), SyncCreateTrigger)
-			if SyncCreateTrigger != "" && SyncCreateTriggerErr != nil {
-				return SyncCreateTriggerErr
-			}
 
 			if cmd.Flags().Changed("delete-empty-folders") {
 				paramsSyncCreate.DeleteEmptyFolders = flib.Bool(createDeleteEmptyFolders)
@@ -190,7 +180,7 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
-	cmdCreate.Flags().StringVar(&SyncCreateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncCreate.Trigger.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.WorkspaceId, "workspace-id", 0, "Workspace ID this sync belongs to")
 
@@ -266,7 +256,6 @@ func Syncs() *cobra.Command {
 	updateDisabled := true
 	updateKeepAfterCopy := true
 	paramsSyncUpdate := files_sdk.SyncUpdateParams{}
-	SyncUpdateTrigger := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -281,12 +270,6 @@ func Syncs() *cobra.Command {
 			mapParams, convertErr := lib.StructToMap(files_sdk.SyncUpdateParams{})
 			if convertErr != nil {
 				return convertErr
-			}
-
-			var SyncUpdateTriggerErr error
-			paramsSyncUpdate.Trigger, SyncUpdateTriggerErr = lib.FetchKey("trigger", paramsSyncUpdate.Trigger.Enum(), SyncUpdateTrigger)
-			if SyncUpdateTrigger != "" && SyncUpdateTriggerErr != nil {
-				return SyncUpdateTriggerErr
 			}
 
 			if cmd.Flags().Changed("id") {
@@ -386,7 +369,7 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
-	cmdUpdate.Flags().StringVar(&SyncUpdateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncUpdate.Trigger.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
