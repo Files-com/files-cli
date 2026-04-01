@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -129,10 +132,11 @@ func Syncs() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
-	createKeepAfterCopy := true
 	createDeleteEmptyFolders := true
 	createDisabled := true
+	createKeepAfterCopy := true
 	paramsSyncCreate := files_sdk.SyncCreateParams{}
+	SyncCreateTrigger := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create",
@@ -144,14 +148,20 @@ func Syncs() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := sync.Client{Config: config}
 
-			if cmd.Flags().Changed("keep-after-copy") {
-				paramsSyncCreate.KeepAfterCopy = flib.Bool(createKeepAfterCopy)
+			var SyncCreateTriggerErr error
+			paramsSyncCreate.Trigger, SyncCreateTriggerErr = lib.FetchKey("trigger", paramsSyncCreate.Trigger.Enum(), SyncCreateTrigger)
+			if SyncCreateTrigger != "" && SyncCreateTriggerErr != nil {
+				return SyncCreateTriggerErr
 			}
+
 			if cmd.Flags().Changed("delete-empty-folders") {
 				paramsSyncCreate.DeleteEmptyFolders = flib.Bool(createDeleteEmptyFolders)
 			}
 			if cmd.Flags().Changed("disabled") {
 				paramsSyncCreate.Disabled = flib.Bool(createDisabled)
+			}
+			if cmd.Flags().Changed("keep-after-copy") {
+				paramsSyncCreate.KeepAfterCopy = flib.Bool(createKeepAfterCopy)
 			}
 
 			var sync interface{}
@@ -160,24 +170,28 @@ func Syncs() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), sync, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.Name, "name", "", "Name for this sync job")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.Description, "description", "", "Description for this sync job")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.SrcPath, "src-path", "", "Absolute source path")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.DestPath, "dest-path", "", "Absolute destination path")
-	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source")
-	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination")
-	cmdCreate.Flags().BoolVar(&createKeepAfterCopy, "keep-after-copy", createKeepAfterCopy, "Keep files after copying?")
 	cmdCreate.Flags().BoolVar(&createDeleteEmptyFolders, "delete-empty-folders", createDeleteEmptyFolders, "Delete empty folders after sync?")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.Description, "description", "", "Description for this sync job")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.DestPath, "dest-path", "", "Absolute destination path for the sync")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestSiteId, "dest-site-id", 0, "Destination site ID if syncing to a child or partner site")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is this sync disabled?")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
-	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
+	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.IncludePatterns, "include-patterns", []string{}, "Array of glob patterns to include")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
+	cmdCreate.Flags().BoolVar(&createKeepAfterCopy, "keep-after-copy", createKeepAfterCopy, "Keep files after copying?")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.Name, "name", "", "Name for this sync job")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.SrcPath, "src-path", "", "Absolute source path for the sync")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
+	cmdCreate.Flags().StringVar(&SyncCreateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncCreate.Trigger.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.WorkspaceId, "workspace-id", 0, "Workspace ID this sync belongs to")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -248,10 +262,11 @@ func Syncs() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
-	updateKeepAfterCopy := true
 	updateDeleteEmptyFolders := true
 	updateDisabled := true
+	updateKeepAfterCopy := true
 	paramsSyncUpdate := files_sdk.SyncUpdateParams{}
+	SyncUpdateTrigger := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -268,62 +283,80 @@ func Syncs() *cobra.Command {
 				return convertErr
 			}
 
+			var SyncUpdateTriggerErr error
+			paramsSyncUpdate.Trigger, SyncUpdateTriggerErr = lib.FetchKey("trigger", paramsSyncUpdate.Trigger.Enum(), SyncUpdateTrigger)
+			if SyncUpdateTrigger != "" && SyncUpdateTriggerErr != nil {
+				return SyncUpdateTriggerErr
+			}
+
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsSyncUpdate.Id, mapParams)
-			}
-			if cmd.Flags().Changed("name") {
-				lib.FlagUpdate(cmd, "name", paramsSyncUpdate.Name, mapParams)
-			}
-			if cmd.Flags().Changed("description") {
-				lib.FlagUpdate(cmd, "description", paramsSyncUpdate.Description, mapParams)
-			}
-			if cmd.Flags().Changed("src-path") {
-				lib.FlagUpdate(cmd, "src_path", paramsSyncUpdate.SrcPath, mapParams)
-			}
-			if cmd.Flags().Changed("dest-path") {
-				lib.FlagUpdate(cmd, "dest_path", paramsSyncUpdate.DestPath, mapParams)
-			}
-			if cmd.Flags().Changed("src-remote-server-id") {
-				lib.FlagUpdate(cmd, "src_remote_server_id", paramsSyncUpdate.SrcRemoteServerId, mapParams)
-			}
-			if cmd.Flags().Changed("dest-remote-server-id") {
-				lib.FlagUpdate(cmd, "dest_remote_server_id", paramsSyncUpdate.DestRemoteServerId, mapParams)
-			}
-			if cmd.Flags().Changed("keep-after-copy") {
-				mapParams["keep_after_copy"] = updateKeepAfterCopy
 			}
 			if cmd.Flags().Changed("delete-empty-folders") {
 				mapParams["delete_empty_folders"] = updateDeleteEmptyFolders
 			}
+			if cmd.Flags().Changed("description") {
+				lib.FlagUpdate(cmd, "description", paramsSyncUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("dest-path") {
+				lib.FlagUpdate(cmd, "dest_path", paramsSyncUpdate.DestPath, mapParams)
+			}
+			if cmd.Flags().Changed("dest-remote-server-id") {
+				lib.FlagUpdate(cmd, "dest_remote_server_id", paramsSyncUpdate.DestRemoteServerId, mapParams)
+			}
+			if cmd.Flags().Changed("dest-site-id") {
+				lib.FlagUpdate(cmd, "dest_site_id", paramsSyncUpdate.DestSiteId, mapParams)
+			}
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
+			if cmd.Flags().Changed("exclude-patterns") {
+				lib.FlagUpdateLen(cmd, "exclude_patterns", paramsSyncUpdate.ExcludePatterns, mapParams)
+			}
+			if cmd.Flags().Changed("holiday-region") {
+				lib.FlagUpdate(cmd, "holiday_region", paramsSyncUpdate.HolidayRegion, mapParams)
+			}
+			if cmd.Flags().Changed("include-patterns") {
+				lib.FlagUpdateLen(cmd, "include_patterns", paramsSyncUpdate.IncludePatterns, mapParams)
+			}
 			if cmd.Flags().Changed("interval") {
 				lib.FlagUpdate(cmd, "interval", paramsSyncUpdate.Interval, mapParams)
+			}
+			if cmd.Flags().Changed("keep-after-copy") {
+				mapParams["keep_after_copy"] = updateKeepAfterCopy
+			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsSyncUpdate.Name, mapParams)
+			}
+			if cmd.Flags().Changed("recurring-day") {
+				lib.FlagUpdate(cmd, "recurring_day", paramsSyncUpdate.RecurringDay, mapParams)
+			}
+			if cmd.Flags().Changed("schedule-days-of-week") {
+				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsSyncUpdate.ScheduleDaysOfWeek, mapParams)
+			}
+			if cmd.Flags().Changed("schedule-time-zone") {
+				lib.FlagUpdate(cmd, "schedule_time_zone", paramsSyncUpdate.ScheduleTimeZone, mapParams)
+			}
+			if cmd.Flags().Changed("schedule-times-of-day") {
+				lib.FlagUpdateLen(cmd, "schedule_times_of_day", paramsSyncUpdate.ScheduleTimesOfDay, mapParams)
+			}
+			if cmd.Flags().Changed("src-path") {
+				lib.FlagUpdate(cmd, "src_path", paramsSyncUpdate.SrcPath, mapParams)
+			}
+			if cmd.Flags().Changed("src-remote-server-id") {
+				lib.FlagUpdate(cmd, "src_remote_server_id", paramsSyncUpdate.SrcRemoteServerId, mapParams)
+			}
+			if cmd.Flags().Changed("src-site-id") {
+				lib.FlagUpdate(cmd, "src_site_id", paramsSyncUpdate.SrcSiteId, mapParams)
+			}
+			if cmd.Flags().Changed("sync-interval-minutes") {
+				lib.FlagUpdate(cmd, "sync_interval_minutes", paramsSyncUpdate.SyncIntervalMinutes, mapParams)
 			}
 			if cmd.Flags().Changed("trigger") {
 				lib.FlagUpdate(cmd, "trigger", paramsSyncUpdate.Trigger, mapParams)
 			}
 			if cmd.Flags().Changed("trigger-file") {
 				lib.FlagUpdate(cmd, "trigger_file", paramsSyncUpdate.TriggerFile, mapParams)
-			}
-			if cmd.Flags().Changed("holiday-region") {
-				lib.FlagUpdate(cmd, "holiday_region", paramsSyncUpdate.HolidayRegion, mapParams)
-			}
-			if cmd.Flags().Changed("sync-interval-minutes") {
-				lib.FlagUpdate(cmd, "sync_interval_minutes", paramsSyncUpdate.SyncIntervalMinutes, mapParams)
-			}
-			if cmd.Flags().Changed("recurring-day") {
-				lib.FlagUpdate(cmd, "recurring_day", paramsSyncUpdate.RecurringDay, mapParams)
-			}
-			if cmd.Flags().Changed("schedule-time-zone") {
-				lib.FlagUpdate(cmd, "schedule_time_zone", paramsSyncUpdate.ScheduleTimeZone, mapParams)
-			}
-			if cmd.Flags().Changed("schedule-days-of-week") {
-				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsSyncUpdate.ScheduleDaysOfWeek, mapParams)
-			}
-			if cmd.Flags().Changed("schedule-times-of-day") {
-				lib.FlagUpdateLen(cmd, "schedule_times_of_day", paramsSyncUpdate.ScheduleTimesOfDay, mapParams)
 			}
 
 			var sync interface{}
@@ -333,24 +366,28 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.Id, "id", 0, "Sync ID.")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Name, "name", "", "Name for this sync job")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Description, "description", "", "Description for this sync job")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.SrcPath, "src-path", "", "Absolute source path")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.DestPath, "dest-path", "", "Absolute destination path")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination")
-	cmdUpdate.Flags().BoolVar(&updateKeepAfterCopy, "keep-after-copy", updateKeepAfterCopy, "Keep files after copying?")
 	cmdUpdate.Flags().BoolVar(&updateDeleteEmptyFolders, "delete-empty-folders", updateDeleteEmptyFolders, "Delete empty folders after sync?")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Description, "description", "", "Description for this sync job")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.DestPath, "dest-path", "", "Absolute destination path for the sync")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestSiteId, "dest-site-id", 0, "Destination site ID if syncing to a child or partner site")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is this sync disabled?")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Trigger, "trigger", "", "Trigger type: daily, custom_schedule, or manual")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
+	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.IncludePatterns, "include-patterns", []string{}, "Array of glob patterns to include")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
+	cmdUpdate.Flags().BoolVar(&updateKeepAfterCopy, "keep-after-copy", updateKeepAfterCopy, "Keep files after copying?")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Name, "name", "", "Name for this sync job")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.SrcPath, "src-path", "", "Absolute source path for the sync")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
+	cmdUpdate.Flags().StringVar(&SyncUpdateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncUpdate.Trigger.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
