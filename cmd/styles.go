@@ -76,6 +76,9 @@ func Styles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("file") {
 			}
+			if cmd.Flags().Changed("logo-click-href") {
+				lib.FlagUpdate(cmd, "logo_click_href", paramsStyleUpdate.LogoClickHref, mapParams)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				mapParams["path"] = args[0]
@@ -87,6 +90,7 @@ func Styles() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.Path, "path", "", "Style path.")
+	cmdUpdate.Flags().StringVar(&paramsStyleUpdate.LogoClickHref, "logo-click-href", "", "URL to open when a public visitor clicks the logo.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
