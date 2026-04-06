@@ -174,7 +174,6 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Description, "description", "", "Description for this sync job")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.DestPath, "dest-path", "", "Absolute destination path for the sync")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
-	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestSiteId, "dest-site-id", 0, "Destination site ID if syncing to a child or partner site")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is this sync disabled?")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
@@ -188,7 +187,6 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.SrcPath, "src-path", "", "Absolute source path for the sync")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
-	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdCreate.Flags().StringVar(&SyncCreateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
@@ -304,9 +302,6 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("dest-remote-server-id") {
 				lib.FlagUpdate(cmd, "dest_remote_server_id", paramsSyncUpdate.DestRemoteServerId, mapParams)
 			}
-			if cmd.Flags().Changed("dest-site-id") {
-				lib.FlagUpdate(cmd, "dest_site_id", paramsSyncUpdate.DestSiteId, mapParams)
-			}
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
@@ -346,9 +341,6 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("src-remote-server-id") {
 				lib.FlagUpdate(cmd, "src_remote_server_id", paramsSyncUpdate.SrcRemoteServerId, mapParams)
 			}
-			if cmd.Flags().Changed("src-site-id") {
-				lib.FlagUpdate(cmd, "src_site_id", paramsSyncUpdate.SrcSiteId, mapParams)
-			}
 			if cmd.Flags().Changed("sync-interval-minutes") {
 				lib.FlagUpdate(cmd, "sync_interval_minutes", paramsSyncUpdate.SyncIntervalMinutes, mapParams)
 			}
@@ -370,7 +362,6 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Description, "description", "", "Description for this sync job")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.DestPath, "dest-path", "", "Absolute destination path for the sync")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestSiteId, "dest-site-id", 0, "Destination site ID if syncing to a child or partner site")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is this sync disabled?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.HolidayRegion, "holiday-region", "", "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.")
@@ -384,7 +375,6 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.SrcPath, "src-path", "", "Absolute source path for the sync")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
-	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcSiteId, "src-site-id", 0, "Source site ID if syncing from a child or partner site")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdUpdate.Flags().StringVar(&SyncUpdateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
