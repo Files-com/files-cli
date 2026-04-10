@@ -219,6 +219,7 @@ func Notifications() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringUserIds, "triggering-user-ids", []int64{}, "If set, will only notify on actions made one of the specified users")
 	cmdCreate.Flags().BoolVar(&createTriggerByShareRecipients, "trigger-by-share-recipients", createTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.GroupId, "group-id", 0, "The ID of the group to notify.  Provide `user_id`, `username` or `group_id`.")
+	cmdCreate.Flags().StringVar(&paramsNotificationCreate.GroupIds, "group-ids", "", "Group IDs when the notification requires multiple groups. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Path, "path", "", "Path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Username, "username", "", "The username of the user to notify.  Provide `user_id`, `username` or `group_id`.")
 
