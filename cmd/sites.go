@@ -140,6 +140,11 @@ func Sites() *cobra.Command {
 	updateShowUserNotificationsLogInLink := true
 	updateProtocolAccessGroupsOnly := true
 	updateRevokeBundleAccessOnDisableOrDelete := true
+	updateGroupAdminsCanAddUsers := true
+	updateGroupAdminsCanDeleteUsers := true
+	updateGroupAdminsCanEnableDisableUsers := true
+	updateGroupAdminsCanModifyUsers := true
+	updateGroupAdminsCanResetPasswords := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAdminsBypassLockedSubfolders := true
@@ -493,6 +498,21 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("bundle-watermark-value") {
 			}
+			if cmd.Flags().Changed("group-admins-can-add-users") {
+				mapParams["group_admins_can_add_users"] = updateGroupAdminsCanAddUsers
+			}
+			if cmd.Flags().Changed("group-admins-can-delete-users") {
+				mapParams["group_admins_can_delete_users"] = updateGroupAdminsCanDeleteUsers
+			}
+			if cmd.Flags().Changed("group-admins-can-enable-disable-users") {
+				mapParams["group_admins_can_enable_disable_users"] = updateGroupAdminsCanEnableDisableUsers
+			}
+			if cmd.Flags().Changed("group-admins-can-modify-users") {
+				mapParams["group_admins_can_modify_users"] = updateGroupAdminsCanModifyUsers
+			}
+			if cmd.Flags().Changed("group-admins-can-reset-passwords") {
+				mapParams["group_admins_can_reset_passwords"] = updateGroupAdminsCanResetPasswords
+			}
 			if cmd.Flags().Changed("group-admins-can-set-user-password") {
 				mapParams["group_admins_can_set_user_password"] = updateGroupAdminsCanSetUserPassword
 			}
@@ -791,7 +811,12 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
 	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
 	cmdUpdate.Flags().BoolVar(&updateRevokeBundleAccessOnDisableOrDelete, "revoke-bundle-access-on-disable-or-delete", updateRevokeBundleAccessOnDisableOrDelete, "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.")
-	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins set password authentication method")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanAddUsers, "group-admins-can-add-users", updateGroupAdminsCanAddUsers, "Allow group admins to create users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanDeleteUsers, "group-admins-can-delete-users", updateGroupAdminsCanDeleteUsers, "Allow group admins to delete users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanEnableDisableUsers, "group-admins-can-enable-disable-users", updateGroupAdminsCanEnableDisableUsers, "Allow group admins to enable or disable users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanModifyUsers, "group-admins-can-modify-users", updateGroupAdminsCanModifyUsers, "Allow group admins to modify users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanResetPasswords, "group-admins-can-reset-passwords", updateGroupAdminsCanResetPasswords, "Allow group admins to reset passwords for users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins to set password authentication method")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
 	cmdUpdate.Flags().BoolVar(&updateAdminsBypassLockedSubfolders, "admins-bypass-locked-subfolders", updateAdminsBypassLockedSubfolders, "Allow admins to bypass the locked subfolders setting.")

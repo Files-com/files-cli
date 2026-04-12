@@ -360,6 +360,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createPartnerAdmin, "partner-admin", createPartnerAdmin, "Is this user a Partner administrator?")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.PrimaryGroupId, "primary-group-id", 0, "Primary group ID for Group Admin scoping")
 	cmdCreate.Flags().BoolVar(&createReadonlySiteAdmin, "readonly-site-admin", createReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
 	paramsUserCreate.RequireLoginBy = &time.Time{}
@@ -649,6 +650,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("password-validity-days") {
 				lib.FlagUpdate(cmd, "password_validity_days", paramsUserUpdate.PasswordValidityDays, mapParams)
 			}
+			if cmd.Flags().Changed("primary-group-id") {
+				lib.FlagUpdate(cmd, "primary_group_id", paramsUserUpdate.PrimaryGroupId, mapParams)
+			}
 			if cmd.Flags().Changed("readonly-site-admin") {
 				mapParams["readonly_site_admin"] = updateReadonlySiteAdmin
 			}
@@ -761,6 +765,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updatePartnerAdmin, "partner-admin", updatePartnerAdmin, "Is this user a Partner administrator?")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PartnerId, "partner-id", 0, "Partner ID if this user belongs to a Partner")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PrimaryGroupId, "primary-group-id", 0, "Primary group ID for Group Admin scoping")
 	cmdUpdate.Flags().BoolVar(&updateReadonlySiteAdmin, "readonly-site-admin", updateReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
 	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
 	paramsUserUpdate.RequireLoginBy = &time.Time{}

@@ -164,6 +164,7 @@ func Partners() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), partner, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&paramsPartnerCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.")
 	cmdCreate.Flags().BoolVar(&createAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", createAllowBypassing2faPolicies, "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.")
 	cmdCreate.Flags().BoolVar(&createAllowCredentialChanges, "allow-credential-changes", createAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowProvidingGpgKeys, "allow-providing-gpg-keys", createAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
@@ -206,6 +207,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsPartnerUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("allowed-ips") {
+				lib.FlagUpdate(cmd, "allowed_ips", paramsPartnerUpdate.AllowedIps, mapParams)
+			}
 			if cmd.Flags().Changed("allow-bypassing-2fa-policies") {
 				mapParams["allow_bypassing_2fa_policies"] = updateAllowBypassing2faPolicies
 			}
@@ -238,6 +242,7 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.Id, "id", 0, "Partner ID.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.")
 	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.")
 	cmdUpdate.Flags().BoolVar(&updateAllowCredentialChanges, "allow-credential-changes", updateAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowProvidingGpgKeys, "allow-providing-gpg-keys", updateAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
