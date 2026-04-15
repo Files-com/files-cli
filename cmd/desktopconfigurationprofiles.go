@@ -132,6 +132,8 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	createUseForAllUsers := true
 	paramsDesktopConfigurationProfileCreate := files_sdk.DesktopConfigurationProfileCreateParams{}
 
+	createMountMappingsJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Desktop Configuration Profile`,
@@ -142,6 +144,13 @@ func DesktopConfigurationProfiles() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := desktop_configuration_profile.Client{Config: config}
 
+			if cmd.Flags().Changed("mount-mappings") {
+				parsedCreateMountMappings, parseCreateMountMappingsErr := lib.ParseJSONObjectFlag("mount-mappings", createMountMappingsJSON)
+				if parseCreateMountMappingsErr != nil {
+					return parseCreateMountMappingsErr
+				}
+				paramsDesktopConfigurationProfileCreate.MountMappings = parsedCreateMountMappings
+			}
 			if cmd.Flags().Changed("use-for-all-users") {
 				paramsDesktopConfigurationProfileCreate.UseForAllUsers = flib.Bool(createUseForAllUsers)
 			}
@@ -153,6 +162,8 @@ func DesktopConfigurationProfiles() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsDesktopConfigurationProfileCreate.Name, "name", "", "Profile name")
+	cmdCreate.Flags().StringVar(&createMountMappingsJSON, "mount-mappings", "", "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "mount-mappings", "json")
 	cmdCreate.Flags().Int64Var(&paramsDesktopConfigurationProfileCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createUseForAllUsers, "use-for-all-users", createUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
 
@@ -166,6 +177,8 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	usePagerUpdate := true
 	updateUseForAllUsers := true
 	paramsDesktopConfigurationProfileUpdate := files_sdk.DesktopConfigurationProfileUpdateParams{}
+
+	updateMountMappingsJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -192,6 +205,11 @@ func DesktopConfigurationProfiles() *cobra.Command {
 				lib.FlagUpdate(cmd, "workspace_id", paramsDesktopConfigurationProfileUpdate.WorkspaceId, mapParams)
 			}
 			if cmd.Flags().Changed("mount-mappings") {
+				parsedUpdateMountMappings, parseUpdateMountMappingsErr := lib.ParseJSONObjectFlag("mount-mappings", updateMountMappingsJSON)
+				if parseUpdateMountMappingsErr != nil {
+					return parseUpdateMountMappingsErr
+				}
+				mapParams["mount_mappings"] = parsedUpdateMountMappings
 			}
 			if cmd.Flags().Changed("use-for-all-users") {
 				mapParams["use_for_all_users"] = updateUseForAllUsers
@@ -206,6 +224,8 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsDesktopConfigurationProfileUpdate.Id, "id", 0, "Desktop Configuration Profile ID.")
 	cmdUpdate.Flags().StringVar(&paramsDesktopConfigurationProfileUpdate.Name, "name", "", "Profile name")
 	cmdUpdate.Flags().Int64Var(&paramsDesktopConfigurationProfileUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
+	cmdUpdate.Flags().StringVar(&updateMountMappingsJSON, "mount-mappings", "", "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "mount-mappings", "json")
 	cmdUpdate.Flags().BoolVar(&updateUseForAllUsers, "use-for-all-users", updateUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

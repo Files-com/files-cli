@@ -113,6 +113,8 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
 	ChildSiteManagementPolicyCreatePolicyType := ""
 
+	createValueJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Child Site Management Policy`,
@@ -129,12 +131,22 @@ func ChildSiteManagementPolicies() *cobra.Command {
 				return ChildSiteManagementPolicyCreatePolicyTypeErr
 			}
 
+			if cmd.Flags().Changed("value") {
+				parsedCreateValue, parseCreateValueErr := lib.ParseJSONObjectFlag("value", createValueJSON)
+				if parseCreateValueErr != nil {
+					return parseCreateValueErr
+				}
+				paramsChildSiteManagementPolicyCreate.Value = parsedCreateValue
+			}
+
 			var childSiteManagementPolicy interface{}
 			var err error
 			childSiteManagementPolicy, err = client.Create(paramsChildSiteManagementPolicyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), childSiteManagementPolicy, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
 	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
 	cmdCreate.Flags().StringVar(&ChildSiteManagementPolicyCreatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyCreate.PolicyType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Name, "name", "", "Name for this policy.")
@@ -150,6 +162,8 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	usePagerUpdate := true
 	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
 	ChildSiteManagementPolicyUpdatePolicyType := ""
+
+	updateValueJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -176,6 +190,11 @@ func ChildSiteManagementPolicies() *cobra.Command {
 				lib.FlagUpdate(cmd, "id", paramsChildSiteManagementPolicyUpdate.Id, mapParams)
 			}
 			if cmd.Flags().Changed("value") {
+				parsedUpdateValue, parseUpdateValueErr := lib.ParseJSONObjectFlag("value", updateValueJSON)
+				if parseUpdateValueErr != nil {
+					return parseUpdateValueErr
+				}
+				mapParams["value"] = parsedUpdateValue
 			}
 			if cmd.Flags().Changed("skip-child-site-ids") {
 				lib.FlagUpdateLen(cmd, "skip_child_site_ids", paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, mapParams)
@@ -197,6 +216,8 @@ func ChildSiteManagementPolicies() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsChildSiteManagementPolicyUpdate.Id, "id", 0, "Child Site Management Policy ID.")
+	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
 	cmdUpdate.Flags().StringVar(&ChildSiteManagementPolicyUpdatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Name, "name", "", "Name for this policy.")

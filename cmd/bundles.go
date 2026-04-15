@@ -297,6 +297,8 @@ func Bundles() *cobra.Command {
 	usePagerShare := true
 	paramsBundleShare := files_sdk.BundleShareParams{}
 
+	shareRecipientsJSON := ""
+
 	cmdShare := &cobra.Command{
 		Use:   "share",
 		Short: `Send email(s) with a link to bundle`,
@@ -306,6 +308,14 @@ func Bundles() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := bundle.Client{Config: config}
+
+			if cmd.Flags().Changed("recipients") {
+				parsedShareRecipients, parseShareRecipientsErr := lib.ParseJSONArrayObjectFlag("recipients", shareRecipientsJSON)
+				if parseShareRecipientsErr != nil {
+					return parseShareRecipientsErr
+				}
+				paramsBundleShare.Recipients = parsedShareRecipients
+			}
 
 			var err error
 			err = client.Share(paramsBundleShare, files_sdk.WithContext(ctx))
@@ -318,6 +328,8 @@ func Bundles() *cobra.Command {
 	cmdShare.Flags().Int64Var(&paramsBundleShare.Id, "id", 0, "Bundle ID.")
 	cmdShare.Flags().StringSliceVar(&paramsBundleShare.To, "to", []string{}, "A list of email addresses to share this bundle with. Required unless `recipients` is used.")
 	cmdShare.Flags().StringVar(&paramsBundleShare.Note, "note", "", "Note to include in email.")
+	cmdShare.Flags().StringVar(&shareRecipientsJSON, "recipients", "", "A list of recipients to share this bundle with. Required unless `to` is used. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdShare.Flags(), "recipients", "json")
 
 	cmdShare.Flags().StringSliceVar(&fieldsShare, "fields", []string{}, "comma separated list of field names")
 	cmdShare.Flags().StringSliceVar(&formatShare, "format", lib.FormatDefaults, lib.FormatHelpText)

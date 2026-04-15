@@ -170,6 +170,9 @@ func Sites() *cobra.Command {
 	updateDisable2faWithDelay := true
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
+	updateLeftNavigationVisibilityJSON := ""
+	updateBundleWatermarkValueJSON := ""
+
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
 		Short: `Update Site Settings`,
@@ -285,6 +288,11 @@ func Sites() *cobra.Command {
 				mapParams["motd_use_for_sftp"] = updateMotdUseForSftp
 			}
 			if cmd.Flags().Changed("left-navigation-visibility") {
+				parsedUpdateLeftNavigationVisibility, parseUpdateLeftNavigationVisibilityErr := lib.ParseJSONObjectFlag("left-navigation-visibility", updateLeftNavigationVisibilityJSON)
+				if parseUpdateLeftNavigationVisibilityErr != nil {
+					return parseUpdateLeftNavigationVisibilityErr
+				}
+				mapParams["left_navigation_visibility"] = parsedUpdateLeftNavigationVisibility
 			}
 			if cmd.Flags().Changed("additional-text-file-types") {
 				lib.FlagUpdateLen(cmd, "additional_text_file_types", paramsSiteUpdate.AdditionalTextFileTypes, mapParams)
@@ -497,6 +505,11 @@ func Sites() *cobra.Command {
 				mapParams["revoke_bundle_access_on_disable_or_delete"] = updateRevokeBundleAccessOnDisableOrDelete
 			}
 			if cmd.Flags().Changed("bundle-watermark-value") {
+				parsedUpdateBundleWatermarkValue, parseUpdateBundleWatermarkValueErr := lib.ParseJSONObjectFlag("bundle-watermark-value", updateBundleWatermarkValueJSON)
+				if parseUpdateBundleWatermarkValueErr != nil {
+					return parseUpdateBundleWatermarkValueErr
+				}
+				mapParams["bundle_watermark_value"] = parsedUpdateBundleWatermarkValue
 			}
 			if cmd.Flags().Changed("group-admins-can-add-users") {
 				mapParams["group_admins_can_add_users"] = updateGroupAdminsCanAddUsers
@@ -741,6 +754,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.MotdText, "motd-text", "", "A message to show users when they connect via FTP or SFTP.")
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForFtp, "motd-use-for-ftp", updateMotdUseForFtp, "Show message to users connecting via FTP")
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForSftp, "motd-use-for-sftp", updateMotdUseForSftp, "Show message to users connecting via SFTP")
+	cmdUpdate.Flags().StringVar(&updateLeftNavigationVisibilityJSON, "left-navigation-visibility", "", "Visibility settings for account navigation Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "left-navigation-visibility", "json")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().BoolVar(&updateBundleSendSharedReceipts, "bundle-send-shared-receipts", updateBundleSendSharedReceipts, "Do Bundle creators receive receipts of invitations?")
@@ -811,6 +826,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
 	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
 	cmdUpdate.Flags().BoolVar(&updateRevokeBundleAccessOnDisableOrDelete, "revoke-bundle-access-on-disable-or-delete", updateRevokeBundleAccessOnDisableOrDelete, "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.")
+	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanAddUsers, "group-admins-can-add-users", updateGroupAdminsCanAddUsers, "Allow group admins to create users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanDeleteUsers, "group-admins-can-delete-users", updateGroupAdminsCanDeleteUsers, "Allow group admins to delete users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanEnableDisableUsers, "group-admins-can-enable-disable-users", updateGroupAdminsCanEnableDisableUsers, "Allow group admins to enable or disable users in their groups")

@@ -129,6 +129,8 @@ func SiemHttpDestinations() *cobra.Command {
 	SiemHttpDestinationCreateFileFormat := ""
 	SiemHttpDestinationCreateDestinationType := ""
 
+	createAdditionalHeadersJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create SIEM HTTP Destination`,
@@ -155,6 +157,13 @@ func SiemHttpDestinations() *cobra.Command {
 				return SiemHttpDestinationCreateDestinationTypeErr
 			}
 
+			if cmd.Flags().Changed("additional-headers") {
+				parsedCreateAdditionalHeaders, parseCreateAdditionalHeadersErr := lib.ParseJSONObjectFlag("additional-headers", createAdditionalHeadersJSON)
+				if parseCreateAdditionalHeadersErr != nil {
+					return parseCreateAdditionalHeadersErr
+				}
+				paramsSiemHttpDestinationCreate.AdditionalHeaders = parsedCreateAdditionalHeaders
+			}
 			if cmd.Flags().Changed("sending-active") {
 				paramsSiemHttpDestinationCreate.SendingActive = flib.Bool(createSendingActive)
 			}
@@ -202,6 +211,8 @@ func SiemHttpDestinations() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.Name, "name", "", "Name for this Destination")
+	cmdCreate.Flags().StringVar(&createAdditionalHeadersJSON, "additional-headers", "", "Additional HTTP Headers included in calls to the destination URL Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "additional-headers", "json")
 	cmdCreate.Flags().BoolVar(&createSendingActive, "sending-active", createSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.GenericPayloadType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
@@ -259,6 +270,8 @@ func SiemHttpDestinations() *cobra.Command {
 	SiemHttpDestinationSendTestEntryGenericPayloadType := ""
 	SiemHttpDestinationSendTestEntryFileFormat := ""
 
+	sendTestEntryAdditionalHeadersJSON := ""
+
 	cmdSendTestEntry := &cobra.Command{
 		Use:   "send-test-entry",
 		Short: `send_test_entry SIEM HTTP Destination`,
@@ -285,6 +298,13 @@ func SiemHttpDestinations() *cobra.Command {
 				return SiemHttpDestinationSendTestEntryFileFormatErr
 			}
 
+			if cmd.Flags().Changed("additional-headers") {
+				parsedSendTestEntryAdditionalHeaders, parseSendTestEntryAdditionalHeadersErr := lib.ParseJSONObjectFlag("additional-headers", sendTestEntryAdditionalHeadersJSON)
+				if parseSendTestEntryAdditionalHeadersErr != nil {
+					return parseSendTestEntryAdditionalHeadersErr
+				}
+				paramsSiemHttpDestinationSendTestEntry.AdditionalHeaders = parsedSendTestEntryAdditionalHeaders
+			}
 			if cmd.Flags().Changed("sending-active") {
 				paramsSiemHttpDestinationSendTestEntry.SendingActive = flib.Bool(sendTestEntrySendingActive)
 			}
@@ -337,6 +357,8 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.DestinationType.Enum()).MapKeys()))
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.DestinationUrl, "destination-url", "", "Destination Url")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.Name, "name", "", "Name for this Destination")
+	cmdSendTestEntry.Flags().StringVar(&sendTestEntryAdditionalHeadersJSON, "additional-headers", "", "Additional HTTP Headers included in calls to the destination URL Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdSendTestEntry.Flags(), "additional-headers", "json")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntrySendingActive, "sending-active", sendTestEntrySendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.GenericPayloadType.Enum()).MapKeys()))
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
@@ -392,6 +414,8 @@ func SiemHttpDestinations() *cobra.Command {
 	SiemHttpDestinationUpdateFileFormat := ""
 	SiemHttpDestinationUpdateDestinationType := ""
 
+	updateAdditionalHeadersJSON := ""
+
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
 		Short: `Update SIEM HTTP Destination`,
@@ -430,6 +454,11 @@ func SiemHttpDestinations() *cobra.Command {
 				lib.FlagUpdate(cmd, "name", paramsSiemHttpDestinationUpdate.Name, mapParams)
 			}
 			if cmd.Flags().Changed("additional-headers") {
+				parsedUpdateAdditionalHeaders, parseUpdateAdditionalHeadersErr := lib.ParseJSONObjectFlag("additional-headers", updateAdditionalHeadersJSON)
+				if parseUpdateAdditionalHeadersErr != nil {
+					return parseUpdateAdditionalHeadersErr
+				}
+				mapParams["additional_headers"] = parsedUpdateAdditionalHeaders
 			}
 			if cmd.Flags().Changed("sending-active") {
 				mapParams["sending_active"] = updateSendingActive
@@ -530,6 +559,8 @@ func SiemHttpDestinations() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSiemHttpDestinationUpdate.Id, "id", 0, "Siem Http Destination ID.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.Name, "name", "", "Name for this Destination")
+	cmdUpdate.Flags().StringVar(&updateAdditionalHeadersJSON, "additional-headers", "", "Additional HTTP Headers included in calls to the destination URL Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "additional-headers", "json")
 	cmdUpdate.Flags().BoolVar(&updateSendingActive, "sending-active", updateSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")

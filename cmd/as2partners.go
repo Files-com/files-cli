@@ -138,6 +138,8 @@ func As2Partners() *cobra.Command {
 	As2PartnerCreateSignatureValidationLevel := ""
 	As2PartnerCreateServerCertificate := ""
 
+	createAdditionalHttpHeadersJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create AS2 Partner`,
@@ -167,6 +169,13 @@ func As2Partners() *cobra.Command {
 			if cmd.Flags().Changed("enable-dedicated-ips") {
 				paramsAs2PartnerCreate.EnableDedicatedIps = flib.Bool(createEnableDedicatedIps)
 			}
+			if cmd.Flags().Changed("additional-http-headers") {
+				parsedCreateAdditionalHttpHeaders, parseCreateAdditionalHttpHeadersErr := lib.ParseJSONObjectFlag("additional-http-headers", createAdditionalHttpHeadersJSON)
+				if parseCreateAdditionalHttpHeadersErr != nil {
+					return parseCreateAdditionalHttpHeadersErr
+				}
+				paramsAs2PartnerCreate.AdditionalHttpHeaders = parsedCreateAdditionalHttpHeaders
+			}
 
 			var as2Partner interface{}
 			var err error
@@ -181,6 +190,8 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&As2PartnerCreateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerCreate.SignatureValidationLevel.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&As2PartnerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
+	cmdCreate.Flags().StringVar(&createAdditionalHttpHeadersJSON, "additional-http-headers", "", "Additional HTTP Headers for outgoing message sent to this partner. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "additional-http-headers", "json")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "ID of the AS2 Station associated with this partner.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "The partner's formal AS2 name.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
@@ -199,6 +210,8 @@ func As2Partners() *cobra.Command {
 	As2PartnerUpdateMdnValidationLevel := ""
 	As2PartnerUpdateSignatureValidationLevel := ""
 	As2PartnerUpdateServerCertificate := ""
+
+	updateAdditionalHttpHeadersJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -256,6 +269,11 @@ func As2Partners() *cobra.Command {
 				lib.FlagUpdate(cmd, "default_mime_type", paramsAs2PartnerUpdate.DefaultMimeType, mapParams)
 			}
 			if cmd.Flags().Changed("additional-http-headers") {
+				parsedUpdateAdditionalHttpHeaders, parseUpdateAdditionalHttpHeadersErr := lib.ParseJSONObjectFlag("additional-http-headers", updateAdditionalHttpHeadersJSON)
+				if parseUpdateAdditionalHttpHeadersErr != nil {
+					return parseUpdateAdditionalHttpHeadersErr
+				}
+				mapParams["additional_http_headers"] = parsedUpdateAdditionalHttpHeaders
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsAs2PartnerUpdate.Name, mapParams)
@@ -281,6 +299,8 @@ func As2Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
+	cmdUpdate.Flags().StringVar(&updateAdditionalHttpHeadersJSON, "additional-http-headers", "", "Additional HTTP Headers for outgoing message sent to this partner. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "additional-http-headers", "json")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Name, "name", "", "The partner's formal AS2 name.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.PublicCertificate, "public-certificate", "", "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.")

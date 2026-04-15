@@ -136,6 +136,8 @@ func Expectations() *cobra.Command {
 	paramsExpectationCreate := files_sdk.ExpectationCreateParams{}
 	ExpectationCreateTrigger := ""
 
+	createCriteriaJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
 		Short: `Create Expectation`,
@@ -154,6 +156,13 @@ func Expectations() *cobra.Command {
 
 			if cmd.Flags().Changed("disabled") {
 				paramsExpectationCreate.Disabled = flib.Bool(createDisabled)
+			}
+			if cmd.Flags().Changed("criteria") {
+				parsedCreateCriteria, parseCreateCriteriaErr := lib.ParseJSONObjectFlag("criteria", createCriteriaJSON)
+				if parseCreateCriteriaErr != nil {
+					return parseCreateCriteriaErr
+				}
+				paramsExpectationCreate.Criteria = parsedCreateCriteria
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -182,6 +191,8 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.MaxOpenInterval, "max-open-interval", 0, "Hard-stop duration in seconds for unscheduled expectations.")
+	cmdCreate.Flags().StringVar(&createCriteriaJSON, "criteria", "", "Structured criteria v1 definition for the expectation. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "criteria", "json")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -223,6 +234,8 @@ func Expectations() *cobra.Command {
 	updateDisabled := true
 	paramsExpectationUpdate := files_sdk.ExpectationUpdateParams{}
 	ExpectationUpdateTrigger := ""
+
+	updateCriteriaJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
@@ -300,6 +313,11 @@ func Expectations() *cobra.Command {
 				lib.FlagUpdate(cmd, "max_open_interval", paramsExpectationUpdate.MaxOpenInterval, mapParams)
 			}
 			if cmd.Flags().Changed("criteria") {
+				parsedUpdateCriteria, parseUpdateCriteriaErr := lib.ParseJSONObjectFlag("criteria", updateCriteriaJSON)
+				if parseUpdateCriteriaErr != nil {
+					return parseUpdateCriteriaErr
+				}
+				mapParams["criteria"] = parsedUpdateCriteria
 			}
 			if cmd.Flags().Changed("workspace-id") {
 				lib.FlagUpdate(cmd, "workspace_id", paramsExpectationUpdate.WorkspaceId, mapParams)
@@ -332,6 +350,8 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.MaxOpenInterval, "max-open-interval", 0, "Hard-stop duration in seconds for unscheduled expectations.")
+	cmdUpdate.Flags().StringVar(&updateCriteriaJSON, "criteria", "", "Structured criteria v1 definition for the expectation. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "criteria", "json")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

@@ -28,6 +28,9 @@ func WebhookTests() *cobra.Command {
 	createUseDedicatedIps := true
 	paramsWebhookTestCreate := files_sdk.WebhookTestCreateParams{}
 
+	createHeadersJSON := ""
+	createBodyJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Webhook Test`,
@@ -38,6 +41,20 @@ func WebhookTests() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := webhooktest.Client{Config: config}
 
+			if cmd.Flags().Changed("headers") {
+				parsedCreateHeaders, parseCreateHeadersErr := lib.ParseJSONObjectFlag("headers", createHeadersJSON)
+				if parseCreateHeadersErr != nil {
+					return parseCreateHeadersErr
+				}
+				paramsWebhookTestCreate.Headers = parsedCreateHeaders
+			}
+			if cmd.Flags().Changed("body") {
+				parsedCreateBody, parseCreateBodyErr := lib.ParseJSONObjectFlag("body", createBodyJSON)
+				if parseCreateBodyErr != nil {
+					return parseCreateBodyErr
+				}
+				paramsWebhookTestCreate.Body = parsedCreateBody
+			}
 			if cmd.Flags().Changed("file-as-body") {
 				paramsWebhookTestCreate.FileAsBody = flib.Bool(createFileAsBody)
 			}
@@ -54,6 +71,10 @@ func WebhookTests() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Method, "method", "", "HTTP method(GET or POST).")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Encoding, "encoding", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
+	cmdCreate.Flags().StringVar(&createHeadersJSON, "headers", "", "Additional request headers. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "headers", "json")
+	cmdCreate.Flags().StringVar(&createBodyJSON, "body", "", "Additional body parameters. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "body", "json")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.RawBody, "raw-body", "", "raw body text")
 	cmdCreate.Flags().BoolVar(&createFileAsBody, "file-as-body", createFileAsBody, "Send the file data as the request body?")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.FileFormField, "file-form-field", "", "Send the file data as a named parameter in the request POST body")

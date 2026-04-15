@@ -220,6 +220,8 @@ func Behaviors() *cobra.Command {
 	createRecursive := true
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 
+	createValueJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
 		Short: `Create Behavior`,
@@ -230,6 +232,13 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := behavior.Client{Config: config}
 
+			if cmd.Flags().Changed("value") {
+				parsedCreateValue, parseCreateValueErr := lib.ParseJSONObjectFlag("value", createValueJSON)
+				if parseCreateValueErr != nil {
+					return parseCreateValueErr
+				}
+				paramsBehaviorCreate.Value = parsedCreateValue
+			}
 			if cmd.Flags().Changed("disable-parent-folder-behavior") {
 				paramsBehaviorCreate.DisableParentFolderBehavior = flib.Bool(createDisableParentFolderBehavior)
 			}
@@ -246,6 +255,8 @@ func Behaviors() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
 	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "If `true`, behavior is treated as recursive, meaning that it impacts child folders as well.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
@@ -263,6 +274,9 @@ func Behaviors() *cobra.Command {
 	usePagerWebhookTest := true
 	paramsBehaviorWebhookTest := files_sdk.BehaviorWebhookTestParams{}
 
+	webhookTestHeadersJSON := ""
+	webhookTestBodyJSON := ""
+
 	cmdWebhookTest := &cobra.Command{
 		Use:   "webhook-test",
 		Short: `Test Webhook`,
@@ -272,6 +286,21 @@ func Behaviors() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := behavior.Client{Config: config}
+
+			if cmd.Flags().Changed("headers") {
+				parsedWebhookTestHeaders, parseWebhookTestHeadersErr := lib.ParseJSONObjectFlag("headers", webhookTestHeadersJSON)
+				if parseWebhookTestHeadersErr != nil {
+					return parseWebhookTestHeadersErr
+				}
+				paramsBehaviorWebhookTest.Headers = parsedWebhookTestHeaders
+			}
+			if cmd.Flags().Changed("body") {
+				parsedWebhookTestBody, parseWebhookTestBodyErr := lib.ParseJSONObjectFlag("body", webhookTestBodyJSON)
+				if parseWebhookTestBodyErr != nil {
+					return parseWebhookTestBodyErr
+				}
+				paramsBehaviorWebhookTest.Body = parsedWebhookTestBody
+			}
 
 			var err error
 			err = client.WebhookTest(paramsBehaviorWebhookTest, files_sdk.WithContext(ctx))
@@ -284,6 +313,10 @@ func Behaviors() *cobra.Command {
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Url, "url", "", "URL for testing the webhook.")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Method, "method", "", "HTTP request method (GET or POST).")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Encoding, "encoding", "", "Encoding type for the webhook payload. Can be JSON, XML, or RAW (form data).")
+	cmdWebhookTest.Flags().StringVar(&webhookTestHeadersJSON, "headers", "", "Additional request headers to send via HTTP. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdWebhookTest.Flags(), "headers", "json")
+	cmdWebhookTest.Flags().StringVar(&webhookTestBodyJSON, "body", "", "Additional body parameters to include in the webhook payload. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdWebhookTest.Flags(), "body", "json")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Action, "action", "", "Action for test body.")
 
 	cmdWebhookTest.Flags().StringSliceVar(&fieldsWebhookTest, "fields", []string{}, "comma separated list of field names")
@@ -298,6 +331,8 @@ func Behaviors() *cobra.Command {
 	updateRecursive := true
 	updateAttachmentDelete := true
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
+
+	updateValueJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -318,6 +353,11 @@ func Behaviors() *cobra.Command {
 				lib.FlagUpdate(cmd, "id", paramsBehaviorUpdate.Id, mapParams)
 			}
 			if cmd.Flags().Changed("value") {
+				parsedUpdateValue, parseUpdateValueErr := lib.ParseJSONObjectFlag("value", updateValueJSON)
+				if parseUpdateValueErr != nil {
+					return parseUpdateValueErr
+				}
+				mapParams["value"] = parsedUpdateValue
 			}
 			if cmd.Flags().Changed("attachment-file") {
 			}
@@ -344,6 +384,8 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
+	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "If `true`, behavior is treated as recursive, meaning that it impacts child folders as well.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")

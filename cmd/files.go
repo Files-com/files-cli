@@ -96,6 +96,8 @@ func Files() *cobra.Command {
 	usePagerUpdate := true
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 
+	updateCustomMetadataJSON := ""
+
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
 		Short: `Update File/Folder Metadata`,
@@ -115,6 +117,11 @@ func Files() *cobra.Command {
 				lib.FlagUpdate(cmd, "path", paramsFileUpdate.Path, mapParams)
 			}
 			if cmd.Flags().Changed("custom-metadata") {
+				parsedUpdateCustomMetadata, parseUpdateCustomMetadataErr := lib.ParseJSONObjectFlag("custom-metadata", updateCustomMetadataJSON)
+				if parseUpdateCustomMetadataErr != nil {
+					return parseUpdateCustomMetadataErr
+				}
+				mapParams["custom_metadata"] = parsedUpdateCustomMetadata
 			}
 			if cmd.Flags().Changed("provided-mtime") {
 				lib.FlagUpdate(cmd, "provided_mtime", paramsFileUpdate.ProvidedMtime, mapParams)
@@ -137,6 +144,8 @@ func Files() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.Path, "path", "", "Path to operate on.")
+	cmdUpdate.Flags().StringVar(&updateCustomMetadataJSON, "custom-metadata", "", "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "custom-metadata", "json")
 	paramsFileUpdate.ProvidedMtime = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsFileUpdate.ProvidedMtime, "provided-mtime", "Modified time of file.")
 	cmdUpdate.Flags().StringVar(&paramsFileUpdate.PriorityColor, "priority-color", "", "Priority/Bookmark color of file.")

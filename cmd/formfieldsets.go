@@ -114,6 +114,8 @@ func FormFieldSets() *cobra.Command {
 	createSkipCompany := true
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
 
+	createFormFieldsJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Form Field Set`,
@@ -133,6 +135,13 @@ func FormFieldSets() *cobra.Command {
 			if cmd.Flags().Changed("skip-company") {
 				paramsFormFieldSetCreate.SkipCompany = flib.Bool(createSkipCompany)
 			}
+			if cmd.Flags().Changed("form-fields") {
+				parsedCreateFormFields, parseCreateFormFieldsErr := lib.ParseJSONArrayObjectFlag("form-fields", createFormFieldsJSON)
+				if parseCreateFormFieldsErr != nil {
+					return parseCreateFormFieldsErr
+				}
+				paramsFormFieldSetCreate.FormFields = parsedCreateFormFields
+			}
 
 			var formFieldSet interface{}
 			var err error
@@ -146,6 +155,8 @@ func FormFieldSets() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "Skip validating form email")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "Skip validating form name")
 	cmdCreate.Flags().BoolVar(&createSkipCompany, "skip-company", createSkipCompany, "Skip validating company")
+	cmdCreate.Flags().StringVar(&createFormFieldsJSON, "form-fields", "", "Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "form-fields", "json")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -159,6 +170,8 @@ func FormFieldSets() *cobra.Command {
 	updateSkipName := true
 	updateSkipCompany := true
 	paramsFormFieldSetUpdate := files_sdk.FormFieldSetUpdateParams{}
+
+	updateFormFieldsJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -194,7 +207,11 @@ func FormFieldSets() *cobra.Command {
 				mapParams["skip_company"] = updateSkipCompany
 			}
 			if cmd.Flags().Changed("form-fields") {
-				lib.FlagUpdateLen(cmd, "form_fields", paramsFormFieldSetUpdate.FormFields, mapParams)
+				parsedUpdateFormFields, parseUpdateFormFieldsErr := lib.ParseJSONArrayObjectFlag("form-fields", updateFormFieldsJSON)
+				if parseUpdateFormFieldsErr != nil {
+					return parseUpdateFormFieldsErr
+				}
+				mapParams["form_fields"] = parsedUpdateFormFields
 			}
 
 			var formFieldSet interface{}
@@ -209,6 +226,8 @@ func FormFieldSets() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "Skip validating form email")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "Skip validating form name")
 	cmdUpdate.Flags().BoolVar(&updateSkipCompany, "skip-company", updateSkipCompany, "Skip validating company")
+	cmdUpdate.Flags().StringVar(&updateFormFieldsJSON, "form-fields", "", "Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "form-fields", "json")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

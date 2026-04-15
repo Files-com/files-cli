@@ -110,6 +110,8 @@ func ShareGroups() *cobra.Command {
 	usePagerCreate := true
 	paramsShareGroupCreate := files_sdk.ShareGroupCreateParams{}
 
+	createMembersJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Share Group`,
@@ -120,6 +122,14 @@ func ShareGroups() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := share_group.Client{Config: config}
 
+			if cmd.Flags().Changed("members") {
+				parsedCreateMembers, parseCreateMembersErr := lib.ParseJSONArrayObjectFlag("members", createMembersJSON)
+				if parseCreateMembersErr != nil {
+					return parseCreateMembersErr
+				}
+				paramsShareGroupCreate.Members = parsedCreateMembers
+			}
+
 			var shareGroup interface{}
 			var err error
 			shareGroup, err = client.Create(paramsShareGroupCreate, files_sdk.WithContext(ctx))
@@ -129,6 +139,8 @@ func ShareGroups() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsShareGroupCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsShareGroupCreate.Notes, "notes", "", "Additional notes of the share group")
 	cmdCreate.Flags().StringVar(&paramsShareGroupCreate.Name, "name", "", "Name of the share group")
+	cmdCreate.Flags().StringVar(&createMembersJSON, "members", "", "A list of share group members. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "members", "json")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -139,6 +151,8 @@ func ShareGroups() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	paramsShareGroupUpdate := files_sdk.ShareGroupUpdateParams{}
+
+	updateMembersJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -165,7 +179,11 @@ func ShareGroups() *cobra.Command {
 				lib.FlagUpdate(cmd, "name", paramsShareGroupUpdate.Name, mapParams)
 			}
 			if cmd.Flags().Changed("members") {
-				lib.FlagUpdateLen(cmd, "members", paramsShareGroupUpdate.Members, mapParams)
+				parsedUpdateMembers, parseUpdateMembersErr := lib.ParseJSONArrayObjectFlag("members", updateMembersJSON)
+				if parseUpdateMembersErr != nil {
+					return parseUpdateMembersErr
+				}
+				mapParams["members"] = parsedUpdateMembers
 			}
 
 			var shareGroup interface{}
@@ -177,6 +195,8 @@ func ShareGroups() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsShareGroupUpdate.Id, "id", 0, "Share Group ID.")
 	cmdUpdate.Flags().StringVar(&paramsShareGroupUpdate.Notes, "notes", "", "Additional notes of the share group")
 	cmdUpdate.Flags().StringVar(&paramsShareGroupUpdate.Name, "name", "", "Name of the share group")
+	cmdUpdate.Flags().StringVar(&updateMembersJSON, "members", "", "A list of share group members. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "members", "json")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

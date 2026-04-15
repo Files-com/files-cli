@@ -183,6 +183,9 @@ func Automations() *cobra.Command {
 	AutomationCreateTrigger := ""
 	AutomationCreateAutomation := ""
 
+	createImportUrlsJSON := ""
+	createValueJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
 		Short: `Create Automation`,
@@ -213,6 +216,13 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
 			}
+			if cmd.Flags().Changed("import-urls") {
+				parsedCreateImportUrls, parseCreateImportUrlsErr := lib.ParseJSONArrayObjectFlag("import-urls", createImportUrlsJSON)
+				if parseCreateImportUrlsErr != nil {
+					return parseCreateImportUrlsErr
+				}
+				paramsAutomationCreate.ImportUrls = parsedCreateImportUrls
+			}
 			if cmd.Flags().Changed("flatten-destination-structure") {
 				paramsAutomationCreate.FlattenDestinationStructure = flib.Bool(createFlattenDestinationStructure)
 			}
@@ -224,6 +234,13 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("overwrite-files") {
 				paramsAutomationCreate.OverwriteFiles = flib.Bool(createOverwriteFiles)
+			}
+			if cmd.Flags().Changed("value") {
+				parsedCreateValue, parseCreateValueErr := lib.ParseJSONObjectFlag("value", createValueJSON)
+				if parseCreateValueErr != nil {
+					return parseCreateValueErr
+				}
+				paramsAutomationCreate.Value = parsedCreateValue
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -254,6 +271,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
+	cmdCreate.Flags().StringVar(&createImportUrlsJSON, "import-urls", "", "List of URLs to be imported and names to be used. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "import-urls", "json")
 	cmdCreate.Flags().BoolVar(&createFlattenDestinationStructure, "flatten-destination-structure", createFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdCreate.Flags().BoolVar(&createIgnoreLockedFolders, "ignore-locked-folders", createIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdCreate.Flags().BoolVar(&createLegacyFolderMatching, "legacy-folder-matching", createLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")
@@ -264,6 +283,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy")
+	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().StringVar(&AutomationCreateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
@@ -316,6 +337,9 @@ func Automations() *cobra.Command {
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	AutomationUpdateTrigger := ""
 	AutomationUpdateAutomation := ""
+
+	updateImportUrlsJSON := ""
+	updateValueJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
@@ -404,7 +428,11 @@ func Automations() *cobra.Command {
 				lib.FlagUpdate(cmd, "exclude_pattern", paramsAutomationUpdate.ExcludePattern, mapParams)
 			}
 			if cmd.Flags().Changed("import-urls") {
-				lib.FlagUpdateLen(cmd, "import_urls", paramsAutomationUpdate.ImportUrls, mapParams)
+				parsedUpdateImportUrls, parseUpdateImportUrlsErr := lib.ParseJSONArrayObjectFlag("import-urls", updateImportUrlsJSON)
+				if parseUpdateImportUrlsErr != nil {
+					return parseUpdateImportUrlsErr
+				}
+				mapParams["import_urls"] = parsedUpdateImportUrls
 			}
 			if cmd.Flags().Changed("flatten-destination-structure") {
 				mapParams["flatten_destination_structure"] = updateFlattenDestinationStructure
@@ -437,6 +465,11 @@ func Automations() *cobra.Command {
 				lib.FlagUpdateLen(cmd, "trigger_actions", paramsAutomationUpdate.TriggerActions, mapParams)
 			}
 			if cmd.Flags().Changed("value") {
+				parsedUpdateValue, parseUpdateValueErr := lib.ParseJSONObjectFlag("value", updateValueJSON)
+				if parseUpdateValueErr != nil {
+					return parseUpdateValueErr
+				}
+				mapParams["value"] = parsedUpdateValue
 			}
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsAutomationUpdate.RecurringDay, mapParams)
@@ -474,6 +507,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
+	cmdUpdate.Flags().StringVar(&updateImportUrlsJSON, "import-urls", "", "List of URLs to be imported and names to be used. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "import-urls", "json")
 	cmdUpdate.Flags().BoolVar(&updateFlattenDestinationStructure, "flatten-destination-structure", updateFlattenDestinationStructure, "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.")
 	cmdUpdate.Flags().BoolVar(&updateIgnoreLockedFolders, "ignore-locked-folders", updateIgnoreLockedFolders, "If true, the Lock Folders behavior will be disregarded for automated actions.")
 	cmdUpdate.Flags().BoolVar(&updateLegacyFolderMatching, "legacy-folder-matching", updateLegacyFolderMatching, "DEPRECATED: If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.")
@@ -484,6 +519,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy")
+	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
 
