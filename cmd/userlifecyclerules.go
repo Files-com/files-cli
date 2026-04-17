@@ -184,7 +184,7 @@ func UserLifecycleRules() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.Action.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
-	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64SliceVar(&paramsUserLifecycleRuleCreate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "If true, the rule will apply to site admins.")
@@ -291,7 +291,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.Id, "id", 0, "User Lifecycle Rule ID.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.Action.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
-	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64SliceVar(&paramsUserLifecycleRuleUpdate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "If true, the rule will apply to site admins.")
