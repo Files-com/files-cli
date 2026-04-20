@@ -213,6 +213,7 @@ func Notifications() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createNotifyUserActions, "notify-user-actions", createNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Subject, "subject", "", "Custom subject line to use for notification emails")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Message, "message", "", "Custom message to include in notification emails")
 	cmdCreate.Flags().StringSliceVar(&paramsNotificationCreate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to scope trigger")
 	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "If set, will only notify on actions made by a member of one of the specified groups")
@@ -283,6 +284,9 @@ func Notifications() *cobra.Command {
 			if cmd.Flags().Changed("send-interval") {
 				lib.FlagUpdate(cmd, "send_interval", paramsNotificationUpdate.SendInterval, mapParams)
 			}
+			if cmd.Flags().Changed("subject") {
+				lib.FlagUpdate(cmd, "subject", paramsNotificationUpdate.Subject, mapParams)
+			}
 			if cmd.Flags().Changed("message") {
 				lib.FlagUpdate(cmd, "message", paramsNotificationUpdate.Message, mapParams)
 			}
@@ -314,6 +318,7 @@ func Notifications() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateNotifyUserActions, "notify-user-actions", updateNotifyUserActions, "If `true` actions initiated by the user will still result in a notification")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "If `true`, enable notifications for each subfolder in this path")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.SendInterval, "send-interval", "", "The time interval that notifications are aggregated by.  Can be `five_minutes`, `fifteen_minutes`, `hourly`, or `daily`.")
+	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.Subject, "subject", "", "Custom subject line to use for notification emails")
 	cmdUpdate.Flags().StringVar(&paramsNotificationUpdate.Message, "message", "", "Custom message to include in notification emails")
 	cmdUpdate.Flags().StringSliceVar(&paramsNotificationUpdate.TriggeringFilenames, "triggering-filenames", []string{}, "Array of filenames (possibly with wildcards) to scope trigger")
 	cmdUpdate.Flags().Int64SliceVar(&paramsNotificationUpdate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "If set, will only notify on actions made by a member of one of the specified groups")

@@ -144,6 +144,7 @@ func Sites() *cobra.Command {
 	updateGroupAdminsCanDeleteUsers := true
 	updateGroupAdminsCanEnableDisableUsers := true
 	updateGroupAdminsCanModifyUsers := true
+	updateGroupAdminsCanBypassUserLifecycleRules := true
 	updateGroupAdminsCanResetPasswords := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
@@ -523,6 +524,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("group-admins-can-modify-users") {
 				mapParams["group_admins_can_modify_users"] = updateGroupAdminsCanModifyUsers
 			}
+			if cmd.Flags().Changed("group-admins-can-bypass-user-lifecycle-rules") {
+				mapParams["group_admins_can_bypass_user_lifecycle_rules"] = updateGroupAdminsCanBypassUserLifecycleRules
+			}
 			if cmd.Flags().Changed("group-admins-can-reset-passwords") {
 				mapParams["group_admins_can_reset_passwords"] = updateGroupAdminsCanResetPasswords
 			}
@@ -832,6 +836,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanDeleteUsers, "group-admins-can-delete-users", updateGroupAdminsCanDeleteUsers, "Allow group admins to delete users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanEnableDisableUsers, "group-admins-can-enable-disable-users", updateGroupAdminsCanEnableDisableUsers, "Allow group admins to enable or disable users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanModifyUsers, "group-admins-can-modify-users", updateGroupAdminsCanModifyUsers, "Allow group admins to modify users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanBypassUserLifecycleRules, "group-admins-can-bypass-user-lifecycle-rules", updateGroupAdminsCanBypassUserLifecycleRules, "Allow group admins to exempt users in their groups from lifecycle rules")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanResetPasswords, "group-admins-can-reset-passwords", updateGroupAdminsCanResetPasswords, "Allow group admins to reset passwords for users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins to set password authentication method")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")

@@ -115,6 +115,66 @@ func MetadataCategories() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	MetadataCategories.AddCommand(cmdFind)
+	var fieldsListFor []string
+	var formatListFor []string
+	usePagerListFor := true
+	filterbyListFor := make(map[string]string)
+	paramsMetadataCategoryListFor := files_sdk.MetadataCategoryListForParams{}
+	var MaxPagesListFor int64
+
+	cmdListFor := &cobra.Command{
+		Use:     "list-for [path]",
+		Short:   "List Metadata Categories by Path",
+		Long:    `List Metadata Categories by Path`,
+		Args:    cobra.RangeArgs(0, 1),
+		Aliases: []string{"ls"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			params := paramsMetadataCategoryListFor
+			params.MaxPages = MaxPagesListFor
+			if len(args) > 0 && args[0] != "" {
+				params.Path = args[0]
+			}
+
+			client := metadata_category.Client{Config: config}
+			it, err := client.ListFor(params, files_sdk.WithContext(ctx))
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			if len(filterbyListFor) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyListFor, i)
+					return i, matchOk, err
+				}
+			}
+			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+		},
+	}
+
+	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter-by", "field=pattern")
+
+	cmdListFor.Flags().StringVar(&paramsMetadataCategoryListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
+	cmdListFor.Flags().Int64Var(&paramsMetadataCategoryListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdListFor.Flags().StringVar(&paramsMetadataCategoryListFor.Path, "path", "", "Path to operate on.")
+
+	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
+	MetadataCategories.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
