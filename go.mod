@@ -3,11 +3,10 @@ module github.com/Files-com/files-cli
 go 1.25.0
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.93
+	github.com/Files-com/files-sdk-go/v3 v3.3.94
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/atotto/clipboard v0.1.4
-	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/charmbracelet/glamour v0.9.1

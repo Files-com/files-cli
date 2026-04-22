@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
-	"github.com/bradfitz/iter"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/evertras/bubble-table/table"
@@ -124,7 +123,7 @@ func (t *tableLoaderIter) Loading() string {
 }
 
 func (t *tableLoaderIter) LoadFirstPage(model *tableModel) error {
-	for range iter.N(model.dimensions()[1]) {
+	for range model.dimensions()[1] {
 		select {
 		case result := <-t.tableRower:
 			var err error
