@@ -176,6 +176,7 @@ func RemoteServers() *cobra.Command {
 	createDropboxTeams := true
 	createEnableDedicatedIps := true
 	createPinToSiteRegion := true
+	createS3CompatibleVirtualHostedStyle := true
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateBufferUploads := ""
 	RemoteServerCreateFilesAgentPermissionSet := ""
@@ -242,6 +243,9 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("pin-to-site-region") {
 				paramsRemoteServerCreate.PinToSiteRegion = flib.Bool(createPinToSiteRegion)
+			}
+			if cmd.Flags().Changed("s3-compatible-virtual-hosted-style") {
+				paramsRemoteServerCreate.S3CompatibleVirtualHostedStyle = flib.Bool(createS3CompatibleVirtualHostedStyle)
 			}
 
 			var remoteServer interface{}
@@ -314,6 +318,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible: endpoint")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible: region")
+	cmdCreate.Flags().BoolVar(&createS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", createS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Region, "s3-region", "", "S3 region")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
@@ -415,6 +420,7 @@ func RemoteServers() *cobra.Command {
 	updateDropboxTeams := true
 	updateEnableDedicatedIps := true
 	updatePinToSiteRegion := true
+	updateS3CompatibleVirtualHostedStyle := true
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateBufferUploads := ""
 	RemoteServerUpdateFilesAgentPermissionSet := ""
@@ -664,6 +670,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("s3-compatible-region") {
 				lib.FlagUpdate(cmd, "s3_compatible_region", paramsRemoteServerUpdate.S3CompatibleRegion, mapParams)
 			}
+			if cmd.Flags().Changed("s3-compatible-virtual-hosted-style") {
+				mapParams["s3_compatible_virtual_hosted_style"] = updateS3CompatibleVirtualHostedStyle
+			}
 			if cmd.Flags().Changed("s3-region") {
 				lib.FlagUpdate(cmd, "s3_region", paramsRemoteServerUpdate.S3Region, mapParams)
 			}
@@ -763,6 +772,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleBucket, "s3-compatible-bucket", "", "S3-compatible: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible: endpoint")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible: region")
+	cmdUpdate.Flags().BoolVar(&updateS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", updateS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "S3 region")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
