@@ -184,6 +184,7 @@ func Bundles() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createBypassesSiteExpirationRules := true
 	createCreateSnapshot := true
 	createDontSeparateSubmissionsByFolder := true
 	createFinalizeSnapshot := true
@@ -213,6 +214,9 @@ func Bundles() *cobra.Command {
 				return BundleCreatePermissionsErr
 			}
 
+			if cmd.Flags().Changed("bypasses-site-expiration-rules") {
+				paramsBundleCreate.BypassesSiteExpirationRules = flib.Bool(createBypassesSiteExpirationRules)
+			}
 			if cmd.Flags().Changed("create-snapshot") {
 				paramsBundleCreate.CreateSnapshot = flib.Bool(createCreateSnapshot)
 			}
@@ -260,6 +264,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringSliceVar(&paramsBundleCreate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Password, "password", "", "Password for this bundle.")
+	cmdCreate.Flags().BoolVar(&createBypassesSiteExpirationRules, "bypasses-site-expiration-rules", createBypassesSiteExpirationRules, "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
 	cmdCreate.Flags().BoolVar(&createCreateSnapshot, "create-snapshot", createCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
 	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
@@ -339,6 +344,7 @@ func Bundles() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateBypassesSiteExpirationRules := true
 	updateCreateSnapshot := true
 	updateDontSeparateSubmissionsByFolder := true
 	updateFinalizeSnapshot := true
@@ -382,6 +388,9 @@ func Bundles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("password") {
 				lib.FlagUpdate(cmd, "password", paramsBundleUpdate.Password, mapParams)
+			}
+			if cmd.Flags().Changed("bypasses-site-expiration-rules") {
+				mapParams["bypasses_site_expiration_rules"] = updateBypassesSiteExpirationRules
 			}
 			if cmd.Flags().Changed("form-field-set-id") {
 				lib.FlagUpdate(cmd, "form_field_set_id", paramsBundleUpdate.FormFieldSetId, mapParams)
@@ -477,6 +486,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
 	cmdUpdate.Flags().StringSliceVar(&paramsBundleUpdate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Password, "password", "", "Password for this bundle.")
+	cmdUpdate.Flags().BoolVar(&updateBypassesSiteExpirationRules, "bypasses-site-expiration-rules", updateBypassesSiteExpirationRules, "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
