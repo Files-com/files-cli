@@ -163,6 +163,7 @@ func KeyLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
+	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.ExpirationDays, "expiration-days", 0, "Number of days after creation before an SSH key expires. Applies only to SSH keys.")
 	cmdCreate.Flags().StringVar(&KeyLifecycleRuleCreateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg or ssh). %v", reflect.ValueOf(paramsKeyLifecycleRuleCreate.KeyType.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdCreate.Flags().StringVar(&paramsKeyLifecycleRuleCreate.Name, "name", "", "Key Lifecycle Rule name")
@@ -207,6 +208,9 @@ func KeyLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("apply-to-all-workspaces") {
 				mapParams["apply_to_all_workspaces"] = updateApplyToAllWorkspaces
 			}
+			if cmd.Flags().Changed("expiration-days") {
+				lib.FlagUpdate(cmd, "expiration_days", paramsKeyLifecycleRuleUpdate.ExpirationDays, mapParams)
+			}
 			if cmd.Flags().Changed("key-type") {
 				lib.FlagUpdate(cmd, "key_type", paramsKeyLifecycleRuleUpdate.KeyType, mapParams)
 			}
@@ -228,6 +232,7 @@ func KeyLifecycleRules() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.Id, "id", 0, "Key Lifecycle Rule ID.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
+	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.ExpirationDays, "expiration-days", 0, "Number of days after creation before an SSH key expires. Applies only to SSH keys.")
 	cmdUpdate.Flags().StringVar(&KeyLifecycleRuleUpdateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg or ssh). %v", reflect.ValueOf(paramsKeyLifecycleRuleUpdate.KeyType.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdUpdate.Flags().StringVar(&paramsKeyLifecycleRuleUpdate.Name, "name", "", "Key Lifecycle Rule name")
