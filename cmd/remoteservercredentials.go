@@ -197,6 +197,7 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.CopyValuesFromCredentialId, "copy-values-from-credential-id", 0, "ID of Remote Server Credential to copy omitted values from.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
