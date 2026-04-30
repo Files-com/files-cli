@@ -130,6 +130,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createUseForAllUsers := true
+	createDisableDriveMounting := true
 	paramsDesktopConfigurationProfileCreate := files_sdk.DesktopConfigurationProfileCreateParams{}
 
 	createMountMappingsJSON := ""
@@ -154,6 +155,9 @@ func DesktopConfigurationProfiles() *cobra.Command {
 			if cmd.Flags().Changed("use-for-all-users") {
 				paramsDesktopConfigurationProfileCreate.UseForAllUsers = flib.Bool(createUseForAllUsers)
 			}
+			if cmd.Flags().Changed("disable-drive-mounting") {
+				paramsDesktopConfigurationProfileCreate.DisableDriveMounting = flib.Bool(createDisableDriveMounting)
+			}
 
 			var desktopConfigurationProfile interface{}
 			var err error
@@ -166,6 +170,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "mount-mappings", "json")
 	cmdCreate.Flags().Int64Var(&paramsDesktopConfigurationProfileCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createUseForAllUsers, "use-for-all-users", createUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
+	cmdCreate.Flags().BoolVar(&createDisableDriveMounting, "disable-drive-mounting", createDisableDriveMounting, "Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -176,6 +181,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateUseForAllUsers := true
+	updateDisableDriveMounting := true
 	paramsDesktopConfigurationProfileUpdate := files_sdk.DesktopConfigurationProfileUpdateParams{}
 
 	updateMountMappingsJSON := ""
@@ -214,6 +220,9 @@ func DesktopConfigurationProfiles() *cobra.Command {
 			if cmd.Flags().Changed("use-for-all-users") {
 				mapParams["use_for_all_users"] = updateUseForAllUsers
 			}
+			if cmd.Flags().Changed("disable-drive-mounting") {
+				mapParams["disable_drive_mounting"] = updateDisableDriveMounting
+			}
 
 			var desktopConfigurationProfile interface{}
 			var err error
@@ -227,6 +236,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&updateMountMappingsJSON, "mount-mappings", "", "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "mount-mappings", "json")
 	cmdUpdate.Flags().BoolVar(&updateUseForAllUsers, "use-for-all-users", updateUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
+	cmdUpdate.Flags().BoolVar(&updateDisableDriveMounting, "disable-drive-mounting", updateDisableDriveMounting, "Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
