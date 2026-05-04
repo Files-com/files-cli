@@ -169,6 +169,7 @@ func Sites() *cobra.Command {
 	updateBundleWatermarkAttachmentDelete := true
 	updateLoginPageBackgroundImageDelete := true
 	updateDisable2faWithDelay := true
+	updateRedirectOldSubdomain := true
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
 	updateLeftNavigationVisibilityJSON := ""
@@ -715,6 +716,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("ldap-password-change-confirmation") {
 				lib.FlagUpdate(cmd, "ldap_password_change_confirmation", paramsSiteUpdate.LdapPasswordChangeConfirmation, mapParams)
 			}
+			if cmd.Flags().Changed("redirect-old-subdomain") {
+				mapParams["redirect_old_subdomain"] = updateRedirectOldSubdomain
+			}
 			if cmd.Flags().Changed("smtp-password") {
 				lib.FlagUpdate(cmd, "smtp_password", paramsSiteUpdate.SmtpPassword, mapParams)
 			}
@@ -895,6 +899,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDisable2faWithDelay, "disable-2fa-with-delay", updateDisable2faWithDelay, "If set to true, we will begin the process of disabling 2FA on this site.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
+	cmdUpdate.Flags().BoolVar(&updateRedirectOldSubdomain, "redirect-old-subdomain", updateRedirectOldSubdomain, "If true, and if changing the site subdomain, then create a redirect from the previous Files.com subdomain to the new Files.com subdomain.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
