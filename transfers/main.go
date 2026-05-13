@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,11 +24,11 @@ import (
 	"github.com/Files-com/files-sdk-go/v3/lib/keyvalue"
 	"github.com/VividCortex/ewma"
 	"github.com/dustin/go-humanize"
+	"github.com/mattn/go-runewidth"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Transfers struct {
@@ -643,37 +642,84 @@ func (t *Transfers) buildStatusTransfer() {
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
 			return mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
 				endedFile := t.LastEndedFile()
-
-				width, _, terminalWidthErr := terminal.GetSize(0)
-				nonFilePathLen := len(fileCounts(t.Job, t.FilesRateValue())) + len(statusWithColor(endedFile.Status))
-				remainingWidth := width - nonFilePathLen
-				if endedFile.Status.Is(status.Complete, status.Queued, status.Indexed) {
-					io.WriteString(w, fmt.Sprintf("%v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth)))
-				} else if endedFile.Has(status.Errored) && endedFile.Err != nil {
-					tw := 50
-
-					if terminalWidthErr == nil {
-						tw = int(math.Min(float64(width-len(fmt.Sprint(fileCounts(t.Job, t.FilesRateValue()), statusWithColor(endedFile.Status), "-", displayName(endedFile.Path, remainingWidth)))), float64(width)))
-					}
-					if tw > 0 {
-						io.WriteString(w, fmt.Sprintf("%v %v - %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), truncateStart(endedFile.Err.Error(), tw, "...")))
-					}
-				} else {
-					io.WriteString(w, fmt.Sprintf("%v %v %v", statusWithColor(endedFile.Status), displayName(endedFile.Path, remainingWidth), t.transferProgress(endedFile.JobFile)))
+				width := st.AvailableWidth
+				if width > 0 {
+					width--
 				}
+
+				io.WriteString(w, t.statusTransferRow(endedFile, width))
 
 				return nil
 			})
 		}),
-		mpb.PrependDecorators(
-			decor.Any(func(d decor.Statistics) string {
-				return fileCounts(t.Job, t.FilesRateValue())
-			},
-				decor.WC{W: 0, C: decor.DindentRight},
-			),
-		),
 		mpb.BarPriority(4),
 	)
+}
+
+func (t *Transfers) statusTransferRow(endedFile LastEndedFile, width int) string {
+	counts := fileCounts(t.Job, t.FilesRateValue())
+	statusLineWidth := width - runewidth.StringWidth(counts)
+	if counts != "" {
+		statusLineWidth--
+	}
+
+	return fitStatusTransferRow(counts, t.statusTransferLine(endedFile, statusLineWidth), width)
+}
+
+func fitStatusTransferRow(counts string, statusLine string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+
+	if counts == "" {
+		return statusLine
+	}
+
+	countsWidth := runewidth.StringWidth(counts)
+	if countsWidth >= width || statusLine == "" {
+		return runewidth.Truncate(counts, width, "")
+	}
+
+	return fmt.Sprintf("%v %v", counts, statusLine)
+}
+
+func (t *Transfers) statusTransferLine(endedFile LastEndedFile, width int) string {
+	path := endedFile.Path
+	if path == "" {
+		path = endedFile.DisplayName
+	}
+
+	body := path
+	if endedFile.Has(status.Errored) && endedFile.Err != nil {
+		body = fmt.Sprintf("%v - %v", path, endedFile.Err.Error())
+	} else if !endedFile.Status.Is(status.Complete, status.Queued, status.Indexed) {
+		body = strings.TrimSpace(fmt.Sprintf("%v %v", path, t.transferProgress(endedFile.JobFile)))
+	}
+
+	return fitStatusLine(endedFile.Status, body, width)
+}
+
+func fitStatusLine(fileStatus status.Status, body string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+
+	statusName := fileStatus.String()
+	if statusName == "" {
+		return truncateStart(body, width, "...")
+	}
+
+	statusWidth := runewidth.StringWidth(statusName)
+	if body == "" || width <= statusWidth {
+		return runewidth.Truncate(statusName, width, "")
+	}
+
+	bodyWidth := width - statusWidth - 1
+	if bodyWidth <= 0 {
+		return runewidth.Truncate(statusName, width, "")
+	}
+
+	return fmt.Sprintf("%v %v", statusWithColor(fileStatus), truncateStart(body, bodyWidth, "..."))
 }
 
 func (t *Transfers) buildStatusSync() {
@@ -839,14 +885,37 @@ func (t *Transfers) transferProgress(file file.JobFile) string {
 }
 
 func truncateStart(str string, length int, omission string) string {
-	if length >= len(str) {
-		return str
-	}
-	if length < len(omission) {
-		return omission[:length]
+	if length <= 0 {
+		return ""
 	}
 
-	return string(omission + string(str[len(str)-length+len(omission):]))
+	if runewidth.StringWidth(str) <= length {
+		return str
+	}
+
+	omissionWidth := runewidth.StringWidth(omission)
+	if length <= omissionWidth {
+		return runewidth.Truncate(omission, length, "")
+	}
+
+	suffixWidth := length - omissionWidth
+	usedWidth := 0
+	runes := []rune(str)
+	suffix := make([]rune, 0, len(runes))
+	for i := len(runes) - 1; i >= 0; i-- {
+		runeWidth := runewidth.RuneWidth(runes[i])
+		if usedWidth+runeWidth > suffixWidth {
+			break
+		}
+		usedWidth += runeWidth
+		suffix = append(suffix, runes[i])
+	}
+
+	for i, j := 0, len(suffix)-1; i < j; i, j = i+1, j-1 {
+		suffix[i], suffix[j] = suffix[j], suffix[i]
+	}
+
+	return omission + string(suffix)
 }
 
 func (t *Transfers) CommonFlags(cmd *cobra.Command) {
