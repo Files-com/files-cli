@@ -60,6 +60,25 @@ func TestStatusTransferLineTruncatesLongErrorMessage(t *testing.T) {
 	assert.Contains(t, visibleLine, "normalization")
 }
 
+func TestStatusTransferLineReplacesNewlinesInErrorMessage(t *testing.T) {
+	transfer := New()
+	path := "agent-v2/oMLX.app/Contents/Python/cpython-3.11/lib/python3.11/lib2to3/pgen2/__pycache__"
+
+	line := transfer.statusTransferLine(LastEndedFile{
+		JobFile: file.JobFile{
+			Status: status.Errored,
+			Err:    errors.New("Agent Connection Error\nAgent Connection Error\r\nAgent Connection Error"),
+			File:   files_sdk.File{Path: path},
+		},
+	}, 80)
+	visibleLine := ansiPattern.ReplaceAllString(line, "")
+
+	assert.LessOrEqual(t, runewidth.StringWidth(visibleLine), 80)
+	assert.NotContains(t, visibleLine, "\n")
+	assert.NotContains(t, visibleLine, "\r")
+	assert.Contains(t, visibleLine, "Agent Connection Error")
+}
+
 func TestFitStatusTransferRowTruncatesLongPrefix(t *testing.T) {
 	counts := "Transferring (123,456,789/987,654,321 Files) 12345.6 Files/s ᐃ"
 	statusLine := statusWithColor(status.Complete) + " from_thread.py"

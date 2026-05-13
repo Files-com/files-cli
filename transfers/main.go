@@ -10,6 +10,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"unicode"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
@@ -704,6 +705,7 @@ func fitStatusLine(fileStatus status.Status, body string, width int) string {
 		return ""
 	}
 
+	body = oneLineStatusBody(body)
 	statusName := fileStatus.String()
 	if statusName == "" {
 		return truncateStart(body, width, "...")
@@ -720,6 +722,16 @@ func fitStatusLine(fileStatus status.Status, body string, width int) string {
 	}
 
 	return fmt.Sprintf("%v %v", statusWithColor(fileStatus), truncateStart(body, bodyWidth, "..."))
+}
+
+func oneLineStatusBody(body string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) {
+			return ' '
+		}
+
+		return r
+	}, body)
 }
 
 func (t *Transfers) buildStatusSync() {
