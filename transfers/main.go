@@ -858,22 +858,28 @@ func directionSymbolFmt(p direction.Direction) string {
 }
 
 func statusWithColor(s status.Status) string {
+	displayName := statusDisplayName(s)
+
 	if s.Any(status.Excluded...) {
-		return fmt.Sprintf("\u001b[93m%v\u001b[0m", s.Name) // Light yellow
+		return fmt.Sprintf("\u001b[93m%v\u001b[0m", displayName) // Light yellow
 	}
 
 	switch s {
 	case status.Errored:
-		return fmt.Sprintf("\u001b[31m%v\u001b[0m", s.Name) // Red
+		return fmt.Sprintf("\u001b[31m%v\u001b[0m", displayName) // Red
 	case status.Uploading, status.Downloading:
-		return fmt.Sprintf("\u001b[32m%v\u001b[0m", s.Name) // Green
+		return fmt.Sprintf("\u001b[32m%v\u001b[0m", displayName) // Green
 	case status.Retrying:
-		return fmt.Sprintf("\u001b[91m%v\u001b[0m", s.Name) // Light red
+		return fmt.Sprintf("\u001b[91m%v\u001b[0m", displayName) // Light red
 	case status.Complete:
-		return fmt.Sprintf("\u001b[96m%v\u001b[0m", s.Name) // Light cyan
+		return fmt.Sprintf("\u001b[96m%v\u001b[0m", displayName) // Light cyan
 	default:
-		return s.String()
+		return displayName
 	}
+}
+
+func statusDisplayName(s status.Status) string {
+	return strings.ReplaceAll(s.Name, "_", " ")
 }
 
 func (t *Transfers) transferProgress(file file.JobFile) string {

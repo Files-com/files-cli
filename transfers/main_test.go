@@ -15,6 +15,16 @@ import (
 
 var ansiPattern = regexp.MustCompile(`\x1b\[[0-9;]*m`)
 
+func TestStatusDisplayNameReplacesUnderscores(t *testing.T) {
+	assert.Equal(t, "folder created", statusDisplayName(status.FolderCreated))
+	assert.Equal(t, "file exists", statusDisplayName(status.FileExists))
+	assert.Equal(t, "complete", statusDisplayName(status.Complete))
+}
+
+func TestStatusWithColorUsesDisplayName(t *testing.T) {
+	assert.Equal(t, "folder created", statusWithColor(status.FolderCreated))
+}
+
 func TestStatusTransferLineTruncatesLongCompletedPath(t *testing.T) {
 	transfer := New()
 	path := "agent-v2/oMLX.app/Contents/Python/framework-mlx-framework/lib/python3.11/site-packages/anyio/from_thread.py"
