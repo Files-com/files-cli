@@ -101,10 +101,6 @@ var (
 				sdkConfig.FeatureFlag(flag) // panic unknown flag
 				sdkConfig.FeatureFlags[flag] = true
 			}
-			if APIKey != "" {
-				sdkConfig.APIKey = APIKey
-			}
-
 			sdkConfig.Environment = files.NewEnvironment(Environment)
 			debugFlag := cmd.Flag(flagNameDebug)
 			if debugFlag.Changed {
@@ -129,7 +125,7 @@ var (
 			}
 
 			profile := &lib.Profiles{}
-			err := profile.Load(&sdkConfig, ProfileValue)
+			err := loadProfile(&sdkConfig, ProfileValue, APIKey, profile)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
@@ -207,6 +203,15 @@ var (
 		},
 	}
 )
+
+func loadProfile(sdkConfig *files.Config, profileValue string, apiKey string, profile *lib.Profiles) error {
+	err := profile.Load(sdkConfig, profileValue)
+	if err != nil {
+		return err
+	}
+	profile.SetSingleUseAPIKey(apiKey)
+	return nil
+}
 
 func Init(version string, _commit string, _date string, config files.Config) {
 	commit = _commit

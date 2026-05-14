@@ -208,6 +208,32 @@ func TestProfiles_Load(t *testing.T) {
 	}
 }
 
+func TestProfiles_SetSingleUseAPIKeyDoesNotPersist(t *testing.T) {
+	dir := t.TempDir()
+
+	config := &files_sdk.Config{}
+	profile := &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	profile.Current().APIKey = "STORED_KEY"
+	require.NoError(t, profile.Save())
+
+	config = &files_sdk.Config{}
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	profile.SetSingleUseAPIKey("CANARY_VALUE_12345")
+
+	assert.Equal(t, "CANARY_VALUE_12345", config.APIKey)
+	assert.Equal(t, "STORED_KEY", profile.Current().APIKey)
+
+	require.NoError(t, profile.Save())
+
+	config = &files_sdk.Config{}
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	assert.Equal(t, "STORED_KEY", config.APIKey)
+	assert.Equal(t, "STORED_KEY", profile.Current().APIKey)
+}
+
 func TestProfiles_Display(t *testing.T) {
 	profiles := &Profiles{
 		Profiles: map[string]*Profile{
@@ -306,6 +332,58 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	assert.Equal("testuser", config.Current().Username)
 	assert.NotEqual("", config.Current().SessionId)
 	assert.NotEqual(time.Time{}, config.Current().SessionExpiry)
+}
+
+func TestCreateSession_SingleUseAPIKeyDoesNotPersist(t *testing.T) {
+	var createSessionRequest *http.Request
+	sdkConfig := files_sdk.Config{}.Init().SetCustomClient(&http.Client{
+		Transport: profilesRoundTripFunc(func(req *http.Request) (*http.Response, error) {
+			createSessionRequest = req
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Content-Type": []string{"application/json"}},
+				Body:       io.NopCloser(bytes.NewBufferString(`{"id":"SESSION_ID"}`)),
+				Request:    req,
+			}, nil
+		}),
+	})
+
+	dir := t.TempDir()
+	profile := &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(&sdkConfig, ""))
+	profile.Current().APIKey = "STORED_KEY"
+	profile.Current().Subdomain = "testdomain"
+	profile.Current().Username = "testuser"
+	require.NoError(t, profile.Save())
+
+	sdkConfig = files_sdk.Config{}.Init().SetCustomClient(sdkConfig.Client.StandardClient())
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(&sdkConfig, ""))
+	profile.SetSingleUseAPIKey("CANARY_VALUE_12345")
+	profile.Overrides = Overrides{
+		Out: bytes.NewBufferString(""),
+		In:  &StubInput{inputs: []string{"\r", "", "\r", ""}},
+	}.Init()
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	require.NoError(t, CreateSession(ctx, files_sdk.SessionCreateParams{Password: "goodpassword"}, profile))
+
+	require.NotNil(t, createSessionRequest)
+	require.Empty(t, createSessionRequest.Header.Get("X-FilesAPI-Key"))
+	require.Empty(t, createSessionRequest.Header.Get("X-FilesAPI-Auth"))
+
+	sdkConfig = files_sdk.Config{}
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(&sdkConfig, ""))
+	require.Equal(t, "STORED_KEY", profile.Current().APIKey)
+	require.Equal(t, "SESSION_ID", profile.Current().SessionId)
+}
+
+type profilesRoundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f profilesRoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
+	return f(req)
 }
 
 func TestCreateSession_SessionUnauthorizedError_TOTP(t *testing.T) {

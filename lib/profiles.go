@@ -43,6 +43,7 @@ type Profiles struct {
 	*files_sdk.Config     `json:"-"`
 	Overrides             `json:"-"`
 	Profile               string `json:"-"`
+	singleUseAPIKey       string `json:"-"`
 	files_sdk.Environment `json:"-"`
 	ConfigDir             string `json:"-"`
 }
@@ -196,11 +197,20 @@ func (p *Profiles) SetOnConfig() {
 	}
 	if p.Config.APIKey == "" {
 		p.Config.APIKey = p.Current().APIKey
-	} else {
+	} else if p.Config.APIKey != p.singleUseAPIKey {
 		p.Current().APIKey = p.Config.APIKey
 	}
 	p.Config.Environment = p.Current().Environment
 	p.Config.Language = p.Current().Language
+}
+
+// SetSingleUseAPIKey applies a request-only API key override without changing the stored profile.
+func (p *Profiles) SetSingleUseAPIKey(apiKey string) {
+	if apiKey == "" {
+		return
+	}
+	p.singleUseAPIKey = apiKey
+	p.Config.APIKey = apiKey
 }
 
 func (p *Profiles) Save() error {
