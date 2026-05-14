@@ -9,6 +9,7 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/file/status"
+	"github.com/Files-com/files-sdk-go/v3/lib/direction"
 	"github.com/mattn/go-runewidth"
 	"github.com/stretchr/testify/assert"
 )
@@ -110,4 +111,25 @@ func TestFitStatusTransferRowFitsPrefixAndStatusLine(t *testing.T) {
 	assert.LessOrEqual(t, runewidth.StringWidth(visibleLine), 80)
 	assert.Contains(t, visibleLine, counts)
 	assert.Contains(t, visibleLine, "from_thread.py")
+}
+
+func TestFormatSuccessRate(t *testing.T) {
+	assert.Equal(t, "0/0 (0.0%)", formatSuccessRate(0, 0))
+	assert.Equal(t, "8/10 (80.0%)", formatSuccessRate(2, 8))
+	assert.Equal(t, "8,766/10,000 (87.7%)", formatSuccessRate(1234, 8766))
+}
+
+func TestAverageTransferRatePerConnection(t *testing.T) {
+	assert.Equal(t, "0 B", averageTransferRatePerConnection(0, 1024))
+	assert.Equal(t, "0 B", averageTransferRatePerConnection(-1, 1024))
+	assert.Equal(t, "512 B", averageTransferRatePerConnection(2, 1024))
+}
+
+func TestFormatConnectionMetricsIncludesSuccessRate(t *testing.T) {
+	line := formatConnectionMetrics(4, 1, 4096, 1, 9, 3, direction.UploadType)
+
+	assert.Contains(t, line, "(Data: 4 API: 1 ")
+	assert.Contains(t, line, "Avg/Data: 1.0 kB/s)")
+	assert.Contains(t, line, "Success: 9/10 (90.0%)")
+	assert.Contains(t, line, "Active: 3")
 }

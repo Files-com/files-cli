@@ -790,8 +790,50 @@ func (t *Transfers) fetchOpenConnections() {
 				transferStats += count
 			}
 		}
-		t.openConnections.Store(fmt.Sprintf("(Data: %d API: %d) Avg %v/s %v", transferStats, apiStats, humanize.Bytes(uint64(t.TransferRateValue()/float64(transferStats))), directionSymbolFmt(t.Direction)))
+		t.openConnections.Store(formatConnectionMetrics(
+			transferStats,
+			apiStats,
+			t.TransferRateValue(),
+			t.Job.Count(status.Errored),
+			t.Job.Count(status.Complete),
+			t.Job.Count(status.Running...),
+			t.Direction,
+		))
 	}
+}
+
+func formatConnectionMetrics(transferStats int, apiStats int, transferRate float64, failedCount int, completedCount int, activeCount int, transferDirection direction.Direction) string {
+	return fmt.Sprintf(
+		"(Data: %d API: %d Avg/Data: %v/s) Success: %v Active: %v %v",
+		transferStats,
+		apiStats,
+		averageTransferRatePerConnection(transferStats, transferRate),
+		formatSuccessRate(failedCount, completedCount),
+		formatWithComma(activeCount),
+		directionSymbolFmt(transferDirection),
+	)
+}
+
+func averageTransferRatePerConnection(transferStats int, transferRate float64) string {
+	if transferStats <= 0 {
+		return humanize.Bytes(0)
+	}
+
+	return humanize.Bytes(uint64(transferRate / float64(transferStats)))
+}
+
+func formatSuccessRate(failedCount int, completedCount int) string {
+	outcomeCount := failedCount + completedCount
+	if outcomeCount == 0 {
+		return "0/0 (0.0%)"
+	}
+
+	return fmt.Sprintf(
+		"%v/%v (%.1f%%)",
+		formatWithComma(completedCount),
+		formatWithComma(outcomeCount),
+		float64(completedCount)/float64(outcomeCount)*100,
+	)
 }
 
 func (t *Transfers) findActiveFile() {
