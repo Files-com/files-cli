@@ -135,6 +135,7 @@ func UserLifecycleRules() *cobra.Command {
 	createApplyToAllWorkspaces := true
 	createIncludeSiteAdmins := true
 	createIncludeFolderAdmins := true
+	createNotifyUsers := true
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
 	UserLifecycleRuleCreateAction := ""
 	UserLifecycleRuleCreateAuthenticationMethod := ""
@@ -175,6 +176,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("include-folder-admins") {
 				paramsUserLifecycleRuleCreate.IncludeFolderAdmins = flib.Bool(createIncludeFolderAdmins)
 			}
+			if cmd.Flags().Changed("notify-users") {
+				paramsUserLifecycleRuleCreate.NotifyUsers = flib.Bool(createNotifyUsers)
+			}
 
 			var userLifecycleRule interface{}
 			var err error
@@ -190,6 +194,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "If true, the rule will apply to site admins.")
 	cmdCreate.Flags().BoolVar(&createIncludeFolderAdmins, "include-folder-admins", createIncludeFolderAdmins, "If true, the rule will apply to folder admins.")
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.Name, "name", "", "User Lifecycle Rule name")
+	cmdCreate.Flags().BoolVar(&createNotifyUsers, "notify-users", createNotifyUsers, "If true, users will be emailed before the rule disables or deletes them.")
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
@@ -206,6 +211,7 @@ func UserLifecycleRules() *cobra.Command {
 	updateApplyToAllWorkspaces := true
 	updateIncludeSiteAdmins := true
 	updateIncludeFolderAdmins := true
+	updateNotifyUsers := true
 	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
 	UserLifecycleRuleUpdateAction := ""
 	UserLifecycleRuleUpdateAuthenticationMethod := ""
@@ -269,6 +275,9 @@ func UserLifecycleRules() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsUserLifecycleRuleUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("notify-users") {
+				mapParams["notify_users"] = updateNotifyUsers
+			}
 			if cmd.Flags().Changed("partner-tag") {
 				lib.FlagUpdate(cmd, "partner_tag", paramsUserLifecycleRuleUpdate.PartnerTag, mapParams)
 			}
@@ -297,6 +306,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "If true, the rule will apply to site admins.")
 	cmdUpdate.Flags().BoolVar(&updateIncludeFolderAdmins, "include-folder-admins", updateIncludeFolderAdmins, "If true, the rule will apply to folder admins.")
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.Name, "name", "", "User Lifecycle Rule name")
+	cmdUpdate.Flags().BoolVar(&updateNotifyUsers, "notify-users", updateNotifyUsers, "If true, users will be emailed before the rule disables or deletes them.")
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")

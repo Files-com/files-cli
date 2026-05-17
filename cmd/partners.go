@@ -133,6 +133,7 @@ func Partners() *cobra.Command {
 	createAllowCredentialChanges := true
 	createAllowProvidingGpgKeys := true
 	createAllowUserCreation := true
+	createCcEmailsToResponsibleParty := true
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -157,6 +158,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("allow-user-creation") {
 				paramsPartnerCreate.AllowUserCreation = flib.Bool(createAllowUserCreation)
 			}
+			if cmd.Flags().Changed("cc-emails-to-responsible-party") {
+				paramsPartnerCreate.CcEmailsToResponsibleParty = flib.Bool(createCcEmailsToResponsibleParty)
+			}
 
 			var partner interface{}
 			var err error
@@ -169,7 +173,10 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAllowCredentialChanges, "allow-credential-changes", createAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdCreate.Flags().BoolVar(&createAllowProvidingGpgKeys, "allow-providing-gpg-keys", createAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
+	cmdCreate.Flags().BoolVar(&createCcEmailsToResponsibleParty, "cc-emails-to-responsible-party", createCcEmailsToResponsibleParty, "When `true`, emails sent to Partner users are copied to the responsible User or Group.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Notes, "notes", "", "Notes about this Partner.")
+	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
+	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
@@ -187,6 +194,7 @@ func Partners() *cobra.Command {
 	updateAllowCredentialChanges := true
 	updateAllowProvidingGpgKeys := true
 	updateAllowUserCreation := true
+	updateCcEmailsToResponsibleParty := true
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -222,8 +230,17 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("allow-user-creation") {
 				mapParams["allow_user_creation"] = updateAllowUserCreation
 			}
+			if cmd.Flags().Changed("cc-emails-to-responsible-party") {
+				mapParams["cc_emails_to_responsible_party"] = updateCcEmailsToResponsibleParty
+			}
 			if cmd.Flags().Changed("notes") {
 				lib.FlagUpdate(cmd, "notes", paramsPartnerUpdate.Notes, mapParams)
+			}
+			if cmd.Flags().Changed("responsible-group-id") {
+				lib.FlagUpdate(cmd, "responsible_group_id", paramsPartnerUpdate.ResponsibleGroupId, mapParams)
+			}
+			if cmd.Flags().Changed("responsible-user-id") {
+				lib.FlagUpdate(cmd, "responsible_user_id", paramsPartnerUpdate.ResponsibleUserId, mapParams)
 			}
 			if cmd.Flags().Changed("tags") {
 				lib.FlagUpdate(cmd, "tags", paramsPartnerUpdate.Tags, mapParams)
@@ -247,7 +264,10 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowCredentialChanges, "allow-credential-changes", updateAllowCredentialChanges, "Allow Partner Admins to change or reset credentials for users belonging to this Partner.")
 	cmdUpdate.Flags().BoolVar(&updateAllowProvidingGpgKeys, "allow-providing-gpg-keys", updateAllowProvidingGpgKeys, "Allow Partner Admins to provide GPG keys.")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
+	cmdUpdate.Flags().BoolVar(&updateCcEmailsToResponsibleParty, "cc-emails-to-responsible-party", updateCcEmailsToResponsibleParty, "When `true`, emails sent to Partner users are copied to the responsible User or Group.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Notes, "notes", "", "Notes about this Partner.")
+	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
+	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
