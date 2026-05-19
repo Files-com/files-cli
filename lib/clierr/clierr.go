@@ -5,6 +5,7 @@ package clierr
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // ErrorCode is an integer type representing different error codes.
@@ -37,7 +38,7 @@ type CliError struct {
 
 // Error implements the error interface for StatusError.
 func (e *CliError) Error() string {
-	return fmt.Sprintf("%s - status (%d)", e.Err.Error(), e.Code)
+	return fmt.Sprintf("%s - status (%d)", dedupeErrorMessages(e.Err), e.Code)
 }
 
 // Unwrap implements the Unwrap method for the error interface.
@@ -76,4 +77,59 @@ func From(err error) *CliError {
 		return cliErr
 	}
 	return New(ErrorCodeDefault, err)
+}
+
+func dedupeErrorMessages(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	var messages []string
+	seen := make(map[string]struct{})
+	collectErrorMessages(err, seen, &messages)
+	return strings.Join(messages, "\n")
+}
+
+func collectErrorMessages(err error, seen map[string]struct{}, messages *[]string) {
+	if err == nil {
+		return
+	}
+
+	if joinedErr, ok := err.(interface{ Unwrap() []error }); ok {
+		for _, child := range joinedErr.Unwrap() {
+			collectErrorMessages(child, seen, messages)
+		}
+		return
+	}
+
+	message := errorMessage(err)
+	if _, ok := seen[message]; ok {
+		return
+	}
+	seen[message] = struct{}{}
+	*messages = append(*messages, message)
+}
+
+func errorMessage(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	wrappedErr, ok := err.(interface{ Unwrap() error })
+	if !ok {
+		return err.Error()
+	}
+
+	wrapped := wrappedErr.Unwrap()
+	if wrapped == nil {
+		return err.Error()
+	}
+
+	wrappedMessage := dedupeErrorMessages(wrapped)
+	message, ok := strings.CutSuffix(err.Error(), wrapped.Error())
+	if !ok {
+		return err.Error()
+	}
+
+	return message + wrappedMessage
 }
