@@ -204,6 +204,14 @@ func Users() *cobra.Command {
 	createPartnerAdmin := true
 	createReadonlySiteAdmin := true
 	createReceiveAdminAlerts := true
+	createNotifyOnAllSiteWarnings := true
+	createNotifyOnAllSsoFailures := true
+	createNotifyOnAllUserSecurityEvents := true
+	createNotifyOnAllPendingWorkFailures := true
+	createNotifyOnAllSiemHttpDestinationFailures := true
+	createNotifyOnAllSyncFailures := true
+	createNotifyOnAllAutomationFailures := true
+	createNotifyOnAllExpectationFailures := true
 	createRequirePasswordChange := true
 	createRestapiPermission := true
 	createSelfManaged := true
@@ -288,6 +296,30 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("receive-admin-alerts") {
 				paramsUserCreate.ReceiveAdminAlerts = flib.Bool(createReceiveAdminAlerts)
 			}
+			if cmd.Flags().Changed("notify-on-all-site-warnings") {
+				paramsUserCreate.NotifyOnAllSiteWarnings = flib.Bool(createNotifyOnAllSiteWarnings)
+			}
+			if cmd.Flags().Changed("notify-on-all-sso-failures") {
+				paramsUserCreate.NotifyOnAllSsoFailures = flib.Bool(createNotifyOnAllSsoFailures)
+			}
+			if cmd.Flags().Changed("notify-on-all-user-security-events") {
+				paramsUserCreate.NotifyOnAllUserSecurityEvents = flib.Bool(createNotifyOnAllUserSecurityEvents)
+			}
+			if cmd.Flags().Changed("notify-on-all-pending-work-failures") {
+				paramsUserCreate.NotifyOnAllPendingWorkFailures = flib.Bool(createNotifyOnAllPendingWorkFailures)
+			}
+			if cmd.Flags().Changed("notify-on-all-siem-http-destination-failures") {
+				paramsUserCreate.NotifyOnAllSiemHttpDestinationFailures = flib.Bool(createNotifyOnAllSiemHttpDestinationFailures)
+			}
+			if cmd.Flags().Changed("notify-on-all-sync-failures") {
+				paramsUserCreate.NotifyOnAllSyncFailures = flib.Bool(createNotifyOnAllSyncFailures)
+			}
+			if cmd.Flags().Changed("notify-on-all-automation-failures") {
+				paramsUserCreate.NotifyOnAllAutomationFailures = flib.Bool(createNotifyOnAllAutomationFailures)
+			}
+			if cmd.Flags().Changed("notify-on-all-expectation-failures") {
+				paramsUserCreate.NotifyOnAllExpectationFailures = flib.Bool(createNotifyOnAllExpectationFailures)
+			}
 			if cmd.Flags().Changed("require-password-change") {
 				paramsUserCreate.RequirePasswordChange = flib.Bool(createRequirePasswordChange)
 			}
@@ -362,7 +394,15 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.PrimaryGroupId, "primary-group-id", 0, "Primary group ID for Group Admin scoping")
 	cmdCreate.Flags().BoolVar(&createReadonlySiteAdmin, "readonly-site-admin", createReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
-	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
+	cmdCreate.Flags().BoolVar(&createReceiveAdminAlerts, "receive-admin-alerts", createReceiveAdminAlerts, "Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllSiteWarnings, "notify-on-all-site-warnings", createNotifyOnAllSiteWarnings, "Should the user receive site warnings via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllSsoFailures, "notify-on-all-sso-failures", createNotifyOnAllSsoFailures, "Should the user receive sso/scim/ldap configuration/sync failures via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllUserSecurityEvents, "notify-on-all-user-security-events", createNotifyOnAllUserSecurityEvents, "Should the user receive user security events via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllPendingWorkFailures, "notify-on-all-pending-work-failures", createNotifyOnAllPendingWorkFailures, "Should the user receive pending work failures via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllSiemHttpDestinationFailures, "notify-on-all-siem-http-destination-failures", createNotifyOnAllSiemHttpDestinationFailures, "Should the user receive siem failures via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllSyncFailures, "notify-on-all-sync-failures", createNotifyOnAllSyncFailures, "Should the user receive sync failures via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllAutomationFailures, "notify-on-all-automation-failures", createNotifyOnAllAutomationFailures, "Should the user receive automation failures via email?")
+	cmdCreate.Flags().BoolVar(&createNotifyOnAllExpectationFailures, "notify-on-all-expectation-failures", createNotifyOnAllExpectationFailures, "Should the user receive expectation failures and misses via email?")
 	paramsUserCreate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdCreate.Flags().BoolVar(&createRequirePasswordChange, "require-password-change", createRequirePasswordChange, "Is a password change required upon next user login?")
@@ -494,6 +534,14 @@ func Users() *cobra.Command {
 	updatePartnerAdmin := true
 	updateReadonlySiteAdmin := true
 	updateReceiveAdminAlerts := true
+	updateNotifyOnAllSiteWarnings := true
+	updateNotifyOnAllSsoFailures := true
+	updateNotifyOnAllUserSecurityEvents := true
+	updateNotifyOnAllPendingWorkFailures := true
+	updateNotifyOnAllSiemHttpDestinationFailures := true
+	updateNotifyOnAllSyncFailures := true
+	updateNotifyOnAllAutomationFailures := true
+	updateNotifyOnAllExpectationFailures := true
 	updateRequirePasswordChange := true
 	updateRestapiPermission := true
 	updateSelfManaged := true
@@ -659,6 +707,30 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("receive-admin-alerts") {
 				mapParams["receive_admin_alerts"] = updateReceiveAdminAlerts
 			}
+			if cmd.Flags().Changed("notify-on-all-site-warnings") {
+				mapParams["notify_on_all_site_warnings"] = updateNotifyOnAllSiteWarnings
+			}
+			if cmd.Flags().Changed("notify-on-all-sso-failures") {
+				mapParams["notify_on_all_sso_failures"] = updateNotifyOnAllSsoFailures
+			}
+			if cmd.Flags().Changed("notify-on-all-user-security-events") {
+				mapParams["notify_on_all_user_security_events"] = updateNotifyOnAllUserSecurityEvents
+			}
+			if cmd.Flags().Changed("notify-on-all-pending-work-failures") {
+				mapParams["notify_on_all_pending_work_failures"] = updateNotifyOnAllPendingWorkFailures
+			}
+			if cmd.Flags().Changed("notify-on-all-siem-http-destination-failures") {
+				mapParams["notify_on_all_siem_http_destination_failures"] = updateNotifyOnAllSiemHttpDestinationFailures
+			}
+			if cmd.Flags().Changed("notify-on-all-sync-failures") {
+				mapParams["notify_on_all_sync_failures"] = updateNotifyOnAllSyncFailures
+			}
+			if cmd.Flags().Changed("notify-on-all-automation-failures") {
+				mapParams["notify_on_all_automation_failures"] = updateNotifyOnAllAutomationFailures
+			}
+			if cmd.Flags().Changed("notify-on-all-expectation-failures") {
+				mapParams["notify_on_all_expectation_failures"] = updateNotifyOnAllExpectationFailures
+			}
 			if cmd.Flags().Changed("require-login-by") {
 				lib.FlagUpdate(cmd, "require_login_by", paramsUserUpdate.RequireLoginBy, mapParams)
 			}
@@ -767,7 +839,15 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PasswordValidityDays, "password-validity-days", 0, "Number of days to allow user to use the same password")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.PrimaryGroupId, "primary-group-id", 0, "Primary group ID for Group Admin scoping")
 	cmdUpdate.Flags().BoolVar(&updateReadonlySiteAdmin, "readonly-site-admin", updateReadonlySiteAdmin, "Is the user an allowed to view all (non-billing) site configuration for this site?")
-	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Should the user receive admin alerts such a certificate expiration notifications and overages?")
+	cmdUpdate.Flags().BoolVar(&updateReceiveAdminAlerts, "receive-admin-alerts", updateReceiveAdminAlerts, "Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllSiteWarnings, "notify-on-all-site-warnings", updateNotifyOnAllSiteWarnings, "Should the user receive site warnings via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllSsoFailures, "notify-on-all-sso-failures", updateNotifyOnAllSsoFailures, "Should the user receive sso/scim/ldap configuration/sync failures via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllUserSecurityEvents, "notify-on-all-user-security-events", updateNotifyOnAllUserSecurityEvents, "Should the user receive user security events via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllPendingWorkFailures, "notify-on-all-pending-work-failures", updateNotifyOnAllPendingWorkFailures, "Should the user receive pending work failures via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllSiemHttpDestinationFailures, "notify-on-all-siem-http-destination-failures", updateNotifyOnAllSiemHttpDestinationFailures, "Should the user receive siem failures via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllSyncFailures, "notify-on-all-sync-failures", updateNotifyOnAllSyncFailures, "Should the user receive sync failures via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllAutomationFailures, "notify-on-all-automation-failures", updateNotifyOnAllAutomationFailures, "Should the user receive automation failures via email?")
+	cmdUpdate.Flags().BoolVar(&updateNotifyOnAllExpectationFailures, "notify-on-all-expectation-failures", updateNotifyOnAllExpectationFailures, "Should the user receive expectation failures and misses via email?")
 	paramsUserUpdate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdUpdate.Flags().BoolVar(&updateRequirePasswordChange, "require-password-change", updateRequirePasswordChange, "Is a password change required upon next user login?")
