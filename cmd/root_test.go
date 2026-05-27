@@ -32,7 +32,7 @@ func TestLoadProfileAppliesSingleUseAPIKeyWithoutPersisting(t *testing.T) {
 
 	config := newAPIKeyAssertingConfig(t, "CANARY_VALUE_12345")
 	profile := &cliLib.Profiles{ConfigDir: dir}
-	require.NoError(t, loadProfile(config, "work", "CANARY_VALUE_12345", profile))
+	require.NoError(t, loadProfile(config, "work", "CANARY_VALUE_12345", "", profile))
 
 	require.Equal(t, "CANARY_VALUE_12345", config.APIKey)
 	require.Equal(t, "STORED_KEY", profile.Current().APIKey)
@@ -75,7 +75,7 @@ func TestLoadProfileUsesStoredAPIKeyWhenSingleUseAPIKeyIsNotProvided(t *testing.
 
 			config := newAPIKeyAssertingConfig(t, test.expectedKey)
 			profile := &cliLib.Profiles{ConfigDir: dir}
-			require.NoError(t, loadProfile(config, test.profileValue, "", profile))
+			require.NoError(t, loadProfile(config, test.profileValue, "", "", profile))
 
 			require.Equal(t, test.expectedKey, config.APIKey)
 			require.Equal(t, test.expectedKey, profile.Current().APIKey)

@@ -44,6 +44,7 @@ type Profiles struct {
 	Overrides             `json:"-"`
 	Profile               string `json:"-"`
 	singleUseAPIKey       string `json:"-"`
+	singleUseSessionId    string `json:"-"`
 	files_sdk.Environment `json:"-"`
 	ConfigDir             string `json:"-"`
 }
@@ -68,6 +69,15 @@ func (p Profile) SetResourceFormat(cmd *cobra.Command, defaultFormat []string) [
 		return p.ResourceFormat
 	}
 	return defaultFormat
+}
+
+func (p *Profile) SetSessionId(sessionId string) {
+	p.SessionId = sessionId
+	p.SessionExpiry = time.Time{}
+}
+
+func (p *Profile) ResetSession() {
+	p.SetSessionId("")
 }
 
 type ResetConfig struct {
@@ -113,7 +123,7 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 		p.Current().Language = ""
 	}
 	if reset.Session {
-		p.Current().SessionId = ""
+		p.Current().ResetSession()
 	}
 	if reset.VersionCheck {
 		p.Current().LastValidVersionCheck = time.Now()
@@ -213,6 +223,16 @@ func (p *Profiles) SetSingleUseAPIKey(apiKey string) {
 	p.Config.APIKey = apiKey
 }
 
+// SetSingleUseSessionId applies a request-only session ID override without changing the stored profile.
+func (p *Profiles) SetSingleUseSessionId(sessionId string) {
+	if sessionId == "" {
+		return
+	}
+	p.singleUseSessionId = sessionId
+	p.Config.APIKey = ""
+	p.Config.SessionId = sessionId
+}
+
 func (p *Profiles) Save() error {
 	file, _ := json.MarshalIndent(p, "", " ")
 	path, err := p.configPath()
@@ -223,11 +243,18 @@ func (p *Profiles) Save() error {
 }
 
 func (p *Profiles) ValidSession() bool {
-	return p.Current().SessionId != "" && !p.SessionExpired()
+	return p.Config.SessionId != "" && !p.SessionExpired()
 }
 
 func (p *Profiles) SessionExpired() bool {
-	return p.Current().SessionId != "" && time.Now().Local().After(p.Current().SessionExpiry)
+	if p.singleUseSessionId != "" {
+		return false
+	}
+	current := p.Current()
+	if p.Config.SessionId == "" || current.SessionId == "" || p.Config.SessionId != current.SessionId || current.SessionExpiry.IsZero() {
+		return false
+	}
+	return time.Now().Local().After(current.SessionExpiry)
 }
 
 func (p *Profiles) CheckVersion(versionString string, fetchLatestVersion func() (version.Version, bool), installedViaBrew bool, writer io.Writer) {

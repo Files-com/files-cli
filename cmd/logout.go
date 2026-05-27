@@ -24,7 +24,7 @@ func LogOut() *cobra.Command {
 			if deleteErr != nil {
 				fmt.Println(deleteErr)
 			}
-			Profile(cmd).Current().SessionId = ""
+			Profile(cmd).Current().ResetSession()
 			err := Profile(cmd).Save()
 			if err != nil {
 				fmt.Println(err)

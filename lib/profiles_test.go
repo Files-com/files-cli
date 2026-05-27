@@ -259,6 +259,48 @@ func TestProfiles_Display(t *testing.T) {
 	require.Equal(t, "session-token", profiles.Profiles["default"].SessionId)
 }
 
+func TestProfiles_StoredSessionWithoutExpiryIsValid(t *testing.T) {
+	config := &files_sdk.Config{}
+	profiles := (&Profiles{Config: config}).Init()
+	profiles.Profile = "default"
+	profiles.Profiles["default"] = &Profile{SessionId: "SESSION_ID"}
+	profiles.SetOnConfig()
+
+	require.True(t, profiles.ValidSession())
+	require.False(t, profiles.SessionExpired())
+}
+
+func TestProfiles_StoredExpiredSessionIsInvalid(t *testing.T) {
+	config := &files_sdk.Config{}
+	profiles := (&Profiles{Config: config}).Init()
+	profiles.Profile = "default"
+	profiles.Profiles["default"] = &Profile{
+		SessionId:     "SESSION_ID",
+		SessionExpiry: time.Now().Add(-time.Minute),
+	}
+	profiles.SetOnConfig()
+
+	require.False(t, profiles.ValidSession())
+	require.True(t, profiles.SessionExpired())
+}
+
+func TestProfiles_SingleUseSessionIdIgnoresStoredExpiry(t *testing.T) {
+	config := &files_sdk.Config{}
+	profiles := (&Profiles{Config: config}).Init()
+	profiles.Profile = "default"
+	profiles.Profiles["default"] = &Profile{
+		SessionId:     "STORED_SESSION_ID",
+		SessionExpiry: time.Now().Add(-time.Minute),
+	}
+	profiles.SetOnConfig()
+	profiles.SetSingleUseSessionId("CANARY_SESSION_ID")
+
+	require.True(t, profiles.ValidSession())
+	require.False(t, profiles.SessionExpired())
+	require.Equal(t, "CANARY_SESSION_ID", config.SessionId)
+	require.Equal(t, "STORED_SESSION_ID", profiles.Current().SessionId)
+}
+
 func TestCreateSession_CustomDomain(t *testing.T) {
 	assert := assert.New(t)
 

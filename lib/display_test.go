@@ -25,6 +25,18 @@ func TestSanitizeArgsForDisplay(t *testing.T) {
 		require.Equal(t, []string{"files-cli", "config", "set", "-a", "0123****************"}, SanitizeArgsForDisplay(args))
 	})
 
+	t.Run("it sanitizes session id flags with inline values", func(t *testing.T) {
+		args := []string{"files-cli", "--debug=debug.log", "--session-id=0123456789abcdef", "version"}
+
+		require.Equal(t, []string{"files-cli", "--debug=debug.log", "--session-id=<redacted>", "version"}, SanitizeArgsForDisplay(args))
+	})
+
+	t.Run("it sanitizes session id flags with separate values", func(t *testing.T) {
+		args := []string{"files-cli", "--session-id", "0123456789abcdef", "folders", "list-for", ""}
+
+		require.Equal(t, []string{"files-cli", "--session-id", "<redacted>", "folders", "list-for", ""}, SanitizeArgsForDisplay(args))
+	})
+
 	t.Run("it leaves boolean short flags alone", func(t *testing.T) {
 		args := []string{"files-cli", "config", "reset", "-a", "--session"}
 

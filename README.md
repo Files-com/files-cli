@@ -168,10 +168,18 @@ files-cli folders list-for ''
 
 #### Using a Session
 
-Once a the password has been verified by the first run command, all subsequent commands can be run and the current verified session will be used.
+Once the password has been verified by the first run command, all subsequent commands can be run and the current verified session will be used.
+
+You can also provide an existing session ID directly with `--session-id`, or store it with `files-cli config set --session-id`.
 
 ```shell title="Example Request"
 files-cli folders list-for ''
+
+## Or use an existing session ID directly.
+files-cli --session-id=YOUR_SESSION_ID folders list-for ''
+
+## You can also store the session ID for future commands.
+files-cli config set --session-id YOUR_SESSION_ID
 ```
 
 #### Logging Out
@@ -220,6 +228,14 @@ Set the maximum number of concurrent connections.
 files-cli config set --concurrent-connection-limit 5
 ## alternatively
 files-cli config set -c 5
+```
+
+#### Session ID
+
+Store an existing user session ID for CLI authentication. You can also provide a session ID for a single command with `--session-id`.
+
+```shell title="Example setting"
+files-cli config set --session-id YOUR_SESSION_ID
 ```
 
 #### Default Resource Format

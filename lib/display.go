@@ -35,10 +35,17 @@ func SanitizeArgsForDisplay(args []string) []string {
 				displayArgs[i+1] = maskAPIKeyForDisplay(displayArgs[i+1])
 				i++
 			}
+		case displayArgs[i] == "--session-id":
+			if i+1 < len(displayArgs) && !strings.HasPrefix(displayArgs[i+1], "-") {
+				displayArgs[i+1] = redactSessionIDForDisplay(displayArgs[i+1])
+				i++
+			}
 		case strings.HasPrefix(displayArgs[i], "--api-key="):
 			displayArgs[i] = "--api-key=" + maskAPIKeyForDisplay(strings.TrimPrefix(displayArgs[i], "--api-key="))
 		case strings.HasPrefix(displayArgs[i], "-a="):
 			displayArgs[i] = "-a=" + maskAPIKeyForDisplay(strings.TrimPrefix(displayArgs[i], "-a="))
+		case strings.HasPrefix(displayArgs[i], "--session-id="):
+			displayArgs[i] = "--session-id=" + redactSessionIDForDisplay(strings.TrimPrefix(displayArgs[i], "--session-id="))
 		}
 	}
 

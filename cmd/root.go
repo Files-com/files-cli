@@ -31,6 +31,7 @@ const (
 	flagNameOutputPathShort    = "o"
 	flagNameProfile            = "profile"
 	flagNameReauthentication   = "reauthentication"
+	flagNameSessionId          = "session-id"
 	flagNameUsePager           = "use-pager"
 )
 
@@ -60,7 +61,7 @@ const (
 )
 
 var (
-	errNonInteractiveRequiresInput = clierr.Errorf(clierr.ErrorCodeUsage, "--%s provided without valid profile or API key", flagNameNonInteractive)
+	errNonInteractiveRequiresInput = clierr.Errorf(clierr.ErrorCodeUsage, "--%s provided without valid profile, API key, or session ID", flagNameNonInteractive)
 )
 
 var (
@@ -79,6 +80,7 @@ var (
 	ProfileValue           string
 	Environment            string
 	APIKey                 string
+	SessionId              string
 	debug                  string
 	ignoreVersionCheck     bool
 	nonInteractive         bool
@@ -125,7 +127,7 @@ var (
 			}
 
 			profile := &lib.Profiles{}
-			err := loadProfile(&sdkConfig, ProfileValue, APIKey, profile)
+			err := loadProfile(&sdkConfig, ProfileValue, APIKey, SessionId, profile)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
@@ -204,12 +206,13 @@ var (
 	}
 )
 
-func loadProfile(sdkConfig *files.Config, profileValue string, apiKey string, profile *lib.Profiles) error {
+func loadProfile(sdkConfig *files.Config, profileValue string, apiKey string, sessionId string, profile *lib.Profiles) error {
 	err := profile.Load(sdkConfig, profileValue)
 	if err != nil {
 		return err
 	}
 	profile.SetSingleUseAPIKey(apiKey)
+	profile.SetSingleUseSessionId(sessionId)
 	return nil
 }
 
@@ -233,6 +236,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&Environment, flagNameEnvironment, Environment, "Set connection to an environment or site")
 	RootCmd.PersistentFlags().Lookup(flagNameEnvironment).Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, flagNameApiKey, "", "Set API Key for single use")
+	RootCmd.PersistentFlags().StringVar(&SessionId, flagNameSessionId, "", "Set Session ID for single use")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, flagNameOutputPath, flagNameOutputPathShort, "", "File path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, flagNameReauthentication, Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, flagNameFeatreFlag, featureFlags, "Enable feature flags")
