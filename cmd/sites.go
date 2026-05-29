@@ -89,6 +89,7 @@ func Sites() *cobra.Command {
 	updatePinAllRemoteServersToSiteRegion := true
 	updateMotdUseForFtp := true
 	updateMotdUseForSftp := true
+	updateDisableAllAiFeatures := true
 	updateBundleRequireNote := true
 	updateBundleSendSharedReceipts := true
 	updateCalculateFileChecksumsCrc32 := true
@@ -173,6 +174,7 @@ func Sites() *cobra.Command {
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 
 	updateLeftNavigationVisibilityJSON := ""
+	updateAiFeatureAvailabilityJSON := ""
 	updateBundleWatermarkValueJSON := ""
 
 	cmdUpdate := &cobra.Command{
@@ -295,6 +297,16 @@ func Sites() *cobra.Command {
 					return parseUpdateLeftNavigationVisibilityErr
 				}
 				mapParams["left_navigation_visibility"] = parsedUpdateLeftNavigationVisibility
+			}
+			if cmd.Flags().Changed("disable-all-ai-features") {
+				mapParams["disable_all_ai_features"] = updateDisableAllAiFeatures
+			}
+			if cmd.Flags().Changed("ai-feature-availability") {
+				parsedUpdateAiFeatureAvailability, parseUpdateAiFeatureAvailabilityErr := lib.ParseJSONObjectFlag("ai-feature-availability", updateAiFeatureAvailabilityJSON)
+				if parseUpdateAiFeatureAvailabilityErr != nil {
+					return parseUpdateAiFeatureAvailabilityErr
+				}
+				mapParams["ai_feature_availability"] = parsedUpdateAiFeatureAvailability
 			}
 			if cmd.Flags().Changed("additional-text-file-types") {
 				lib.FlagUpdateLen(cmd, "additional_text_file_types", paramsSiteUpdate.AdditionalTextFileTypes, mapParams)
@@ -764,6 +776,9 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateMotdUseForSftp, "motd-use-for-sftp", updateMotdUseForSftp, "Show message to users connecting via SFTP")
 	cmdUpdate.Flags().StringVar(&updateLeftNavigationVisibilityJSON, "left-navigation-visibility", "", "Visibility settings for account navigation Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "left-navigation-visibility", "json")
+	cmdUpdate.Flags().BoolVar(&updateDisableAllAiFeatures, "disable-all-ai-features", updateDisableAllAiFeatures, "If true, all AI features are disabled for this site.")
+	cmdUpdate.Flags().StringVar(&updateAiFeatureAvailabilityJSON, "ai-feature-availability", "", "Availability settings for AI features by user class Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "ai-feature-availability", "json")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().BoolVar(&updateBundleSendSharedReceipts, "bundle-send-shared-receipts", updateBundleSendSharedReceipts, "Do Bundle creators receive receipts of invitations?")
