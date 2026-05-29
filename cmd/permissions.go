@@ -109,7 +109,7 @@ func Permissions() *cobra.Command {
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-prefix", "field=value")
 
 	cmdList.Flags().StringVar(&paramsPermissionList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
-	cmdList.Flags().Int64Var(&paramsPermissionList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsPermissionList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsPermissionList.Path, "path", "", "Permission path.  If provided, will scope all permissions(including upward) to this path.")
 	cmdList.Flags().BoolVar(&listIncludeGroups, "include-groups", listIncludeGroups, "If searching by user or group, also include user's permissions that are inherited from its groups?")
 	cmdList.Flags().StringVar(&paramsPermissionList.GroupId, "group-id", "", "")

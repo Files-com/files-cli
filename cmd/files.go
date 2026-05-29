@@ -459,6 +459,7 @@ func Files() *cobra.Command {
 	usePagerBeginUpload := true
 	beginUploadMkdirParents := true
 	beginUploadWithRename := true
+	beginUploadBufferedUpload := true
 	paramsFileBeginUpload := files_sdk.FileBeginUploadParams{}
 
 	cmdBeginUpload := &cobra.Command{
@@ -476,6 +477,9 @@ func Files() *cobra.Command {
 			}
 			if cmd.Flags().Changed("with-rename") {
 				paramsFileBeginUpload.WithRename = flib.Bool(beginUploadWithRename)
+			}
+			if cmd.Flags().Changed("buffered-upload") {
+				paramsFileBeginUpload.BufferedUpload = flib.Bool(beginUploadBufferedUpload)
 			}
 
 			if len(args) > 0 && args[0] != "" {
@@ -495,6 +499,7 @@ func Files() *cobra.Command {
 	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Restart, "restart", 0, "File byte offset to restart from.")
 	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Size, "size", 0, "Total bytes of file being uploaded (include bytes being retained if appending/restarting).")
 	cmdBeginUpload.Flags().BoolVar(&beginUploadWithRename, "with-rename", beginUploadWithRename, "Allow file rename instead of overwrite?")
+	cmdBeginUpload.Flags().BoolVar(&beginUploadBufferedUpload, "buffered-upload", beginUploadBufferedUpload, "If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively.")
 
 	cmdBeginUpload.Flags().StringSliceVar(&fieldsBeginUpload, "fields", []string{}, "comma separated list of field names")
 	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", lib.FormatDefaults, lib.FormatHelpText)

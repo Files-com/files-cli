@@ -150,7 +150,7 @@ func Users() *cobra.Command {
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-lteq", "field=value")
 
 	cmdList.Flags().StringVar(&paramsUserList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
-	cmdList.Flags().Int64Var(&paramsUserList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10,000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsUserList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsUserList.Ids, "ids", "", "comma-separated list of User IDs")
 	cmdList.Flags().BoolVar(&listIncludeParentSiteUsers, "include-parent-site-users", listIncludeParentSiteUsers, "Include users from the parent site.")
 	cmdList.Flags().StringVar(&paramsUserList.Search, "search", "", "Searches for partial matches of name, username, or email.")
