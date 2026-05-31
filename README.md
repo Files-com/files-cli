@@ -389,6 +389,39 @@ For example, the following two paths are treated as equivalent after NFC normali
 
 <div></div>
 
+## Workspaces
+
+A Workspace is a lightweight way to organize related resources inside a single Files.com Site.
+
+Customers commonly group resources by project, department, client, or region. Workspaces provide a built-in structure for that grouping, so the UI can operate within a clear "workspace context" and admins can delegate management for a subset of resources without requiring full site-level isolation.
+
+Every Site has an implicit Default workspace (ID `0`). Resources that are not explicitly assigned to a named workspace are considered part of the Default workspace.
+<div></div>
+
+### SDK Support
+
+We are still in the process of adding Workspaces support to each SDK. If you require Workspaces support right now, you need to use the REST API.
+<div></div>
+
+### Using Workspaces with the REST API
+
+To use Workspaces with the REST API, send the following request header:
+
+```http
+X-Files-Workspace-Id: <workspace_id>
+```
+
+This changes path mapping and "what you're looking at."
+
+When the `X-Files-Workspace-Id` header is provided:
+
+- List, show, update, and delete operations are constrained to that workspace for workspace-scoped models.
+- Create operations default `workspace_id` to the scoped workspace when not explicitly provided.
+- Attempts to provide a mismatching `workspace_id` are rejected with `not-authorized/insufficient-permission-for-params`.
+
+This header only works for sitewide keys, or keys related to users with permissions to more than one workspace.
+<div></div>
+
 ## Foreign Language Support
 
 The Files.com CLI supports localized responses by setting the `files-cli config set -l` option.  The language can be reset by using `files-cli config reset -l`.
