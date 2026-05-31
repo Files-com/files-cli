@@ -379,6 +379,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createBypassSiteAllowedIps, "bypass-site-allowed-ips", createBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "Can the user connect with WebDAV?")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.DesktopConfigurationProfileId, "desktop-configuration-profile-id", 0, "Desktop Configuration Profile ID assigned directly to this user, if any.")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.DefaultWorkspaceId, "default-workspace-id", 0, "Workspace ID the user should land in by default when more than one Workspace is available.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
 	cmdCreate.Flags().StringVar(&UserCreateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserCreate.FilesystemLayout.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "Can the user access with FTP/FTPS?")
@@ -659,6 +660,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("desktop-configuration-profile-id") {
 				lib.FlagUpdate(cmd, "desktop_configuration_profile_id", paramsUserUpdate.DesktopConfigurationProfileId, mapParams)
 			}
+			if cmd.Flags().Changed("default-workspace-id") {
+				lib.FlagUpdate(cmd, "default_workspace_id", paramsUserUpdate.DefaultWorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
 			}
@@ -824,6 +828,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateBypassSiteAllowedIps, "bypass-site-allowed-ips", updateBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "Can the user connect with WebDAV?")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.DesktopConfigurationProfileId, "desktop-configuration-profile-id", 0, "Desktop Configuration Profile ID assigned directly to this user, if any.")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.DefaultWorkspaceId, "default-workspace-id", 0, "Workspace ID the user should land in by default when more than one Workspace is available.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
 	cmdUpdate.Flags().StringVar(&UserUpdateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserUpdate.FilesystemLayout.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "Can the user access with FTP/FTPS?")
