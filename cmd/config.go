@@ -36,6 +36,9 @@ func Config() *cobra.Command {
 				Profile(cmd).Current().APIKey = ""
 				Profile(cmd).Current().SetSessionId(configParams.SessionId)
 			}
+			if configParams.WorkspaceId != "" {
+				Profile(cmd).Current().WorkspaceId = configParams.WorkspaceId
+			}
 			if configParams.Endpoint != "" {
 				Profile(cmd).Current().Endpoint = configParams.Endpoint
 			}
@@ -58,6 +61,7 @@ func Config() *cobra.Command {
 	configSet.Flags().StringVarP(&configParams.Username, "username", "u", configParams.Username, "Username to sign in as")
 	configSet.Flags().StringVarP(&configParams.APIKey, "api-key", "a", configParams.APIKey, "Store API Key in plain text config file `~/.config/files-cli`")
 	configSet.Flags().StringVar(&configParams.SessionId, flagNameSessionId, configParams.SessionId, "Store Session ID in plain text config file `~/.config/files-cli`")
+	configSet.Flags().StringVar(&configParams.WorkspaceId, flagNameWorkspaceId, configParams.WorkspaceId, "Store Workspace ID to scope every command to a specific Workspace")
 	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For use with custom domains. Example: 'https://myfilescustomdomain.com'")
 	configSet.Flags().StringVarP(&configParams.Language, "language", "l", configParams.Language, "Language to use")
 	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
@@ -89,6 +93,7 @@ func Config() *cobra.Command {
 	resetDelete.Flags().BoolVarP(&resetConfig.Language, "language", "l", false, "Language")
 	resetDelete.Flags().BoolVarP(&resetConfig.Session, "session", "s", false, "")
 	resetDelete.Flags().BoolVar(&resetConfig.Session, flagNameSessionId, false, "")
+	resetDelete.Flags().BoolVar(&resetConfig.WorkspaceId, flagNameWorkspaceId, false, "Workspace ID")
 	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
 	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Reset the maximum number of concurrent connections.")
 	resetDelete.Flags().BoolVarP(&resetConfig.ResourceFormat, "format", "f", false, "Reset default resource format")

@@ -45,6 +45,7 @@ type Profiles struct {
 	Profile               string `json:"-"`
 	singleUseAPIKey       string `json:"-"`
 	singleUseSessionId    string `json:"-"`
+	singleUseWorkspaceId  string `json:"-"`
 	files_sdk.Environment `json:"-"`
 	ConfigDir             string `json:"-"`
 }
@@ -58,6 +59,7 @@ type Profile struct {
 	APIKey                    string    `json:"api_key"`
 	Language                  string    `json:"language"`
 	Endpoint                  string    `json:"endpoint,omitempty"`
+	WorkspaceId               string    `json:"workspace_id,omitempty"`
 	configPathOverride        string
 	files_sdk.Environment     `json:"environment"`
 	ConcurrentConnectionLimit int      `json:"concurrent_connection_limit"`
@@ -90,12 +92,15 @@ type ResetConfig struct {
 	VersionCheck              bool
 	ConcurrentConnectionLimit bool
 	ResourceFormat            bool
+	WorkspaceId               bool
 }
 
 var SessionExpiry = time.Hour * 6
 var CheckVersionEvery = time.Hour * 48
 
 const CLICurrentVersionURL = "https://api.github.com/repos/Files-com/files-cli/releases/latest"
+
+const workspaceIdHeader = "X-Files-Workspace-Id"
 
 func (p *Profiles) Current() *Profile {
 	env, ok := p.Profiles[p.Profile]
@@ -133,6 +138,9 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 	}
 	if reset.ResourceFormat {
 		p.Current().ResourceFormat = nil
+	}
+	if reset.WorkspaceId {
+		p.Current().WorkspaceId = ""
 	}
 	return p.Save()
 }
@@ -212,6 +220,16 @@ func (p *Profiles) SetOnConfig() {
 	}
 	p.Config.Environment = p.Current().Environment
 	p.Config.Language = p.Current().Language
+	if p.singleUseWorkspaceId == "" && p.Current().WorkspaceId != "" {
+		p.setWorkspaceIdHeader(p.Current().WorkspaceId)
+	}
+}
+
+func (p *Profiles) setWorkspaceIdHeader(workspaceId string) {
+	if p.Config.AdditionalHeaders == nil {
+		p.Config.AdditionalHeaders = make(map[string]string)
+	}
+	p.Config.AdditionalHeaders[workspaceIdHeader] = workspaceId
 }
 
 // SetSingleUseAPIKey applies a request-only API key override without changing the stored profile.
@@ -231,6 +249,15 @@ func (p *Profiles) SetSingleUseSessionId(sessionId string) {
 	p.singleUseSessionId = sessionId
 	p.Config.APIKey = ""
 	p.Config.SessionId = sessionId
+}
+
+// SetSingleUseWorkspaceId applies a request-only workspace ID override without changing the stored profile.
+func (p *Profiles) SetSingleUseWorkspaceId(workspaceId string) {
+	if workspaceId == "" {
+		return
+	}
+	p.singleUseWorkspaceId = workspaceId
+	p.setWorkspaceIdHeader(workspaceId)
 }
 
 func (p *Profiles) Save() error {

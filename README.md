@@ -238,6 +238,14 @@ Store an existing user session ID for CLI authentication. You can also provide a
 files-cli config set --session-id YOUR_SESSION_ID
 ```
 
+#### Workspace ID
+
+Scope every command to a specific Workspace by storing its ID. You can also scope a single command with `--workspace-id`.
+
+```shell title="Example setting"
+files-cli config set --workspace-id YOUR_WORKSPACE_ID
+```
+
 #### Default Resource Format
 
 Set default format for displaying resources.
@@ -398,9 +406,25 @@ Customers commonly group resources by project, department, client, or region. Wo
 Every Site has an implicit Default workspace (ID `0`). Resources that are not explicitly assigned to a named workspace are considered part of the Default workspace.
 <div></div>
 
-### SDK Support
+### Using Workspaces with the CLI
 
-We are still in the process of adding Workspaces support to each SDK. If you require Workspaces support right now, you need to use the REST API.
+Scope a single command to a Workspace with `--workspace-id`:
+
+```shell
+files-cli --workspace-id YOUR_WORKSPACE_ID folders list-for ''
+```
+
+Or store the Workspace ID so every subsequent command is scoped to it:
+
+```shell
+files-cli config set --workspace-id YOUR_WORKSPACE_ID
+```
+
+To clear the stored Workspace ID, run:
+
+```shell
+files-cli config reset --workspace-id
+```
 <div></div>
 
 ### Using Workspaces with the REST API

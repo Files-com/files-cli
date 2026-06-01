@@ -33,6 +33,7 @@ const (
 	flagNameReauthentication   = "reauthentication"
 	flagNameSessionId          = "session-id"
 	flagNameUsePager           = "use-pager"
+	flagNameWorkspaceId        = "workspace-id"
 )
 
 const (
@@ -81,6 +82,7 @@ var (
 	Environment            string
 	APIKey                 string
 	SessionId              string
+	WorkspaceId            string
 	debug                  string
 	ignoreVersionCheck     bool
 	nonInteractive         bool
@@ -127,7 +129,7 @@ var (
 			}
 
 			profile := &lib.Profiles{}
-			err := loadProfile(&sdkConfig, ProfileValue, APIKey, SessionId, profile)
+			err := loadProfile(&sdkConfig, ProfileValue, APIKey, SessionId, WorkspaceId, profile)
 			if err != nil {
 				fmt.Fprintf(cmd.ErrOrStderr(), "%v\n", err)
 				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
@@ -206,13 +208,14 @@ var (
 	}
 )
 
-func loadProfile(sdkConfig *files.Config, profileValue string, apiKey string, sessionId string, profile *lib.Profiles) error {
+func loadProfile(sdkConfig *files.Config, profileValue string, apiKey string, sessionId string, workspaceId string, profile *lib.Profiles) error {
 	err := profile.Load(sdkConfig, profileValue)
 	if err != nil {
 		return err
 	}
 	profile.SetSingleUseAPIKey(apiKey)
 	profile.SetSingleUseSessionId(sessionId)
+	profile.SetSingleUseWorkspaceId(workspaceId)
 	return nil
 }
 
@@ -237,6 +240,7 @@ func init() {
 	RootCmd.PersistentFlags().Lookup(flagNameEnvironment).Hidden = true
 	RootCmd.PersistentFlags().StringVar(&APIKey, flagNameApiKey, "", "Set API Key for single use")
 	RootCmd.PersistentFlags().StringVar(&SessionId, flagNameSessionId, "", "Set Session ID for single use")
+	RootCmd.PersistentFlags().StringVar(&WorkspaceId, flagNameWorkspaceId, "", "Scope this command to a specific Workspace ID")
 	RootCmd.PersistentFlags().StringVarP(&OutputPath, flagNameOutputPath, flagNameOutputPathShort, "", "File path to save output")
 	RootCmd.PersistentFlags().BoolVar(&Reauthentication, flagNameReauthentication, Reauthentication, "For enhanced security during specific types of requests, we mandate reauthentication when using a session ID for authentication. In such cases, please supply the session user's password again using the --reauthentication flag.")
 	RootCmd.PersistentFlags().StringSliceVar(&featureFlags, flagNameFeatreFlag, featureFlags, "Enable feature flags")
