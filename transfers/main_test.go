@@ -1,6 +1,7 @@
 package transfers
 
 import (
+	"context"
 	"errors"
 	"regexp"
 	"strings"
@@ -8,9 +9,11 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
+	"github.com/Files-com/files-sdk-go/v3/file/manager"
 	"github.com/Files-com/files-sdk-go/v3/file/status"
 	"github.com/Files-com/files-sdk-go/v3/lib/direction"
 	"github.com/mattn/go-runewidth"
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,6 +23,96 @@ func TestStatusDisplayNameReplacesUnderscores(t *testing.T) {
 	assert.Equal(t, "folder created", statusDisplayName(status.FolderCreated))
 	assert.Equal(t, "file exists", statusDisplayName(status.FileExists))
 	assert.Equal(t, "complete", statusDisplayName(status.Complete))
+}
+
+func TestAdaptiveConcurrencyUsesV2DefaultCaps(t *testing.T) {
+	transfer := New()
+	transfer.AdaptiveConcurrency = true
+	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
+	transfer.ConcurrentDirectoryScanning = manager.ConcurrentDirectoryList
+
+	transfer.createManager()
+
+	assert.Equal(t, manager.AdaptiveUploadV2ConcurrentFiles, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, manager.AdaptiveUploadV2ConcurrentFileParts, transfer.Manager.FilePartsManager.Max())
+	assert.Equal(t, 1024, transfer.Manager.FilePartsManager.Max())
+}
+
+func TestAdaptiveConcurrencyRespectsExplicitConnectionLimit(t *testing.T) {
+	transfer := New()
+	transfer.AdaptiveConcurrency = true
+	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
+	transfer.ConcurrentConnectionLimitSet = true
+	transfer.ConcurrentDirectoryScanning = manager.ConcurrentDirectoryList
+
+	transfer.createManager()
+
+	assert.Equal(t, manager.ConcurrentFileParts, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, manager.ConcurrentFileParts, transfer.Manager.FilePartsManager.Max())
+}
+
+func TestAdaptiveUploadReadyRunwayFlagsMarkOverrides(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-ready-runway-parts", "3"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-ready-runway-bytes", "1048576"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveUploadReadyRunwaySet)
+	assert.Equal(t, 3, transfer.AdaptiveUploadReadyRunwayParts)
+	assert.Equal(t, int64(1048576), transfer.AdaptiveUploadReadyRunwayBytes)
+}
+
+func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-initial-target", "180"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-grow-every", "12"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-throughput-window", "64"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-min-windows", "4"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-floor-rate-bps", "123456"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-plateau-target", "240"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-throughput-hold-windows", "3"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-min-gain-per-target-percent", "0.05"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling", "190"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling-probe-bytes", "104857600"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps", "987654"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-latency-queue-high", "150"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-part-size-mib", "32"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-workload-bytes", "4194304000"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-workload-target-part-multiplier", "10"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-workload-min-part-size-mib", "16"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-workload-scan-wait-ms", "500"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveUploadV2TuningSet)
+	assert.Equal(t, 180, transfer.AdaptiveUploadV2Tuning.S3InitialTarget)
+	assert.Equal(t, 12, transfer.AdaptiveUploadV2Tuning.S3GrowEvery)
+	assert.Equal(t, 64, transfer.AdaptiveUploadV2Tuning.S3ThroughputWindow)
+	assert.Equal(t, 4, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbeMinWindows)
+	assert.Equal(t, int64(123456), transfer.AdaptiveUploadV2Tuning.S3ThroughputProbeFloorRateBytesPerSecond)
+	assert.Equal(t, 240, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbePlateau)
+	assert.Equal(t, 3, transfer.AdaptiveUploadV2Tuning.S3ThroughputHoldWindows)
+	assert.Equal(t, 0.05, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbeMinGainPerTargetPercent)
+	assert.Equal(t, 190, transfer.AdaptiveUploadV2Tuning.S3GrowthCeiling)
+	assert.Equal(t, int64(104857600), transfer.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeBytes)
+	assert.Equal(t, int64(987654), transfer.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeRateBytesPerSecond)
+	assert.Equal(t, float64(150), transfer.AdaptiveUploadV2Tuning.S3LatencyQueueHigh)
+	assert.Equal(t, int64(32), transfer.AdaptiveUploadV2Tuning.S3PartSizeMiB)
+	assert.Equal(t, int64(4194304000), transfer.AdaptiveUploadV2Tuning.S3WorkloadBytes)
+	assert.Equal(t, 10, transfer.AdaptiveUploadV2Tuning.S3WorkloadTargetPartMultiplier)
+	assert.Equal(t, int64(16), transfer.AdaptiveUploadV2Tuning.S3WorkloadMinPartSizeMiB)
+	assert.Equal(t, 500, transfer.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis)
 }
 
 func TestStatusWithColorUsesDisplayName(t *testing.T) {

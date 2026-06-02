@@ -140,9 +140,9 @@ var (
 			if sdkConfig.Debug {
 				sdkConfig.Logger.Printf("Environment: %v", sdkConfig.Environment.String())
 				if transport, ok := sdkConfig.Client.HTTPClient.Transport.(*lib2.Transport); ok {
-					sdkConfig.Logger.Printf("MaxIdleConnsPerHost: %v", transport.MaxIdleConnsPerHost)
-					sdkConfig.Logger.Printf("MaxIdleConns: %v", transport.MaxIdleConns)
-					sdkConfig.Logger.Printf("MaxConnsPerHost: %v", transport.MaxConnsPerHost)
+					sdkConfig.Logger.Printf("APIClientMaxIdleConnsPerHost: %v", transport.MaxIdleConnsPerHost)
+					sdkConfig.Logger.Printf("APIClientMaxIdleConns: %v", transport.MaxIdleConns)
+					sdkConfig.Logger.Printf("APIClientMaxConnsPerHost: %v", transport.MaxConnsPerHost)
 				}
 			}
 

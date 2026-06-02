@@ -27,24 +27,30 @@ func Sync() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
+			client := file.Client{Config: transfer.BuildConfig(config)}
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *file.Job {
 				transfer.StartLog("upload")
 				return client.Uploader(
 					file.UploaderParams{
-						LocalPath:     localPath,
-						RemotePath:    remotePath,
-						Sync:          transfer.SyncFlag,
-						Manager:       transfer.Manager,
-						Ignore:        *transfer.Ignore,
-						Include:       *transfer.Include,
-						PreserveTimes: transfer.UploadPreserveTimes,
-						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:        transfer.DryRun,
-						NoOverwrite:   transfer.NoOverwrite,
+						LocalPath:                      localPath,
+						RemotePath:                     remotePath,
+						Sync:                           transfer.SyncFlag,
+						Manager:                        transfer.Manager,
+						Ignore:                         *transfer.Ignore,
+						Include:                        *transfer.Include,
+						PreserveTimes:                  transfer.UploadPreserveTimes,
+						AdaptiveConcurrency:            transfer.AdaptiveConcurrency,
+						AdaptiveUploadReadyRunwaySet:   transfer.AdaptiveUploadReadyRunwaySet,
+						AdaptiveUploadReadyRunwayParts: transfer.AdaptiveUploadReadyRunwayParts,
+						AdaptiveUploadReadyRunwayBytes: transfer.AdaptiveUploadReadyRunwayBytes,
+						AdaptiveUploadV2TuningSet:      transfer.AdaptiveUploadV2TuningSet,
+						AdaptiveUploadV2Tuning:         transfer.AdaptiveUploadV2Tuning,
+						RetryPolicy:                    file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						DryRun:                         transfer.DryRun,
+						NoOverwrite:                    transfer.NoOverwrite,
 					},
 					files_sdk.WithContext(ctx),
 				)

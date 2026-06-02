@@ -33,46 +33,53 @@ import (
 )
 
 type Transfers struct {
-	scanningBar                   *mpb.Bar
-	mainBar                       *mpb.Bar
-	fileStatusBar                 *mpb.Bar
-	syncStatusBar                 *mpb.Bar
-	openConnectionsBar            *mpb.Bar
-	eventBody                     []string
-	eventBodyMutex                *sync.RWMutex
-	eventErrors                   map[string]string
-	eventErrorsMutex              *sync.RWMutex
-	pathPadding                   int
-	SyncFlag                      bool
-	SendLogsToCloud               bool
-	DisableProgressOutput         bool
-	DownloadPreserveTimes         bool
-	UploadPreserveTimes           bool
-	DryRun                        bool
-	NoOverwrite                   bool
-	DownloadFilesAsSingleStream   bool
-	OpenConnectionStats           bool
-	ConcurrentConnectionLimit     int
-	ConcurrentDirectoryScanning   int
-	RetryCount                    int
-	DumpGoroutinesOnExit          bool
-	FormatIterFields              []string
-	AfterMove                     string
-	AfterDeleteSourceFiles        bool
-	AfterDeleteEmptySourceFolders bool
-	Progress                      *mpb.Progress
-	externalEvent                 files_sdk.ExternalEventCreateParams
-	start                         time.Time
-	ETA                           ewma.MovingAverage
-	ETAMutex                      *sync.RWMutex
-	filesRate                     *atomic.Value
-	filesRateMutex                *sync.RWMutex
-	transferRate                  *atomic.Value
-	transferRateMutex             *sync.RWMutex
-	Ignore                        *[]string
-	Include                       *[]string
-	ExactPaths                    []string
-	waitForEndingMessage          chan bool
+	scanningBar                    *mpb.Bar
+	mainBar                        *mpb.Bar
+	fileStatusBar                  *mpb.Bar
+	syncStatusBar                  *mpb.Bar
+	openConnectionsBar             *mpb.Bar
+	eventBody                      []string
+	eventBodyMutex                 *sync.RWMutex
+	eventErrors                    map[string]string
+	eventErrorsMutex               *sync.RWMutex
+	pathPadding                    int
+	SyncFlag                       bool
+	SendLogsToCloud                bool
+	DisableProgressOutput          bool
+	DownloadPreserveTimes          bool
+	UploadPreserveTimes            bool
+	DryRun                         bool
+	NoOverwrite                    bool
+	DownloadFilesAsSingleStream    bool
+	OpenConnectionStats            bool
+	AdaptiveConcurrency            bool
+	AdaptiveUploadReadyRunwaySet   bool
+	AdaptiveUploadReadyRunwayParts int
+	AdaptiveUploadReadyRunwayBytes int64
+	AdaptiveUploadV2TuningSet      bool
+	AdaptiveUploadV2Tuning         file.UploadV2Tuning
+	ConcurrentConnectionLimit      int
+	ConcurrentConnectionLimitSet   bool
+	ConcurrentDirectoryScanning    int
+	RetryCount                     int
+	DumpGoroutinesOnExit           bool
+	FormatIterFields               []string
+	AfterMove                      string
+	AfterDeleteSourceFiles         bool
+	AfterDeleteEmptySourceFolders  bool
+	Progress                       *mpb.Progress
+	externalEvent                  files_sdk.ExternalEventCreateParams
+	start                          time.Time
+	ETA                            ewma.MovingAverage
+	ETAMutex                       *sync.RWMutex
+	filesRate                      *atomic.Value
+	filesRateMutex                 *sync.RWMutex
+	transferRate                   *atomic.Value
+	transferRateMutex              *sync.RWMutex
+	Ignore                         *[]string
+	Include                        *[]string
+	ExactPaths                     []string
+	waitForEndingMessage           chan bool
 	*manager.Manager
 	Stdout             io.Writer
 	Stderr             io.Writer
@@ -149,6 +156,10 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 }
 
 func (t *Transfers) createManager() {
+	if t.AdaptiveConcurrency && !t.ConcurrentConnectionLimitSet {
+		t.Manager = manager.New(manager.AdaptiveUploadV2ConcurrentFiles, manager.AdaptiveUploadV2ConcurrentFileParts, t.ConcurrentDirectoryScanning)
+		return
+	}
 	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning, t.DownloadFilesAsSingleStream)
 }
 
@@ -290,11 +301,52 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 		}
 	}
 
-	if !cmd.Flags().Changed("concurrent-connection-limit") {
-		t.ConcurrentConnectionLimit = lib.DefaultInt(cmd.Context().Value("profile").(*lib.Profiles).Current().ConcurrentConnectionLimit, t.ConcurrentConnectionLimit)
+	profileConnectionLimit := 0
+	if profiles, ok := cmd.Context().Value("profile").(*lib.Profiles); ok && profiles != nil {
+		profileConnectionLimit = profiles.Current().ConcurrentConnectionLimit
 	}
+	t.ConcurrentConnectionLimitSet = cmd.Flags().Changed("concurrent-connection-limit") || profileConnectionLimit != 0
+	if !cmd.Flags().Changed("concurrent-connection-limit") {
+		t.ConcurrentConnectionLimit = lib.DefaultInt(profileConnectionLimit, t.ConcurrentConnectionLimit)
+	}
+	t.AdaptiveUploadReadyRunwaySet = cmd.Flags().Changed("adaptive-upload-ready-runway-parts") || cmd.Flags().Changed("adaptive-upload-ready-runway-bytes")
+	t.AdaptiveUploadV2TuningSet = t.adaptiveUploadV2TuningFlagChanged(cmd)
 
 	return nil
+}
+
+func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
+	flags := []string{
+		"adaptive-upload-v2-s3-initial-target",
+		"adaptive-upload-v2-s3-adaptive-floor",
+		"adaptive-upload-v2-s3-grow-every",
+		"adaptive-upload-v2-s3-grow-step",
+		"adaptive-upload-v2-s3-throughput-window",
+		"adaptive-upload-v2-s3-throughput-min-gain-percent",
+		"adaptive-upload-v2-s3-probe-min-windows",
+		"adaptive-upload-v2-s3-probe-floor-target",
+		"adaptive-upload-v2-s3-probe-floor-rate-bps",
+		"adaptive-upload-v2-s3-probe-plateau-target",
+		"adaptive-upload-v2-s3-throughput-shrink-percent",
+		"adaptive-upload-v2-s3-throughput-hold-windows",
+		"adaptive-upload-v2-s3-probe-min-gain-per-target-percent",
+		"adaptive-upload-v2-s3-growth-ceiling",
+		"adaptive-upload-v2-s3-growth-ceiling-probe-bytes",
+		"adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps",
+		"adaptive-upload-v2-s3-latency-queue-high",
+		"adaptive-upload-v2-s3-latency-growth-queue-high",
+		"adaptive-upload-v2-s3-part-size-mib",
+		"adaptive-upload-v2-s3-workload-bytes",
+		"adaptive-upload-v2-s3-workload-target-part-multiplier",
+		"adaptive-upload-v2-s3-workload-min-part-size-mib",
+		"adaptive-upload-v2-s3-workload-scan-wait-ms",
+	}
+	for _, flag := range flags {
+		if cmd.Flags().Changed(flag) {
+			return true
+		}
+	}
+	return false
 }
 
 func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
@@ -1011,6 +1063,55 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 
 func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
+	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive upload concurrency. The concurrent connection limit becomes a maximum cap.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadReadyRunwayParts, "adaptive-upload-ready-runway-parts", 4, "Number of upload parts to prepare ahead of adaptive HTTP concurrency. Zero disables the runway.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadReadyRunwayBytes, "adaptive-upload-ready-runway-bytes", 256*1024*1024, "Maximum queued bytes for prepared adaptive upload runway parts. Zero leaves queued runway bytes uncapped.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3InitialTarget, "adaptive-upload-v2-s3-initial-target", 0, "Diagnostic override for upload V2 S3 initial adaptive target. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3AdaptiveFloor, "adaptive-upload-v2-s3-adaptive-floor", 0, "Diagnostic override for upload V2 S3 adaptive floor. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowEvery, "adaptive-upload-v2-s3-grow-every", 0, "Diagnostic override for upload V2 S3 successful samples between growth steps. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowStep, "adaptive-upload-v2-s3-grow-step", 0, "Diagnostic override for upload V2 S3 growth step. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputWindow, "adaptive-upload-v2-s3-throughput-window", 0, "Diagnostic override for upload V2 S3 throughput sample window. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputMinGainPercent, "adaptive-upload-v2-s3-throughput-min-gain-percent", 0, "Diagnostic override for upload V2 S3 required throughput gain percent. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinWindows, "adaptive-upload-v2-s3-probe-min-windows", 0, "Diagnostic override for upload V2 S3 repeated probe miss windows before backoff. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloor, "adaptive-upload-v2-s3-probe-floor-target", 0, "Diagnostic override for upload V2 S3 fast-link probe floor. Zero uses the default.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloorRateBytesPerSecond, "adaptive-upload-v2-s3-probe-floor-rate-bps", 0, "Diagnostic override for upload V2 S3 fast-link probe floor bytes per second. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbePlateau, "adaptive-upload-v2-s3-probe-plateau-target", 0, "Diagnostic override for upload V2 S3 probe plateau. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputShrinkPercent, "adaptive-upload-v2-s3-throughput-shrink-percent", 0, "Diagnostic override for upload V2 S3 throughput shrink percent. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputHoldWindows, "adaptive-upload-v2-s3-throughput-hold-windows", 0, "Diagnostic override for upload V2 S3 throughput hold windows after backoff. Zero uses the default.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinGainPerTargetPercent, "adaptive-upload-v2-s3-probe-min-gain-per-target-percent", 0, "Diagnostic override for upload V2 S3 required gain per target above the plateau. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowthCeiling, "adaptive-upload-v2-s3-growth-ceiling", 0, "Diagnostic override for upload V2 S3 soft growth ceiling. Zero uses the default.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeBytes, "adaptive-upload-v2-s3-growth-ceiling-probe-bytes", 0, "Diagnostic override for upload V2 S3 bytes required before unlocking the growth ceiling. Zero uses the default.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeRateBytesPerSecond, "adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps", 0, "Diagnostic override for upload V2 S3 throughput required before unlocking the growth ceiling. Zero uses the default.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyQueueHigh, "adaptive-upload-v2-s3-latency-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue backoff threshold. Zero uses the default.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyGrowthQueueHigh, "adaptive-upload-v2-s3-latency-growth-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue growth suppression. Zero uses the default.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3PartSizeMiB, "adaptive-upload-v2-s3-part-size-mib", 0, "Diagnostic override for upload V2 S3 known-size part size in MiB. Zero uses the planner.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadBytes, "adaptive-upload-v2-s3-workload-bytes", 0, "Diagnostic override for upload V2 S3 aggregate workload bytes. Zero uses the job estimate.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadTargetPartMultiplier, "adaptive-upload-v2-s3-workload-target-part-multiplier", 0, "Diagnostic override for upload V2 S3 workload target parts per initial target. Zero uses the default.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadMinPartSizeMiB, "adaptive-upload-v2-s3-workload-min-part-size-mib", 0, "Diagnostic override for upload V2 S3 workload-tuned minimum part size in MiB. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis, "adaptive-upload-v2-s3-workload-scan-wait-ms", 0, "Diagnostic override for upload V2 S3 workload scan wait in milliseconds. Zero uses the default.")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-initial-target")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-adaptive-floor")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-grow-every")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-grow-step")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-throughput-window")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-throughput-min-gain-percent")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-probe-min-windows")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-probe-floor-target")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-probe-floor-rate-bps")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-probe-plateau-target")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-throughput-shrink-percent")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-throughput-hold-windows")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-probe-min-gain-per-target-percent")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-growth-ceiling")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-growth-ceiling-probe-bytes")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-latency-queue-high")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-latency-growth-queue-high")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-part-size-mib")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-bytes")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-target-part-multiplier")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-min-part-size-mib")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-scan-wait-ms")
 	cmd.Flags().IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
 	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
