@@ -68,6 +68,53 @@ func TestAdaptiveUploadReadyRunwayFlagsMarkOverrides(t *testing.T) {
 	assert.Equal(t, int64(1048576), transfer.AdaptiveUploadReadyRunwayBytes)
 }
 
+func TestAdaptiveUploadDiagnosticFlagsAreHiddenAndUnsetKeepsDefaults(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	hiddenFlags := []string{
+		"adaptive-upload-ready-runway-parts",
+		"adaptive-upload-ready-runway-bytes",
+		"adaptive-upload-v2-s3-initial-target",
+		"adaptive-upload-v2-s3-adaptive-floor",
+		"adaptive-upload-v2-s3-grow-every",
+		"adaptive-upload-v2-s3-grow-step",
+		"adaptive-upload-v2-s3-throughput-window",
+		"adaptive-upload-v2-s3-throughput-min-gain-percent",
+		"adaptive-upload-v2-s3-probe-min-windows",
+		"adaptive-upload-v2-s3-probe-floor-target",
+		"adaptive-upload-v2-s3-probe-floor-rate-bps",
+		"adaptive-upload-v2-s3-probe-plateau-target",
+		"adaptive-upload-v2-s3-throughput-shrink-percent",
+		"adaptive-upload-v2-s3-throughput-hold-windows",
+		"adaptive-upload-v2-s3-probe-min-gain-per-target-percent",
+		"adaptive-upload-v2-s3-growth-ceiling",
+		"adaptive-upload-v2-s3-growth-ceiling-probe-bytes",
+		"adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps",
+		"adaptive-upload-v2-s3-latency-queue-high",
+		"adaptive-upload-v2-s3-latency-growth-queue-high",
+		"adaptive-upload-v2-s3-part-size-mib",
+		"adaptive-upload-v2-s3-workload-bytes",
+		"adaptive-upload-v2-s3-workload-target-part-multiplier",
+		"adaptive-upload-v2-s3-workload-min-part-size-mib",
+		"adaptive-upload-v2-s3-workload-scan-wait-ms",
+	}
+	for _, name := range hiddenFlags {
+		flag := cmd.Flags().Lookup(name)
+		if assert.NotNil(t, flag, name) {
+			assert.True(t, flag.Hidden, name)
+		}
+	}
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.False(t, transfer.AdaptiveUploadReadyRunwaySet)
+	assert.False(t, transfer.AdaptiveUploadV2TuningSet)
+}
+
 func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
 	transfer := New()
 	transfer.Format = []string{"progress"}
