@@ -786,6 +786,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsUserUpdate.Username, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsUserUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("clear-2fa") {
 				mapParams["clear_2fa"] = updateClear2fa
 			}
@@ -871,6 +874,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.")
 	cmdUpdate.Flags().BoolVar(&updateWorkspaceAdmin, "workspace-admin", updateWorkspaceAdmin, "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().BoolVar(&updateClear2fa, "clear-2fa", updateClear2fa, "If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases.")
 	cmdUpdate.Flags().BoolVar(&updateConvertToPartnerUser, "convert-to-partner-user", updateConvertToPartnerUser, "If true, convert this user to a partner user by assigning the partner_id provided.")
 
