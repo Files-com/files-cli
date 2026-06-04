@@ -1,11 +1,16 @@
 package transfers
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"os"
+	"path/filepath"
 	"regexp"
+	"runtime/pprof"
 	"strings"
 	"testing"
+	"time"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
@@ -15,6 +20,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var ansiPattern = regexp.MustCompile(`\x1b\[[0-9;]*m`)
@@ -68,6 +74,36 @@ func TestAdaptiveUploadReadyRunwayFlagsMarkOverrides(t *testing.T) {
 	assert.Equal(t, int64(1048576), transfer.AdaptiveUploadReadyRunwayBytes)
 }
 
+func TestCPUProfileSetupFailureWritesWarning(t *testing.T) {
+	transfer := New()
+	var stderr bytes.Buffer
+	transfer.Stderr = &stderr
+	transfer.CPUProfilePath = filepath.Join(t.TempDir(), "missing", "cpu.pprof")
+
+	assert.Nil(t, transfer.startCPUProfile())
+	assert.Contains(t, stderr.String(), "cpu profile setup failed:")
+}
+
+func TestCPUProfileSetupSuccessWritesProfile(t *testing.T) {
+	transfer := New()
+	transfer.CPUProfilePath = filepath.Join(t.TempDir(), "cpu.pprof")
+
+	profile := transfer.startCPUProfile()
+	require.NotNil(t, profile)
+	deadline := time.Now().Add(100 * time.Millisecond)
+	var work uint64
+	for time.Now().Before(deadline) {
+		work++
+	}
+	require.NotZero(t, work)
+	pprof.StopCPUProfile()
+	require.NoError(t, profile.Close())
+
+	info, err := os.Stat(transfer.CPUProfilePath)
+	require.NoError(t, err)
+	assert.Greater(t, info.Size(), int64(0))
+}
+
 func TestAdaptiveUploadDiagnosticFlagsAreHiddenAndUnsetKeepsDefaults(t *testing.T) {
 	transfer := New()
 	transfer.Format = []string{"progress"}
@@ -92,8 +128,10 @@ func TestAdaptiveUploadDiagnosticFlagsAreHiddenAndUnsetKeepsDefaults(t *testing.
 		"adaptive-upload-v2-s3-throughput-shrink-percent",
 		"adaptive-upload-v2-s3-throughput-hold-windows",
 		"adaptive-upload-v2-s3-probe-min-gain-per-target-percent",
+		"adaptive-upload-v2-s3-probe-loss-tolerance-percent",
 		"adaptive-upload-v2-s3-growth-ceiling",
 		"adaptive-upload-v2-s3-growth-ceiling-probe-bytes",
+		"adaptive-upload-v2-s3-growth-ceiling-probe-successes",
 		"adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps",
 		"adaptive-upload-v2-s3-latency-queue-high",
 		"adaptive-upload-v2-s3-latency-growth-queue-high",
@@ -131,8 +169,10 @@ func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-plateau-target", "240"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-throughput-hold-windows", "3"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-min-gain-per-target-percent", "0.05"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-probe-loss-tolerance-percent", "3"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling", "190"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling-probe-bytes", "104857600"))
+	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling-probe-successes", "77"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps", "987654"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-latency-queue-high", "150"))
 	assert.NoError(t, cmd.Flags().Set("adaptive-upload-v2-s3-part-size-mib", "32"))
@@ -151,8 +191,10 @@ func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
 	assert.Equal(t, 240, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbePlateau)
 	assert.Equal(t, 3, transfer.AdaptiveUploadV2Tuning.S3ThroughputHoldWindows)
 	assert.Equal(t, 0.05, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbeMinGainPerTargetPercent)
+	assert.Equal(t, 3, transfer.AdaptiveUploadV2Tuning.S3ThroughputProbeLossTolerancePercent)
 	assert.Equal(t, 190, transfer.AdaptiveUploadV2Tuning.S3GrowthCeiling)
 	assert.Equal(t, int64(104857600), transfer.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeBytes)
+	assert.Equal(t, 77, transfer.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeSuccesses)
 	assert.Equal(t, int64(987654), transfer.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeRateBytesPerSecond)
 	assert.Equal(t, float64(150), transfer.AdaptiveUploadV2Tuning.S3LatencyQueueHigh)
 	assert.Equal(t, int64(32), transfer.AdaptiveUploadV2Tuning.S3PartSizeMiB)

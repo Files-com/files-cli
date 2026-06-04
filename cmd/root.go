@@ -159,13 +159,8 @@ var (
 				return nil
 			}
 
-			// if the command is in the list of commands that ignore credentials, there's no need to do further validation.
-			if slices.Contains(IgnoreCredentialsCheck, cmd.Use) || slices.Contains(IgnoreCredentialsCheck, cmd.Parent().Use) {
-				return nil
-			}
-
-			// if the command has an alias that is in the list of commands that don't require credentials, there's no need to do further validation.
-			if len(cmd.Aliases) != 0 && slices.Contains(noAuthCmds, cmd.Aliases[0]) {
+			// if the command or any parent is in the list of commands that ignore credentials, there's no need to do further validation.
+			if ignoresCredentials(cmd) {
 				return nil
 			}
 
@@ -254,6 +249,18 @@ func Profile(cmd *cobra.Command) *lib.Profiles {
 		return profile
 	}
 	return &lib.Profiles{}
+}
+
+func ignoresCredentials(cmd *cobra.Command) bool {
+	for current := cmd; current != nil; current = current.Parent() {
+		if slices.Contains(IgnoreCredentialsCheck, current.Use) {
+			return true
+		}
+		if len(current.Aliases) != 0 && slices.Contains(noAuthCmds, current.Aliases[0]) {
+			return true
+		}
+	}
+	return false
 }
 
 // checkErr exits with the appropriate status code if available.

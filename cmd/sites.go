@@ -92,6 +92,7 @@ func Sites() *cobra.Command {
 	updateDisableAllAiFeatures := true
 	updateBundleRequireNote := true
 	updateBundleSendSharedReceipts := true
+	updateBundlesDefaultOwnedByPrimaryGroup := true
 	updateCalculateFileChecksumsCrc32 := true
 	updateCalculateFileChecksumsMd5 := true
 	updateCalculateFileChecksumsSha1 := true
@@ -316,6 +317,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("bundle-send-shared-receipts") {
 				mapParams["bundle_send_shared_receipts"] = updateBundleSendSharedReceipts
+			}
+			if cmd.Flags().Changed("bundles-default-owned-by-primary-group") {
+				mapParams["bundles_default_owned_by_primary_group"] = updateBundlesDefaultOwnedByPrimaryGroup
 			}
 			if cmd.Flags().Changed("calculate-file-checksums-crc32") {
 				mapParams["calculate_file_checksums_crc32"] = updateCalculateFileChecksumsCrc32
@@ -782,6 +786,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().BoolVar(&updateBundleSendSharedReceipts, "bundle-send-shared-receipts", updateBundleSendSharedReceipts, "Do Bundle creators receive receipts of invitations?")
+	cmdUpdate.Flags().BoolVar(&updateBundlesDefaultOwnedByPrimaryGroup, "bundles-default-owned-by-primary-group", updateBundlesDefaultOwnedByPrimaryGroup, "If true, new Share Links created by a user with a primary group will default to that group as owner.")
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsCrc32, "calculate-file-checksums-crc32", updateCalculateFileChecksumsCrc32, "Calculate CRC32 checksums for files?")
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsMd5, "calculate-file-checksums-md5", updateCalculateFileChecksumsMd5, "Calculate MD5 checksums for files?")
 	cmdUpdate.Flags().BoolVar(&updateCalculateFileChecksumsSha1, "calculate-file-checksums-sha1", updateCalculateFileChecksumsSha1, "Calculate SHA1 checksums for files?")
