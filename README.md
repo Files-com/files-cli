@@ -103,6 +103,30 @@ The Files.com Support team provides official support for all of our official Fil
 
 To initiate a support conversation, you can send an [Authenticated Support Request](https://www.files.com/docs/overview/requesting-support) or simply send an E-Mail to support@files.com.
 
+## For Agents
+
+If you're driving `files-cli` from an AI agent — or building an agent that uses it — start with these:
+
+| Resource | Description |
+| --- | --- |
+| [CONTEXT.md](CONTEXT.md) | CLI-wide invocation contract: authentication, global flags, output format, error conventions. |
+| [skills/](skills/) | `SKILL.md` packages — one per top-level CLI command (Bundles, Users, Files, …), grouped by category. |
+| [skills/INDEX.md](skills/INDEX.md) | Full index of skills. |
+| [agents/tool-catalog.json](agents/tool-catalog.json) | Machine-readable catalog of every command, parameter, and type. |
+| [agents/error-catalog.json](agents/error-catalog.json) | Machine-readable catalog of known error types with HTTP codes. |
+
+Core invocation:
+
+```bash
+files-cli <domain> <subcommand> --format json --non-interactive [flags...]
+```
+
+- Pass `--format json` so output is structured (the default `table` is for humans).
+- Pass `--non-interactive` so the CLI never blocks on a prompt.
+- Exit code `0` is success. Non-zero is failure, with a JSON error envelope on stdout.
+
+For Claude Code, Codex, or any agent that supports filesystem-loaded skills, point the skills directory at `skills/`. For agents without skill loading, load the relevant `SKILL.md` directly into context based on the task at hand.
+
 ## Authentication
 
 There are two ways to authenticate: API Key authentication and Session-based authentication.

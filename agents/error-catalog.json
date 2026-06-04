@@ -1,0 +1,1218 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Files.com API error catalog. Each entry has a stable hierarchical `type` (e.g., bad-request/missing-field). When a command fails, the response includes the `type`; route on that value.",
+  "errors": [
+    {
+      "type": "bad-request",
+      "title": "Bad Request",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/agent-upgrade-required",
+      "title": "Agent Upgrade Required",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/attachment-too-large",
+      "title": "Attachment Too Large",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/cannot-download-directory",
+      "title": "Cannot Download Directory",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/cant-move-with-multiple-locations",
+      "title": "Cant Move With Multiple Locations",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/datetime-parse",
+      "title": "Datetime Parse",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/destination-same",
+      "title": "Destination Same",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/destination-site-mismatch",
+      "title": "Destination Site Mismatch",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/does-not-support-sorting",
+      "title": "Does Not Support Sorting",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/folder-must-not-be-a-file",
+      "title": "Folder Must Not Be A File",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/folders-not-allowed",
+      "title": "Folders Not Allowed",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/internal-general-error",
+      "title": "Internal General Error",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-body",
+      "title": "Invalid Body",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-cursor",
+      "title": "Invalid Cursor",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-cursor-type-for-sort",
+      "title": "Invalid Cursor Type For Sort",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-etags",
+      "title": "Invalid Etags",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-filter-alias-combination",
+      "title": "Invalid Filter Alias Combination",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-filter-field",
+      "title": "Invalid Filter Field",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-filter-param",
+      "title": "Invalid Filter Param",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-filter-param-format",
+      "title": "Invalid Filter Param Format",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-filter-param-value",
+      "title": "Invalid Filter Param Value",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-input-encoding",
+      "title": "Invalid Input Encoding",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-interface",
+      "title": "Invalid Interface",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-oauth-provider",
+      "title": "Invalid Oauth Provider",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-path",
+      "title": "Invalid Path",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-return-to-url",
+      "title": "Invalid Return To Url",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-sort-field",
+      "title": "Invalid Sort Field",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-sort-filter-combination",
+      "title": "Invalid Sort Filter Combination",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-upload-offset",
+      "title": "Invalid Upload Offset",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-upload-part-gap",
+      "title": "Invalid Upload Part Gap",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-upload-part-size",
+      "title": "Invalid Upload Part Size",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/invalid-workspace-id-header",
+      "title": "Invalid Workspace Id Header",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/method-not-allowed",
+      "title": "Method Not Allowed",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/multiple-sort-params-not-allowed",
+      "title": "Multiple Sort Params Not Allowed",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/no-valid-input-params",
+      "title": "No Valid Input Params",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/part-number-too-large",
+      "title": "Part Number Too Large",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/path-cannot-have-trailing-whitespace",
+      "title": "Path Cannot Have Trailing Whitespace",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/reauthentication-needed-fields",
+      "title": "Reauthentication Needed Fields",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/request-body-too-large",
+      "title": "Request Body Too Large",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/request-params-contain-invalid-character",
+      "title": "Request Params Contain Invalid Character",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/request-params-invalid",
+      "title": "Request Params Invalid",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/request-params-required",
+      "title": "Request Params Required",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/search-all-on-child-path",
+      "title": "Search All On Child Path",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/unrecognized-sort-index",
+      "title": "Unrecognized Sort Index",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/unsupported-currency",
+      "title": "Unsupported Currency",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/unsupported-http-response-format",
+      "title": "Unsupported Http Response Format",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/unsupported-media-type",
+      "title": "Unsupported Media Type",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/user-id-invalid",
+      "title": "User Id Invalid",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/user-id-on-user-endpoint",
+      "title": "User Id On User Endpoint",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "bad-request/user-required",
+      "title": "User Required",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
+      "type": "not-authenticated/additional-authentication-required",
+      "title": "Additional Authentication Required",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/api-key-sessions-not-supported",
+      "title": "Api Key Sessions Not Supported",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/authentication-required",
+      "title": "Authentication Required",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/bundle-registration-code-failed",
+      "title": "Bundle Registration Code Failed",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/files-agent-token-failed",
+      "title": "Files Agent Token Failed",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/inbox-registration-code-failed",
+      "title": "Inbox Registration Code Failed",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/invalid-credentials",
+      "title": "Invalid Credentials",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/invalid-oauth",
+      "title": "Invalid Oauth",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/invalid-or-expired-code",
+      "title": "Invalid Or Expired Code",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/invalid-session",
+      "title": "Invalid Session",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/invalid-username-or-password",
+      "title": "Invalid Username Or Password",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/locked-out",
+      "title": "Locked Out",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/lockout-region-mismatch",
+      "title": "Lockout Region Mismatch",
+      "http_code": 403,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/one-time-password-incorrect",
+      "title": "One Time Password Incorrect",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/two-factor-authentication-error",
+      "title": "Two Factor Authentication Error",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authenticated/two-factor-authentication-setup-expired",
+      "title": "Two Factor Authentication Setup Expired",
+      "http_code": 401,
+      "category": "not-authenticated"
+    },
+    {
+      "type": "not-authorized/api-key-is-disabled",
+      "title": "Api Key Is Disabled",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/api-key-is-path-restricted",
+      "title": "Api Key Is Path Restricted",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/api-key-only-for-desktop-app",
+      "title": "Api Key Only For Desktop App",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/api-key-only-for-mobile-app",
+      "title": "Api Key Only For Mobile App",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/api-key-only-for-office-integration",
+      "title": "Api Key Only For Office Integration",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/billing-permission-required",
+      "title": "Billing Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/bundle-maximum-uses-reached",
+      "title": "Bundle Maximum Uses Reached",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/bundle-permission-required",
+      "title": "Bundle Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/cannot-login-while-using-key",
+      "title": "Cannot Login While Using Key",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/cant-act-for-other-user",
+      "title": "Cant Act For Other User",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/contact-admin-for-password-change-help",
+      "title": "Contact Admin For Password Change Help",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/files-agent-failed-authorization",
+      "title": "Files Agent Failed Authorization",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/folder-admin-or-billing-permission-required",
+      "title": "Folder Admin Or Billing Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/folder-admin-permission-required",
+      "title": "Folder Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/full-permission-required",
+      "title": "Full Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/history-permission-required",
+      "title": "History Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/in-app-ai-assistant-unavailable",
+      "title": "In App Ai Assistant Unavailable",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/insufficient-permission-for-params",
+      "title": "Insufficient Permission For Params",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/insufficient-permission-for-site",
+      "title": "Insufficient Permission For Site",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/mover-access-denied",
+      "title": "Mover Access Denied",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/mover-package-required",
+      "title": "Mover Package Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/must-authenticate-with-api-key",
+      "title": "Must Authenticate With Api Key",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/need-admin-permission-for-inbox",
+      "title": "Need Admin Permission For Inbox",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/non-admins-must-query-by-folder-or-path",
+      "title": "Non Admins Must Query By Folder Or Path",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/not-allowed-to-create-bundle",
+      "title": "Not Allowed To Create Bundle",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/not-enqueuable-sync",
+      "title": "Not Enqueuable Sync",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/password-change-not-required",
+      "title": "Password Change Not Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/password-change-required",
+      "title": "Password Change Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/payment-method-error",
+      "title": "Payment Method Error",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/preview-only-permission-cannot-download",
+      "title": "Preview Only Permission Cannot Download",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/read-only-session",
+      "title": "Read Only Session",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/read-permission-required",
+      "title": "Read Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/reauthentication-failed",
+      "title": "Reauthentication Failed",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/reauthentication-failed-final",
+      "title": "Reauthentication Failed Final",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/reauthentication-needed-action",
+      "title": "Reauthentication Needed Action",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/recaptcha-failed",
+      "title": "Recaptcha Failed",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/remote-desktop-debug-logging-disabled",
+      "title": "Remote Desktop Debug Logging Disabled",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/self-managed-required",
+      "title": "Self Managed Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-or-partner-admin-permission-required",
+      "title": "Site Admin Or Partner Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-or-workspace-admin-or-folder-admin-permission-required",
+      "title": "Site Admin Or Workspace Admin Or Folder Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-or-workspace-admin-or-partner-admin-or-folder-admin-permission-required",
+      "title": "Site Admin Or Workspace Admin Or Partner Admin Or Folder Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-or-workspace-admin-or-partner-admin-permission-required",
+      "title": "Site Admin Or Workspace Admin Or Partner Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-or-workspace-admin-permission-required",
+      "title": "Site Admin Or Workspace Admin Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-admin-required",
+      "title": "Site Admin Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/site-files-are-immutable",
+      "title": "Site Files Are Immutable",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/two-factor-authentication-required",
+      "title": "Two Factor Authentication Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/user-id-without-site-admin",
+      "title": "User Id Without Site Admin",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/write-and-bundle-permission-required",
+      "title": "Write And Bundle Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/write-permission-required",
+      "title": "Write Permission Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-found",
+      "title": "Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/api-key-not-found",
+      "title": "Api Key Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/bundle-path-not-found",
+      "title": "Bundle Path Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/bundle-registration-not-found",
+      "title": "Bundle Registration Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/code-not-found",
+      "title": "Code Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/file-not-found",
+      "title": "File Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/file-upload-not-found",
+      "title": "File Upload Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/group-not-found",
+      "title": "Group Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/inbox-not-found",
+      "title": "Inbox Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/nested-not-found",
+      "title": "Nested Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/plan-not-found",
+      "title": "Plan Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/site-not-found",
+      "title": "Site Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "not-found/user-not-found",
+      "title": "User Not Found",
+      "http_code": 404,
+      "category": "not-found"
+    },
+    {
+      "type": "processing-failure",
+      "title": "Processing Failure",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/agent-unavailable",
+      "title": "Agent Unavailable",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/already-completed",
+      "title": "Already Completed",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/automation-cannot-be-run-manually",
+      "title": "Automation Cannot Be Run Manually",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/behavior-not-allowed-on-remote-server",
+      "title": "Behavior Not Allowed On Remote Server",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/buffered-upload-disabled-for-this-destination",
+      "title": "Buffered Upload Disabled For This Destination",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/bundle-only-allows-previews",
+      "title": "Bundle Only Allows Previews",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/bundle-operation-requires-subfolder",
+      "title": "Bundle Operation Requires Subfolder",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/configuration-locked-path",
+      "title": "Configuration Locked Path",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/could-not-create-parent",
+      "title": "Could Not Create Parent",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/destination-exists",
+      "title": "Destination Exists",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/destination-folder-limited",
+      "title": "Destination Folder Limited",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/destination-parent-conflict",
+      "title": "Destination Parent Conflict",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/destination-parent-does-not-exist",
+      "title": "Destination Parent Does Not Exist",
+      "http_code": 409,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/exceeded-runtime-limit",
+      "title": "Exceeded Runtime Limit",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/expectation-already-has-open-window",
+      "title": "Expectation Already Has Open Window",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/expectation-not-manual-trigger",
+      "title": "Expectation Not Manual Trigger",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/expired-private-key",
+      "title": "Expired Private Key",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/expired-public-key",
+      "title": "Expired Public Key",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/export-failure",
+      "title": "Export Failure",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/export-not-ready",
+      "title": "Export Not Ready",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/failed-to-change-password",
+      "title": "Failed To Change Password",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-locked",
+      "title": "File Locked",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-not-uploaded",
+      "title": "File Not Uploaded",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-pending-processing",
+      "title": "File Pending Processing",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-processing-error",
+      "title": "File Processing Error",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-too-big-to-decrypt",
+      "title": "File Too Big To Decrypt",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-too-big-to-encrypt",
+      "title": "File Too Big To Encrypt",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/file-uploaded-to-wrong-region",
+      "title": "File Uploaded To Wrong Region",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/filename-too-long",
+      "title": "Filename Too Long",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/folder-locked",
+      "title": "Folder Locked",
+      "http_code": 403,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/folder-not-empty",
+      "title": "Folder Not Empty",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/history-unavailable",
+      "title": "History Unavailable",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-bundle-code",
+      "title": "Invalid Bundle Code",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-file-type",
+      "title": "Invalid File Type",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-filename",
+      "title": "Invalid Filename",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-priority-color",
+      "title": "Invalid Priority Color",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-range",
+      "title": "Invalid Range",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-site",
+      "title": "Invalid Site",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/invalid-zip-file",
+      "title": "Invalid Zip File",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/metadata-not-supported-on-remotes",
+      "title": "Metadata Not Supported On Remotes",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/model-save-error",
+      "title": "Model Save Error",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/multiple-processing-errors",
+      "title": "Multiple Processing Errors",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/path-too-long",
+      "title": "Path Too Long",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/recipient-already-shared",
+      "title": "Recipient Already Shared",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/remote-server-error",
+      "title": "Remote Server Error",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/resource-belongs-to-parent-site",
+      "title": "Resource Belongs To Parent Site",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/resource-locked",
+      "title": "Resource Locked",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/subfolder-locked",
+      "title": "Subfolder Locked",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/sync-in-progress",
+      "title": "Sync In Progress",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/two-factor-authentication-code-already-sent",
+      "title": "Two Factor Authentication Code Already Sent",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/two-factor-authentication-country-blacklisted",
+      "title": "Two Factor Authentication Country Blacklisted",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/two-factor-authentication-general-error",
+      "title": "Two Factor Authentication General Error",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/two-factor-authentication-method-unsupported-error",
+      "title": "Two Factor Authentication Method Unsupported Error",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/two-factor-authentication-unsubscribed-recipient",
+      "title": "Two Factor Authentication Unsubscribed Recipient",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/updates-not-allowed-for-remotes",
+      "title": "Updates Not Allowed For Remotes",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "rate-limited/duplicate-share-recipient",
+      "title": "Duplicate Share Recipient",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/reauthentication-rate-limited",
+      "title": "Reauthentication Rate Limited",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/too-many-concurrent-logins",
+      "title": "Too Many Concurrent Logins",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/too-many-concurrent-requests",
+      "title": "Too Many Concurrent Requests",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/too-many-login-attempts",
+      "title": "Too Many Login Attempts",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/too-many-requests",
+      "title": "Too Many Requests",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "rate-limited/too-many-shares",
+      "title": "Too Many Shares",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
+      "type": "service-unavailable/automations-unavailable",
+      "title": "Automations Unavailable",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
+      "type": "service-unavailable/migration-in-progress",
+      "title": "Migration In Progress",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
+      "type": "service-unavailable/site-disabled",
+      "title": "Site Disabled",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
+      "type": "service-unavailable/uploads-unavailable",
+      "title": "Uploads Unavailable",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
+      "type": "site-configuration/account-already-exists",
+      "title": "Account Already Exists",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/account-overdue",
+      "title": "Account Overdue",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/no-account-for-site",
+      "title": "No Account For Site",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/site-was-removed",
+      "title": "Site Was Removed",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/trial-expired",
+      "title": "Trial Expired",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/trial-locked",
+      "title": "Trial Locked",
+      "http_code": 403,
+      "category": "site-configuration"
+    },
+    {
+      "type": "site-configuration/user-requests-enabled-required",
+      "title": "User Requests Enabled Required",
+      "http_code": 403,
+      "category": "site-configuration"
+    }
+  ]
+}
