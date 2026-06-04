@@ -24,6 +24,9 @@ func TestOSTuningHighThroughputLinuxPlan(t *testing.T) {
 	require.Contains(t, output, "Files Agent already has Linux UDP buffer tuning")
 	require.Contains(t, output, "Snapshot before repair")
 	require.Contains(t, output, "/var/lib/files.com/os-tuning/high-throughput-upload.snapshot")
+	require.Contains(t, output, "Inspect open file descriptor limits")
+	require.Contains(t, output, "Persist high-throughput open file descriptor limits")
+	require.Contains(t, output, "LimitNOFILE")
 	require.Contains(t, output, "Restore")
 	require.Contains(t, output, "Requires: root or Administrator privileges")
 	require.Contains(t, output, "sysctl --system")
@@ -102,6 +105,7 @@ func TestOSTuningHighThroughputVerifyMode(t *testing.T) {
 	output := out.String()
 	require.Contains(t, output, "Verify")
 	require.Contains(t, output, "Inspect current TCP settings")
+	require.Contains(t, output, "ulimit -Sn")
 	require.Contains(t, output, "Verify persist high-throughput TCP defaults")
 }
 

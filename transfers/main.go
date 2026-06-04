@@ -24,6 +24,7 @@ import (
 	sdklib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/lib/direction"
 	"github.com/Files-com/files-sdk-go/v3/lib/keyvalue"
+	"github.com/Files-com/files-sdk-go/v3/lib/ostuning"
 	"github.com/VividCortex/ewma"
 	"github.com/dustin/go-humanize"
 	"github.com/mattn/go-runewidth"
@@ -32,6 +33,8 @@ import (
 	"github.com/vbauerster/mpb/v8"
 	"github.com/vbauerster/mpb/v8/decor"
 )
+
+var raiseCurrentProcessOpenFileLimit = ostuning.RaiseCurrentProcessOpenFileLimit
 
 type Transfers struct {
 	scanningBar                 *mpb.Bar
@@ -65,6 +68,8 @@ type Transfers struct {
 	AdaptiveUploadV2TuningSet bool
 	// AdaptiveUploadV2Tuning carries hidden diagnostic V2 tuning overrides into the SDK.
 	AdaptiveUploadV2Tuning file.UploadV2Tuning
+	// AdaptiveUploadV2FileConcurrency overrides the adaptive upload file admission cap for benchmarks.
+	AdaptiveUploadV2FileConcurrency int
 	// ConcurrentConnectionLimit caps concurrent file-part work. With adaptive upload V2 it is a max cap, not a target.
 	ConcurrentConnectionLimit int
 	// ConcurrentConnectionLimitSet records whether the user explicitly supplied a connection cap.
@@ -128,6 +133,7 @@ func New() *Transfers {
 		eventBodyMutex:        &sync.RWMutex{},
 		eventErrorsMutex:      &sync.RWMutex{},
 		pathPadding:           40,
+		AdaptiveConcurrency:   true,
 		SyncFlag:              false,
 		SendLogsToCloud:       false,
 		DisableProgressOutput: false,
@@ -168,15 +174,59 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 
 func (t *Transfers) createManager() {
 	if t.AdaptiveConcurrency && !t.ConcurrentConnectionLimitSet {
-		t.Manager = manager.New(manager.AdaptiveUploadV2ConcurrentFiles, manager.AdaptiveUploadV2ConcurrentFileParts, t.ConcurrentDirectoryScanning)
+		t.Manager = manager.New(t.adaptiveUploadV2FileConcurrencyCap(), manager.AdaptiveUploadV2ConcurrentFileParts, t.ConcurrentDirectoryScanning)
 		return
 	}
 	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning, t.DownloadFilesAsSingleStream)
 }
 
+func (t *Transfers) adaptiveUploadV2FileConcurrencyCap() int {
+	if t.AdaptiveUploadV2FileConcurrency > 0 {
+		return t.AdaptiveUploadV2FileConcurrency
+	}
+	return manager.AdaptiveUploadV2ConcurrentFiles
+}
+
 func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 	t.createManager()
+	config.Logger.Printf(keyvalue.New(map[string]interface{}{
+		"message":                    "transfer manager caps",
+		"adaptive_upload_enabled":    t.AdaptiveConcurrency,
+		"file_concurrency_cap":       t.Manager.FilesManager.Max(),
+		"part_concurrency_cap":       t.Manager.FilePartsManager.Max(),
+		"directory_listing_cap":      t.Manager.DirectoryListingManager.Max(),
+		"connection_limit_explicit":  t.ConcurrentConnectionLimitSet,
+		"download_single_stream":     t.DownloadFilesAsSingleStream,
+		"diagnostic_file_cap_option": t.AdaptiveUploadV2FileConcurrency,
+	}))
 	return config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
+}
+
+func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
+	if !t.AdaptiveConcurrency {
+		return
+	}
+	result, err := raiseCurrentProcessOpenFileLimit()
+	if !result.Supported && err == nil {
+		return
+	}
+
+	fields := map[string]interface{}{
+		"message":                         "adaptive upload open file limit",
+		"open_file_limit_supported":       result.Supported,
+		"open_file_limit_before_soft":     result.BeforeSoft,
+		"open_file_limit_before_hard":     result.BeforeHard,
+		"open_file_limit_after_soft":      result.AfterSoft,
+		"open_file_limit_changed":         result.Changed,
+		"open_file_limit_minimum":         ostuning.MinimumOpenFileLimit,
+		"open_file_limit_preferred":       ostuning.PreferredOpenFileLimit,
+		"open_file_limit_hard_too_low":    result.Supported && result.BeforeHard < ostuning.MinimumOpenFileLimit,
+		"open_file_limit_hard_below_pref": result.Supported && result.BeforeHard < ostuning.PreferredOpenFileLimit,
+	}
+	if err != nil {
+		fields["open_file_limit_error"] = err.Error()
+	}
+	config.Logger.Printf(keyvalue.New(fields))
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
@@ -320,6 +370,9 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	if !cmd.Flags().Changed("concurrent-connection-limit") {
 		t.ConcurrentConnectionLimit = lib.DefaultInt(profileConnectionLimit, t.ConcurrentConnectionLimit)
 	}
+	if t.AdaptiveUploadV2FileConcurrency < 0 {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-upload-v2-file-concurrency must be zero or greater")
+	}
 	t.AdaptiveUploadReadyRunwaySet = cmd.Flags().Changed("adaptive-upload-ready-runway-parts") || cmd.Flags().Changed("adaptive-upload-ready-runway-bytes")
 	t.AdaptiveUploadV2TuningSet = t.adaptiveUploadV2TuningFlagChanged(cmd)
 
@@ -363,6 +416,7 @@ func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
 }
 
 func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
+	t.raiseOpenFileLimit(config)
 	var stopCPUProfile func()
 	if cpuProfile := t.startCPUProfile(); cpuProfile != nil {
 		stopCPUProfile = func() {
@@ -1142,6 +1196,7 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadTargetPartMultiplier, "adaptive-upload-v2-s3-workload-target-part-multiplier", 0, "Diagnostic override for upload V2 S3 workload target parts per initial target. Zero uses the default.")
 	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadMinPartSizeMiB, "adaptive-upload-v2-s3-workload-min-part-size-mib", 0, "Diagnostic override for upload V2 S3 workload-tuned minimum part size in MiB. Zero uses the default.")
 	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis, "adaptive-upload-v2-s3-workload-scan-wait-ms", 0, "Diagnostic override for upload V2 S3 workload scan wait in milliseconds. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2FileConcurrency, "adaptive-upload-v2-file-concurrency", 0, "Diagnostic override for upload V2 file admission concurrency. Zero uses the default.")
 	cmd.Flags().MarkHidden("adaptive-upload-ready-runway-parts")
 	cmd.Flags().MarkHidden("adaptive-upload-ready-runway-bytes")
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-initial-target")
@@ -1169,6 +1224,7 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-target-part-multiplier")
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-min-part-size-mib")
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-scan-wait-ms")
+	cmd.Flags().MarkHidden("adaptive-upload-v2-file-concurrency")
 	cmd.Flags().IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
 	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
