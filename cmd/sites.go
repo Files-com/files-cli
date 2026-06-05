@@ -159,6 +159,7 @@ func Sites() *cobra.Command {
 	updateAllowed2faMethodStatic := true
 	updateAllowed2faMethodBypassForFtpSftpDav := true
 	updateRequire2fa := true
+	updateRequire2faExemptAllSsoUsers := true
 	updateUseDedicatedIpsForSmtp := true
 	updateLdapEnabled := true
 	updateLdapSecure := true
@@ -583,6 +584,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("require-2fa") {
 				mapParams["require_2fa"] = updateRequire2fa
 			}
+			if cmd.Flags().Changed("require-2fa-exempt-all-sso-users") {
+				mapParams["require_2fa_exempt_all_sso_users"] = updateRequire2faExemptAllSsoUsers
+			}
 			if cmd.Flags().Changed("require-2fa-user-type") {
 				lib.FlagUpdate(cmd, "require_2fa_user_type", paramsSiteUpdate.Require2faUserType, mapParams)
 			}
@@ -874,6 +878,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodStatic, "allowed-2fa-method-static", updateAllowed2faMethodStatic, "Is OTP via static codes for two factor authentication allowed?")
 	cmdUpdate.Flags().BoolVar(&updateAllowed2faMethodBypassForFtpSftpDav, "allowed-2fa-method-bypass-for-ftp-sftp-dav", updateAllowed2faMethodBypassForFtpSftpDav, "Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?")
 	cmdUpdate.Flags().BoolVar(&updateRequire2fa, "require-2fa", updateRequire2fa, "Require two-factor authentication for all users?")
+	cmdUpdate.Flags().BoolVar(&updateRequire2faExemptAllSsoUsers, "require-2fa-exempt-all-sso-users", updateRequire2faExemptAllSsoUsers, "If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Require2faUserType, "require-2fa-user-type", "", "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2Top, "color2-top", "", "Top bar background color")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.Color2Left, "color2-left", "", "Page link and button color")

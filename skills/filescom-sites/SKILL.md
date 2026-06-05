@@ -158,6 +158,7 @@ Update Site Settings.
 | `--allowed-2fa-method-static` | bool | Is OTP via static codes for two factor authentication allowed? |
 | `--allowed-2fa-method-bypass-for-ftp-sftp-dav` | bool | Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV? |
 | `--require-2fa` | bool | Require two-factor authentication for all users? |
+| `--require-2fa-exempt-all-sso-users` | bool | If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement. |
 | `--require-2fa-user-type` | string | What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)? |
 | `--color2-top` | string | Top bar background color |
 | `--color2-left` | string | Page link and button color |

@@ -115,7 +115,7 @@ Create User.
 | `--ssl-required` | enum | SSL required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--sso-strategy-id` | int64 | SSO (Single Sign On) strategy ID for the user, if applicable. |
 | `--subscribe-to-newsletter` | bool | Is the user subscribed to the newsletter? |
-| `--require-2fa` | enum | 2FA required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
+| `--require-2fa` | enum | 2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--tags` | string | Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--time-zone` | string | User time zone |
 | `--user-root` | string | Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface. |
@@ -211,7 +211,7 @@ Update User.
 | `--ssl-required` | enum | SSL required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--sso-strategy-id` | int64 | SSO (Single Sign On) strategy ID for the user, if applicable. |
 | `--subscribe-to-newsletter` | bool | Is the user subscribed to the newsletter? |
-| `--require-2fa` | enum | 2FA required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
+| `--require-2fa` | enum | 2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--tags` | string | Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--time-zone` | string | User time zone |
 | `--user-root` | string | Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface. |

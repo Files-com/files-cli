@@ -11737,6 +11737,12 @@
           "description": "Require two-factor authentication for all users?"
         },
         {
+          "name": "--require-2fa-exempt-all-sso-users",
+          "type": "bool",
+          "required": false,
+          "description": "If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement."
+        },
+        {
           "name": "--require-2fa-user-type",
           "type": "string",
           "required": false,
@@ -13663,7 +13669,7 @@
           "name": "--require-2fa",
           "type": "enum",
           "required": false,
-          "description": "2FA required setting"
+          "description": "2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed."
         },
         {
           "name": "--tags",
@@ -14103,7 +14109,7 @@
           "name": "--require-2fa",
           "type": "enum",
           "required": false,
-          "description": "2FA required setting"
+          "description": "2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed."
         },
         {
           "name": "--tags",
