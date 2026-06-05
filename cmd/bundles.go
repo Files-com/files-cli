@@ -38,6 +38,7 @@ func Bundles() *cobra.Command {
 	var listFilterPrefixArgs []string
 	var listFilterLtArgs []string
 	var listFilterLteqArgs []string
+	listDeleted := true
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -101,6 +102,10 @@ func Bundles() *cobra.Command {
 				params.FilterLteq = parsedListFilterLteq
 			}
 
+			if cmd.Flags().Changed("deleted") {
+				params.Deleted = flib.Bool(listDeleted)
+			}
+
 			client := bundle.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
 			it.OnPageError = func(err error) (*[]interface{}, error) {
@@ -147,6 +152,7 @@ func Bundles() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsBundleList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsBundleList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsBundleList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
+	cmdList.Flags().BoolVar(&listDeleted, "deleted", listDeleted, "If true, only list deleted Share Links.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")

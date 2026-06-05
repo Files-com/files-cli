@@ -2137,6 +2137,12 @@
           "type": "object",
           "required": false,
           "description": "If set, return records where the specified field is less than or equal the supplied value. Valid fields are `created_at` and `expires_at`."
+        },
+        {
+          "name": "--deleted",
+          "type": "bool",
+          "required": false,
+          "description": "If true, only list deleted Share Links."
         }
       ]
     },

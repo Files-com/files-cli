@@ -29,6 +29,7 @@ List Share Links.
 | `--filter-prefix` | object | If set, return records where the specified field is prefixed by the supplied value. Valid fields are `code`. |
 | `--filter-lt` | object | If set, return records where the specified field is less than the supplied value. Valid fields are `created_at` and `expires_at`. |
 | `--filter-lteq` | object | If set, return records where the specified field is less than or equal the supplied value. Valid fields are `created_at` and `expires_at`. |
+| `--deleted` | bool | If true, only list deleted Share Links. |
 
 ### `files-cli bundles find`
 
