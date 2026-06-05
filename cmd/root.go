@@ -58,7 +58,8 @@ const (
 )
 
 const (
-	userAgentPattern = "Files.com CLI %s"
+	userAgentPattern   = "Files.com CLI %s"
+	userAgentSuffixEnv = "FILES_CLI_USER_AGENT_SUFFIX"
 )
 
 var (
@@ -219,10 +220,19 @@ func Init(version string, _commit string, _date string, config files.Config) {
 	date = _date
 	Version = version
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
-	config.UserAgent = fmt.Sprintf(userAgentPattern, strings.TrimSpace(Version))
+	config.UserAgent = cliUserAgent(Version)
 	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), contextKeyConfig, config)); err != nil {
 		checkErr(err)
 	}
+}
+
+func cliUserAgent(version string) string {
+	userAgent := fmt.Sprintf(userAgentPattern, strings.TrimSpace(version))
+	suffix := strings.Join(strings.Fields(os.Getenv(userAgentSuffixEnv)), " ")
+	if suffix == "" {
+		return userAgent
+	}
+	return fmt.Sprintf("%s %s", userAgent, suffix)
 }
 
 func init() {

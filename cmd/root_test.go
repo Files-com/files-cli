@@ -25,6 +25,18 @@ func TestOpenDebugLog(t *testing.T) {
 	require.Equal(t, os.FileMode(0600), info.Mode().Perm())
 }
 
+func TestCliUserAgentUsesBaseUserAgent(t *testing.T) {
+	t.Setenv(userAgentSuffixEnv, "")
+
+	require.Equal(t, "Files.com CLI 1.2.3", cliUserAgent("1.2.3\n"))
+}
+
+func TestCliUserAgentAppendsEnvironmentSuffix(t *testing.T) {
+	t.Setenv(userAgentSuffixEnv, "  Files.com   AI Assistant  ")
+
+	require.Equal(t, "Files.com CLI 1.2.3 Files.com AI Assistant", cliUserAgent("1.2.3"))
+}
+
 func TestLoadProfileAppliesSingleUseAPIKeyWithoutPersisting(t *testing.T) {
 	dir := t.TempDir()
 
