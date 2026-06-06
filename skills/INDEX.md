@@ -99,6 +99,7 @@ One skill per top-level CLI command.
 | [`filescom-outbound-connection-logs`](filescom-outbound-connection-logs/SKILL.md) | Outbound Connection Logs |
 | [`filescom-pending-work-events`](filescom-pending-work-events/SKILL.md) | Pending Work Events |
 | [`filescom-public-hosting-request-logs`](filescom-public-hosting-request-logs/SKILL.md) | Public Hosting Request Logs |
+| [`filescom-scheduled-exports`](filescom-scheduled-exports/SKILL.md) | Scheduled Exports |
 | [`filescom-scim-logs`](filescom-scim-logs/SKILL.md) | Scim Logs |
 | [`filescom-settings-changes`](filescom-settings-changes/SKILL.md) | Settings Changes |
 | [`filescom-sftp-action-logs`](filescom-sftp-action-logs/SKILL.md) | SFTP Action Logs |

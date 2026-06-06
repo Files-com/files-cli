@@ -9892,6 +9892,226 @@
       ]
     },
     {
+      "name": "scheduled-exports list",
+      "group": "scheduled-exports",
+      "description": "List Scheduled Exports",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `name`, `export_type` or `disabled`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `disabled` and `export_type`."
+        },
+        {
+          "name": "--filter-prefix",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is prefixed by the supplied value. Valid fields are `export_type`."
+        }
+      ]
+    },
+    {
+      "name": "scheduled-exports find",
+      "group": "scheduled-exports",
+      "description": "Show Scheduled Export",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Scheduled Export ID."
+        }
+      ]
+    },
+    {
+      "name": "scheduled-exports create",
+      "group": "scheduled-exports",
+      "description": "Create Scheduled Export",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Name for this scheduled export."
+        },
+        {
+          "name": "--export-type",
+          "type": "string",
+          "required": true,
+          "description": "Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit"
+        },
+        {
+          "name": "--export-options",
+          "type": "object",
+          "required": false,
+          "description": "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`."
+        },
+        {
+          "name": "--user-id",
+          "type": "int64",
+          "required": false,
+          "description": "Site Admin user who receives the completed export e-mail."
+        },
+        {
+          "name": "--disabled",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this scheduled export will not run."
+        },
+        {
+          "name": "--trigger",
+          "type": "enum",
+          "required": false,
+          "description": "Schedule trigger type: `daily` or `custom_schedule`."
+        },
+        {
+          "name": "--interval",
+          "type": "string",
+          "required": false,
+          "description": "If trigger is `daily`, this specifies how often to run the scheduled export."
+        },
+        {
+          "name": "--recurring-day",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": false,
+          "description": "Times of day in HH:MM format for schedule-driven exports."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone used by the scheduled export."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region used by schedule-driven exports."
+        }
+      ]
+    },
+    {
+      "name": "scheduled-exports update",
+      "group": "scheduled-exports",
+      "description": "Update Scheduled Export",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Scheduled Export ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Name for this scheduled export."
+        },
+        {
+          "name": "--export-type",
+          "type": "string",
+          "required": false,
+          "description": "Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit"
+        },
+        {
+          "name": "--export-options",
+          "type": "object",
+          "required": false,
+          "description": "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`."
+        },
+        {
+          "name": "--user-id",
+          "type": "int64",
+          "required": false,
+          "description": "Site Admin user who receives the completed export e-mail."
+        },
+        {
+          "name": "--disabled",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this scheduled export will not run."
+        },
+        {
+          "name": "--trigger",
+          "type": "enum",
+          "required": false,
+          "description": "Schedule trigger type: `daily` or `custom_schedule`."
+        },
+        {
+          "name": "--interval",
+          "type": "string",
+          "required": false,
+          "description": "If trigger is `daily`, this specifies how often to run the scheduled export."
+        },
+        {
+          "name": "--recurring-day",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": false,
+          "description": "Times of day in HH:MM format for schedule-driven exports."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone used by the scheduled export."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region used by schedule-driven exports."
+        }
+      ]
+    },
+    {
+      "name": "scheduled-exports delete",
+      "group": "scheduled-exports",
+      "description": "Delete Scheduled Export",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Scheduled Export ID."
+        }
+      ]
+    },
+    {
       "name": "scim-logs list",
       "group": "scim-logs",
       "description": "List Scim Logs",
