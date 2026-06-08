@@ -26,6 +26,7 @@ func TestOSTuningHighThroughputLinuxPlan(t *testing.T) {
 	require.Contains(t, output, "/var/lib/files.com/os-tuning/high-throughput-upload.snapshot")
 	require.Contains(t, output, "Inspect open file descriptor limits")
 	require.Contains(t, output, "Persist high-throughput open file descriptor limits")
+	require.Contains(t, output, "wildcard PAM limits for all users")
 	require.Contains(t, output, "LimitNOFILE")
 	require.Contains(t, output, "Restore")
 	require.Contains(t, output, "Requires: root or Administrator privileges")

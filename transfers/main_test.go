@@ -51,6 +51,7 @@ func TestAdaptiveConcurrencyDefaultsOnAndCanBeDisabled(t *testing.T) {
 
 func TestAdaptiveConcurrencyUsesV2DefaultCaps(t *testing.T) {
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = true
 	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
 	transfer.ConcurrentDirectoryScanning = manager.ConcurrentDirectoryList
@@ -65,6 +66,7 @@ func TestAdaptiveConcurrencyUsesV2DefaultCaps(t *testing.T) {
 
 func TestAdaptiveConcurrencyUsesDiagnosticFileConcurrencyCap(t *testing.T) {
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = true
 	transfer.AdaptiveUploadV2FileConcurrency = 128
 	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
@@ -79,6 +81,7 @@ func TestAdaptiveConcurrencyUsesDiagnosticFileConcurrencyCap(t *testing.T) {
 
 func TestAdaptiveConcurrencyRespectsExplicitConnectionLimit(t *testing.T) {
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = true
 	transfer.AdaptiveUploadV2FileConcurrency = 128
 	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
@@ -91,8 +94,74 @@ func TestAdaptiveConcurrencyRespectsExplicitConnectionLimit(t *testing.T) {
 	assert.Equal(t, manager.ConcurrentFileParts, transfer.Manager.FilePartsManager.Max())
 }
 
+func TestAdaptiveDownloadConcurrencyUsesV2DefaultCaps(t *testing.T) {
+	transfer := New()
+	transfer.UseDownloadMode()
+	transfer.AdaptiveConcurrency = true
+	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
+	transfer.ConcurrentDirectoryScanning = manager.ConcurrentDirectoryList
+
+	transfer.createManager()
+
+	assert.Equal(t, manager.AdaptiveDownloadV2ConcurrentFiles, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, 128, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, manager.AdaptiveDownloadV2ConcurrentFileParts, transfer.Manager.FilePartsManager.Max())
+	assert.Equal(t, 1024, transfer.Manager.FilePartsManager.Max())
+	assert.True(t, transfer.AdaptiveDownloadEnabled())
+}
+
+func TestAdaptiveDownloadConcurrencyCanBeDisabled(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.DownloadFlags(cmd)
+
+	assert.True(t, transfer.AdaptiveConcurrency)
+	assert.Equal(t, "true", cmd.Flags().Lookup("adaptive-concurrency").DefValue)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency", "false"))
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.False(t, transfer.AdaptiveConcurrency)
+}
+
+func TestDownloadSingleStreamUsesStaticTransferManager(t *testing.T) {
+	transfer := New()
+	transfer.UseDownloadMode()
+	transfer.AdaptiveConcurrency = true
+	transfer.ConcurrentConnectionLimit = 13
+	transfer.ConcurrentDirectoryScanning = 7
+	transfer.DownloadFilesAsSingleStream = true
+
+	transfer.createManager()
+
+	assert.Equal(t, 13, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, 13, transfer.Manager.FilePartsManager.Max())
+	assert.Equal(t, 7, transfer.Manager.DirectoryListingManager.Max())
+	assert.True(t, transfer.Manager.FilePartsManager.DownloadFilesAsSingleStream)
+	assert.False(t, transfer.AdaptiveUploadEnabled())
+	assert.False(t, transfer.AdaptiveDownloadEnabled())
+}
+
+func TestAdaptiveDownloadConcurrencyRespectsExplicitConnectionLimit(t *testing.T) {
+	transfer := New()
+	transfer.UseDownloadMode()
+	transfer.AdaptiveConcurrency = true
+	transfer.ConcurrentConnectionLimit = 13
+	transfer.ConcurrentConnectionLimitSet = true
+	transfer.ConcurrentDirectoryScanning = 7
+
+	transfer.createManager()
+
+	assert.Equal(t, 13, transfer.Manager.FilesManager.Max())
+	assert.Equal(t, 13, transfer.Manager.FilePartsManager.Max())
+	assert.Equal(t, 7, transfer.Manager.DirectoryListingManager.Max())
+}
+
 func TestBuildConfigLogsTransferManagerCaps(t *testing.T) {
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = true
 	transfer.AdaptiveUploadV2FileConcurrency = 128
 	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
@@ -128,6 +197,7 @@ func TestAdaptiveConcurrencyRaisesOpenFileLimit(t *testing.T) {
 	}
 
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = true
 	var logs bytes.Buffer
 	config := files_sdk.Config{Logger: log.New(&logs, "", 0)}.Init()
@@ -135,11 +205,41 @@ func TestAdaptiveConcurrencyRaisesOpenFileLimit(t *testing.T) {
 	transfer.raiseOpenFileLimit(config)
 
 	assert.True(t, called)
-	assert.Contains(t, logs.String(), "adaptive upload open file limit")
+	assert.Contains(t, logs.String(), "adaptive transfer open file limit")
 	assert.Contains(t, logs.String(), "open_file_limit_before_soft: 1024")
 	assert.Contains(t, logs.String(), "open_file_limit_after_soft: 65536")
 	assert.Contains(t, logs.String(), "open_file_limit_changed: true")
 	assert.Contains(t, logs.String(), "open_file_limit_hard_below_pref: false")
+}
+
+func TestAdaptiveDownloadRaisesOpenFileLimit(t *testing.T) {
+	original := raiseCurrentProcessOpenFileLimit
+	defer func() {
+		raiseCurrentProcessOpenFileLimit = original
+	}()
+
+	called := false
+	raiseCurrentProcessOpenFileLimit = func() (ostuning.OpenFileLimitResult, error) {
+		called = true
+		return ostuning.OpenFileLimitResult{
+			Supported:  true,
+			BeforeSoft: 1024,
+			BeforeHard: 65536,
+			AfterSoft:  65536,
+			Changed:    true,
+		}, nil
+	}
+
+	transfer := New()
+	transfer.UseDownloadMode()
+	transfer.AdaptiveConcurrency = true
+	var logs bytes.Buffer
+	config := files_sdk.Config{Logger: log.New(&logs, "", 0)}.Init()
+
+	transfer.raiseOpenFileLimit(config)
+
+	assert.True(t, called)
+	assert.Contains(t, logs.String(), "adaptive transfer open file limit")
 }
 
 func TestStaticConcurrencyDoesNotRaiseOpenFileLimit(t *testing.T) {
@@ -154,6 +254,7 @@ func TestStaticConcurrencyDoesNotRaiseOpenFileLimit(t *testing.T) {
 	}
 
 	transfer := New()
+	transfer.UseUploadMode()
 	transfer.AdaptiveConcurrency = false
 	var logs bytes.Buffer
 	config := files_sdk.Config{Logger: log.New(&logs, "", 0)}.Init()

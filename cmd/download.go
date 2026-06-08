@@ -30,22 +30,25 @@ func Download() *cobra.Command {
 			if len(args) > 1 && args[1] != "" {
 				localPath = args[1]
 			}
-			client := file.Client{Config: transfer.BuildConfig(config)}
+			transfer.UseDownloadMode()
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
+			client := file.Client{Config: transfer.BuildConfig(config)}
 			transfer.Init(ctx, cmd.OutOrStdout(), cmd.ErrOrStderr(), func() *file.Job {
 				transfer.StartLog("download")
 				return client.Downloader(
 					file.DownloaderParams{
-						RemotePath:    remotePath,
-						LocalPath:     localPath,
-						Sync:          transfer.SyncFlag,
-						Manager:       transfer.Manager,
-						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						PreserveTimes: transfer.DownloadPreserveTimes,
-						DryRun:        transfer.DryRun,
-						NoOverwrite:   transfer.NoOverwrite,
+						RemotePath:                           remotePath,
+						LocalPath:                            localPath,
+						Sync:                                 transfer.SyncFlag,
+						Manager:                              transfer.Manager,
+						RetryPolicy:                          file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						PreserveTimes:                        transfer.DownloadPreserveTimes,
+						DryRun:                               transfer.DryRun,
+						NoOverwrite:                          transfer.NoOverwrite,
+						AdaptiveConcurrency:                  transfer.AdaptiveDownloadEnabled(),
+						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveDownloadEnabled() && !transfer.ConcurrentConnectionLimitSet,
 					},
 					files_sdk.WithContext(ctx),
 				)

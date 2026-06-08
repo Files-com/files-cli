@@ -56,8 +56,9 @@ type Transfers struct {
 	NoOverwrite                 bool
 	DownloadFilesAsSingleStream bool
 	OpenConnectionStats         bool
-	// AdaptiveConcurrency enables upload V2 adaptive part concurrency for upload commands.
+	// AdaptiveConcurrency enables V2 adaptive part concurrency for transfer commands.
 	AdaptiveConcurrency bool
+	adaptiveUploadMode  bool
 	// AdaptiveUploadReadyRunwaySet records whether ready-runway flags were explicitly set.
 	AdaptiveUploadReadyRunwaySet bool
 	// AdaptiveUploadReadyRunwayParts is the number of parts V2 may prepare before concurrency admits them.
@@ -173,11 +174,31 @@ func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer
 }
 
 func (t *Transfers) createManager() {
-	if t.AdaptiveConcurrency && !t.ConcurrentConnectionLimitSet {
+	if t.AdaptiveUploadEnabled() && !t.ConcurrentConnectionLimitSet {
 		t.Manager = manager.New(t.adaptiveUploadV2FileConcurrencyCap(), manager.AdaptiveUploadV2ConcurrentFileParts, t.ConcurrentDirectoryScanning)
 		return
 	}
+	if t.AdaptiveDownloadEnabled() && !t.ConcurrentConnectionLimitSet {
+		t.Manager = manager.New(manager.AdaptiveDownloadV2ConcurrentFiles, manager.AdaptiveDownloadV2ConcurrentFileParts, t.ConcurrentDirectoryScanning)
+		return
+	}
 	t.Manager = manager.Build(t.ConcurrentConnectionLimit, t.ConcurrentDirectoryScanning, t.DownloadFilesAsSingleStream)
+}
+
+func (t *Transfers) UseUploadMode() {
+	t.adaptiveUploadMode = true
+}
+
+func (t *Transfers) UseDownloadMode() {
+	t.adaptiveUploadMode = false
+}
+
+func (t *Transfers) AdaptiveUploadEnabled() bool {
+	return t.adaptiveUploadMode && t.AdaptiveConcurrency
+}
+
+func (t *Transfers) AdaptiveDownloadEnabled() bool {
+	return !t.adaptiveUploadMode && t.AdaptiveConcurrency && !t.DownloadFilesAsSingleStream
 }
 
 func (t *Transfers) adaptiveUploadV2FileConcurrencyCap() int {
@@ -191,7 +212,8 @@ func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 	t.createManager()
 	config.Logger.Printf(keyvalue.New(map[string]interface{}{
 		"message":                    "transfer manager caps",
-		"adaptive_upload_enabled":    t.AdaptiveConcurrency,
+		"adaptive_upload_enabled":    t.AdaptiveUploadEnabled(),
+		"adaptive_download_enabled":  t.AdaptiveDownloadEnabled(),
 		"file_concurrency_cap":       t.Manager.FilesManager.Max(),
 		"part_concurrency_cap":       t.Manager.FilePartsManager.Max(),
 		"directory_listing_cap":      t.Manager.DirectoryListingManager.Max(),
@@ -203,7 +225,7 @@ func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 }
 
 func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
-	if !t.AdaptiveConcurrency {
+	if !t.AdaptiveUploadEnabled() && !t.AdaptiveDownloadEnabled() {
 		return
 	}
 	result, err := raiseCurrentProcessOpenFileLimit()
@@ -212,7 +234,7 @@ func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
 	}
 
 	fields := map[string]interface{}{
-		"message":                         "adaptive upload open file limit",
+		"message":                         "adaptive transfer open file limit",
 		"open_file_limit_supported":       result.Supported,
 		"open_file_limit_before_soft":     result.BeforeSoft,
 		"open_file_limit_before_hard":     result.BeforeHard,
@@ -1233,6 +1255,7 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 
 func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
+	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive download concurrency. The concurrent connection limit becomes a maximum cap.")
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
 	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during download. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during download. See https://git-scm.com/docs/gitignore#_pattern_format")

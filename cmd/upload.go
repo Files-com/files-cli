@@ -64,6 +64,7 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 				return err
 			}
 
+			transfer.UseUploadMode()
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
@@ -81,8 +82,8 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 						Ignore:                               *transfer.Ignore,
 						Include:                              *transfer.Include,
 						PreserveTimes:                        transfer.UploadPreserveTimes,
-						AdaptiveConcurrency:                  transfer.AdaptiveConcurrency,
-						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveConcurrency && !transfer.ConcurrentConnectionLimitSet,
+						AdaptiveConcurrency:                  transfer.AdaptiveUploadEnabled(),
+						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveUploadEnabled() && !transfer.ConcurrentConnectionLimitSet,
 						AdaptiveUploadReadyRunwaySet:         transfer.AdaptiveUploadReadyRunwaySet,
 						AdaptiveUploadReadyRunwayParts:       transfer.AdaptiveUploadReadyRunwayParts,
 						AdaptiveUploadReadyRunwayBytes:       transfer.AdaptiveUploadReadyRunwayBytes,

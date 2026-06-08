@@ -27,6 +27,7 @@ func Sync() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
+			transfer.UseUploadMode()
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
@@ -42,8 +43,8 @@ func Sync() *cobra.Command {
 						Ignore:                               *transfer.Ignore,
 						Include:                              *transfer.Include,
 						PreserveTimes:                        transfer.UploadPreserveTimes,
-						AdaptiveConcurrency:                  transfer.AdaptiveConcurrency,
-						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveConcurrency && !transfer.ConcurrentConnectionLimitSet,
+						AdaptiveConcurrency:                  transfer.AdaptiveUploadEnabled(),
+						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveUploadEnabled() && !transfer.ConcurrentConnectionLimitSet,
 						AdaptiveUploadReadyRunwaySet:         transfer.AdaptiveUploadReadyRunwaySet,
 						AdaptiveUploadReadyRunwayParts:       transfer.AdaptiveUploadReadyRunwayParts,
 						AdaptiveUploadReadyRunwayBytes:       transfer.AdaptiveUploadReadyRunwayBytes,
@@ -67,6 +68,7 @@ func Sync() *cobra.Command {
 		Use:  "pull",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			transfer.UseDownloadMode()
 			if err := transfer.ArgsCheck(cmd); err != nil {
 				return err
 			}
@@ -77,16 +79,18 @@ func Sync() *cobra.Command {
 				transfer.StartLog("download")
 				return client.Downloader(
 					file.DownloaderParams{
-						RemotePath:    remotePath,
-						LocalPath:     localPath,
-						Sync:          transfer.SyncFlag,
-						Manager:       transfer.Manager,
-						Ignore:        *transfer.Ignore,
-						Include:       *transfer.Include,
-						PreserveTimes: transfer.DownloadPreserveTimes,
-						RetryPolicy:   file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
-						DryRun:        transfer.DryRun,
-						NoOverwrite:   transfer.NoOverwrite,
+						RemotePath:                           remotePath,
+						LocalPath:                            localPath,
+						Sync:                                 transfer.SyncFlag,
+						Manager:                              transfer.Manager,
+						Ignore:                               *transfer.Ignore,
+						Include:                              *transfer.Include,
+						PreserveTimes:                        transfer.DownloadPreserveTimes,
+						RetryPolicy:                          file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
+						DryRun:                               transfer.DryRun,
+						NoOverwrite:                          transfer.NoOverwrite,
+						AdaptiveConcurrency:                  transfer.AdaptiveDownloadEnabled(),
+						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveDownloadEnabled() && !transfer.ConcurrentConnectionLimitSet,
 					},
 					files_sdk.WithContext(cmd.Context()),
 				)
