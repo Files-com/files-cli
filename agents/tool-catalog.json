@@ -10566,7 +10566,13 @@
           "name": "--splunk-token",
           "type": "string",
           "required": false,
-          "description": "Applicable only for destination type: splunk. Authentication token provided by Splunk."
+          "description": "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination."
+        },
+        {
+          "name": "--crowdstrike-token",
+          "type": "string",
+          "required": false,
+          "description": "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike."
         },
         {
           "name": "--azure-dcr-immutable-id",
@@ -10784,7 +10790,13 @@
           "name": "--splunk-token",
           "type": "string",
           "required": false,
-          "description": "Applicable only for destination type: splunk. Authentication token provided by Splunk."
+          "description": "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination."
+        },
+        {
+          "name": "--crowdstrike-token",
+          "type": "string",
+          "required": false,
+          "description": "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike."
         },
         {
           "name": "--azure-dcr-immutable-id",
@@ -10978,7 +10990,13 @@
           "name": "--splunk-token",
           "type": "string",
           "required": false,
-          "description": "Applicable only for destination type: splunk. Authentication token provided by Splunk."
+          "description": "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination."
+        },
+        {
+          "name": "--crowdstrike-token",
+          "type": "string",
+          "required": false,
+          "description": "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike."
         },
         {
           "name": "--azure-dcr-immutable-id",

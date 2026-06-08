@@ -39,7 +39,8 @@ Create SIEM HTTP Destination.
 | `--file-destination-path` | string | Applicable only for destination type: file. Destination folder path on Files.com. |
 | `--file-format` | enum | Applicable only for destination type: file. Generated file format. One of: `json`, `csv`. |
 | `--file-interval-minutes` | int64 | Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360. |
-| `--splunk-token` | string | Applicable only for destination type: splunk. Authentication token provided by Splunk. |
+| `--splunk-token` | string | Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination. |
+| `--crowdstrike-token` | string | Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike. |
 | `--azure-dcr-immutable-id` | string | Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule. |
 | `--azure-stream-name` | string | Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table. |
 | `--azure-oauth-client-credentials-tenant-id` | string | Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID. |
@@ -62,7 +63,7 @@ Create SIEM HTTP Destination.
 | `--email-send-enabled` | bool | Whether or not sending is enabled for email logs. |
 | `--exavault-api-request-send-enabled` | bool | Whether or not sending is enabled for exavault_api_request logs. |
 | `--settings-change-send-enabled` | bool | Whether or not sending is enabled for settings_change logs. |
-| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`. **Required.** |
+| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`, `crowdstrike`, `splunk_compatible`. **Required.** |
 | `--destination-url` | string | Destination Url |
 
 ### `files-cli siem-http-destinations send-test-entry`
@@ -72,7 +73,7 @@ send_test_entry SIEM HTTP Destination.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--siem-http-destination-id` | int64 | SIEM HTTP Destination ID |
-| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`. |
+| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`, `crowdstrike`, `splunk_compatible`. |
 | `--destination-url` | string | Destination Url |
 | `--name` | string | Name for this Destination |
 | `--additional-headers` | object | Additional HTTP Headers included in calls to the destination URL |
@@ -81,7 +82,8 @@ send_test_entry SIEM HTTP Destination.
 | `--file-destination-path` | string | Applicable only for destination type: file. Destination folder path on Files.com. |
 | `--file-format` | enum | Applicable only for destination type: file. Generated file format. One of: `json`, `csv`. |
 | `--file-interval-minutes` | int64 | Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360. |
-| `--splunk-token` | string | Applicable only for destination type: splunk. Authentication token provided by Splunk. |
+| `--splunk-token` | string | Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination. |
+| `--crowdstrike-token` | string | Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike. |
 | `--azure-dcr-immutable-id` | string | Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule. |
 | `--azure-stream-name` | string | Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table. |
 | `--azure-oauth-client-credentials-tenant-id` | string | Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID. |
@@ -119,7 +121,8 @@ Update SIEM HTTP Destination.
 | `--file-destination-path` | string | Applicable only for destination type: file. Destination folder path on Files.com. |
 | `--file-format` | enum | Applicable only for destination type: file. Generated file format. One of: `json`, `csv`. |
 | `--file-interval-minutes` | int64 | Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360. |
-| `--splunk-token` | string | Applicable only for destination type: splunk. Authentication token provided by Splunk. |
+| `--splunk-token` | string | Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination. |
+| `--crowdstrike-token` | string | Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike. |
 | `--azure-dcr-immutable-id` | string | Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule. |
 | `--azure-stream-name` | string | Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table. |
 | `--azure-oauth-client-credentials-tenant-id` | string | Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID. |
@@ -142,7 +145,7 @@ Update SIEM HTTP Destination.
 | `--email-send-enabled` | bool | Whether or not sending is enabled for email logs. |
 | `--exavault-api-request-send-enabled` | bool | Whether or not sending is enabled for exavault_api_request logs. |
 | `--settings-change-send-enabled` | bool | Whether or not sending is enabled for settings_change logs. |
-| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`. |
+| `--destination-type` | enum | Destination Type. One of: `generic`, `splunk`, `azure_legacy`, `qradar`, `sumo`, `rapid7`, `solar_winds`, `new_relic`, `datadog`, `azure`, `file`, `crowdstrike`, `splunk_compatible`. |
 | `--destination-url` | string | Destination Url |
 
 ### `files-cli siem-http-destinations delete`

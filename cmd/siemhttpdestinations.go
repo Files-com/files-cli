@@ -218,7 +218,8 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.FileFormat.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64Var(&paramsSiemHttpDestinationCreate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
-	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
+	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
+	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsTenantId, "azure-oauth-client-credentials-tenant-id", "", "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.")
@@ -364,7 +365,8 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.FileFormat.Enum()).MapKeys()))
 	cmdSendTestEntry.Flags().Int64Var(&paramsSiemHttpDestinationSendTestEntry.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
-	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
+	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
+	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.AzureOauthClientCredentialsTenantId, "azure-oauth-client-credentials-tenant-id", "", "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.")
@@ -478,6 +480,9 @@ func SiemHttpDestinations() *cobra.Command {
 			if cmd.Flags().Changed("splunk-token") {
 				lib.FlagUpdate(cmd, "splunk_token", paramsSiemHttpDestinationUpdate.SplunkToken, mapParams)
 			}
+			if cmd.Flags().Changed("crowdstrike-token") {
+				lib.FlagUpdate(cmd, "crowdstrike_token", paramsSiemHttpDestinationUpdate.CrowdstrikeToken, mapParams)
+			}
 			if cmd.Flags().Changed("azure-dcr-immutable-id") {
 				lib.FlagUpdate(cmd, "azure_dcr_immutable_id", paramsSiemHttpDestinationUpdate.AzureDcrImmutableId, mapParams)
 			}
@@ -566,7 +571,8 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.FileFormat.Enum()).MapKeys()))
 	cmdUpdate.Flags().Int64Var(&paramsSiemHttpDestinationUpdate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
-	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.SplunkToken, "splunk-token", "", "Applicable only for destination type: splunk. Authentication token provided by Splunk.")
+	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
+	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.AzureDcrImmutableId, "azure-dcr-immutable-id", "", "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.AzureStreamName, "azure-stream-name", "", "Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsTenantId, "azure-oauth-client-credentials-tenant-id", "", "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.")
