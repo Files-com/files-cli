@@ -219,6 +219,7 @@ func Notifications() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "If set, will only notify on actions made by a member of one of the specified groups")
 	cmdCreate.Flags().Int64SliceVar(&paramsNotificationCreate.TriggeringUserIds, "triggering-user-ids", []int64{}, "If set, will only notify on actions made one of the specified users")
 	cmdCreate.Flags().BoolVar(&createTriggerByShareRecipients, "trigger-by-share-recipients", createTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
+	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 	cmdCreate.Flags().Int64Var(&paramsNotificationCreate.GroupId, "group-id", 0, "The ID of the group to notify.  Provide `user_id`, `username` or `group_id`.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.GroupIds, "group-ids", "", "Group IDs when the notification requires multiple groups. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsNotificationCreate.Path, "path", "", "Path")
@@ -302,6 +303,9 @@ func Notifications() *cobra.Command {
 			if cmd.Flags().Changed("trigger-by-share-recipients") {
 				mapParams["trigger_by_share_recipients"] = updateTriggerByShareRecipients
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsNotificationUpdate.WorkspaceId, mapParams)
+			}
 
 			var notification interface{}
 			var err error
@@ -324,6 +328,7 @@ func Notifications() *cobra.Command {
 	cmdUpdate.Flags().Int64SliceVar(&paramsNotificationUpdate.TriggeringGroupIds, "triggering-group-ids", []int64{}, "If set, will only notify on actions made by a member of one of the specified groups")
 	cmdUpdate.Flags().Int64SliceVar(&paramsNotificationUpdate.TriggeringUserIds, "triggering-user-ids", []int64{}, "If set, will only notify on actions made one of the specified users")
 	cmdUpdate.Flags().BoolVar(&updateTriggerByShareRecipients, "trigger-by-share-recipients", updateTriggerByShareRecipients, "Notify when actions are performed by a share recipient?")
+	cmdUpdate.Flags().Int64Var(&paramsNotificationUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
