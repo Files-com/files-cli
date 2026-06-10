@@ -6170,7 +6170,7 @@
           "name": "--key-type",
           "type": "enum",
           "required": false,
-          "description": "Key type for which the rule will apply (gpg or ssh)."
+          "description": "Key type for which the rule will apply (gpg, ssh, or api)."
         },
         {
           "name": "--inactivity-days",
@@ -6220,7 +6220,7 @@
           "name": "--key-type",
           "type": "enum",
           "required": false,
-          "description": "Key type for which the rule will apply (gpg or ssh)."
+          "description": "Key type for which the rule will apply (gpg, ssh, or api)."
         },
         {
           "name": "--inactivity-days",
@@ -11517,6 +11517,12 @@
           "type": "int64",
           "required": false,
           "description": "Number of days to retain AS2 messages (incoming and outgoing)."
+        },
+        {
+          "name": "--username-display",
+          "type": "string",
+          "required": false,
+          "description": "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`."
         },
         {
           "name": "--session-expiry-minutes",
