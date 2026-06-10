@@ -135,6 +135,7 @@ func Syncs() *cobra.Command {
 	createDeleteEmptyFolders := true
 	createDisabled := true
 	createKeepAfterCopy := true
+	createAlwaysWriteTriggerFile := true
 	paramsSyncCreate := files_sdk.SyncCreateParams{}
 	SyncCreateTrigger := ""
 
@@ -163,6 +164,9 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("keep-after-copy") {
 				paramsSyncCreate.KeepAfterCopy = flib.Bool(createKeepAfterCopy)
 			}
+			if cmd.Flags().Changed("always-write-trigger-file") {
+				paramsSyncCreate.AlwaysWriteTriggerFile = flib.Bool(createAlwaysWriteTriggerFile)
+			}
 
 			var sync interface{}
 			var err error
@@ -190,6 +194,7 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdCreate.Flags().StringVar(&SyncCreateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdCreate.Flags().BoolVar(&createAlwaysWriteTriggerFile, "always-write-trigger-file", createAlwaysWriteTriggerFile, "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.WorkspaceId, "workspace-id", 0, "Workspace ID this sync belongs to")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -263,6 +268,7 @@ func Syncs() *cobra.Command {
 	updateDeleteEmptyFolders := true
 	updateDisabled := true
 	updateKeepAfterCopy := true
+	updateAlwaysWriteTriggerFile := true
 	paramsSyncUpdate := files_sdk.SyncUpdateParams{}
 	SyncUpdateTrigger := ""
 
@@ -350,6 +356,9 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("trigger-file") {
 				lib.FlagUpdate(cmd, "trigger_file", paramsSyncUpdate.TriggerFile, mapParams)
 			}
+			if cmd.Flags().Changed("always-write-trigger-file") {
+				mapParams["always_write_trigger_file"] = updateAlwaysWriteTriggerFile
+			}
 
 			var sync interface{}
 			var err error
@@ -378,6 +387,7 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdUpdate.Flags().StringVar(&SyncUpdateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
+	cmdUpdate.Flags().BoolVar(&updateAlwaysWriteTriggerFile, "always-write-trigger-file", updateAlwaysWriteTriggerFile, "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

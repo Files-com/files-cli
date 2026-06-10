@@ -12862,6 +12862,12 @@
           "description": "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync."
         },
         {
+          "name": "--always-write-trigger-file",
+          "type": "bool",
+          "required": false,
+          "description": "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred."
+        },
+        {
           "name": "--workspace-id",
           "type": "int64",
           "required": false,
@@ -13028,6 +13034,12 @@
           "type": "string",
           "required": false,
           "description": "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync."
+        },
+        {
+          "name": "--always-write-trigger-file",
+          "type": "bool",
+          "required": false,
+          "description": "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred."
         }
       ]
     },

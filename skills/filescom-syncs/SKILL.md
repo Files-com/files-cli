@@ -57,6 +57,7 @@ Create Sync.
 | `--sync-interval-minutes` | int64 | Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty. |
 | `--trigger` | enum | Trigger type: daily, custom_schedule, or manual. One of: `daily`, `custom_schedule`, `manual`. |
 | `--trigger-file` | string | Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync. |
+| `--always-write-trigger-file` | bool | If true, the trigger file will be sent at the end of a successful sync even when no files were transferred. |
 | `--workspace-id` | int64 | Workspace ID this sync belongs to |
 
 ### `files-cli syncs dry-run`
@@ -102,6 +103,7 @@ Update Sync.
 | `--sync-interval-minutes` | int64 | Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty. |
 | `--trigger` | enum | Trigger type: daily, custom_schedule, or manual. One of: `daily`, `custom_schedule`, `manual`. |
 | `--trigger-file` | string | Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync. |
+| `--always-write-trigger-file` | bool | If true, the trigger file will be sent at the end of a successful sync even when no files were transferred. |
 
 ### `files-cli syncs delete`
 
