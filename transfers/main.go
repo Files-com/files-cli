@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime/pprof"
 	"strings"
 	"sync"
@@ -56,6 +57,7 @@ type Transfers struct {
 	NoOverwrite                 bool
 	DownloadFilesAsSingleStream bool
 	OpenConnectionStats         bool
+	DirectAgentTransfers        bool
 	// AdaptiveConcurrency enables V2 adaptive part concurrency for transfer commands.
 	AdaptiveConcurrency bool
 	adaptiveUploadMode  bool
@@ -219,9 +221,24 @@ func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 		"directory_listing_cap":      t.Manager.DirectoryListingManager.Max(),
 		"connection_limit_explicit":  t.ConcurrentConnectionLimitSet,
 		"download_single_stream":     t.DownloadFilesAsSingleStream,
+		"direct_agent_transfers":     t.DirectAgentTransfers,
 		"diagnostic_file_cap_option": t.AdaptiveUploadV2FileConcurrency,
 	}))
-	return config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
+	config = config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
+	return setDirectAgentTransfers(config, t.DirectAgentTransfers)
+}
+
+func setDirectAgentTransfers(config files_sdk.Config, enabled bool) files_sdk.Config {
+	value := reflect.ValueOf(&config).Elem().FieldByName("DirectAgentTransfers")
+	if value.IsValid() && value.CanSet() && value.Kind() == reflect.Bool {
+		value.SetBool(enabled)
+	}
+	return config
+}
+
+func sdkSupportsDirectAgentTransfers() bool {
+	value := reflect.ValueOf(files_sdk.Config{}).FieldByName("DirectAgentTransfers")
+	return value.IsValid() && value.Kind() == reflect.Bool
 }
 
 func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
@@ -347,6 +364,10 @@ func (t *Transfers) TextFilterFormat() lib.FilterIter {
 }
 
 func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
+	if t.DirectAgentTransfers && !sdkSupportsDirectAgentTransfers() {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--direct-agent-transfers requires a Files SDK version that supports direct Agent transfers")
+	}
+
 	switch t.OutFormat[0] {
 	case "none", "progress":
 		return clierr.Errorf(clierr.ErrorCodeFatal, "''--output-format %v' unsupported", t.OutFormat[0])
@@ -1180,6 +1201,7 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
 	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
+	cmd.Flags().BoolVar(&t.DirectAgentTransfers, "direct-agent-transfers", t.DirectAgentTransfers, "Try direct Files Agent upload/download transfer paths when available.")
 	cmd.Flags().MarkHidden("test-progress-bar-out")
 	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
 	cmd.Flags().BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")

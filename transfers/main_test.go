@@ -49,6 +49,25 @@ func TestAdaptiveConcurrencyDefaultsOnAndCanBeDisabled(t *testing.T) {
 	assert.False(t, transfer.AdaptiveConcurrency)
 }
 
+func TestDirectAgentTransfersRequiresSDKSupport(t *testing.T) {
+	if sdkSupportsDirectAgentTransfers() {
+		t.Skip("current SDK dependency supports DirectAgentTransfers")
+	}
+
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	transfer.DirectAgentTransfers = true
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	err := transfer.ArgsCheck(cmd)
+
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "--direct-agent-transfers requires a Files SDK version")
+}
+
 func TestAdaptiveConcurrencyUsesV2DefaultCaps(t *testing.T) {
 	transfer := New()
 	transfer.UseUploadMode()
