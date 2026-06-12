@@ -2157,6 +2157,12 @@
           "type": "int64",
           "required": true,
           "description": "Bundle ID."
+        },
+        {
+          "name": "--deleted",
+          "type": "bool",
+          "required": false,
+          "description": "If true, show a deleted Share Link."
         }
       ]
     },

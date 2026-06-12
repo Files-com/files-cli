@@ -38,6 +38,7 @@ Show Share Link.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Bundle ID. **Required.** |
+| `--deleted` | bool | If true, show a deleted Share Link. |
 
 ### `files-cli bundles create`
 

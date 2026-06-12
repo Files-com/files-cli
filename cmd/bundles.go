@@ -162,6 +162,7 @@ func Bundles() *cobra.Command {
 	var fieldsFind []string
 	var formatFind []string
 	usePagerFind := true
+	findDeleted := true
 	paramsBundleFind := files_sdk.BundleFindParams{}
 
 	cmdFind := &cobra.Command{
@@ -174,6 +175,10 @@ func Bundles() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := bundle.Client{Config: config}
 
+			if cmd.Flags().Changed("deleted") {
+				paramsBundleFind.Deleted = flib.Bool(findDeleted)
+			}
+
 			var bundle interface{}
 			var err error
 			bundle, err = client.Find(paramsBundleFind, files_sdk.WithContext(ctx))
@@ -181,6 +186,7 @@ func Bundles() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
+	cmdFind.Flags().BoolVar(&findDeleted, "deleted", findDeleted, "If true, show a deleted Share Link.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
