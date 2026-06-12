@@ -1,14 +1,14 @@
 ---
 name: filescom-partner-site-requests
 description: |
-  A PartnerSiteRequest represents a request to link a partner's Files.com site with another Files.com site.
+  A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner.
 ---
 
 # filescom-partner-site-requests
 
-A PartnerSiteRequest represents a request to link a partner's Files.com site with another Files.com site.
+A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner. The Guest Partner's Files.com Site is referred to as the Guest Site in this relationship.
 
-The Site with the Partner can initiate a request, which generates a pairing key. The target site admin must then approve the request using the pairing key.
+The Partner Admin user representing the Guest on the Host Partner can initiate a request, which generates a pairing key. The Guest Site admin must then approve the request. This ensures that the Partner Admin user representing the Guest on the Host Partner and the Site Admins of the Site are in agreement that the linking should occur.
 
 All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
@@ -34,7 +34,7 @@ Create Partner Site Request.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--partner-id` | int64 | Partner ID to link with **Required.** |
+| `--host-partner-id` | int64 | Host Partner ID to link with **Required.** |
 | `--site-url` | string | Site URL to link to **Required.** |
 
 ### `files-cli partner-site-requests reject`

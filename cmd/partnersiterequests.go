@@ -127,7 +127,7 @@ func PartnerSiteRequests() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), partnerSiteRequest, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().Int64Var(&paramsPartnerSiteRequestCreate.PartnerId, "partner-id", 0, "Partner ID to link with")
+	cmdCreate.Flags().Int64Var(&paramsPartnerSiteRequestCreate.HostPartnerId, "host-partner-id", 0, "Host Partner ID to link with")
 	cmdCreate.Flags().StringVar(&paramsPartnerSiteRequestCreate.SiteUrl, "site-url", "", "Site URL to link to")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")

@@ -7162,10 +7162,10 @@
       "auth_required": true,
       "parameters": [
         {
-          "name": "--partner-id",
+          "name": "--host-partner-id",
           "type": "int64",
           "required": true,
-          "description": "Partner ID to link with"
+          "description": "Host Partner ID to link with"
         },
         {
           "name": "--site-url",
