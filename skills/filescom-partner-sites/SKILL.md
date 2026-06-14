@@ -12,15 +12,11 @@ All subcommands also accept the global flags documented in [`CONTEXT.md`](../../
 
 ## Commands
 
-### `files-cli partner-sites linkeds`
+### `files-cli partner-sites delete`
 
-Get Partner Sites linked to the current Site.
+Delete Partner Site.
 
-No flags beyond the global ones.
-
-### `files-cli partner-sites list`
-
-List Partner Sites.
-
-No flags beyond the global ones.
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Partner Site ID. **Required.** |
 

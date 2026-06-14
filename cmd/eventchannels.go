@@ -157,6 +157,7 @@ func EventChannels() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsEventChannelCreate.Name, "name", "", "Event Channel name.")
+	cmdCreate.Flags().Int64Var(&paramsEventChannelCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace.")
 	cmdCreate.Flags().StringVar(&paramsEventChannelCreate.Description, "description", "", "Event Channel description.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Channel can dispatch events.")
 	cmdCreate.Flags().BoolVar(&createDefaultChannel, "default-channel", createDefaultChannel, "Whether this Event Channel is the default destination for newly published events.")
@@ -194,6 +195,9 @@ func EventChannels() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsEventChannelUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsEventChannelUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsEventChannelUpdate.Description, mapParams)
 			}
@@ -212,6 +216,7 @@ func EventChannels() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsEventChannelUpdate.Id, "id", 0, "Event Channel ID.")
 	cmdUpdate.Flags().StringVar(&paramsEventChannelUpdate.Name, "name", "", "Event Channel name.")
+	cmdUpdate.Flags().Int64Var(&paramsEventChannelUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace.")
 	cmdUpdate.Flags().StringVar(&paramsEventChannelUpdate.Description, "description", "", "Event Channel description.")
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "Whether this Event Channel can dispatch events.")
 	cmdUpdate.Flags().BoolVar(&updateDefaultChannel, "default-channel", updateDefaultChannel, "Whether this Event Channel is the default destination for newly published events.")

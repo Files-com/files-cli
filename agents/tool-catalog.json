@@ -3074,13 +3074,13 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `name`, `enabled` or `default_channel`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `name`, `enabled`, `default_channel` or `workspace_id`."
         },
         {
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `enabled` and `default_channel`."
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `enabled`, `default_channel` or `workspace_id`. Valid field combinations are `[ workspace_id, enabled ]` and `[ workspace_id, default_channel ]`."
         }
       ]
     },
@@ -3109,6 +3109,12 @@
           "type": "string",
           "required": true,
           "description": "Event Channel name."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. 0 means the default workspace."
         },
         {
           "name": "--description",
@@ -3147,6 +3153,12 @@
           "type": "string",
           "required": false,
           "description": "Event Channel name."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. 0 means the default workspace."
         },
         {
           "name": "--description",
@@ -7144,7 +7156,18 @@
       "description": "List Partner Site Requests",
       "auth_required": true,
       "parameters": [
-
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `host_partner_id`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `host_partner_id`."
+        }
       ]
     },
     {
@@ -7174,10 +7197,10 @@
           "description": "Host Partner ID to link with"
         },
         {
-          "name": "--site-url",
+          "name": "--guest-site-url",
           "type": "string",
           "required": true,
-          "description": "Site URL to link to"
+          "description": "Guest Site URL to link to"
         }
       ]
     },
@@ -7188,10 +7211,10 @@
       "auth_required": true,
       "parameters": [
         {
-          "name": "--id",
-          "type": "int64",
+          "name": "--pairing-key",
+          "type": "string",
           "required": true,
-          "description": "Partner Site Request ID."
+          "description": "Pairing key for the partner site request"
         }
       ]
     },
@@ -7202,10 +7225,10 @@
       "auth_required": true,
       "parameters": [
         {
-          "name": "--id",
-          "type": "int64",
+          "name": "--pairing-key",
+          "type": "string",
           "required": true,
-          "description": "Partner Site Request ID."
+          "description": "Pairing key for the partner site request"
         }
       ]
     },
@@ -7224,21 +7247,17 @@
       ]
     },
     {
-      "name": "partner-sites linkeds",
+      "name": "partner-sites delete",
       "group": "partner-sites",
-      "description": "Get Partner Sites linked to the current Site",
+      "description": "Delete Partner Site",
       "auth_required": true,
       "parameters": [
-
-      ]
-    },
-    {
-      "name": "partner-sites list",
-      "group": "partner-sites",
-      "description": "List Partner Sites",
-      "auth_required": true,
-      "parameters": [
-
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Site ID."
+        }
       ]
     },
     {

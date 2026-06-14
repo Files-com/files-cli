@@ -18,7 +18,10 @@ All subcommands also accept the global flags documented in [`CONTEXT.md`](../../
 
 List Partner Site Requests.
 
-No flags beyond the global ones.
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `host_partner_id`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `host_partner_id`. |
 
 ### `files-cli partner-site-requests find-by-pairing-key`
 
@@ -35,7 +38,7 @@ Create Partner Site Request.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--host-partner-id` | int64 | Host Partner ID to link with **Required.** |
-| `--site-url` | string | Site URL to link to **Required.** |
+| `--guest-site-url` | string | Guest Site URL to link to **Required.** |
 
 ### `files-cli partner-site-requests reject`
 
@@ -43,7 +46,7 @@ Reject partner site request.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Partner Site Request ID. **Required.** |
+| `--pairing-key` | string | Pairing key for the partner site request **Required.** |
 
 ### `files-cli partner-site-requests approve`
 
@@ -51,7 +54,7 @@ Approve partner site request.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Partner Site Request ID. **Required.** |
+| `--pairing-key` | string | Pairing key for the partner site request **Required.** |
 
 ### `files-cli partner-site-requests delete`
 
