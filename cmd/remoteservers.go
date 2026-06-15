@@ -180,6 +180,7 @@ func RemoteServers() *cobra.Command {
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateBufferUploads := ""
 	RemoteServerCreateFilesAgentPermissionSet := ""
+	RemoteServerCreateGoogleCloudStorageAuthenticationMethod := ""
 	RemoteServerCreateOneDriveAccountType := ""
 	RemoteServerCreateServerCertificate := ""
 	RemoteServerCreateServerType := ""
@@ -204,6 +205,11 @@ func RemoteServers() *cobra.Command {
 			paramsRemoteServerCreate.FilesAgentPermissionSet, RemoteServerCreateFilesAgentPermissionSetErr = lib.FetchKey("files-agent-permission-set", paramsRemoteServerCreate.FilesAgentPermissionSet.Enum(), RemoteServerCreateFilesAgentPermissionSet)
 			if RemoteServerCreateFilesAgentPermissionSet != "" && RemoteServerCreateFilesAgentPermissionSetErr != nil {
 				return RemoteServerCreateFilesAgentPermissionSetErr
+			}
+			var RemoteServerCreateGoogleCloudStorageAuthenticationMethodErr error
+			paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod, RemoteServerCreateGoogleCloudStorageAuthenticationMethodErr = lib.FetchKey("google-cloud-storage-authentication-method", paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum(), RemoteServerCreateGoogleCloudStorageAuthenticationMethod)
+			if RemoteServerCreateGoogleCloudStorageAuthenticationMethod != "" && RemoteServerCreateGoogleCloudStorageAuthenticationMethodErr != nil {
+				return RemoteServerCreateGoogleCloudStorageAuthenticationMethodErr
 			}
 			var RemoteServerCreateOneDriveAccountTypeErr error
 			paramsRemoteServerCreate.OneDriveAccountType, RemoteServerCreateOneDriveAccountTypeErr = lib.FetchKey("one-drive-account-type", paramsRemoteServerCreate.OneDriveAccountType.Enum(), RemoteServerCreateOneDriveAccountType)
@@ -297,7 +303,9 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
+	cmdCreate.Flags().StringVar(&RemoteServerCreateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageOauthScope, "google-cloud-storage-oauth-scope", "", "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Hostname, "hostname", "", "Hostname or IP address")
@@ -424,6 +432,7 @@ func RemoteServers() *cobra.Command {
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateBufferUploads := ""
 	RemoteServerUpdateFilesAgentPermissionSet := ""
+	RemoteServerUpdateGoogleCloudStorageAuthenticationMethod := ""
 	RemoteServerUpdateOneDriveAccountType := ""
 	RemoteServerUpdateServerCertificate := ""
 	RemoteServerUpdateServerType := ""
@@ -453,6 +462,11 @@ func RemoteServers() *cobra.Command {
 			paramsRemoteServerUpdate.FilesAgentPermissionSet, RemoteServerUpdateFilesAgentPermissionSetErr = lib.FetchKey("files-agent-permission-set", paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum(), RemoteServerUpdateFilesAgentPermissionSet)
 			if RemoteServerUpdateFilesAgentPermissionSet != "" && RemoteServerUpdateFilesAgentPermissionSetErr != nil {
 				return RemoteServerUpdateFilesAgentPermissionSetErr
+			}
+			var RemoteServerUpdateGoogleCloudStorageAuthenticationMethodErr error
+			paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod, RemoteServerUpdateGoogleCloudStorageAuthenticationMethodErr = lib.FetchKey("google-cloud-storage-authentication-method", paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum(), RemoteServerUpdateGoogleCloudStorageAuthenticationMethod)
+			if RemoteServerUpdateGoogleCloudStorageAuthenticationMethod != "" && RemoteServerUpdateGoogleCloudStorageAuthenticationMethodErr != nil {
+				return RemoteServerUpdateGoogleCloudStorageAuthenticationMethodErr
 			}
 			var RemoteServerUpdateOneDriveAccountTypeErr error
 			paramsRemoteServerUpdate.OneDriveAccountType, RemoteServerUpdateOneDriveAccountTypeErr = lib.FetchKey("one-drive-account-type", paramsRemoteServerUpdate.OneDriveAccountType.Enum(), RemoteServerUpdateOneDriveAccountType)
@@ -607,8 +621,14 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("outbound-agent-id") {
 				lib.FlagUpdate(cmd, "outbound_agent_id", paramsRemoteServerUpdate.OutboundAgentId, mapParams)
 			}
+			if cmd.Flags().Changed("google-cloud-storage-authentication-method") {
+				lib.FlagUpdate(cmd, "google_cloud_storage_authentication_method", paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod, mapParams)
+			}
 			if cmd.Flags().Changed("google-cloud-storage-bucket") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_bucket", paramsRemoteServerUpdate.GoogleCloudStorageBucket, mapParams)
+			}
+			if cmd.Flags().Changed("google-cloud-storage-oauth-scope") {
+				lib.FlagUpdate(cmd, "google_cloud_storage_oauth_scope", paramsRemoteServerUpdate.GoogleCloudStorageOauthScope, mapParams)
 			}
 			if cmd.Flags().Changed("google-cloud-storage-project-id") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_project_id", paramsRemoteServerUpdate.GoogleCloudStorageProjectId, mapParams)
@@ -751,7 +771,9 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
+	cmdUpdate.Flags().StringVar(&RemoteServerUpdateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageOauthScope, "google-cloud-storage-oauth-scope", "", "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Hostname, "hostname", "", "Hostname or IP address")

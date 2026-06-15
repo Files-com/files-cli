@@ -9001,10 +9001,22 @@
           "description": "Route traffic to outbound on a files-agent"
         },
         {
+          "name": "--google-cloud-storage-authentication-method",
+          "type": "enum",
+          "required": false,
+          "description": "Google Cloud Storage: Authentication method. Can be json, hmac, or oauth."
+        },
+        {
           "name": "--google-cloud-storage-bucket",
           "type": "string",
           "required": false,
           "description": "Google Cloud Storage: Bucket Name"
+        },
+        {
+          "name": "--google-cloud-storage-oauth-scope",
+          "type": "string",
+          "required": false,
+          "description": "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write."
         },
         {
           "name": "--google-cloud-storage-project-id",
@@ -9559,10 +9571,22 @@
           "description": "Route traffic to outbound on a files-agent"
         },
         {
+          "name": "--google-cloud-storage-authentication-method",
+          "type": "enum",
+          "required": false,
+          "description": "Google Cloud Storage: Authentication method. Can be json, hmac, or oauth."
+        },
+        {
           "name": "--google-cloud-storage-bucket",
           "type": "string",
           "required": false,
           "description": "Google Cloud Storage: Bucket Name"
+        },
+        {
+          "name": "--google-cloud-storage-oauth-scope",
+          "type": "string",
+          "required": false,
+          "description": "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write."
         },
         {
           "name": "--google-cloud-storage-project-id",

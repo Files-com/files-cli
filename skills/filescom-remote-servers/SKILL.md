@@ -20,9 +20,10 @@ S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Op
 
 S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.
 
-Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:
-  - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
+Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):
+  - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
   - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
+  - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google
 
 Wasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.
 
@@ -129,7 +130,9 @@ Create Remote Server.
 | `--files-agent-root` | string | Agent local root path |
 | `--files-agent-version` | string | Files Agent version |
 | `--outbound-agent-id` | int64 | Route traffic to outbound on a files-agent |
+| `--google-cloud-storage-authentication-method` | enum | Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. One of: `json`, `hmac`, `oauth`. |
 | `--google-cloud-storage-bucket` | string | Google Cloud Storage: Bucket Name |
+| `--google-cloud-storage-oauth-scope` | string | Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write. |
 | `--google-cloud-storage-project-id` | string | Google Cloud Storage: Project ID |
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
 | `--hostname` | string | Hostname or IP address |
@@ -239,7 +242,9 @@ Update Remote Server.
 | `--files-agent-root` | string | Agent local root path |
 | `--files-agent-version` | string | Files Agent version |
 | `--outbound-agent-id` | int64 | Route traffic to outbound on a files-agent |
+| `--google-cloud-storage-authentication-method` | enum | Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. One of: `json`, `hmac`, `oauth`. |
 | `--google-cloud-storage-bucket` | string | Google Cloud Storage: Bucket Name |
+| `--google-cloud-storage-oauth-scope` | string | Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write. |
 | `--google-cloud-storage-project-id` | string | Google Cloud Storage: Project ID |
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
 | `--hostname` | string | Hostname or IP address |
