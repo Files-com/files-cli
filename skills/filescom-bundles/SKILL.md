@@ -23,7 +23,7 @@ List Share Links.
 | --- | --- | --- |
 | `--user-id` | int64 | User ID.  Provide a value of `0` to operate the current session's user. |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `expires_at`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `expires_at`, `code`, `user_id` or `bypasses_site_expiration_rules`. Valid field combinations are `[ user_id, expires_at ]`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `expires_at`, `code`, `group_id`, `user_id` or `bypasses_site_expiration_rules`. Valid field combinations are `[ group_id, expires_at ]` and `[ user_id, expires_at ]`. |
 | `--filter-gt` | object | If set, return records where the specified field is greater than the supplied value. Valid fields are `created_at` and `expires_at`. |
 | `--filter-gteq` | object | If set, return records where the specified field is greater than or equal the supplied value. Valid fields are `created_at` and `expires_at`. |
 | `--filter-prefix` | object | If set, return records where the specified field is prefixed by the supplied value. Valid fields are `code`. |
@@ -121,10 +121,10 @@ Update Share Link.
 | `--start-access-on-date` | datetime | Date when share will start to be accessible. If `nil` access granted right after create. |
 | `--skip-email` | bool | BundleRegistrations can be saved without providing email? |
 | `--skip-name` | bool | BundleRegistrations can be saved without providing name? |
-| `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 | `--user-id` | int64 | The owning user id. Only site admins can set this. |
 | `--watermark-attachment-delete` | bool | If true, will delete the file stored in watermark_attachment |
 | `--watermark-attachment-file` | file | Preview watermark image applied to all bundle items. |
+| `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 
 ### `files-cli bundles delete`
 

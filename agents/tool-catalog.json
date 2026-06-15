@@ -2106,7 +2106,7 @@
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `expires_at`, `code`, `user_id` or `bypasses_site_expiration_rules`. Valid field combinations are `[ user_id, expires_at ]`."
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `expires_at`, `code`, `group_id`, `user_id` or `bypasses_site_expiration_rules`. Valid field combinations are `[ group_id, expires_at ]` and `[ user_id, expires_at ]`."
         },
         {
           "name": "--filter-gt",
@@ -2555,12 +2555,6 @@
           "description": "BundleRegistrations can be saved without providing name?"
         },
         {
-          "name": "--workspace-id",
-          "type": "int64",
-          "required": false,
-          "description": "Workspace ID. `0` means the default workspace."
-        },
-        {
           "name": "--user-id",
           "type": "int64",
           "required": false,
@@ -2577,6 +2571,12 @@
           "type": "file",
           "required": false,
           "description": "Preview watermark image applied to all bundle items."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. `0` means the default workspace."
         }
       ]
     },

@@ -474,9 +474,6 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("skip-name") {
 				mapParams["skip_name"] = updateSkipName
 			}
-			if cmd.Flags().Changed("workspace-id") {
-				lib.FlagUpdate(cmd, "workspace_id", paramsBundleUpdate.WorkspaceId, mapParams)
-			}
 			if cmd.Flags().Changed("user-id") {
 				lib.FlagUpdate(cmd, "user_id", paramsBundleUpdate.UserId, mapParams)
 			}
@@ -484,6 +481,9 @@ func Bundles() *cobra.Command {
 				mapParams["watermark_attachment_delete"] = updateWatermarkAttachmentDelete
 			}
 			if cmd.Flags().Changed("watermark-attachment-file") {
+			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsBundleUpdate.WorkspaceId, mapParams)
 			}
 
 			if paramsBundleUpdate.ExpiresAt.IsZero() {
@@ -528,9 +528,9 @@ func Bundles() *cobra.Command {
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "BundleRegistrations can be saved without providing email?")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
-	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.UserId, "user-id", 0, "The owning user id. Only site admins can set this.")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
+	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
