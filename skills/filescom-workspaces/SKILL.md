@@ -59,3 +59,13 @@ Delete Workspace.
 | --- | --- | --- |
 | `--id` | int64 | Workspace ID. **Required.** |
 
+## Limitations and considerations
+
+**A Workspace is just an organizational container — `id` and `name`.** Resources (users, folders, automations, remote servers, and so on) belong to a Workspace by carrying its ID; the Default workspace is ID `0`; any other workspace ID is a named workspace. Users in a named Workspace are confined to that Workspace, while a Site Administrator is not confined to any Workspace. A user belonging to a Workspace is Workspace Admin for it if they have the `workspace_admin` flag enabled.
+
+**Resources cannot be moved between Workspaces.** There is no operation that reassigns a folder, automation, remote server, or any other resource from one Workspace to another. Do not try to. The only supported Workspace reassignment is a Site Administrator returning a *user* to the Default workspace by changing that user's `workspace_id` from a non-zero value to `0` with `files-cli users update --id=USER_ID --workspace-id=0`.
+
+**Grant cross-Workspace access with Permissions, not by reassigning a Workspace.** A user on `workspace_id=0` is not confined to the Default Workspace. To give them access to resources that belong to other Workspaces, add a Permission record for that user on the relevant path (`files-cli permissions create --path=PATH --user-id=USER_ID --permission=LEVEL`) rather than changing their Workspace ID assignment, where PATH is prefixed like `_/Workspaces/$WORKSPACE_ID/$FOLDER_PATH`. If $FOLDER_PATH is empty, the permission is for the Workspace's root folder. If `admin` permission is granted on a Workspace's root folder, this grants access as Workspace Admin to the entire Workspace. See also the `filescom-permissions` skill.
+
+**Deleting a Workspace deletes everything in it.** Removing a Workspace removes all resources that belong to it, such as users, groups, partners, folders, automations, remote servers, syncs, and notifications.
+

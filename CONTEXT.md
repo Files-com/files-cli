@@ -79,6 +79,24 @@ To clear the stored workspace ID:
 files-cli config reset --workspace-id
 ```
 
+### Workspace constraints
+
+Workspaces isolate resources. A user assigned to a named Workspace (a non-zero `workspace_id`) can only see and act on resources within that Workspace; a Site Administrator is not confined to any Workspace.
+
+**Resources cannot be moved between Workspaces.** No API or CLI operation reassigns a folder, automation, remote server, or any other resource from one Workspace to another, so do not attempt it. The only supported Workspace reassignment is a Site Administrator returning a *user* to the Default workspace by changing that user's `workspace_id` from a non-zero value to `0`:
+
+```bash
+files-cli users update --id=USER_ID --workspace-id=0
+```
+
+**Give a Default-workspace user access to other Workspaces with Permissions, not by reassigning a Workspace.** A user on `workspace_id=0` is not confined to the Default Workspace. Grant them access to resources that belong to other Workspaces by adding a Permission record for that user on the relevant path, where the path is prefixed like `_/Workspaces/$WORKSPACE_ID/$FOLDER_PATH`:
+
+```bash
+files-cli permissions create --path=_/Workspaces/WORKSPACE_ID/FOLDER_PATH --user-id=USER_ID --permission=LEVEL
+```
+
+If `$FOLDER_PATH` is empty, the permission applies to the Workspace's root folder; granting `admin` on a Workspace's root folder grants Workspace Admin access to the entire Workspace. See the `filescom-permissions` skill for permission levels and the `filescom-workspaces` skill for managing Workspaces.
+
 ## Errors
 
 When a command fails, the response includes a `type` field — a stable, hierarchical string like `bad-request/missing-field` or `not-authorized/reauthentication-needed-action`. Route on `type`.

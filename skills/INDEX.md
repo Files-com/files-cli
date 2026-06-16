@@ -10,6 +10,9 @@ Cross-cutting workflows that span multiple domains.
 
 | Skill | Description |
 | --- | --- |
+| [`recipe-folder-size-and-counts`](recipes/recipe-folder-size-and-counts/SKILL.md) | Determine storage usage and file/folder counts on Files.com from the data the agent can actually read back, without recursively walking the tree; use this when the user asks "how big is this folder", "how much storage are we using", or "how many files do we have". |
+| [`recipe-generating-reports`](recipes/recipe-generating-reports/SKILL.md) | Choose the right built-in Files.com report or export instead of assembling one by hand; use this when the user asks for a report, audit, export, or summary — storage/usage, bandwidth/transfer, activity/audit logs, webhook delivery, permissions, group membership, or share-link audits. |
+| [`recipe-searching-for-files`](recipes/recipe-searching-for-files/SKILL.md) | Find files and folders on Files.com effectively, and pick the right tool for the job; use this when the user wants to locate files by name, path, modified time, or custom metadata. |
 | [`recipe-share-and-notify`](recipes/recipe-share-and-notify/SKILL.md) | Share a Files.com file or folder via a Share Link (bundle) and email it to recipients. |
 
 ## Domains
