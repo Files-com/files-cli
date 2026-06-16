@@ -428,7 +428,6 @@ A Workspace is a lightweight way to organize related resources inside a single F
 Customers commonly group resources by project, department, client, or region. Workspaces provide a built-in structure for that grouping, so the UI can operate within a clear "workspace context" and admins can delegate management for a subset of resources without requiring full site-level isolation.
 
 Every Site has an implicit Default workspace (ID `0`). Resources that are not explicitly assigned to a named workspace are considered part of the Default workspace.
-<div></div>
 
 ### Using Workspaces with the CLI
 
