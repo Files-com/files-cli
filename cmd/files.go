@@ -380,6 +380,102 @@ func Files() *cobra.Command {
 	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
 	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
 	Files.AddCommand(cmdMove)
+	var fieldsGpgDecrypt []string
+	var formatGpgDecrypt []string
+	usePagerGpgDecrypt := true
+	gpgDecryptUseAllPrivateKeys := true
+	gpgDecryptIgnoreMdcError := true
+	gpgDecryptOverwrite := true
+	paramsFileGpgDecrypt := files_sdk.FileGpgDecryptParams{}
+
+	cmdGpgDecrypt := &cobra.Command{
+		Use:   "gpg-decrypt [path]",
+		Short: `Decrypt a GPG-encrypted file and save it to a destination path`,
+		Long:  `Decrypt a GPG-encrypted file and save it to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("use-all-private-keys") {
+				paramsFileGpgDecrypt.UseAllPrivateKeys = flib.Bool(gpgDecryptUseAllPrivateKeys)
+			}
+			if cmd.Flags().Changed("ignore-mdc-error") {
+				paramsFileGpgDecrypt.IgnoreMdcError = flib.Bool(gpgDecryptIgnoreMdcError)
+			}
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileGpgDecrypt.Overwrite = flib.Bool(gpgDecryptOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileGpgDecrypt.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.GpgDecrypt(paramsFileGpgDecrypt, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgDecrypt), fieldsGpgDecrypt, usePagerGpgDecrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Path, "path", "", "Path to operate on.")
+	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Destination, "destination", "", "Destination file path for the decrypted file.")
+	cmdGpgDecrypt.Flags().Int64SliceVar(&paramsFileGpgDecrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used.")
+	cmdGpgDecrypt.Flags().Int64Var(&paramsFileGpgDecrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for decryption.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptUseAllPrivateKeys, "use-all-private-keys", gpgDecryptUseAllPrivateKeys, "Use every accessible private GPG key in the source workspace for decryption.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptIgnoreMdcError, "ignore-mdc-error", gpgDecryptIgnoreMdcError, "Ignore errors from the MDC (modification detection code) check.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptOverwrite, "overwrite", gpgDecryptOverwrite, "Overwrite existing file in the destination?")
+
+	cmdGpgDecrypt.Flags().StringSliceVar(&fieldsGpgDecrypt, "fields", []string{}, "comma separated list of field names")
+	cmdGpgDecrypt.Flags().StringSliceVar(&formatGpgDecrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGpgDecrypt.Flags().BoolVar(&usePagerGpgDecrypt, "use-pager", usePagerGpgDecrypt, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdGpgDecrypt)
+	var fieldsGpgEncrypt []string
+	var formatGpgEncrypt []string
+	usePagerGpgEncrypt := true
+	gpgEncryptArmor := true
+	gpgEncryptOverwrite := true
+	paramsFileGpgEncrypt := files_sdk.FileGpgEncryptParams{}
+
+	cmdGpgEncrypt := &cobra.Command{
+		Use:   "gpg-encrypt [path]",
+		Short: `Encrypt a file with GPG and save it to a destination path`,
+		Long:  `Encrypt a file with GPG and save it to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("armor") {
+				paramsFileGpgEncrypt.Armor = flib.Bool(gpgEncryptArmor)
+			}
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileGpgEncrypt.Overwrite = flib.Bool(gpgEncryptOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileGpgEncrypt.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.GpgEncrypt(paramsFileGpgEncrypt, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgEncrypt), fieldsGpgEncrypt, usePagerGpgEncrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Path, "path", "", "Path to operate on.")
+	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Destination, "destination", "", "Destination file path for the encrypted file.")
+	cmdGpgEncrypt.Flags().Int64SliceVar(&paramsFileGpgEncrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to encrypt with.")
+	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for encryption.")
+	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.SigningKeyId, "signing-key-id", 0, "Optional GPG Key ID to sign with.")
+	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptArmor, "armor", gpgEncryptArmor, "Output ASCII-armored encrypted data.")
+	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptOverwrite, "overwrite", gpgEncryptOverwrite, "Overwrite existing file in the destination?")
+
+	cmdGpgEncrypt.Flags().StringSliceVar(&fieldsGpgEncrypt, "fields", []string{}, "comma separated list of field names")
+	cmdGpgEncrypt.Flags().StringSliceVar(&formatGpgEncrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGpgEncrypt.Flags().BoolVar(&usePagerGpgEncrypt, "use-pager", usePagerGpgEncrypt, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdGpgEncrypt)
 	var fieldsUnzip []string
 	var formatUnzip []string
 	usePagerUnzip := true

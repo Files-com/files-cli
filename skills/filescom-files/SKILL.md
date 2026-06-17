@@ -104,6 +104,34 @@ Move File/Folder.
 | `--destination` | string | Move destination path. **Required.** |
 | `--overwrite` | bool | Overwrite existing file(s) in the destination? |
 
+### `files-cli files gpg-decrypt [path]`
+
+Decrypt a GPG-encrypted file and save it to a destination path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--destination` | string | Destination file path for the decrypted file. **Required.** |
+| `--gpg-key-ids` | []int64 | GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used. |
+| `--gpg-key-partner-id` | int64 | Partner ID whose GPG keys should be used for decryption. |
+| `--use-all-private-keys` | bool | Use every accessible private GPG key in the source workspace for decryption. |
+| `--ignore-mdc-error` | bool | Ignore errors from the MDC (modification detection code) check. |
+| `--overwrite` | bool | Overwrite existing file in the destination? |
+
+### `files-cli files gpg-encrypt [path]`
+
+Encrypt a file with GPG and save it to a destination path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--destination` | string | Destination file path for the encrypted file. **Required.** |
+| `--gpg-key-ids` | []int64 | GPG Key IDs to encrypt with. |
+| `--gpg-key-partner-id` | int64 | Partner ID whose GPG keys should be used for encryption. |
+| `--signing-key-id` | int64 | Optional GPG Key ID to sign with. |
+| `--armor` | bool | Output ASCII-armored encrypted data. |
+| `--overwrite` | bool | Overwrite existing file in the destination? |
+
 ### `files-cli files unzip [path]`
 
 Extract a ZIP file to a destination folder.

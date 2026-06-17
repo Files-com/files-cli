@@ -4727,6 +4727,106 @@
       ]
     },
     {
+      "name": "files gpg-decrypt",
+      "group": "files",
+      "description": "Decrypt a GPG-encrypted file and save it to a destination path",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Path to operate on."
+        },
+        {
+          "name": "--destination",
+          "type": "string",
+          "required": true,
+          "description": "Destination file path for the decrypted file."
+        },
+        {
+          "name": "--gpg-key-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used."
+        },
+        {
+          "name": "--gpg-key-partner-id",
+          "type": "int64",
+          "required": false,
+          "description": "Partner ID whose GPG keys should be used for decryption."
+        },
+        {
+          "name": "--use-all-private-keys",
+          "type": "bool",
+          "required": false,
+          "description": "Use every accessible private GPG key in the source workspace for decryption."
+        },
+        {
+          "name": "--ignore-mdc-error",
+          "type": "bool",
+          "required": false,
+          "description": "Ignore errors from the MDC (modification detection code) check."
+        },
+        {
+          "name": "--overwrite",
+          "type": "bool",
+          "required": false,
+          "description": "Overwrite existing file in the destination?"
+        }
+      ]
+    },
+    {
+      "name": "files gpg-encrypt",
+      "group": "files",
+      "description": "Encrypt a file with GPG and save it to a destination path",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Path to operate on."
+        },
+        {
+          "name": "--destination",
+          "type": "string",
+          "required": true,
+          "description": "Destination file path for the encrypted file."
+        },
+        {
+          "name": "--gpg-key-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "GPG Key IDs to encrypt with."
+        },
+        {
+          "name": "--gpg-key-partner-id",
+          "type": "int64",
+          "required": false,
+          "description": "Partner ID whose GPG keys should be used for encryption."
+        },
+        {
+          "name": "--signing-key-id",
+          "type": "int64",
+          "required": false,
+          "description": "Optional GPG Key ID to sign with."
+        },
+        {
+          "name": "--armor",
+          "type": "bool",
+          "required": false,
+          "description": "Output ASCII-armored encrypted data."
+        },
+        {
+          "name": "--overwrite",
+          "type": "bool",
+          "required": false,
+          "description": "Overwrite existing file in the destination?"
+        }
+      ]
+    },
+    {
       "name": "files unzip",
       "group": "files",
       "description": "Extract a ZIP file to a destination folder",
