@@ -2838,6 +2838,118 @@
       ]
     },
     {
+      "name": "custom-domains list",
+      "group": "custom-domains",
+      "description": "List Custom Domains",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `id`."
+        }
+      ]
+    },
+    {
+      "name": "custom-domains find",
+      "group": "custom-domains",
+      "description": "Show Custom Domain",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Custom Domain ID."
+        }
+      ]
+    },
+    {
+      "name": "custom-domains create",
+      "group": "custom-domains",
+      "description": "Create Custom Domain",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--destination",
+          "type": "enum",
+          "required": false,
+          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`."
+        },
+        {
+          "name": "--folder-behavior-id",
+          "type": "int64",
+          "required": false,
+          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior."
+        },
+        {
+          "name": "--ssl-certificate-id",
+          "type": "int64",
+          "required": false,
+          "description": "Current SSL certificate ID."
+        },
+        {
+          "name": "--domain",
+          "type": "string",
+          "required": true,
+          "description": "Customer-owned domain name."
+        }
+      ]
+    },
+    {
+      "name": "custom-domains update",
+      "group": "custom-domains",
+      "description": "Update Custom Domain",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Custom Domain ID."
+        },
+        {
+          "name": "--destination",
+          "type": "enum",
+          "required": false,
+          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`."
+        },
+        {
+          "name": "--folder-behavior-id",
+          "type": "int64",
+          "required": false,
+          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior."
+        },
+        {
+          "name": "--ssl-certificate-id",
+          "type": "int64",
+          "required": false,
+          "description": "Current SSL certificate ID."
+        },
+        {
+          "name": "--domain",
+          "type": "string",
+          "required": false,
+          "description": "Customer-owned domain name."
+        }
+      ]
+    },
+    {
+      "name": "custom-domains delete",
+      "group": "custom-domains",
+      "description": "Delete Custom Domain",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Custom Domain ID."
+        }
+      ]
+    },
+    {
       "name": "desktop-configuration-profiles list",
       "group": "desktop-configuration-profiles",
       "description": "List Desktop Configuration Profiles",
