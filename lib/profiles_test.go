@@ -301,26 +301,28 @@ func TestProfiles_SingleUseSessionIdIgnoresStoredExpiry(t *testing.T) {
 	require.Equal(t, "STORED_SESSION_ID", profiles.Current().SessionId)
 }
 
-func TestProfiles_StoredWorkspaceIdSetsHeader(t *testing.T) {
+func TestProfiles_StoredWorkspaceIdSetsConfig(t *testing.T) {
 	config := &files_sdk.Config{}
 	profiles := (&Profiles{Config: config}).Init()
 	profiles.Profile = "default"
 	profiles.Profiles["default"] = &Profile{WorkspaceId: "42"}
 	profiles.SetOnConfig()
 
-	require.Equal(t, "42", config.AdditionalHeaders["X-Files-Workspace-Id"])
+	require.NotNil(t, config.WorkspaceId)
+	require.Equal(t, int64(42), *config.WorkspaceId)
 }
 
 func TestProfiles_SingleUseWorkspaceIdOverridesStored(t *testing.T) {
 	config := &files_sdk.Config{}
 	profiles := (&Profiles{Config: config}).Init()
 	profiles.Profile = "default"
-	profiles.Profiles["default"] = &Profile{WorkspaceId: "STORED_WORKSPACE_ID"}
+	profiles.Profiles["default"] = &Profile{WorkspaceId: "42"}
 	profiles.SetOnConfig()
-	profiles.SetSingleUseWorkspaceId("CANARY_WORKSPACE_ID")
+	profiles.SetSingleUseWorkspaceId("84")
 
-	require.Equal(t, "CANARY_WORKSPACE_ID", config.AdditionalHeaders["X-Files-Workspace-Id"])
-	require.Equal(t, "STORED_WORKSPACE_ID", profiles.Current().WorkspaceId)
+	require.NotNil(t, config.WorkspaceId)
+	require.Equal(t, int64(84), *config.WorkspaceId)
+	require.Equal(t, "42", profiles.Current().WorkspaceId)
 }
 
 func TestProfiles_SingleUseWorkspaceIdDoesNotPersist(t *testing.T) {
@@ -329,9 +331,10 @@ func TestProfiles_SingleUseWorkspaceIdDoesNotPersist(t *testing.T) {
 	config := &files_sdk.Config{}
 	profile := &Profiles{ConfigDir: dir}
 	require.NoError(t, profile.Load(config, ""))
-	profile.SetSingleUseWorkspaceId("CANARY_WORKSPACE_ID")
+	profile.SetSingleUseWorkspaceId("84")
 
-	require.Equal(t, "CANARY_WORKSPACE_ID", config.AdditionalHeaders["X-Files-Workspace-Id"])
+	require.NotNil(t, config.WorkspaceId)
+	require.Equal(t, int64(84), *config.WorkspaceId)
 	require.Empty(t, profile.Current().WorkspaceId)
 
 	require.NoError(t, profile.Save())
@@ -339,7 +342,7 @@ func TestProfiles_SingleUseWorkspaceIdDoesNotPersist(t *testing.T) {
 	config = &files_sdk.Config{}
 	profile = &Profiles{ConfigDir: dir}
 	require.NoError(t, profile.Load(config, ""))
-	require.Empty(t, config.AdditionalHeaders["X-Files-Workspace-Id"])
+	require.Nil(t, config.WorkspaceId)
 	require.Empty(t, profile.Current().WorkspaceId)
 }
 

@@ -14,6 +14,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -99,8 +100,6 @@ var SessionExpiry = time.Hour * 6
 var CheckVersionEvery = time.Hour * 48
 
 const CLICurrentVersionURL = "https://api.github.com/repos/Files-com/files-cli/releases/latest"
-
-const workspaceIdHeader = "X-Files-Workspace-Id"
 
 func (p *Profiles) Current() *Profile {
 	env, ok := p.Profiles[p.Profile]
@@ -221,15 +220,16 @@ func (p *Profiles) SetOnConfig() {
 	p.Config.Environment = p.Current().Environment
 	p.Config.Language = p.Current().Language
 	if p.singleUseWorkspaceId == "" && p.Current().WorkspaceId != "" {
-		p.setWorkspaceIdHeader(p.Current().WorkspaceId)
+		p.setWorkspaceId(p.Current().WorkspaceId)
 	}
 }
 
-func (p *Profiles) setWorkspaceIdHeader(workspaceId string) {
-	if p.Config.AdditionalHeaders == nil {
-		p.Config.AdditionalHeaders = make(map[string]string)
+func (p *Profiles) setWorkspaceId(workspaceId string) {
+	workspaceIdInt, err := strconv.ParseInt(workspaceId, 10, 64)
+	if err != nil {
+		return
 	}
-	p.Config.AdditionalHeaders[workspaceIdHeader] = workspaceId
+	p.Config.WorkspaceId = &workspaceIdInt
 }
 
 // SetSingleUseAPIKey applies a request-only API key override without changing the stored profile.
@@ -257,7 +257,7 @@ func (p *Profiles) SetSingleUseWorkspaceId(workspaceId string) {
 		return
 	}
 	p.singleUseWorkspaceId = workspaceId
-	p.setWorkspaceIdHeader(workspaceId)
+	p.setWorkspaceId(workspaceId)
 }
 
 func (p *Profiles) Save() error {
