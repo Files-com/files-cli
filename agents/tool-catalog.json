@@ -7363,6 +7363,148 @@
       ]
     },
     {
+      "name": "partner-channels list",
+      "group": "partner-channels",
+      "description": "List Partner Channels",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `path` or `partner_id`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `partner_id` and `workspace_id`. Valid field combinations are `[ workspace_id, partner_id ]`."
+        }
+      ]
+    },
+    {
+      "name": "partner-channels find",
+      "group": "partner-channels",
+      "description": "Show Partner Channel",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel ID."
+        }
+      ]
+    },
+    {
+      "name": "partner-channels create",
+      "group": "partner-channels",
+      "description": "Create Partner Channel",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--from-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level from-Partner folder name override."
+        },
+        {
+          "name": "--from-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files uploaded by the Partner."
+        },
+        {
+          "name": "--to-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files delivered to the Partner."
+        },
+        {
+          "name": "--partner-id",
+          "type": "int64",
+          "required": true,
+          "description": "ID of the Partner this Channel belongs to."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Channel path relative to the Partner root folder."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the Workspace associated with this Partner Channel."
+        }
+      ]
+    },
+    {
+      "name": "partner-channels update",
+      "group": "partner-channels",
+      "description": "Update Partner Channel",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel ID."
+        },
+        {
+          "name": "--from-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level from-Partner folder name override."
+        },
+        {
+          "name": "--from-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files uploaded by the Partner."
+        },
+        {
+          "name": "--to-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files delivered to the Partner."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": false,
+          "description": "Channel path relative to the Partner root folder."
+        }
+      ]
+    },
+    {
+      "name": "partner-channels delete",
+      "group": "partner-channels",
+      "description": "Delete Partner Channel",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel ID."
+        }
+      ]
+    },
+    {
       "name": "partner-site-requests list",
       "group": "partner-site-requests",
       "description": "List Partner Site Requests",
