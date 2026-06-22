@@ -11879,6 +11879,12 @@
           "description": "Availability settings for AI features by user class"
         },
         {
+          "name": "--mcp-dcr-enabled",
+          "type": "bool",
+          "required": false,
+          "description": "Is OAuth DCR (dynamic client registration) for MCP enabled?"
+        },
+        {
           "name": "--additional-text-file-types",
           "type": "[]string",
           "required": false,

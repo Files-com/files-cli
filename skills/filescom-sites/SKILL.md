@@ -68,6 +68,7 @@ Update Site Settings.
 | `--left-navigation-visibility` | object | Visibility settings for account navigation |
 | `--disable-all-ai-features` | bool | If true, all AI features are disabled for this site. |
 | `--ai-feature-availability` | object | Availability settings for AI features by user class |
+| `--mcp-dcr-enabled` | bool | Is OAuth DCR (dynamic client registration) for MCP enabled? |
 | `--additional-text-file-types` | []string | Additional extensions that are considered text files |
 | `--bundle-require-note` | bool | Do Bundles require internal notes? |
 | `--bundle-send-shared-receipts` | bool | Do Bundle creators receive receipts of invitations? |

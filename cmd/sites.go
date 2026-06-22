@@ -90,6 +90,7 @@ func Sites() *cobra.Command {
 	updateMotdUseForFtp := true
 	updateMotdUseForSftp := true
 	updateDisableAllAiFeatures := true
+	updateMcpDcrEnabled := true
 	updateBundleRequireNote := true
 	updateBundleSendSharedReceipts := true
 	updateBundlesDefaultOwnedByPrimaryGroup := true
@@ -309,6 +310,9 @@ func Sites() *cobra.Command {
 					return parseUpdateAiFeatureAvailabilityErr
 				}
 				mapParams["ai_feature_availability"] = parsedUpdateAiFeatureAvailability
+			}
+			if cmd.Flags().Changed("mcp-dcr-enabled") {
+				mapParams["mcp_dcr_enabled"] = updateMcpDcrEnabled
 			}
 			if cmd.Flags().Changed("additional-text-file-types") {
 				lib.FlagUpdateLen(cmd, "additional_text_file_types", paramsSiteUpdate.AdditionalTextFileTypes, mapParams)
@@ -790,6 +794,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDisableAllAiFeatures, "disable-all-ai-features", updateDisableAllAiFeatures, "If true, all AI features are disabled for this site.")
 	cmdUpdate.Flags().StringVar(&updateAiFeatureAvailabilityJSON, "ai-feature-availability", "", "Availability settings for AI features by user class Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "ai-feature-availability", "json")
+	cmdUpdate.Flags().BoolVar(&updateMcpDcrEnabled, "mcp-dcr-enabled", updateMcpDcrEnabled, "Is OAuth DCR (dynamic client registration) for MCP enabled?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireNote, "bundle-require-note", updateBundleRequireNote, "Do Bundles require internal notes?")
 	cmdUpdate.Flags().BoolVar(&updateBundleSendSharedReceipts, "bundle-send-shared-receipts", updateBundleSendSharedReceipts, "Do Bundle creators receive receipts of invitations?")
