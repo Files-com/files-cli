@@ -90,6 +90,7 @@ One skill per top-level CLI command.
 | [`filescom-action-notification-exports`](filescom-action-notification-exports/SKILL.md) | Action Notification Exports |
 | [`filescom-api-request-logs`](filescom-api-request-logs/SKILL.md) | API Request Logs |
 | [`filescom-automation-logs`](filescom-automation-logs/SKILL.md) | Automation Logs |
+| [`filescom-chat-sessions`](filescom-chat-sessions/SKILL.md) | Chat Sessions |
 | [`filescom-email-logs`](filescom-email-logs/SKILL.md) | Email Logs |
 | [`filescom-exavault-api-request-logs`](filescom-exavault-api-request-logs/SKILL.md) | Exavault API Request Logs |
 | [`filescom-external-events`](filescom-external-events/SKILL.md) | External Events |

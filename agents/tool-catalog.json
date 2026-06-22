@@ -2595,6 +2595,29 @@
       ]
     },
     {
+      "name": "chat-sessions list",
+      "group": "chat-sessions",
+      "description": "List Chat Sessions",
+      "auth_required": true,
+      "parameters": [
+
+      ]
+    },
+    {
+      "name": "chat-sessions find",
+      "group": "chat-sessions",
+      "description": "Show Chat Session",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Chat Session ID."
+        }
+      ]
+    },
+    {
       "name": "child-site-management-policies list",
       "group": "child-site-management-policies",
       "description": "List Child Site Management Policies",
