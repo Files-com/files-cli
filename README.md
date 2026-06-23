@@ -46,12 +46,15 @@ Download the Zip archive (`*.zip`), extract the files from the archive, and plac
 
 #### Mac using Homebrew
 
-For systems with Homebrew available, use the following commands:
+For systems with Homebrew 6.0 or later, trust the Files.com CLI formula before installing it:
 
 ```shell
-brew tap Files-com/homebrew-tap
+brew tap files-com/tap
+brew trust --formula files-com/tap/files-cli
 brew install files-cli
 ```
+
+The `brew trust --formula files-com/tap/files-cli` command trusts only the `files-cli` formula. To trust the entire Files.com tap instead, run `brew trust files-com/tap` before installing. Homebrew versions earlier than 6.0 can install without the `brew trust` command.
 
 #### Mac without Homebrew
 
