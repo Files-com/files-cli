@@ -429,6 +429,12 @@
       "category": "not-authorized"
     },
     {
+      "type": "not-authorized/billing-information-hidden",
+      "title": "Billing Information Hidden",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
       "type": "not-authorized/billing-permission-required",
       "title": "Billing Permission Required",
       "http_code": 403,
