@@ -97,7 +97,7 @@ func ChatSessions() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), chatSession, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdFind.Flags().Int64Var(&paramsChatSessionFind.Id, "id", 0, "Chat Session ID.")
+	cmdFind.Flags().StringVar(&paramsChatSessionFind.Id, "id", "", "Chat Session ID.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

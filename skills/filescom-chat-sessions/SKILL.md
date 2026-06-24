@@ -24,5 +24,5 @@ Show Chat Session.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Chat Session ID. **Required.** |
+| `--id` | string | Chat Session ID. **Required.** |
 

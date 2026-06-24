@@ -2611,7 +2611,7 @@
       "parameters": [
         {
           "name": "--id",
-          "type": "int64",
+          "type": "string",
           "required": true,
           "description": "Chat Session ID."
         }
