@@ -36,7 +36,7 @@ Update Site Settings.
 | `--subdomain` | string | Site subdomain |
 | `--domain` | string | Custom domain |
 | `--domain-hsts-header` | bool | Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain? |
-| `--domain-letsencrypt-chain` | string | Letsencrypt chain to use when registering SSL Certificate for domain. |
+| `--domain-letsencrypt-chain` | string | Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026. |
 | `--email` | string | Main email for this site |
 | `--reply-to-email` | string | Reply-to email for this site |
 | `--allow-bundle-names` | bool | Are manual Bundle names allowed? |

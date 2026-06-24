@@ -11690,7 +11690,7 @@
           "name": "--domain-letsencrypt-chain",
           "type": "string",
           "required": false,
-          "description": "Letsencrypt chain to use when registering SSL Certificate for domain."
+          "description": "Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026."
         },
         {
           "name": "--email",
