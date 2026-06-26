@@ -104,6 +104,20 @@ Move File/Folder.
 | `--destination` | string | Move destination path. **Required.** |
 | `--overwrite` | bool | Overwrite existing file(s) in the destination? |
 
+### `files-cli files transform [path]`
+
+Transform a file and save the output to a destination path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--destination` | string | Destination file path for the transformed output. **Required.** |
+| `--transform-type` | string | Transform type. Supported values are `image_convert` and `document_convert`. **Required.** |
+| `--target-format` | string | Destination format to create. **Required.** |
+| `--width` | int64 | Maximum output width for image_convert. |
+| `--height` | int64 | Maximum output height for image_convert. |
+| `--overwrite` | bool | Overwrite existing file in the destination? |
+
 ### `files-cli files gpg-decrypt [path]`
 
 Decrypt a GPG-encrypted file and save it to a destination path.

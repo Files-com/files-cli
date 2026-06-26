@@ -4750,6 +4750,56 @@
       ]
     },
     {
+      "name": "files transform",
+      "group": "files",
+      "description": "Transform a file and save the output to a destination path",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Path to operate on."
+        },
+        {
+          "name": "--destination",
+          "type": "string",
+          "required": true,
+          "description": "Destination file path for the transformed output."
+        },
+        {
+          "name": "--transform-type",
+          "type": "string",
+          "required": true,
+          "description": "Transform type. Supported values are `image_convert` and `document_convert`."
+        },
+        {
+          "name": "--target-format",
+          "type": "string",
+          "required": true,
+          "description": "Destination format to create."
+        },
+        {
+          "name": "--width",
+          "type": "int64",
+          "required": false,
+          "description": "Maximum output width for image_convert."
+        },
+        {
+          "name": "--height",
+          "type": "int64",
+          "required": false,
+          "description": "Maximum output height for image_convert."
+        },
+        {
+          "name": "--overwrite",
+          "type": "bool",
+          "required": false,
+          "description": "Overwrite existing file in the destination?"
+        }
+      ]
+    },
+    {
       "name": "files gpg-decrypt",
       "group": "files",
       "description": "Decrypt a GPG-encrypted file and save it to a destination path",

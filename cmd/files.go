@@ -380,6 +380,48 @@ func Files() *cobra.Command {
 	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
 	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
 	Files.AddCommand(cmdMove)
+	var fieldsTransform []string
+	var formatTransform []string
+	usePagerTransform := true
+	transformOverwrite := true
+	paramsFileTransform := files_sdk.FileTransformParams{}
+
+	cmdTransform := &cobra.Command{
+		Use:   "transform [path]",
+		Short: `Transform a file and save the output to a destination path`,
+		Long:  `Transform a file and save the output to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileTransform.Overwrite = flib.Bool(transformOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileTransform.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.Transform(paramsFileTransform, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatTransform), fieldsTransform, usePagerTransform, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Path, "path", "", "Path to operate on.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Destination, "destination", "", "Destination file path for the transformed output.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert` and `document_convert`.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.TargetFormat, "target-format", "", "Destination format to create.")
+	cmdTransform.Flags().Int64Var(&paramsFileTransform.Width, "width", 0, "Maximum output width for image_convert.")
+	cmdTransform.Flags().Int64Var(&paramsFileTransform.Height, "height", 0, "Maximum output height for image_convert.")
+	cmdTransform.Flags().BoolVar(&transformOverwrite, "overwrite", transformOverwrite, "Overwrite existing file in the destination?")
+
+	cmdTransform.Flags().StringSliceVar(&fieldsTransform, "fields", []string{}, "comma separated list of field names")
+	cmdTransform.Flags().StringSliceVar(&formatTransform, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdTransform.Flags().BoolVar(&usePagerTransform, "use-pager", usePagerTransform, "Use $PAGER (.ie less, more, etc)")
+
+	Files.AddCommand(cmdTransform)
 	var fieldsGpgDecrypt []string
 	var formatGpgDecrypt []string
 	usePagerGpgDecrypt := true
