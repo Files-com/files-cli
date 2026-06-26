@@ -285,6 +285,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createFinalizeSnapshot, "finalize-snapshot", createFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.GroupId, "group-id", 0, "Owning group ID. If set, members of this group can view, edit, and share this Share Link.")
+	cmdCreate.Flags().StringVar(&paramsBundleCreate.InternalName, "internal-name", "", "Internal name for identifying this Share Link.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Note, "note", "", "Bundle internal note")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
@@ -438,6 +439,9 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("group-id") {
 				lib.FlagUpdate(cmd, "group_id", paramsBundleUpdate.GroupId, mapParams)
 			}
+			if cmd.Flags().Changed("internal-name") {
+				lib.FlagUpdate(cmd, "internal_name", paramsBundleUpdate.InternalName, mapParams)
+			}
 			if cmd.Flags().Changed("note") {
 				lib.FlagUpdate(cmd, "note", paramsBundleUpdate.Note, mapParams)
 			}
@@ -515,6 +519,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.GroupId, "group-id", 0, "Owning group ID. If set, members of this group can view, edit, and share this Share Link.")
+	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.InternalName, "internal-name", "", "Internal name for identifying this Share Link.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")

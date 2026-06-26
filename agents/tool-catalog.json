@@ -2239,6 +2239,12 @@
           "description": "Owning group ID. If set, members of this group can view, edit, and share this Share Link."
         },
         {
+          "name": "--internal-name",
+          "type": "string",
+          "required": false,
+          "description": "Internal name for identifying this Share Link."
+        },
+        {
           "name": "--description",
           "type": "string",
           "required": false,
@@ -2481,6 +2487,12 @@
           "type": "int64",
           "required": false,
           "description": "Owning group ID. If set, members of this group can view, edit, and share this Share Link."
+        },
+        {
+          "name": "--internal-name",
+          "type": "string",
+          "required": false,
+          "description": "Internal name for identifying this Share Link."
         },
         {
           "name": "--note",

@@ -57,6 +57,7 @@ Create Share Link.
 | `--finalize-snapshot` | bool | If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true. |
 | `--max-uses` | int64 | Maximum number of times bundle can be accessed |
 | `--group-id` | int64 | Owning group ID. If set, members of this group can view, edit, and share this Share Link. |
+| `--internal-name` | string | Internal name for identifying this Share Link. |
 | `--description` | string | Public description |
 | `--note` | string | Bundle internal note |
 | `--code` | string | Bundle code.  This code forms the end part of the Public URL. |
@@ -109,6 +110,7 @@ Update Share Link.
 | `--inbox-id` | int64 | ID of the associated inbox, if available. |
 | `--max-uses` | int64 | Maximum number of times bundle can be accessed |
 | `--group-id` | int64 | Owning group ID. If set, members of this group can view, edit, and share this Share Link. |
+| `--internal-name` | string | Internal name for identifying this Share Link. |
 | `--note` | string | Bundle internal note |
 | `--path-template` | string | Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data. |
 | `--path-template-time-zone` | string | Timezone to use when rendering timestamps in path templates. |
