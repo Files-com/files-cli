@@ -16,7 +16,9 @@ All subcommands also accept the global flags documented in [`CONTEXT.md`](../../
 
 List Chat Sessions.
 
-No flags beyond the global ones.
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `ai_task_id`. |
 
 ### `files-cli chat-sessions find`
 

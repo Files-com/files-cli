@@ -789,6 +789,12 @@
       "category": "processing-failure"
     },
     {
+      "type": "processing-failure/ai-task-cannot-be-run-manually",
+      "title": "Ai Task Cannot Be Run Manually",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
       "type": "processing-failure/already-completed",
       "title": "Already Completed",
       "http_code": 422,

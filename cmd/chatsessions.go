@@ -26,6 +26,7 @@ func ChatSessions() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsChatSessionList := files_sdk.ChatSessionListParams{}
 	var MaxPagesList int64
+	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +39,14 @@ func ChatSessions() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsChatSessionList
 			params.MaxPages = MaxPagesList
+
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
+			}
 
 			client := chat_session.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -67,6 +76,8 @@ func ChatSessions() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find chat sessions where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
 
 	cmdList.Flags().StringVar(&paramsChatSessionList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsChatSessionList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")

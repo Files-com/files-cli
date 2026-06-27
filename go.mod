@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.25.0
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.165
+	github.com/Files-com/files-sdk-go/v3 v3.3.166
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/atotto/clipboard v0.1.4
@@ -50,7 +50,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/lpar/date v1.0.0 // indirect
+	github.com/lpar/calendar v0.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect

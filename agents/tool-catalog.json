@@ -167,6 +167,270 @@
       ]
     },
     {
+      "name": "ai-tasks list",
+      "group": "ai-tasks",
+      "description": "List Ai Tasks",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `id`, `disabled` or `updated_at`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `disabled`, `trigger` or `workspace_id`. Valid field combinations are `[ workspace_id, disabled ]`."
+        }
+      ]
+    },
+    {
+      "name": "ai-tasks find",
+      "group": "ai-tasks",
+      "description": "Show Ai Task",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Task ID."
+        }
+      ]
+    },
+    {
+      "name": "ai-tasks create",
+      "group": "ai-tasks",
+      "description": "Create Ai Task",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--description",
+          "type": "string",
+          "required": false,
+          "description": "AI Task description."
+        },
+        {
+          "name": "--disabled",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this AI Task will not run."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region used by scheduled AI Tasks."
+        },
+        {
+          "name": "--interval",
+          "type": "string",
+          "required": false,
+          "description": "If trigger is `daily`, this specifies how often to run the AI Task."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "AI Task name."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": false,
+          "description": "Path scope used for action-triggered AI Tasks."
+        },
+        {
+          "name": "--prompt",
+          "type": "string",
+          "required": true,
+          "description": "Prompt sent when this AI Task is invoked."
+        },
+        {
+          "name": "--recurring-day",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone used by the AI Task schedule."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": false,
+          "description": "Times of day in HH:MM format for scheduled AI Tasks."
+        },
+        {
+          "name": "--source",
+          "type": "string",
+          "required": false,
+          "description": "Source glob used with `path` for action-triggered AI Tasks."
+        },
+        {
+          "name": "--trigger",
+          "type": "enum",
+          "required": false,
+          "description": "How this AI Task is triggered."
+        },
+        {
+          "name": "--trigger-actions",
+          "type": "[]string",
+          "required": false,
+          "description": "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. `0` means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "ai-tasks manual-run",
+      "group": "ai-tasks",
+      "description": "Manually Run AI Task",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Task ID."
+        }
+      ]
+    },
+    {
+      "name": "ai-tasks update",
+      "group": "ai-tasks",
+      "description": "Update Ai Task",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Task ID."
+        },
+        {
+          "name": "--description",
+          "type": "string",
+          "required": false,
+          "description": "AI Task description."
+        },
+        {
+          "name": "--disabled",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this AI Task will not run."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region used by scheduled AI Tasks."
+        },
+        {
+          "name": "--interval",
+          "type": "string",
+          "required": false,
+          "description": "If trigger is `daily`, this specifies how often to run the AI Task."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "AI Task name."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": false,
+          "description": "Path scope used for action-triggered AI Tasks."
+        },
+        {
+          "name": "--prompt",
+          "type": "string",
+          "required": false,
+          "description": "Prompt sent when this AI Task is invoked."
+        },
+        {
+          "name": "--recurring-day",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone used by the AI Task schedule."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": false,
+          "description": "Times of day in HH:MM format for scheduled AI Tasks."
+        },
+        {
+          "name": "--source",
+          "type": "string",
+          "required": false,
+          "description": "Source glob used with `path` for action-triggered AI Tasks."
+        },
+        {
+          "name": "--trigger",
+          "type": "enum",
+          "required": false,
+          "description": "How this AI Task is triggered."
+        },
+        {
+          "name": "--trigger-actions",
+          "type": "[]string",
+          "required": false,
+          "description": "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. `0` means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "ai-tasks delete",
+      "group": "ai-tasks",
+      "description": "Delete Ai Task",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Task ID."
+        }
+      ]
+    },
+    {
       "name": "api-keys list",
       "group": "api-keys",
       "description": "List API Keys",
@@ -2612,7 +2876,12 @@
       "description": "List Chat Sessions",
       "auth_required": true,
       "parameters": [
-
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `ai_task_id`."
+        }
       ]
     },
     {
