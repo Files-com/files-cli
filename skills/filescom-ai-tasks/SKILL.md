@@ -41,6 +41,7 @@ Create Ai Task.
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the AI Task. |
 | `--name` | string | AI Task name. **Required.** |
 | `--path` | string | Path scope used for action-triggered AI Tasks. |
+| `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. **Required.** |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
@@ -72,6 +73,7 @@ Update Ai Task.
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the AI Task. |
 | `--name` | string | AI Task name. |
 | `--path` | string | Path scope used for action-triggered AI Tasks. |
+| `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |

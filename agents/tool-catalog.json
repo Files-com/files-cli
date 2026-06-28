@@ -243,6 +243,12 @@
           "description": "Path scope used for action-triggered AI Tasks."
         },
         {
+          "name": "--permission-set",
+          "type": "enum",
+          "required": false,
+          "description": "Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`."
+        },
+        {
           "name": "--prompt",
           "type": "string",
           "required": true,
@@ -361,6 +367,12 @@
           "description": "Path scope used for action-triggered AI Tasks."
         },
         {
+          "name": "--permission-set",
+          "type": "enum",
+          "required": false,
+          "description": "Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`."
+        },
+        {
           "name": "--prompt",
           "type": "string",
           "required": false,
@@ -446,7 +458,7 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `site_id`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `site_id` and `workspace_id`."
         },
         {
           "name": "--filter",
@@ -549,7 +561,13 @@
           "name": "--permission-set",
           "type": "enum",
           "required": false,
-          "description": "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know."
+          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID for this API Key. `0` means the default workspace."
         }
       ]
     },
@@ -575,7 +593,7 @@
           "name": "--permission-set",
           "type": "enum",
           "required": false,
-          "description": "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know."
+          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user."
         }
       ]
     },

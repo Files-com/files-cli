@@ -134,6 +134,7 @@ func AiTasks() *cobra.Command {
 	usePagerCreate := true
 	createDisabled := true
 	paramsAiTaskCreate := files_sdk.AiTaskCreateParams{}
+	AiTaskCreatePermissionSet := ""
 	AiTaskCreateTrigger := ""
 
 	cmdCreate := &cobra.Command{
@@ -146,6 +147,11 @@ func AiTasks() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := ai_task.Client{Config: config}
 
+			var AiTaskCreatePermissionSetErr error
+			paramsAiTaskCreate.PermissionSet, AiTaskCreatePermissionSetErr = lib.FetchKey("permission-set", paramsAiTaskCreate.PermissionSet.Enum(), AiTaskCreatePermissionSet)
+			if AiTaskCreatePermissionSet != "" && AiTaskCreatePermissionSetErr != nil {
+				return AiTaskCreatePermissionSetErr
+			}
 			var AiTaskCreateTriggerErr error
 			paramsAiTaskCreate.Trigger, AiTaskCreateTriggerErr = lib.FetchKey("trigger", paramsAiTaskCreate.Trigger.Enum(), AiTaskCreateTrigger)
 			if AiTaskCreateTrigger != "" && AiTaskCreateTriggerErr != nil {
@@ -171,6 +177,7 @@ func AiTasks() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the AI Task.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Name, "name", "", "AI Task name.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
+	cmdCreate.Flags().StringVar(&AiTaskCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAiTaskCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
@@ -221,6 +228,7 @@ func AiTasks() *cobra.Command {
 	usePagerUpdate := true
 	updateDisabled := true
 	paramsAiTaskUpdate := files_sdk.AiTaskUpdateParams{}
+	AiTaskUpdatePermissionSet := ""
 	AiTaskUpdateTrigger := ""
 
 	cmdUpdate := &cobra.Command{
@@ -238,6 +246,11 @@ func AiTasks() *cobra.Command {
 				return convertErr
 			}
 
+			var AiTaskUpdatePermissionSetErr error
+			paramsAiTaskUpdate.PermissionSet, AiTaskUpdatePermissionSetErr = lib.FetchKey("permission-set", paramsAiTaskUpdate.PermissionSet.Enum(), AiTaskUpdatePermissionSet)
+			if AiTaskUpdatePermissionSet != "" && AiTaskUpdatePermissionSetErr != nil {
+				return AiTaskUpdatePermissionSetErr
+			}
 			var AiTaskUpdateTriggerErr error
 			paramsAiTaskUpdate.Trigger, AiTaskUpdateTriggerErr = lib.FetchKey("trigger", paramsAiTaskUpdate.Trigger.Enum(), AiTaskUpdateTrigger)
 			if AiTaskUpdateTrigger != "" && AiTaskUpdateTriggerErr != nil {
@@ -264,6 +277,9 @@ func AiTasks() *cobra.Command {
 			}
 			if cmd.Flags().Changed("path") {
 				lib.FlagUpdate(cmd, "path", paramsAiTaskUpdate.Path, mapParams)
+			}
+			if cmd.Flags().Changed("permission-set") {
+				lib.FlagUpdate(cmd, "permission_set", paramsAiTaskUpdate.PermissionSet, mapParams)
 			}
 			if cmd.Flags().Changed("prompt") {
 				lib.FlagUpdate(cmd, "prompt", paramsAiTaskUpdate.Prompt, mapParams)
@@ -309,6 +325,7 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the AI Task.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Name, "name", "", "AI Task name.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
+	cmdUpdate.Flags().StringVar(&AiTaskUpdatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskUpdate.PermissionSet.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAiTaskUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
