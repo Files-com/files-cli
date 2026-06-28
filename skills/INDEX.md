@@ -148,6 +148,7 @@ One skill per top-level CLI command.
 
 | Skill | Resource |
 | --- | --- |
+| [`filescom-ai-assistant-personalities`](filescom-ai-assistant-personalities/SKILL.md) | Ai Assistant Personalities |
 | [`filescom-behaviors`](filescom-behaviors/SKILL.md) | Behaviors |
 | [`filescom-child-site-management-policies`](filescom-child-site-management-policies/SKILL.md) | Child Site Management Policies |
 | [`filescom-custom-domains`](filescom-custom-domains/SKILL.md) | Custom Domains |

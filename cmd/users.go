@@ -369,6 +369,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Password, "password", "", "User password.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.PasswordConfirmation, "password-confirmation", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdCreate.Flags().BoolVar(&createAnnouncementsRead, "announcements-read", createAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.AiAssistantPersonalityId, "ai-assistant-personality-id", 0, "AI Assistant Personality ID assigned directly to this user, if any.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdCreate.Flags().BoolVar(&createAttachmentsPermission, "attachments-permission", createAttachmentsPermission, "DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.")
 	paramsUserCreate.AuthenticateUntil = &time.Time{}
@@ -633,6 +634,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("announcements-read") {
 				mapParams["announcements_read"] = updateAnnouncementsRead
 			}
+			if cmd.Flags().Changed("ai-assistant-personality-id") {
+				lib.FlagUpdate(cmd, "ai_assistant_personality_id", paramsUserUpdate.AiAssistantPersonalityId, mapParams)
+			}
 			if cmd.Flags().Changed("allowed-ips") {
 				lib.FlagUpdate(cmd, "allowed_ips", paramsUserUpdate.AllowedIps, mapParams)
 			}
@@ -821,6 +825,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Password, "password", "", "User password.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.PasswordConfirmation, "password-confirmation", "", "Optional, but if provided, we will ensure that it matches the value sent in `password`.")
 	cmdUpdate.Flags().BoolVar(&updateAnnouncementsRead, "announcements-read", updateAnnouncementsRead, "Signifies that the user has read all the announcements in the UI.")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.AiAssistantPersonalityId, "ai-assistant-personality-id", 0, "AI Assistant Personality ID assigned directly to this user, if any.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdUpdate.Flags().BoolVar(&updateAttachmentsPermission, "attachments-permission", updateAttachmentsPermission, "DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.")
 	paramsUserUpdate.AuthenticateUntil = &time.Time{}

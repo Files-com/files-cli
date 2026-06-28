@@ -35,6 +35,7 @@ Create Partner.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists. |
 | `--allow-bypassing-2fa-policies` | bool | Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users. |
 | `--allow-credential-changes` | bool | Allow Partner Admins to change or reset credentials for users belonging to this Partner. |
@@ -56,6 +57,7 @@ Update Partner.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Partner ID. **Required.** |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists. |
 | `--allow-bypassing-2fa-policies` | bool | Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users. |
 | `--allow-credential-changes` | bool | Allow Partner Admins to change or reset credentials for users belonging to this Partner. |

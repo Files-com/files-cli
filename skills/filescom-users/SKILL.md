@@ -71,6 +71,7 @@ Create User.
 | `--password` | string | User password. |
 | `--password-confirmation` | string | Optional, but if provided, we will ensure that it matches the value sent in `password`. |
 | `--announcements-read` | bool | Signifies that the user has read all the announcements in the UI. |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned directly to this user, if any. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |
 | `--attachments-permission` | bool | DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead. |
 | `--authenticate-until` | datetime | Scheduled Date/Time at which user will be deactivated |
@@ -167,6 +168,7 @@ Update User.
 | `--password` | string | User password. |
 | `--password-confirmation` | string | Optional, but if provided, we will ensure that it matches the value sent in `password`. |
 | `--announcements-read` | bool | Signifies that the user has read all the announcements in the UI. |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned directly to this user, if any. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |
 | `--attachments-permission` | bool | DEPRECATED: If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead. |
 | `--authenticate-until` | datetime | Scheduled Date/Time at which user will be deactivated |

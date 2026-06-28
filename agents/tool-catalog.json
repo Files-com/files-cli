@@ -167,6 +167,124 @@
       ]
     },
     {
+      "name": "ai-assistant-personalities list",
+      "group": "ai-assistant-personalities",
+      "description": "List Ai Assistant Personalities",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `id`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`."
+        }
+      ]
+    },
+    {
+      "name": "ai-assistant-personalities find",
+      "group": "ai-assistant-personalities",
+      "description": "Show Ai Assistant Personality",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Assistant Personality ID."
+        }
+      ]
+    },
+    {
+      "name": "ai-assistant-personalities create",
+      "group": "ai-assistant-personalities",
+      "description": "Create Ai Assistant Personality",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--apply-to-all-workspaces",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this default-workspace personality can apply to users in all workspaces."
+        },
+        {
+          "name": "--system-prompt",
+          "type": "string",
+          "required": true,
+          "description": "System prompt injected into the in-app AI Assistant."
+        },
+        {
+          "name": "--use-by-default",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this personality is the default personality for the Workspace."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. `0` means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "ai-assistant-personalities update",
+      "group": "ai-assistant-personalities",
+      "description": "Update Ai Assistant Personality",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Assistant Personality ID."
+        },
+        {
+          "name": "--apply-to-all-workspaces",
+          "type": "bool",
+          "required": false,
+          "description": "If true, this default-workspace personality can apply to users in all workspaces."
+        },
+        {
+          "name": "--system-prompt",
+          "type": "string",
+          "required": false,
+          "description": "System prompt injected into the in-app AI Assistant."
+        },
+        {
+          "name": "--use-by-default",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this personality is the default personality for the Workspace."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. `0` means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "ai-assistant-personalities delete",
+      "group": "ai-assistant-personalities",
+      "description": "Delete Ai Assistant Personality",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Ai Assistant Personality ID."
+        }
+      ]
+    },
+    {
       "name": "ai-tasks list",
       "group": "ai-tasks",
       "description": "List Ai Tasks",
@@ -5975,6 +6093,12 @@
           "description": "A list of group admin user ids. If sent as a string, should be comma-delimited."
         },
         {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it."
+        },
+        {
           "name": "--ftp-permission",
           "type": "bool",
           "required": false,
@@ -6053,6 +6177,12 @@
           "type": "string",
           "required": false,
           "description": "A list of group admin user ids. If sent as a string, should be comma-delimited."
+        },
+        {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it."
         },
         {
           "name": "--ftp-permission",
@@ -8027,6 +8157,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it."
+        },
+        {
           "name": "--allowed-ips",
           "type": "string",
           "required": false,
@@ -8117,6 +8253,12 @@
           "type": "int64",
           "required": true,
           "description": "Partner ID."
+        },
+        {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it."
         },
         {
           "name": "--allowed-ips",
@@ -14457,6 +14599,12 @@
           "description": "Signifies that the user has read all the announcements in the UI."
         },
         {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned directly to this user, if any."
+        },
+        {
           "name": "--allowed-ips",
           "type": "string",
           "required": false,
@@ -14895,6 +15043,12 @@
           "type": "bool",
           "required": false,
           "description": "Signifies that the user has read all the announcements in the UI."
+        },
+        {
+          "name": "--ai-assistant-personality-id",
+          "type": "int64",
+          "required": false,
+          "description": "AI Assistant Personality ID assigned directly to this user, if any."
         },
         {
           "name": "--allowed-ips",

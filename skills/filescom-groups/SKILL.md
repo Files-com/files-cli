@@ -45,6 +45,7 @@ Create Group.
 | `--notes` | string | Group notes. |
 | `--user-ids` | string | A list of user ids. If sent as a string, should be comma-delimited. |
 | `--admin-ids` | string | A list of group admin user ids. If sent as a string, should be comma-delimited. |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it. |
 | `--ftp-permission` | bool | If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level. |
 | `--sftp-permission` | bool | If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level. |
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
@@ -64,6 +65,7 @@ Update Group.
 | `--notes` | string | Group notes. |
 | `--user-ids` | string | A list of user ids. If sent as a string, should be comma-delimited. |
 | `--admin-ids` | string | A list of group admin user ids. If sent as a string, should be comma-delimited. |
+| `--ai-assistant-personality-id` | int64 | AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it. |
 | `--ftp-permission` | bool | If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level. |
 | `--sftp-permission` | bool | If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level. |
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
