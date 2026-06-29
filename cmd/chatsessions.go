@@ -26,6 +26,7 @@ func ChatSessions() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsChatSessionList := files_sdk.ChatSessionListParams{}
 	var MaxPagesList int64
+	var listSortByArgs string
 	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
@@ -40,6 +41,13 @@ func ChatSessions() *cobra.Command {
 			params := paramsChatSessionList
 			params.MaxPages = MaxPagesList
 
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
 			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
 			if parseListFilterErr != nil {
 				return parseListFilterErr
@@ -76,6 +84,8 @@ func ChatSessions() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort chat sessions by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
 	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find chat sessions where field exactly matches value.")
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
 
