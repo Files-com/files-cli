@@ -9851,6 +9851,12 @@
           "description": "Filebase: Bucket name"
         },
         {
+          "name": "--files-api-key",
+          "type": "string",
+          "required": false,
+          "description": "Files.com direct link: API key used once to pair the remote server."
+        },
+        {
           "name": "--files-agent-permission-set",
           "type": "enum",
           "required": false,
@@ -10419,6 +10425,12 @@
           "type": "string",
           "required": false,
           "description": "Filebase: Bucket name"
+        },
+        {
+          "name": "--files-api-key",
+          "type": "string",
+          "required": false,
+          "description": "Files.com direct link: API key used once to pair the remote server."
         },
         {
           "name": "--files-agent-permission-set",

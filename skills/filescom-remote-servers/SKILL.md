@@ -8,7 +8,7 @@ description: |
 
 A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
-Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
+Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
 
 Not every attribute will apply to every remote server.
 
@@ -126,6 +126,7 @@ Create Remote Server.
 | `--enable-dedicated-ips` | bool | `true` if remote server only accepts connections from dedicated IPs |
 | `--filebase-access-key` | string | Filebase: Access Key. |
 | `--filebase-bucket` | string | Filebase: Bucket name |
+| `--files-api-key` | string | Files.com direct link: API key used once to pair the remote server. |
 | `--files-agent-permission-set` | enum | Local permissions for files agent. read_only, write_only, or read_write. One of: `read_write`, `read_only`, `write_only`. |
 | `--files-agent-root` | string | Agent local root path |
 | `--files-agent-version` | string | Files Agent version |
@@ -157,7 +158,7 @@ Create Remote Server.
 | `--s3-region` | string | S3 region |
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts |
-| `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`. |
+| `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
 | `--ssl` | enum | Should we require SSL?. One of: `if_available`, `require`, `require_implicit`, `never`. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |
@@ -238,6 +239,7 @@ Update Remote Server.
 | `--enable-dedicated-ips` | bool | `true` if remote server only accepts connections from dedicated IPs |
 | `--filebase-access-key` | string | Filebase: Access Key. |
 | `--filebase-bucket` | string | Filebase: Bucket name |
+| `--files-api-key` | string | Files.com direct link: API key used once to pair the remote server. |
 | `--files-agent-permission-set` | enum | Local permissions for files agent. read_only, write_only, or read_write. One of: `read_write`, `read_only`, `write_only`. |
 | `--files-agent-root` | string | Agent local root path |
 | `--files-agent-version` | string | Files Agent version |
@@ -269,7 +271,7 @@ Update Remote Server.
 | `--s3-region` | string | S3 region |
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts |
-| `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`. |
+| `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
 | `--ssl` | enum | Should we require SSL?. One of: `if_available`, `require`, `require_implicit`, `never`. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |

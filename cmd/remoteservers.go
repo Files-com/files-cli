@@ -299,6 +299,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createEnableDedicatedIps, "enable-dedicated-ips", createEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseBucket, "filebase-bucket", "", "Filebase: Bucket name")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesApiKey, "files-api-key", "", "Files.com direct link: API key used once to pair the remote server.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
@@ -609,6 +610,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("filebase-bucket") {
 				lib.FlagUpdate(cmd, "filebase_bucket", paramsRemoteServerUpdate.FilebaseBucket, mapParams)
 			}
+			if cmd.Flags().Changed("files-api-key") {
+				lib.FlagUpdate(cmd, "files_api_key", paramsRemoteServerUpdate.FilesApiKey, mapParams)
+			}
 			if cmd.Flags().Changed("files-agent-permission-set") {
 				lib.FlagUpdate(cmd, "files_agent_permission_set", paramsRemoteServerUpdate.FilesAgentPermissionSet, mapParams)
 			}
@@ -767,6 +771,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "`true` if remote server only accepts connections from dedicated IPs")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseAccessKey, "filebase-access-key", "", "Filebase: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseBucket, "filebase-bucket", "", "Filebase: Bucket name")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesApiKey, "files-api-key", "", "Files.com direct link: API key used once to pair the remote server.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")

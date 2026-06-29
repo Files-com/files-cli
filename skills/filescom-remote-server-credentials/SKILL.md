@@ -40,7 +40,7 @@ Create Remote Server Credential.
 | --- | --- | --- |
 | `--name` | string | Internal name for your reference |
 | `--description` | string | Internal description for your reference |
-| `--server-type` | enum | Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`. |
+| `--server-type` | enum | Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
 | `--aws-access-key` | string | AWS Access Key. |
 | `--s3-assume-role-arn` | string | AWS IAM Role ARN for AssumeRole authentication. |
 | `--s3-assume-role-duration-seconds` | int64 | Session duration in seconds for AssumeRole authentication (900-43200). |
@@ -80,7 +80,7 @@ Update Remote Server Credential.
 | `--id` | int64 | Remote Server Credential ID. **Required.** |
 | `--name` | string | Internal name for your reference |
 | `--description` | string | Internal description for your reference |
-| `--server-type` | enum | Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`. |
+| `--server-type` | enum | Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
 | `--aws-access-key` | string | AWS Access Key. |
 | `--s3-assume-role-arn` | string | AWS IAM Role ARN for AssumeRole authentication. |
 | `--s3-assume-role-duration-seconds` | int64 | Session duration in seconds for AssumeRole authentication (900-43200). |
