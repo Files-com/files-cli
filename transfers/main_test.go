@@ -439,6 +439,49 @@ func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
 	assert.Equal(t, 500, transfer.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis)
 }
 
+func TestAdaptiveConcurrencyInitialTargetFlagDefaultsToHighThroughputTarget(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.False(t, transfer.AdaptiveUploadV2TuningSet)
+	assert.Equal(t, file.AdaptiveTransferHighThroughputInitialTarget, transfer.AdaptiveConcurrencyInitialTarget)
+}
+
+func TestAdaptiveConcurrencyInitialTargetFlagAppliesToUpload(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency-initial-target", "50"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveUploadV2TuningSet)
+	assert.Equal(t, 50, transfer.AdaptiveUploadV2Tuning.InitialTarget)
+}
+
+func TestAdaptiveConcurrencyInitialTargetFlagAppliesToDownload(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.DownloadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency-initial-target", "50"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveDownloadV2TuningSet)
+	assert.Equal(t, 50, transfer.AdaptiveDownloadV2Tuning.InitialTarget)
+}
+
 func TestStatusWithColorUsesDisplayName(t *testing.T) {
 	assert.Equal(t, "folder created", statusWithColor(status.FolderCreated))
 }

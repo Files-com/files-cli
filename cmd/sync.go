@@ -91,6 +91,8 @@ func Sync() *cobra.Command {
 						NoOverwrite:                          transfer.NoOverwrite,
 						AdaptiveConcurrency:                  transfer.AdaptiveDownloadEnabled(),
 						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveDownloadEnabled() && !transfer.ConcurrentConnectionLimitSet,
+						AdaptiveDownloadV2TuningSet:          transfer.AdaptiveDownloadV2TuningSet,
+						AdaptiveDownloadV2Tuning:             transfer.AdaptiveDownloadV2Tuning,
 					},
 					files_sdk.WithContext(cmd.Context()),
 				)

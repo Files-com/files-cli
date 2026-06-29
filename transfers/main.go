@@ -65,10 +65,16 @@ type Transfers struct {
 	AdaptiveUploadReadyRunwayParts int
 	// AdaptiveUploadReadyRunwayBytes caps prepared-but-not-yet-uploading runway bytes.
 	AdaptiveUploadReadyRunwayBytes int64
-	// AdaptiveUploadV2TuningSet records whether any hidden diagnostic V2 tuning flag was changed.
+	// AdaptiveUploadV2TuningSet records whether any upload adaptive tuning flag was changed.
 	AdaptiveUploadV2TuningSet bool
-	// AdaptiveUploadV2Tuning carries hidden diagnostic V2 tuning overrides into the SDK.
+	// AdaptiveUploadV2Tuning carries upload adaptive tuning overrides into the SDK.
 	AdaptiveUploadV2Tuning file.UploadV2Tuning
+	// AdaptiveDownloadV2TuningSet records whether any download adaptive tuning flag was changed.
+	AdaptiveDownloadV2TuningSet bool
+	// AdaptiveDownloadV2Tuning carries download adaptive tuning overrides into the SDK.
+	AdaptiveDownloadV2Tuning file.UploadV2Tuning
+	// AdaptiveConcurrencyInitialTarget overrides the adaptive transfer starting target.
+	AdaptiveConcurrencyInitialTarget int
 	// AdaptiveUploadV2FileConcurrency overrides the adaptive upload file admission cap for benchmarks.
 	AdaptiveUploadV2FileConcurrency int
 	// ConcurrentConnectionLimit caps concurrent file-part work. With adaptive upload V2 it is a max cap, not a target.
@@ -395,14 +401,23 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	if t.AdaptiveUploadV2FileConcurrency < 0 {
 		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-upload-v2-file-concurrency must be zero or greater")
 	}
+	if t.AdaptiveConcurrencyInitialTarget < 0 {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-concurrency-initial-target must be zero or greater")
+	}
+	if cmd.Flags().Changed("adaptive-concurrency-initial-target") {
+		t.AdaptiveUploadV2Tuning.InitialTarget = t.AdaptiveConcurrencyInitialTarget
+		t.AdaptiveDownloadV2Tuning.InitialTarget = t.AdaptiveConcurrencyInitialTarget
+	}
 	t.AdaptiveUploadReadyRunwaySet = cmd.Flags().Changed("adaptive-upload-ready-runway-parts") || cmd.Flags().Changed("adaptive-upload-ready-runway-bytes")
 	t.AdaptiveUploadV2TuningSet = t.adaptiveUploadV2TuningFlagChanged(cmd)
+	t.AdaptiveDownloadV2TuningSet = t.adaptiveDownloadV2TuningFlagChanged(cmd)
 
 	return nil
 }
 
 func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
 	flags := []string{
+		"adaptive-concurrency-initial-target",
 		"adaptive-upload-v2-s3-initial-target",
 		"adaptive-upload-v2-s3-adaptive-floor",
 		"adaptive-upload-v2-s3-grow-every",
@@ -428,6 +443,18 @@ func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
 		"adaptive-upload-v2-s3-workload-target-part-multiplier",
 		"adaptive-upload-v2-s3-workload-min-part-size-mib",
 		"adaptive-upload-v2-s3-workload-scan-wait-ms",
+	}
+	for _, flag := range flags {
+		if cmd.Flags().Changed(flag) {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *Transfers) adaptiveDownloadV2TuningFlagChanged(cmd *cobra.Command) bool {
+	flags := []string{
+		"adaptive-concurrency-initial-target",
 	}
 	for _, flag := range flags {
 		if cmd.Flags().Changed(flag) {
@@ -1180,6 +1207,7 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
 	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
+	cmd.Flags().IntVar(&t.AdaptiveConcurrencyInitialTarget, "adaptive-concurrency-initial-target", file.AdaptiveTransferHighThroughputInitialTarget, "Set the adaptive transfer starting concurrency. High-throughput transfers may probe higher.")
 	cmd.Flags().MarkHidden("test-progress-bar-out")
 	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
 	cmd.Flags().BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")
