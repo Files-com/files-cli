@@ -308,8 +308,7 @@ func TestProfiles_StoredWorkspaceIdSetsConfig(t *testing.T) {
 	profiles.Profiles["default"] = &Profile{WorkspaceId: "42"}
 	profiles.SetOnConfig()
 
-	require.NotNil(t, config.WorkspaceId)
-	require.Equal(t, int64(42), *config.WorkspaceId)
+	require.Equal(t, int64(42), config.WorkspaceId)
 }
 
 func TestProfiles_SingleUseWorkspaceIdOverridesStored(t *testing.T) {
@@ -320,8 +319,7 @@ func TestProfiles_SingleUseWorkspaceIdOverridesStored(t *testing.T) {
 	profiles.SetOnConfig()
 	profiles.SetSingleUseWorkspaceId("84")
 
-	require.NotNil(t, config.WorkspaceId)
-	require.Equal(t, int64(84), *config.WorkspaceId)
+	require.Equal(t, int64(84), config.WorkspaceId)
 	require.Equal(t, "42", profiles.Current().WorkspaceId)
 }
 
@@ -333,8 +331,7 @@ func TestProfiles_SingleUseWorkspaceIdDoesNotPersist(t *testing.T) {
 	require.NoError(t, profile.Load(config, ""))
 	profile.SetSingleUseWorkspaceId("84")
 
-	require.NotNil(t, config.WorkspaceId)
-	require.Equal(t, int64(84), *config.WorkspaceId)
+	require.Equal(t, int64(84), config.WorkspaceId)
 	require.Empty(t, profile.Current().WorkspaceId)
 
 	require.NoError(t, profile.Save())
@@ -342,7 +339,7 @@ func TestProfiles_SingleUseWorkspaceIdDoesNotPersist(t *testing.T) {
 	config = &files_sdk.Config{}
 	profile = &Profiles{ConfigDir: dir}
 	require.NoError(t, profile.Load(config, ""))
-	require.Nil(t, config.WorkspaceId)
+	require.Zero(t, config.WorkspaceId)
 	require.Empty(t, profile.Current().WorkspaceId)
 }
 

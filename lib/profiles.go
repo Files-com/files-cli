@@ -229,7 +229,7 @@ func (p *Profiles) setWorkspaceId(workspaceId string) {
 	if err != nil {
 		return
 	}
-	p.Config.WorkspaceId = &workspaceIdInt
+	p.Config.WorkspaceId = workspaceIdInt
 }
 
 // SetSingleUseAPIKey applies a request-only API key override without changing the stored profile.

@@ -112,8 +112,9 @@ Transform a file and save the output to a destination path.
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
 | `--destination` | string | Destination file path for the transformed output. **Required.** |
-| `--transform-type` | string | Transform type. Supported values are `image_convert` and `document_convert`. **Required.** |
+| `--transform-type` | string | Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`. **Required.** |
 | `--target-format` | string | Destination format to create. **Required.** |
+| `--script` | string | Files TransformScript source. Required when transform_type is `files_transform_script_execute`. |
 | `--width` | int64 | Maximum output width for image_convert. |
 | `--height` | int64 | Maximum output height for image_convert. |
 | `--overwrite` | bool | Overwrite existing file in the destination? |

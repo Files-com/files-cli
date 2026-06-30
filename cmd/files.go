@@ -411,8 +411,9 @@ func Files() *cobra.Command {
 	}
 	cmdTransform.Flags().StringVar(&paramsFileTransform.Path, "path", "", "Path to operate on.")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.Destination, "destination", "", "Destination file path for the transformed output.")
-	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert` and `document_convert`.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`.")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.TargetFormat, "target-format", "", "Destination format to create.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Script, "script", "", "Files TransformScript source. Required when transform_type is `files_transform_script_execute`.")
 	cmdTransform.Flags().Int64Var(&paramsFileTransform.Width, "width", 0, "Maximum output width for image_convert.")
 	cmdTransform.Flags().Int64Var(&paramsFileTransform.Height, "height", 0, "Maximum output height for image_convert.")
 	cmdTransform.Flags().BoolVar(&transformOverwrite, "overwrite", transformOverwrite, "Overwrite existing file in the destination?")

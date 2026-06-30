@@ -5194,13 +5194,19 @@
           "name": "--transform-type",
           "type": "string",
           "required": true,
-          "description": "Transform type. Supported values are `image_convert` and `document_convert`."
+          "description": "Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`."
         },
         {
           "name": "--target-format",
           "type": "string",
           "required": true,
           "description": "Destination format to create."
+        },
+        {
+          "name": "--script",
+          "type": "string",
+          "required": false,
+          "description": "Files TransformScript source. Required when transform_type is `files_transform_script_execute`."
         },
         {
           "name": "--width",
