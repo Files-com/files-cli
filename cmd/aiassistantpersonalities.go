@@ -157,6 +157,7 @@ func AiAssistantPersonalities() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace personality can apply to users in all workspaces.")
+	cmdCreate.Flags().StringVar(&paramsAiAssistantPersonalityCreate.Name, "name", "", "AI Assistant Personality name.")
 	cmdCreate.Flags().StringVar(&paramsAiAssistantPersonalityCreate.SystemPrompt, "system-prompt", "", "System prompt injected into the in-app AI Assistant.")
 	cmdCreate.Flags().BoolVar(&createUseByDefault, "use-by-default", createUseByDefault, "Whether this personality is the default personality for the Workspace.")
 	cmdCreate.Flags().Int64Var(&paramsAiAssistantPersonalityCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
@@ -194,6 +195,9 @@ func AiAssistantPersonalities() *cobra.Command {
 			if cmd.Flags().Changed("apply-to-all-workspaces") {
 				mapParams["apply_to_all_workspaces"] = updateApplyToAllWorkspaces
 			}
+			if cmd.Flags().Changed("name") {
+				lib.FlagUpdate(cmd, "name", paramsAiAssistantPersonalityUpdate.Name, mapParams)
+			}
 			if cmd.Flags().Changed("system-prompt") {
 				lib.FlagUpdate(cmd, "system_prompt", paramsAiAssistantPersonalityUpdate.SystemPrompt, mapParams)
 			}
@@ -212,6 +216,7 @@ func AiAssistantPersonalities() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAiAssistantPersonalityUpdate.Id, "id", 0, "Ai Assistant Personality ID.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace personality can apply to users in all workspaces.")
+	cmdUpdate.Flags().StringVar(&paramsAiAssistantPersonalityUpdate.Name, "name", "", "AI Assistant Personality name.")
 	cmdUpdate.Flags().StringVar(&paramsAiAssistantPersonalityUpdate.SystemPrompt, "system-prompt", "", "System prompt injected into the in-app AI Assistant.")
 	cmdUpdate.Flags().BoolVar(&updateUseByDefault, "use-by-default", updateUseByDefault, "Whether this personality is the default personality for the Workspace.")
 	cmdUpdate.Flags().Int64Var(&paramsAiAssistantPersonalityUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")

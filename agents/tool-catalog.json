@@ -213,6 +213,12 @@
           "description": "If true, this default-workspace personality can apply to users in all workspaces."
         },
         {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "AI Assistant Personality name."
+        },
+        {
           "name": "--system-prompt",
           "type": "string",
           "required": true,
@@ -249,6 +255,12 @@
           "type": "bool",
           "required": false,
           "description": "If true, this default-workspace personality can apply to users in all workspaces."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "AI Assistant Personality name."
         },
         {
           "name": "--system-prompt",

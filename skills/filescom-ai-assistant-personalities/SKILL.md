@@ -36,6 +36,7 @@ Create Ai Assistant Personality.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace personality can apply to users in all workspaces. |
+| `--name` | string | AI Assistant Personality name. **Required.** |
 | `--system-prompt` | string | System prompt injected into the in-app AI Assistant. **Required.** |
 | `--use-by-default` | bool | Whether this personality is the default personality for the Workspace. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
@@ -48,6 +49,7 @@ Update Ai Assistant Personality.
 | --- | --- | --- |
 | `--id` | int64 | Ai Assistant Personality ID. **Required.** |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace personality can apply to users in all workspaces. |
+| `--name` | string | AI Assistant Personality name. |
 | `--system-prompt` | string | System prompt injected into the in-app AI Assistant. |
 | `--use-by-default` | bool | Whether this personality is the default personality for the Workspace. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
