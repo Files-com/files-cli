@@ -159,6 +159,12 @@
       "category": "bad-request"
     },
     {
+      "type": "bad-request/invalid-search-query",
+      "title": "Invalid Search Query",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
       "type": "bad-request/invalid-sort-field",
       "title": "Invalid Sort Field",
       "http_code": 422,
