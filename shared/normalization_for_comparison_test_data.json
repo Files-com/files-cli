@@ -23,6 +23,8 @@
   [ "invalid_null_byte_before\u0000after", "invalid_null_byte_beforeafter" ],
   [ "a/b/c/../../hello", "a/b/c/hello" ],
   [ "a/b/c/././hello", "a/b/c/hello" ],
+  [ "remote/../path/to/file.txt", "remote/path/to/file.txt" ],
+  [ "/../../remote\\path//./to/file.txt", "remote/path/to/file.txt" ],
   [ "one_code_point_ą", "one_code_point_a" ],
   [ "two_code_points_ą", "two_code_points_a" ],
   [ "one_code_point_훯", "one_code_point_훯"],
