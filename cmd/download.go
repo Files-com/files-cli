@@ -51,6 +51,7 @@ func Download() *cobra.Command {
 						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveDownloadEnabled() && !transfer.ConcurrentConnectionLimitSet,
 						AdaptiveDownloadV2TuningSet:          transfer.AdaptiveDownloadV2TuningSet,
 						AdaptiveDownloadV2Tuning:             transfer.AdaptiveDownloadV2Tuning,
+						ZipBatch:                             transfer.ZipBatchParams(),
 					},
 					files_sdk.WithContext(ctx),
 				)

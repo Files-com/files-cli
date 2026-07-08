@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"runtime/pprof"
@@ -55,6 +56,17 @@ type Transfers struct {
 	DryRun                      bool
 	NoOverwrite                 bool
 	DownloadFilesAsSingleStream bool
+	NoZipBatch                  bool
+	ForceZipBatch               bool
+	ZipBatchExtraction          string
+	ZipBatchEligibleSize        int64
+	ZipBatchMinFiles            int
+	ZipBatchMaxFiles            int
+	ZipBatchBatchSize           int
+	ZipBatchMaxBytes            int64
+	ZipBatchConcurrency         int
+	ZipBatchMinAdvantage        float64
+	ZipBatchReprobeInterval     time.Duration
 	OpenConnectionStats         bool
 	// AdaptiveConcurrency enables V2 adaptive part concurrency for transfer commands.
 	AdaptiveConcurrency bool
@@ -207,6 +219,25 @@ func (t *Transfers) AdaptiveDownloadEnabled() bool {
 	return !t.adaptiveUploadMode && t.AdaptiveConcurrency && !t.DownloadFilesAsSingleStream
 }
 
+func (t *Transfers) ZipBatchParams() file.ZipBatchParams {
+	minAdvantage := t.ZipBatchMinAdvantage
+	if t.ForceZipBatch {
+		minAdvantage = -1
+	}
+	return file.ZipBatchParams{
+		Disabled:          t.NoZipBatch,
+		Extraction:        file.ZipBatchExtractionMode(t.ZipBatchExtraction),
+		EligibleSize:      t.ZipBatchEligibleSize,
+		MinFiles:          t.ZipBatchMinFiles,
+		MaxFiles:          t.ZipBatchMaxFiles,
+		BatchSize:         t.ZipBatchBatchSize,
+		MaxBytes:          t.ZipBatchMaxBytes,
+		ConcurrentBatches: t.ZipBatchConcurrency,
+		MinAdvantage:      minAdvantage,
+		ReprobeInterval:   t.ZipBatchReprobeInterval,
+	}
+}
+
 func (t *Transfers) adaptiveUploadV2FileConcurrencyCap() int {
 	if t.AdaptiveUploadV2FileConcurrency > 0 {
 		return t.AdaptiveUploadV2FileConcurrency
@@ -353,6 +384,33 @@ func (t *Transfers) TextFilterFormat() lib.FilterIter {
 }
 
 func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
+	if t.ZipBatchExtraction != "" &&
+		t.ZipBatchExtraction != string(file.ZipBatchExtractionSpool) &&
+		t.ZipBatchExtraction != string(file.ZipBatchExtractionStream) {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "invalid --zip-batch-extraction %q; expected spool or stream", t.ZipBatchExtraction)
+	}
+	if math.IsNaN(t.ZipBatchMinAdvantage) {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--zip-batch-min-advantage must be a number")
+	}
+	if t.NoZipBatch && t.ForceZipBatch {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--force-zip-batch cannot be combined with --no-zip-batch")
+	}
+	for _, zipBatchFlag := range []struct {
+		name  string
+		value int64
+	}{
+		{"zip-batch-eligible-size", t.ZipBatchEligibleSize},
+		{"zip-batch-min-files", int64(t.ZipBatchMinFiles)},
+		{"zip-batch-max-files", int64(t.ZipBatchMaxFiles)},
+		{"zip-batch-batch-size", int64(t.ZipBatchBatchSize)},
+		{"zip-batch-max-bytes", t.ZipBatchMaxBytes},
+		{"zip-batch-concurrency", int64(t.ZipBatchConcurrency)},
+	} {
+		if zipBatchFlag.value < 0 {
+			return clierr.Errorf(clierr.ErrorCodeUsage, "--%s must be zero or greater", zipBatchFlag.name)
+		}
+	}
+
 	switch t.OutFormat[0] {
 	case "none", "progress":
 		return clierr.Errorf(clierr.ErrorCodeFatal, "''--output-format %v' unsupported", t.OutFormat[0])
@@ -537,6 +595,7 @@ func (t *Transfers) SetupSignals(ctx context.Context) {
 					t.finishedForDisplay.Store(true)
 					t.Log("transfer-finished-bytes", fmt.Sprintf("total downloaded: %v", humanize.Bytes(uint64(t.Job.TransferBytes()))), nil)
 					t.Log("transfer-finished-time", fmt.Sprintf("Finished at %v", time.Now()), nil)
+					t.logZipBatchSummary()
 					t.metricsLogging()
 
 					return
@@ -557,7 +616,7 @@ func (t *Transfers) SetupSignals(ctx context.Context) {
 }
 
 func (t *Transfers) metricsLogging() {
-	t.Logger.Printf(keyvalue.New(map[string]interface{}{
+	fields := map[string]interface{}{
 		"message":       "metric logs",
 		"transfer_rate": humanize.Bytes(uint64(int64(t.TransferRateValue()))),
 		"total":         humanize.Bytes(uint64(t.Job.TotalBytes(status.Included...))),
@@ -572,7 +631,68 @@ func (t *Transfers) metricsLogging() {
 		"completed":     humanize.Comma(int64(t.Count(status.Complete))),
 		"count":         humanize.Comma(int64(t.Count(append(status.Included, status.Skipped)...))),
 		"file_rate":     fmt.Sprintf("%.1f", t.FilesRateValue()),
-	}))
+	}
+	t.addZipBatchMetrics(fields)
+	t.Logger.Printf(keyvalue.New(fields))
+}
+
+func (t *Transfers) logZipBatchSummary() {
+	stats := t.Job.ZipBatchStats()
+	if !stats.Active() {
+		return
+	}
+	message := fmt.Sprintf(
+		"zip-batch: batches=%d files=%d dissolved=%d retries=%d salvaged=%d fallback=%d reprobes=%d scan=%s",
+		stats.BatchesDispatched,
+		stats.BatchFiles,
+		stats.BatchesDissolved,
+		stats.StreamRetries(),
+		stats.SalvageFinalized,
+		stats.FallbackFiles(),
+		stats.Reprobes,
+		t.Job.ScanDuration().Round(time.Millisecond),
+	)
+	if stats.ProbeDecision != "none" {
+		message = fmt.Sprintf(
+			"%s probe=%s zip_rate=%.1f per_file_rate=%.1f circuit=%d",
+			message,
+			stats.ProbeDecision,
+			float64(stats.ProbeZipRateMilli)/1000,
+			float64(stats.ProbePerFileRateMilli)/1000,
+			stats.CircuitBreakerTrips,
+		)
+	}
+	t.Log("zip-batch", message, nil)
+	t.Logger.Printf(message)
+}
+
+func (t *Transfers) addZipBatchMetrics(fields map[string]interface{}) {
+	stats := t.Job.ZipBatchStats()
+	if !stats.Active() {
+		return
+	}
+	fields["zip_batch_batches"] = stats.BatchesDispatched
+	fields["zip_batch_files"] = stats.BatchFiles
+	fields["zip_batch_dissolved"] = stats.BatchesDissolved
+	fields["zip_batch_dissolved_files"] = stats.DissolvedFiles
+	fields["zip_batch_create_requests"] = stats.CreateRequests
+	fields["zip_batch_stream_attempts"] = stats.StreamAttempts
+	fields["zip_batch_stream_failures"] = stats.StreamFailures
+	fields["zip_batch_clean_finalized"] = stats.CleanFinalized
+	fields["zip_batch_salvage_finalized"] = stats.SalvageFinalized
+	fields["zip_batch_fallback"] = stats.FallbackFiles()
+	fields["zip_batch_fallback_create_error"] = stats.FallbackCreateError
+	fields["zip_batch_fallback_tripwire"] = stats.FallbackTripwire
+	fields["zip_batch_fallback_retries_exhausted"] = stats.FallbackRetriesExhausted
+	fields["zip_batch_fallback_missing_entry"] = stats.FallbackMissingEntry
+	fields["zip_batch_scan_duration_ms"] = t.Job.ScanDuration().Milliseconds()
+	fields["zip_batch_probe_zip_files"] = stats.ProbeZipFiles
+	fields["zip_batch_probe_per_file_files"] = stats.ProbePerFileFiles
+	fields["zip_batch_probe_zip_rate_milli"] = stats.ProbeZipRateMilli
+	fields["zip_batch_probe_per_file_rate_milli"] = stats.ProbePerFileRateMilli
+	fields["zip_batch_probe_decision"] = stats.ProbeDecision
+	fields["zip_batch_circuit_breaker_trips"] = stats.CircuitBreakerTrips
+	fields["zip_batch_reprobes"] = stats.Reprobes
 }
 
 func (t *Transfers) updateStatus() {
@@ -1285,6 +1405,26 @@ func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
 	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive download concurrency. The concurrent connection limit becomes a maximum cap.")
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
+	cmd.Flags().BoolVar(&t.NoZipBatch, "no-zip-batch", t.NoZipBatch, "Disable batching of small files through the ZIP download endpoint")
+	cmd.Flags().BoolVar(&t.ForceZipBatch, "force-zip-batch", t.ForceZipBatch, "Always use ZIP batching for eligible small files, skipping the automatic speed probe")
+	cmd.Flags().StringVar(&t.ZipBatchExtraction, "zip-batch-extraction", t.ZipBatchExtraction, "Diagnostic ZIP batch extraction mode: spool or stream. Empty uses the SDK default.")
+	cmd.Flags().Int64Var(&t.ZipBatchEligibleSize, "zip-batch-eligible-size", t.ZipBatchEligibleSize, "Diagnostic override for ZIP batch eligible file size in bytes. Zero uses the SDK default.")
+	cmd.Flags().IntVar(&t.ZipBatchMinFiles, "zip-batch-min-files", t.ZipBatchMinFiles, "Diagnostic override for ZIP batch minimum eligible small files before batching engages. Zero uses the SDK default.")
+	cmd.Flags().IntVar(&t.ZipBatchMaxFiles, "zip-batch-max-files", t.ZipBatchMaxFiles, "Diagnostic override for ZIP batch maximum file count cap. Zero uses the SDK default.")
+	cmd.Flags().IntVar(&t.ZipBatchBatchSize, "zip-batch-batch-size", t.ZipBatchBatchSize, "Diagnostic override for fixed ZIP batch file count. Zero uses dynamic sizing.")
+	cmd.Flags().Int64Var(&t.ZipBatchMaxBytes, "zip-batch-max-bytes", t.ZipBatchMaxBytes, "Diagnostic override for ZIP batch maximum bytes. Zero uses the SDK default.")
+	cmd.Flags().IntVar(&t.ZipBatchConcurrency, "zip-batch-concurrency", t.ZipBatchConcurrency, "Diagnostic override for concurrent ZIP batch streams. Zero uses the SDK default.")
+	cmd.Flags().Float64Var(&t.ZipBatchMinAdvantage, "zip-batch-min-advantage", t.ZipBatchMinAdvantage, "Diagnostic ZIP batch minimum speedup before committing. Zero uses the SDK default; negative disables probing.")
+	cmd.Flags().DurationVar(&t.ZipBatchReprobeInterval, "zip-batch-reprobe-interval", t.ZipBatchReprobeInterval, "Diagnostic ZIP batch re-probe interval after dissolve. Zero uses the SDK default; negative disables re-probing.")
+	cmd.Flags().MarkHidden("zip-batch-extraction")
+	cmd.Flags().MarkHidden("zip-batch-eligible-size")
+	cmd.Flags().MarkHidden("zip-batch-min-files")
+	cmd.Flags().MarkHidden("zip-batch-max-files")
+	cmd.Flags().MarkHidden("zip-batch-batch-size")
+	cmd.Flags().MarkHidden("zip-batch-max-bytes")
+	cmd.Flags().MarkHidden("zip-batch-concurrency")
+	cmd.Flags().MarkHidden("zip-batch-min-advantage")
+	cmd.Flags().MarkHidden("zip-batch-reprobe-interval")
 	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during download. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during download. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().BoolVarP(&t.DownloadPreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")

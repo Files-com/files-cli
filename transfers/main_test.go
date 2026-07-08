@@ -126,6 +126,158 @@ func TestAdaptiveDownloadConcurrencyCanBeDisabled(t *testing.T) {
 	assert.False(t, transfer.AdaptiveConcurrency)
 }
 
+func TestZipBatchDownloadFlagsParseParams(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+		want file.ZipBatchParams
+	}{
+		{
+			name: "defaults",
+			want: file.ZipBatchParams{},
+		},
+		{
+			name: "disabled",
+			args: []string{"--no-zip-batch"},
+			want: file.ZipBatchParams{Disabled: true},
+		},
+		{
+			name: "force",
+			args: []string{"--force-zip-batch"},
+			want: file.ZipBatchParams{MinAdvantage: -1},
+		},
+		{
+			name: "spool extraction",
+			args: []string{"--zip-batch-extraction", "spool"},
+			want: file.ZipBatchParams{Extraction: file.ZipBatchExtractionSpool},
+		},
+		{
+			name: "stream extraction",
+			args: []string{"--zip-batch-extraction", "stream"},
+			want: file.ZipBatchParams{Extraction: file.ZipBatchExtractionStream},
+		},
+		{
+			name: "tuning",
+			args: []string{
+				"--zip-batch-eligible-size", "123",
+				"--zip-batch-min-files", "4",
+				"--zip-batch-max-files", "56",
+				"--zip-batch-batch-size", "20",
+				"--zip-batch-max-bytes", "789",
+				"--zip-batch-concurrency", "3",
+				"--zip-batch-min-advantage", "1.5",
+				"--zip-batch-reprobe-interval", "45s",
+			},
+			want: file.ZipBatchParams{
+				EligibleSize:      123,
+				MinFiles:          4,
+				MaxFiles:          56,
+				BatchSize:         20,
+				MaxBytes:          789,
+				ConcurrentBatches: 3,
+				MinAdvantage:      1.5,
+				ReprobeInterval:   45 * time.Second,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			transfer := New()
+			cmd := &cobra.Command{}
+			transfer.DownloadFlags(cmd)
+
+			require.NoError(t, cmd.ParseFlags(tt.args))
+
+			assert.Equal(t, tt.want, transfer.ZipBatchParams())
+		})
+	}
+}
+
+func TestZipBatchDownloadFlagsRejectInvalidExtraction(t *testing.T) {
+	transfer := New()
+	cmd := &cobra.Command{}
+	transfer.DownloadFlags(cmd)
+
+	require.NoError(t, cmd.ParseFlags([]string{"--zip-batch-extraction", "invalid"}))
+	err := transfer.ArgsCheck(cmd)
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid --zip-batch-extraction")
+}
+
+func TestZipBatchDownloadFlagsRejectNegativeNumericValues(t *testing.T) {
+	for _, flag := range []string{
+		"zip-batch-eligible-size",
+		"zip-batch-min-files",
+		"zip-batch-max-files",
+		"zip-batch-batch-size",
+		"zip-batch-max-bytes",
+		"zip-batch-concurrency",
+	} {
+		t.Run(flag, func(t *testing.T) {
+			transfer := New()
+			cmd := &cobra.Command{}
+			transfer.DownloadFlags(cmd)
+
+			require.NoError(t, cmd.ParseFlags([]string{"--" + flag, "-1"}))
+			err := transfer.ArgsCheck(cmd)
+
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "--"+flag+" must be zero or greater")
+		})
+	}
+}
+
+func TestZipBatchDownloadFlagsRejectNaNMinAdvantage(t *testing.T) {
+	transfer := New()
+	cmd := &cobra.Command{}
+	transfer.DownloadFlags(cmd)
+
+	require.NoError(t, cmd.ParseFlags([]string{"--zip-batch-min-advantage", "NaN"}))
+	err := transfer.ArgsCheck(cmd)
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "--zip-batch-min-advantage must be a number")
+}
+
+func TestZipBatchDownloadFlagsRejectForceAndDisable(t *testing.T) {
+	transfer := New()
+	cmd := &cobra.Command{}
+	transfer.DownloadFlags(cmd)
+
+	require.NoError(t, cmd.ParseFlags([]string{"--force-zip-batch", "--no-zip-batch"}))
+	err := transfer.ArgsCheck(cmd)
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "--force-zip-batch cannot be combined with --no-zip-batch")
+}
+
+func TestZipBatchDownloadFlagsVisibility(t *testing.T) {
+	transfer := New()
+	cmd := &cobra.Command{}
+	transfer.DownloadFlags(cmd)
+
+	require.NotNil(t, cmd.Flags().Lookup("no-zip-batch"))
+	assert.False(t, cmd.Flags().Lookup("no-zip-batch").Hidden)
+	require.NotNil(t, cmd.Flags().Lookup("force-zip-batch"))
+	assert.False(t, cmd.Flags().Lookup("force-zip-batch").Hidden)
+	for _, name := range []string{
+		"zip-batch-eligible-size",
+		"zip-batch-min-files",
+		"zip-batch-max-files",
+		"zip-batch-batch-size",
+		"zip-batch-max-bytes",
+		"zip-batch-concurrency",
+		"zip-batch-min-advantage",
+		"zip-batch-reprobe-interval",
+		"zip-batch-extraction",
+	} {
+		require.NotNil(t, cmd.Flags().Lookup(name), name)
+		assert.True(t, cmd.Flags().Lookup(name).Hidden, name)
+	}
+}
+
 func TestDownloadSingleStreamUsesStaticTransferManager(t *testing.T) {
 	transfer := New()
 	transfer.UseDownloadMode()
