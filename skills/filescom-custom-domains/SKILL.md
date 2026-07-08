@@ -34,8 +34,8 @@ Create Custom Domain.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`. One of: `site_alias`, `public_hosting`, `s3_endpoint`. |
-| `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior. |
+| `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. One of: `site_alias`, `public_hosting`, `s3_endpoint`, `unassigned`. |
+| `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`. |
 | `--ssl-certificate-id` | int64 | Current SSL certificate ID. |
 | `--domain` | string | Customer-owned domain name. **Required.** |
 
@@ -46,8 +46,8 @@ Update Custom Domain.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Custom Domain ID. **Required.** |
-| `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`. One of: `site_alias`, `public_hosting`, `s3_endpoint`. |
-| `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior. |
+| `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. One of: `site_alias`, `public_hosting`, `s3_endpoint`, `unassigned`. |
+| `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`. |
 | `--ssl-certificate-id` | int64 | Current SSL certificate ID. |
 | `--domain` | string | Customer-owned domain name. |
 

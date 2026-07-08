@@ -146,8 +146,8 @@ func CustomDomains() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), customDomain, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&CustomDomainCreateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`. %v", reflect.ValueOf(paramsCustomDomainCreate.Destination.Enum()).MapKeys()))
-	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.")
+	cmdCreate.Flags().StringVar(&CustomDomainCreateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainCreate.Destination.Enum()).MapKeys()))
+	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")
 	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.SslCertificateId, "ssl-certificate-id", 0, "Current SSL certificate ID.")
 	cmdCreate.Flags().StringVar(&paramsCustomDomainCreate.Domain, "domain", "", "Customer-owned domain name.")
 
@@ -206,8 +206,8 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.Id, "id", 0, "Custom Domain ID.")
-	cmdUpdate.Flags().StringVar(&CustomDomainUpdateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`. %v", reflect.ValueOf(paramsCustomDomainUpdate.Destination.Enum()).MapKeys()))
-	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.")
+	cmdUpdate.Flags().StringVar(&CustomDomainUpdateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainUpdate.Destination.Enum()).MapKeys()))
+	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.SslCertificateId, "ssl-certificate-id", 0, "Current SSL certificate ID.")
 	cmdUpdate.Flags().StringVar(&paramsCustomDomainUpdate.Domain, "domain", "", "Customer-owned domain name.")
 

@@ -79,6 +79,7 @@ One skill per top-level CLI command.
 | [`filescom-remote-mount-backends`](filescom-remote-mount-backends/SKILL.md) | Remote Mount Backends |
 | [`filescom-remote-server-credentials`](filescom-remote-server-credentials/SKILL.md) | Remote Server Credentials |
 | [`filescom-remote-servers`](filescom-remote-servers/SKILL.md) | Remote Servers |
+| [`filescom-secrets`](filescom-secrets/SKILL.md) | Secrets |
 | [`filescom-sync-runs`](filescom-sync-runs/SKILL.md) | Sync Runs |
 | [`filescom-syncs`](filescom-syncs/SKILL.md) | Syncs |
 

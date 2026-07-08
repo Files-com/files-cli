@@ -3333,13 +3333,13 @@
           "name": "--destination",
           "type": "enum",
           "required": false,
-          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`."
+          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason."
         },
         {
           "name": "--folder-behavior-id",
           "type": "int64",
           "required": false,
-          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior."
+          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`."
         },
         {
           "name": "--ssl-certificate-id",
@@ -3371,13 +3371,13 @@
           "name": "--destination",
           "type": "enum",
           "required": false,
-          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`."
+          "description": "Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason."
         },
         {
           "name": "--folder-behavior-id",
           "type": "int64",
           "required": false,
-          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior."
+          "description": "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`."
         },
         {
           "name": "--ssl-certificate-id",
@@ -11101,6 +11101,136 @@
           "type": "int64",
           "required": true,
           "description": "Scim Log ID."
+        }
+      ]
+    },
+    {
+      "name": "secrets list",
+      "group": "secrets",
+      "description": "List Secrets",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `name` or `secret_type`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`, `name` or `secret_type`. Valid field combinations are `[ workspace_id, name ]`, `[ workspace_id, secret_type ]`, `[ secret_type, name ]` or `[ workspace_id, secret_type, name ]`."
+        },
+        {
+          "name": "--filter-prefix",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is prefixed by the supplied value. Valid fields are `name`."
+        }
+      ]
+    },
+    {
+      "name": "secrets find",
+      "group": "secrets",
+      "description": "Show Secret",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Secret ID."
+        }
+      ]
+    },
+    {
+      "name": "secrets create",
+      "group": "secrets",
+      "description": "Create Secret",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Secret name."
+        },
+        {
+          "name": "--description",
+          "type": "string",
+          "required": false,
+          "description": "Internal description for your reference."
+        },
+        {
+          "name": "--secret-type",
+          "type": "enum",
+          "required": true,
+          "description": "Secret type."
+        },
+        {
+          "name": "--metadata",
+          "type": "object",
+          "required": false,
+          "description": "Non-secret metadata for the Secret type."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. 0 means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "secrets update",
+      "group": "secrets",
+      "description": "Update Secret",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Secret ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Secret name."
+        },
+        {
+          "name": "--description",
+          "type": "string",
+          "required": false,
+          "description": "Internal description for your reference."
+        },
+        {
+          "name": "--secret-type",
+          "type": "enum",
+          "required": false,
+          "description": "Secret type."
+        },
+        {
+          "name": "--metadata",
+          "type": "object",
+          "required": false,
+          "description": "Non-secret metadata for the Secret type."
+        }
+      ]
+    },
+    {
+      "name": "secrets delete",
+      "group": "secrets",
+      "description": "Delete Secret",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Secret ID."
         }
       ]
     },
