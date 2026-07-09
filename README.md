@@ -23,6 +23,16 @@ The CLI supports all file Operations including list, download, upload, move, ren
 
 The available resources are listed in this documentation under the Resources menu on the left.
 
+### Small-File Download Batching
+
+When `files-cli download` or `files-cli sync pull` processes at least 500 eligible small files, it can batch them through the ZIP download path instead of issuing one download request per file. Files are eligible when they are smaller than 128 KiB.
+
+The ZIP is only the transfer format. The CLI extracts each entry as it arrives, verifies it, and writes ordinary files to the requested local destination. It does not save a `.zip` archive.
+
+ZIP batching is enabled by default and adjusts per job. The CLI starts with 16-file ZIP batches, can grow batches up to 32 files per stream, and compares ZIP throughput against normal per-file downloads. It keeps the ZIP path only when that path measures faster, and long jobs can re-check the decision as network conditions change.
+
+Use `--no-zip-batch` to disable ZIP batching for a download or sync pull. Use `--force-zip-batch` for targeted performance testing when you want to bypass the automatic speed check.
+
 ### Installation
 
 Download the latest release for Windows, macOS, or Linux from the [CLI App Releases](https://github.com/Files-com/files-cli/releases) page.
