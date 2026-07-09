@@ -43,6 +43,7 @@ Create Partner.
 | `--allow-user-creation` | bool | Allow Partner Admins to create users. |
 | `--cc-emails-to-responsible-party` | bool | When `true`, emails sent to Partner users are copied to the responsible User or Group. |
 | `--notes` | string | Notes about this Partner. |
+| `--partner-channel-template-id` | int64 | ID of the Partner Channel Template assigned to this Partner. |
 | `--responsible-group-id` | int64 | ID of the Group responsible for this Partner. |
 | `--responsible-user-id` | int64 | ID of the User responsible for this Partner. |
 | `--tags` | string | Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
@@ -65,6 +66,7 @@ Update Partner.
 | `--allow-user-creation` | bool | Allow Partner Admins to create users. |
 | `--cc-emails-to-responsible-party` | bool | When `true`, emails sent to Partner users are copied to the responsible User or Group. |
 | `--notes` | string | Notes about this Partner. |
+| `--partner-channel-template-id` | int64 | ID of the Partner Channel Template assigned to this Partner. |
 | `--responsible-group-id` | int64 | ID of the Group responsible for this Partner. |
 | `--responsible-user-id` | int64 | ID of the User responsible for this Partner. |
 | `--tags` | string | Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |

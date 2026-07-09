@@ -7889,6 +7889,178 @@
       ]
     },
     {
+      "name": "partner-channel-templates list",
+      "group": "partner-channel-templates",
+      "description": "List Partner Channel Templates",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`."
+        }
+      ]
+    },
+    {
+      "name": "partner-channel-templates find",
+      "group": "partner-channel-templates",
+      "description": "Show Partner Channel Template",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel Template ID."
+        }
+      ]
+    },
+    {
+      "name": "partner-channel-templates create",
+      "group": "partner-channel-templates",
+      "description": "Create Partner Channel Template",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--from-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level from-Partner folder name override."
+        },
+        {
+          "name": "--from-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
+          "name": "--from-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files uploaded by the Partner."
+        },
+        {
+          "name": "--to-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the to-Partner folder."
+        },
+        {
+          "name": "--to-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files delivered to the Partner."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "The name of the Partner Channel Template."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Channel path relative to the Partner root folder."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the Workspace associated with this Partner Channel Template."
+        }
+      ]
+    },
+    {
+      "name": "partner-channel-templates update",
+      "group": "partner-channel-templates",
+      "description": "Update Partner Channel Template",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel Template ID."
+        },
+        {
+          "name": "--from-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level from-Partner folder name override."
+        },
+        {
+          "name": "--from-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
+          "name": "--from-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files uploaded by the Partner."
+        },
+        {
+          "name": "--to-partner-folder-name",
+          "type": "string",
+          "required": false,
+          "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the to-Partner folder."
+        },
+        {
+          "name": "--to-partner-route-path",
+          "type": "string",
+          "required": false,
+          "description": "Optional route path for files delivered to the Partner."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "The name of the Partner Channel Template."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": false,
+          "description": "Channel path relative to the Partner root folder."
+        }
+      ]
+    },
+    {
+      "name": "partner-channel-templates delete",
+      "group": "partner-channel-templates",
+      "description": "Delete Partner Channel Template",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Partner Channel Template ID."
+        }
+      ]
+    },
+    {
       "name": "partner-channels list",
       "group": "partner-channels",
       "description": "List Partner Channels",
@@ -7935,6 +8107,12 @@
           "description": "Optional Channel-level from-Partner folder name override."
         },
         {
+          "name": "--from-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
           "name": "--from-partner-route-path",
           "type": "string",
           "required": false,
@@ -7945,6 +8123,12 @@
           "type": "string",
           "required": false,
           "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the to-Partner folder."
         },
         {
           "name": "--to-partner-route-path",
@@ -7991,6 +8175,12 @@
           "description": "Optional Channel-level from-Partner folder name override."
         },
         {
+          "name": "--from-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
           "name": "--from-partner-route-path",
           "type": "string",
           "required": false,
@@ -8001,6 +8191,12 @@
           "type": "string",
           "required": false,
           "description": "Optional Channel-level to-Partner folder name override."
+        },
+        {
+          "name": "--to-partner-managed-folder-paths",
+          "type": "[]string",
+          "required": false,
+          "description": "Managed folder paths inside the to-Partner folder."
         },
         {
           "name": "--to-partner-route-path",
@@ -8229,6 +8425,12 @@
           "description": "Notes about this Partner."
         },
         {
+          "name": "--partner-channel-template-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the Partner Channel Template assigned to this Partner."
+        },
+        {
           "name": "--responsible-group-id",
           "type": "int64",
           "required": false,
@@ -8325,6 +8527,12 @@
           "type": "string",
           "required": false,
           "description": "Notes about this Partner."
+        },
+        {
+          "name": "--partner-channel-template-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the Partner Channel Template assigned to this Partner."
         },
         {
           "name": "--responsible-group-id",

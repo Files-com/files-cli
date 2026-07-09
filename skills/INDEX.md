@@ -194,6 +194,7 @@ One skill per top-level CLI command.
 | --- | --- |
 | [`filescom-group-users`](filescom-group-users/SKILL.md) | Group Users |
 | [`filescom-groups`](filescom-groups/SKILL.md) | Groups |
+| [`filescom-partner-channel-templates`](filescom-partner-channel-templates/SKILL.md) | Partner Channel Templates |
 | [`filescom-partner-channels`](filescom-partner-channels/SKILL.md) | Partner Channels |
 | [`filescom-partner-site-requests`](filescom-partner-site-requests/SKILL.md) | Partner Site Requests |
 | [`filescom-partner-sites`](filescom-partner-sites/SKILL.md) | Partner Sites |

@@ -150,8 +150,10 @@ func PartnerChannels() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
+	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
+	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelCreate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.ToPartnerRoutePath, "to-partner-route-path", "", "Optional route path for files delivered to the Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerChannelCreate.PartnerId, "partner-id", 0, "ID of the Partner this Channel belongs to.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.Path, "path", "", "Channel path relative to the Partner root folder.")
@@ -188,11 +190,17 @@ func PartnerChannels() *cobra.Command {
 			if cmd.Flags().Changed("from-partner-folder-name") {
 				lib.FlagUpdate(cmd, "from_partner_folder_name", paramsPartnerChannelUpdate.FromPartnerFolderName, mapParams)
 			}
+			if cmd.Flags().Changed("from-partner-managed-folder-paths") {
+				lib.FlagUpdateLen(cmd, "from_partner_managed_folder_paths", paramsPartnerChannelUpdate.FromPartnerManagedFolderPaths, mapParams)
+			}
 			if cmd.Flags().Changed("from-partner-route-path") {
 				lib.FlagUpdate(cmd, "from_partner_route_path", paramsPartnerChannelUpdate.FromPartnerRoutePath, mapParams)
 			}
 			if cmd.Flags().Changed("to-partner-folder-name") {
 				lib.FlagUpdate(cmd, "to_partner_folder_name", paramsPartnerChannelUpdate.ToPartnerFolderName, mapParams)
+			}
+			if cmd.Flags().Changed("to-partner-managed-folder-paths") {
+				lib.FlagUpdateLen(cmd, "to_partner_managed_folder_paths", paramsPartnerChannelUpdate.ToPartnerManagedFolderPaths, mapParams)
 			}
 			if cmd.Flags().Changed("to-partner-route-path") {
 				lib.FlagUpdate(cmd, "to_partner_route_path", paramsPartnerChannelUpdate.ToPartnerRoutePath, mapParams)
@@ -212,8 +220,10 @@ func PartnerChannels() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerChannelUpdate.Id, "id", 0, "Partner Channel ID.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
+	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
+	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelUpdate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.ToPartnerRoutePath, "to-partner-route-path", "", "Optional route path for files delivered to the Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.Path, "path", "", "Channel path relative to the Partner root folder.")
 

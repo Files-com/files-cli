@@ -176,6 +176,7 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAllowUserCreation, "allow-user-creation", createAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdCreate.Flags().BoolVar(&createCcEmailsToResponsibleParty, "cc-emails-to-responsible-party", createCcEmailsToResponsibleParty, "When `true`, emails sent to Partner users are copied to the responsible User or Group.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Notes, "notes", "", "Notes about this Partner.")
+	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.PartnerChannelTemplateId, "partner-channel-template-id", 0, "ID of the Partner Channel Template assigned to this Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
@@ -240,6 +241,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("notes") {
 				lib.FlagUpdate(cmd, "notes", paramsPartnerUpdate.Notes, mapParams)
 			}
+			if cmd.Flags().Changed("partner-channel-template-id") {
+				lib.FlagUpdate(cmd, "partner_channel_template_id", paramsPartnerUpdate.PartnerChannelTemplateId, mapParams)
+			}
 			if cmd.Flags().Changed("responsible-group-id") {
 				lib.FlagUpdate(cmd, "responsible_group_id", paramsPartnerUpdate.ResponsibleGroupId, mapParams)
 			}
@@ -271,6 +275,7 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowUserCreation, "allow-user-creation", updateAllowUserCreation, "Allow Partner Admins to create users.")
 	cmdUpdate.Flags().BoolVar(&updateCcEmailsToResponsibleParty, "cc-emails-to-responsible-party", updateCcEmailsToResponsibleParty, "When `true`, emails sent to Partner users are copied to the responsible User or Group.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Notes, "notes", "", "Notes about this Partner.")
+	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.PartnerChannelTemplateId, "partner-channel-template-id", 0, "ID of the Partner Channel Template assigned to this Partner.")
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")

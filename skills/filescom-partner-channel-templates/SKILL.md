@@ -1,37 +1,37 @@
 ---
-name: filescom-partner-channels
+name: filescom-partner-channel-templates
 description: |
-  A PartnerChannel defines a structured communication path within a Partner root folder, including directional folder names and partner-scoped routing configuration.
+  A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
 ---
 
-# filescom-partner-channels
+# filescom-partner-channel-templates
 
-A PartnerChannel defines a structured communication path within a Partner root folder, including directional folder names and partner-scoped routing configuration.
+A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
 
 All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 
-### `files-cli partner-channels list`
+### `files-cli partner-channel-templates list`
 
-List Partner Channels.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `path` or `partner_id`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `partner_id` and `workspace_id`. Valid field combinations are `[ workspace_id, partner_id ]`. |
-
-### `files-cli partner-channels find`
-
-Show Partner Channel.
+List Partner Channel Templates.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Partner Channel ID. **Required.** |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`. |
 
-### `files-cli partner-channels create [path]`
+### `files-cli partner-channel-templates find`
 
-Create Partner Channel.
+Show Partner Channel Template.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Partner Channel Template ID. **Required.** |
+
+### `files-cli partner-channel-templates create [path]`
+
+Create Partner Channel Template.
 
 | Flag | Type | Description |
 | --- | --- | --- |
@@ -41,30 +41,31 @@ Create Partner Channel.
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |
 | `--to-partner-route-path` | string | Optional route path for files delivered to the Partner. |
-| `--partner-id` | int64 | ID of the Partner this Channel belongs to. **Required.** |
+| `--name` | string | The name of the Partner Channel Template. **Required.** |
 | `--path` | string | Channel path relative to the Partner root folder. **Required.** |
-| `--workspace-id` | int64 | ID of the Workspace associated with this Partner Channel. |
+| `--workspace-id` | int64 | ID of the Workspace associated with this Partner Channel Template. |
 
-### `files-cli partner-channels update [path]`
+### `files-cli partner-channel-templates update [path]`
 
-Update Partner Channel.
+Update Partner Channel Template.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Partner Channel ID. **Required.** |
+| `--id` | int64 | Partner Channel Template ID. **Required.** |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path` | string | Optional route path for files uploaded by the Partner. |
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |
 | `--to-partner-route-path` | string | Optional route path for files delivered to the Partner. |
+| `--name` | string | The name of the Partner Channel Template. |
 | `--path` | string | Channel path relative to the Partner root folder. |
 
-### `files-cli partner-channels delete`
+### `files-cli partner-channel-templates delete`
 
-Delete Partner Channel.
+Delete Partner Channel Template.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--id` | int64 | Partner Channel ID. **Required.** |
+| `--id` | int64 | Partner Channel Template ID. **Required.** |
 
