@@ -7941,10 +7941,10 @@
           "description": "Managed folder paths inside the from-Partner folder."
         },
         {
-          "name": "--from-partner-route-path",
+          "name": "--from-partner-route-path-pattern",
           "type": "string",
           "required": false,
-          "description": "Optional route path for files uploaded by the Partner."
+          "description": "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}."
         },
         {
           "name": "--to-partner-folder-name",
@@ -7959,10 +7959,10 @@
           "description": "Managed folder paths inside the to-Partner folder."
         },
         {
-          "name": "--to-partner-route-path",
+          "name": "--to-partner-route-path-pattern",
           "type": "string",
           "required": false,
-          "description": "Optional route path for files delivered to the Partner."
+          "description": "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}."
         },
         {
           "name": "--name",
@@ -8009,10 +8009,10 @@
           "description": "Managed folder paths inside the from-Partner folder."
         },
         {
-          "name": "--from-partner-route-path",
+          "name": "--from-partner-route-path-pattern",
           "type": "string",
           "required": false,
-          "description": "Optional route path for files uploaded by the Partner."
+          "description": "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}."
         },
         {
           "name": "--to-partner-folder-name",
@@ -8027,10 +8027,10 @@
           "description": "Managed folder paths inside the to-Partner folder."
         },
         {
-          "name": "--to-partner-route-path",
+          "name": "--to-partner-route-path-pattern",
           "type": "string",
           "required": false,
-          "description": "Optional route path for files delivered to the Partner."
+          "description": "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}."
         },
         {
           "name": "--name",

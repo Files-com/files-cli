@@ -37,10 +37,10 @@ Create Partner Channel Template.
 | --- | --- | --- |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
-| `--from-partner-route-path` | string | Optional route path for files uploaded by the Partner. |
+| `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |
-| `--to-partner-route-path` | string | Optional route path for files delivered to the Partner. |
+| `--to-partner-route-path-pattern` | string | Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}. |
 | `--name` | string | The name of the Partner Channel Template. **Required.** |
 | `--path` | string | Channel path relative to the Partner root folder. **Required.** |
 | `--workspace-id` | int64 | ID of the Workspace associated with this Partner Channel Template. |
@@ -54,10 +54,10 @@ Update Partner Channel Template.
 | `--id` | int64 | Partner Channel Template ID. **Required.** |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
-| `--from-partner-route-path` | string | Optional route path for files uploaded by the Partner. |
+| `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |
-| `--to-partner-route-path` | string | Optional route path for files delivered to the Partner. |
+| `--to-partner-route-path-pattern` | string | Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}. |
 | `--name` | string | The name of the Partner Channel Template. |
 | `--path` | string | Channel path relative to the Partner root folder. |
 

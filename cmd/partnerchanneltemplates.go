@@ -151,10 +151,10 @@ func PartnerChannelTemplates() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelTemplateCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
-	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
+	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelTemplateCreate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
-	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.ToPartnerRoutePath, "to-partner-route-path", "", "Optional route path for files delivered to the Partner.")
+	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.ToPartnerRoutePathPattern, "to-partner-route-path-pattern", "", "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.Name, "name", "", "The name of the Partner Channel Template.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.Path, "path", "", "Channel path relative to the Partner root folder.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerChannelTemplateCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this Partner Channel Template.")
@@ -193,8 +193,8 @@ func PartnerChannelTemplates() *cobra.Command {
 			if cmd.Flags().Changed("from-partner-managed-folder-paths") {
 				lib.FlagUpdateLen(cmd, "from_partner_managed_folder_paths", paramsPartnerChannelTemplateUpdate.FromPartnerManagedFolderPaths, mapParams)
 			}
-			if cmd.Flags().Changed("from-partner-route-path") {
-				lib.FlagUpdate(cmd, "from_partner_route_path", paramsPartnerChannelTemplateUpdate.FromPartnerRoutePath, mapParams)
+			if cmd.Flags().Changed("from-partner-route-path-pattern") {
+				lib.FlagUpdate(cmd, "from_partner_route_path_pattern", paramsPartnerChannelTemplateUpdate.FromPartnerRoutePathPattern, mapParams)
 			}
 			if cmd.Flags().Changed("to-partner-folder-name") {
 				lib.FlagUpdate(cmd, "to_partner_folder_name", paramsPartnerChannelTemplateUpdate.ToPartnerFolderName, mapParams)
@@ -202,8 +202,8 @@ func PartnerChannelTemplates() *cobra.Command {
 			if cmd.Flags().Changed("to-partner-managed-folder-paths") {
 				lib.FlagUpdateLen(cmd, "to_partner_managed_folder_paths", paramsPartnerChannelTemplateUpdate.ToPartnerManagedFolderPaths, mapParams)
 			}
-			if cmd.Flags().Changed("to-partner-route-path") {
-				lib.FlagUpdate(cmd, "to_partner_route_path", paramsPartnerChannelTemplateUpdate.ToPartnerRoutePath, mapParams)
+			if cmd.Flags().Changed("to-partner-route-path-pattern") {
+				lib.FlagUpdate(cmd, "to_partner_route_path_pattern", paramsPartnerChannelTemplateUpdate.ToPartnerRoutePathPattern, mapParams)
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsPartnerChannelTemplateUpdate.Name, mapParams)
@@ -224,10 +224,10 @@ func PartnerChannelTemplates() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsPartnerChannelTemplateUpdate.Id, "id", 0, "Partner Channel Template ID.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelTemplateUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
-	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelTemplateUpdate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
-	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.ToPartnerRoutePath, "to-partner-route-path", "", "Optional route path for files delivered to the Partner.")
+	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.ToPartnerRoutePathPattern, "to-partner-route-path-pattern", "", "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.Name, "name", "", "The name of the Partner Channel Template.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.Path, "path", "", "Channel path relative to the Partner root folder.")
 
