@@ -51,6 +51,7 @@ Create Group.
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
 | `--restapi-permission` | bool | If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level. |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
+| `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |
 | `--name` | string | Group name. **Required.** |
 | `--workspace-id` | int64 | Workspace ID |
@@ -71,6 +72,7 @@ Update Group.
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
 | `--restapi-permission` | bool | If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level. |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
+| `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |
 | `--name` | string | Group name. |
 

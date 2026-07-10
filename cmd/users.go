@@ -385,6 +385,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&UserCreateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserCreate.FilesystemLayout.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned directly to this user, if any.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Language, "language", "", "Preferred language")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.NotificationDailySendTime, "notification-daily-send-time", 0, "Hour of the day at which daily notifications should be sent. Can be in range 0 to 23")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Name, "name", "", "User's full name")
@@ -679,6 +680,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("header-text") {
 				lib.FlagUpdate(cmd, "header_text", paramsUserUpdate.HeaderText, mapParams)
 			}
+			if cmd.Flags().Changed("integration-centric-profile-id") {
+				lib.FlagUpdate(cmd, "integration_centric_profile_id", paramsUserUpdate.IntegrationCentricProfileId, mapParams)
+			}
 			if cmd.Flags().Changed("language") {
 				lib.FlagUpdate(cmd, "language", paramsUserUpdate.Language, mapParams)
 			}
@@ -841,6 +845,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&UserUpdateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserUpdate.FilesystemLayout.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned directly to this user, if any.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Language, "language", "", "Preferred language")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.NotificationDailySendTime, "notification-daily-send-time", 0, "Hour of the day at which daily notifications should be sent. Can be in range 0 to 23")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Name, "name", "", "User's full name")

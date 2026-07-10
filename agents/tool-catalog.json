@@ -6153,6 +6153,12 @@
           "description": "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it."
         },
         {
+          "name": "--integration-centric-profile-id",
+          "type": "int64",
+          "required": false,
+          "description": "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it."
+        },
+        {
           "name": "--allowed-ips",
           "type": "string",
           "required": false,
@@ -6237,6 +6243,12 @@
           "type": "int64",
           "required": false,
           "description": "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it."
+        },
+        {
+          "name": "--integration-centric-profile-id",
+          "type": "int64",
+          "required": false,
+          "description": "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it."
         },
         {
           "name": "--allowed-ips",
@@ -6808,6 +6820,124 @@
           "type": "object",
           "required": false,
           "description": "If set, return records where the specified field is less than or equal the supplied value. Valid fields are `created_at`."
+        }
+      ]
+    },
+    {
+      "name": "integration-centric-profiles list",
+      "group": "integration-centric-profiles",
+      "description": "List Integration Centric Profiles",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`."
+        }
+      ]
+    },
+    {
+      "name": "integration-centric-profiles find",
+      "group": "integration-centric-profiles",
+      "description": "Show Integration Centric Profile",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Integration Centric Profile ID."
+        }
+      ]
+    },
+    {
+      "name": "integration-centric-profiles create",
+      "group": "integration-centric-profiles",
+      "description": "Create Integration Centric Profile",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Profile name"
+        },
+        {
+          "name": "--expected-remote-servers",
+          "type": "[]object",
+          "required": true,
+          "description": "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID"
+        },
+        {
+          "name": "--use-for-all-users",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this profile applies to all users in the Workspace by default"
+        }
+      ]
+    },
+    {
+      "name": "integration-centric-profiles update",
+      "group": "integration-centric-profiles",
+      "description": "Update Integration Centric Profile",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Integration Centric Profile ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Profile name"
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID"
+        },
+        {
+          "name": "--expected-remote-servers",
+          "type": "[]object",
+          "required": false,
+          "description": "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`."
+        },
+        {
+          "name": "--use-for-all-users",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this profile applies to all users in the Workspace by default"
+        }
+      ]
+    },
+    {
+      "name": "integration-centric-profiles delete",
+      "group": "integration-centric-profiles",
+      "description": "Delete Integration Centric Profile",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Integration Centric Profile ID."
         }
       ]
     },
@@ -9789,6 +9919,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--user-id",
+          "type": "int64",
+          "required": false,
+          "description": "User ID.  Provide a value of `0` to operate the current session's user."
+        },
+        {
           "name": "--sort-by",
           "type": "object",
           "required": false,
@@ -9842,6 +9978,12 @@
       "description": "Create Remote Server",
       "auth_required": true,
       "parameters": [
+        {
+          "name": "--user-id",
+          "type": "int64",
+          "required": false,
+          "description": "User ID.  Provide a value of `0` to operate the current session's user."
+        },
         {
           "name": "--password",
           "type": "string",
@@ -15063,6 +15205,12 @@
           "description": "Text to display to the user in the header of the UI"
         },
         {
+          "name": "--integration-centric-profile-id",
+          "type": "int64",
+          "required": false,
+          "description": "Integration Centric Profile ID assigned directly to this user, if any."
+        },
+        {
           "name": "--language",
           "type": "string",
           "required": false,
@@ -15507,6 +15655,12 @@
           "type": "string",
           "required": false,
           "description": "Text to display to the user in the header of the UI"
+        },
+        {
+          "name": "--integration-centric-profile-id",
+          "type": "int64",
+          "required": false,
+          "description": "Integration Centric Profile ID assigned directly to this user, if any."
         },
         {
           "name": "--language",

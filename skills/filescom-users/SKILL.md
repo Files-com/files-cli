@@ -86,6 +86,7 @@ Create User.
 | `--filesystem-layout` | enum | File system layout. One of: `site_root`, `user_root`, `partner_root`, `integration_centric`, `workspace_root`. |
 | `--ftp-permission` | bool | Can the user access with FTP/FTPS? |
 | `--header-text` | string | Text to display to the user in the header of the UI |
+| `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned directly to this user, if any. |
 | `--language` | string | Preferred language |
 | `--notification-daily-send-time` | int64 | Hour of the day at which daily notifications should be sent. Can be in range 0 to 23 |
 | `--name` | string | User's full name |
@@ -183,6 +184,7 @@ Update User.
 | `--filesystem-layout` | enum | File system layout. One of: `site_root`, `user_root`, `partner_root`, `integration_centric`, `workspace_root`. |
 | `--ftp-permission` | bool | Can the user access with FTP/FTPS? |
 | `--header-text` | string | Text to display to the user in the header of the UI |
+| `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned directly to this user, if any. |
 | `--language` | string | Preferred language |
 | `--notification-daily-send-time` | int64 | Hour of the day at which daily notifications should be sent. Can be in range 0 to 23 |
 | `--name` | string | User's full name |

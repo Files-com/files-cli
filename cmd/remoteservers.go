@@ -103,6 +103,7 @@ func RemoteServers() *cobra.Command {
 	cmdList.Flags().StringArrayVar(&listFilterPrefixArgs, "filter-prefix", []string{}, "Find remote servers where field starts with value.")
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-prefix", "field=value")
 
+	cmdList.Flags().Int64Var(&paramsRemoteServerList.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdList.Flags().StringVar(&paramsRemoteServerList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsRemoteServerList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 
@@ -260,6 +261,7 @@ func RemoteServers() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), remoteServer, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Password, "password", "", "Password, if needed.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.PrivateKey, "private-key", "", "Private key, if needed.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.PrivateKeyPassphrase, "private-key-passphrase", "", "Passphrase for private key if needed.")

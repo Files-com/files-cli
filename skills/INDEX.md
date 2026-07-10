@@ -155,6 +155,7 @@ One skill per top-level CLI command.
 | [`filescom-custom-domains`](filescom-custom-domains/SKILL.md) | Custom Domains |
 | [`filescom-desktop-configuration-profiles`](filescom-desktop-configuration-profiles/SKILL.md) | Desktop Configuration Profiles |
 | [`filescom-holiday-regions`](filescom-holiday-regions/SKILL.md) | Holiday Regions |
+| [`filescom-integration-centric-profiles`](filescom-integration-centric-profiles/SKILL.md) | Integration Centric Profiles |
 | [`filescom-metadata-categories`](filescom-metadata-categories/SKILL.md) | Metadata Categories |
 | [`filescom-site-subdomain-redirects`](filescom-site-subdomain-redirects/SKILL.md) | Site Subdomain Redirects |
 | [`filescom-sites`](filescom-sites/SKILL.md) | Sites |
