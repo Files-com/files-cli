@@ -143,6 +143,7 @@ Update Site Settings.
 | `--revoke-bundle-access-on-disable-or-delete` | bool | Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period. |
 | `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--group-admins-can-add-users` | bool | Allow group admins to create users in their groups |
+| `--group-admins-can-manage-group-memberships` | bool | Allow group admins to add or remove existing users in their groups |
 | `--group-admins-can-delete-users` | bool | Allow group admins to delete users in their groups |
 | `--group-admins-can-enable-disable-users` | bool | Allow group admins to enable or disable users in their groups |
 | `--group-admins-can-modify-users` | bool | Allow group admins to modify users in their groups |

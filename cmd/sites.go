@@ -144,6 +144,7 @@ func Sites() *cobra.Command {
 	updateProtocolAccessGroupsOnly := true
 	updateRevokeBundleAccessOnDisableOrDelete := true
 	updateGroupAdminsCanAddUsers := true
+	updateGroupAdminsCanManageGroupMemberships := true
 	updateGroupAdminsCanDeleteUsers := true
 	updateGroupAdminsCanEnableDisableUsers := true
 	updateGroupAdminsCanModifyUsers := true
@@ -540,6 +541,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("group-admins-can-add-users") {
 				mapParams["group_admins_can_add_users"] = updateGroupAdminsCanAddUsers
 			}
+			if cmd.Flags().Changed("group-admins-can-manage-group-memberships") {
+				mapParams["group_admins_can_manage_group_memberships"] = updateGroupAdminsCanManageGroupMemberships
+			}
 			if cmd.Flags().Changed("group-admins-can-delete-users") {
 				mapParams["group_admins_can_delete_users"] = updateGroupAdminsCanDeleteUsers
 			}
@@ -870,6 +874,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanAddUsers, "group-admins-can-add-users", updateGroupAdminsCanAddUsers, "Allow group admins to create users in their groups")
+	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanManageGroupMemberships, "group-admins-can-manage-group-memberships", updateGroupAdminsCanManageGroupMemberships, "Allow group admins to add or remove existing users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanDeleteUsers, "group-admins-can-delete-users", updateGroupAdminsCanDeleteUsers, "Allow group admins to delete users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanEnableDisableUsers, "group-admins-can-enable-disable-users", updateGroupAdminsCanEnableDisableUsers, "Allow group admins to enable or disable users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanModifyUsers, "group-admins-can-modify-users", updateGroupAdminsCanModifyUsers, "Allow group admins to modify users in their groups")

@@ -13336,6 +13336,12 @@
           "description": "Allow group admins to create users in their groups"
         },
         {
+          "name": "--group-admins-can-manage-group-memberships",
+          "type": "bool",
+          "required": false,
+          "description": "Allow group admins to add or remove existing users in their groups"
+        },
+        {
           "name": "--group-admins-can-delete-users",
           "type": "bool",
           "required": false,
