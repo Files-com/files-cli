@@ -281,7 +281,7 @@ Create Automation.
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
-| `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`. **Required.** |
+| `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`, `v2`. **Required.** |
 | `--workspace-id` | int64 | Workspace ID |
 
 ### `files-cli automations manual-run`
@@ -331,7 +331,7 @@ Update Automation.
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
-| `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`. |
+| `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`, `v2`. |
 
 ### `files-cli automations delete`
 
