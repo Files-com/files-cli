@@ -1363,6 +1363,20 @@
       ]
     },
     {
+      "name": "automation-runs cancel",
+      "group": "automation-runs",
+      "description": "Cancel Automation Run",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Automation Run ID."
+        }
+      ]
+    },
+    {
       "name": "automations list",
       "group": "automations",
       "description": "List Automations",

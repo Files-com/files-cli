@@ -35,3 +35,11 @@ Show Automation Run.
 | --- | --- | --- |
 | `--id` | int64 | Automation Run ID. **Required.** |
 
+### `files-cli automation-runs cancel`
+
+Cancel Automation Run.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Automation Run ID. **Required.** |
+
