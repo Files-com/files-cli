@@ -29,7 +29,7 @@ List Behaviors.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `behavior`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `clickwrap_id`, `form_field_set_id`, `impacts_ui`, `remote_server_id` or `behavior`. Valid field combinations are `[ impacts_ui, behavior ]`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `clickwrap_id`, `form_field_set_id`, `impacts_ui`, `remote_server_id` or `behavior`. Valid field combinations are `[ impacts_ui, behavior ]` and `[ behavior, remote_server_id ]`. |
 
 ### `files-cli behaviors find`
 
