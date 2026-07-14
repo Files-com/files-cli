@@ -169,6 +169,31 @@ func Automations() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	Automations.AddCommand(cmdFind)
+	var fieldsGetAuthoringSchema []string
+	var formatGetAuthoringSchema []string
+	usePagerGetAuthoringSchema := true
+	cmdGetAuthoringSchema := &cobra.Command{
+		Use:   "get-authoring-schema",
+		Short: `Show the Automation v2 authoring schema and active node catalog`,
+		Long:  `Show the Automation v2 authoring schema and active node catalog`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
+
+			var automationAuthoringSchema interface{}
+			var err error
+			automationAuthoringSchema, err = client.GetAuthoringSchema(files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automationAuthoringSchema, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGetAuthoringSchema), fieldsGetAuthoringSchema, usePagerGetAuthoringSchema, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+
+	cmdGetAuthoringSchema.Flags().StringSliceVar(&fieldsGetAuthoringSchema, "fields", []string{}, "comma separated list of field names")
+	cmdGetAuthoringSchema.Flags().StringSliceVar(&formatGetAuthoringSchema, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGetAuthoringSchema.Flags().BoolVar(&usePagerGetAuthoringSchema, "use-pager", usePagerGetAuthoringSchema, "Use $PAGER (.ie less, more, etc)")
+
+	Automations.AddCommand(cmdGetAuthoringSchema)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true

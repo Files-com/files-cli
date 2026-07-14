@@ -243,6 +243,12 @@ Show Automation.
 | --- | --- | --- |
 | `--id` | int64 | Automation ID. **Required.** |
 
+### `files-cli automations get-authoring-schema`
+
+Show the Automation v2 authoring schema and active node catalog.
+
+No flags beyond the global ones.
+
 ### `files-cli automations create [path]`
 
 Create Automation.

@@ -1435,6 +1435,15 @@
       ]
     },
     {
+      "name": "automations get-authoring-schema",
+      "group": "automations",
+      "description": "Show the Automation v2 authoring schema and active node catalog",
+      "auth_required": true,
+      "parameters": [
+
+      ]
+    },
+    {
       "name": "automations create",
       "group": "automations",
       "description": "Create Automation",
