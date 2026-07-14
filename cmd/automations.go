@@ -324,15 +324,25 @@ func Automations() *cobra.Command {
 	usePagerManualRun := true
 	paramsAutomationManualRun := files_sdk.AutomationManualRunParams{}
 
+	manualRunItemsJSON := ""
+
 	cmdManualRun := &cobra.Command{
 		Use:   "manual-run",
-		Short: `Manually Run Automation`,
-		Long:  `Manually Run Automation`,
+		Short: `Manually Run Automation. v2 Automations require Site or Workspace Admin permission`,
+		Long:  `Manually Run Automation. v2 Automations require Site or Workspace Admin permission`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := automation.Client{Config: config}
+
+			if cmd.Flags().Changed("items") {
+				parsedManualRunItems, parseManualRunItemsErr := lib.ParseJSONArrayObjectFlag("items", manualRunItemsJSON)
+				if parseManualRunItemsErr != nil {
+					return parseManualRunItemsErr
+				}
+				paramsAutomationManualRun.Items = parsedManualRunItems
+			}
 
 			var err error
 			err = client.ManualRun(paramsAutomationManualRun, files_sdk.WithContext(ctx))
@@ -343,6 +353,8 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdManualRun.Flags().Int64Var(&paramsAutomationManualRun.Id, "id", 0, "Automation ID.")
+	cmdManualRun.Flags().StringVar(&manualRunItemsJSON, "items", "", "Initial items for a v2 manual trigger. Each item contains exactly one `file` path or `data` object. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdManualRun.Flags(), "items", "json")
 
 	cmdManualRun.Flags().StringSliceVar(&fieldsManualRun, "fields", []string{}, "comma separated list of field names")
 	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)

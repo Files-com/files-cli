@@ -35,6 +35,15 @@ Show Automation Run.
 | --- | --- | --- |
 | `--id` | int64 | Automation Run ID. **Required.** |
 
+### `files-cli automation-runs find-node`
+
+Show Automation Run Node.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Automation Run ID. **Required.** |
+| `--node-id` | string | Node ID from the pinned Automation definition. **Required.** |
+
 ### `files-cli automation-runs cancel`
 
 Cancel Automation Run.
@@ -42,4 +51,13 @@ Cancel Automation Run.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Automation Run ID. **Required.** |
+
+### `files-cli automation-runs rerun`
+
+Re-run Automation from Node.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Automation Run ID. **Required.** |
+| `--node-id` | string | Node ID at which execution should resume. **Required.** |
 

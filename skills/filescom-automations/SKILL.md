@@ -292,11 +292,12 @@ Create Automation.
 
 ### `files-cli automations manual-run`
 
-Manually Run Automation.
+Manually Run Automation. v2 Automations require Site or Workspace Admin permission.
 
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Automation ID. **Required.** |
+| `--items` | []object | Initial items for a v2 manual trigger. Each item contains exactly one `file` path or `data` object. |
 
 ### `files-cli automations update [path]`
 

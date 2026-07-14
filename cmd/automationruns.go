@@ -127,6 +127,35 @@ func AutomationRuns() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	AutomationRuns.AddCommand(cmdFind)
+	var fieldsFindNode []string
+	var formatFindNode []string
+	usePagerFindNode := true
+	paramsAutomationRunFindNode := files_sdk.AutomationRunFindNodeParams{}
+
+	cmdFindNode := &cobra.Command{
+		Use:   "find-node",
+		Short: `Show Automation Run Node`,
+		Long:  `Show Automation Run Node`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation_run.Client{Config: config}
+
+			var automationExecutionNode interface{}
+			var err error
+			automationExecutionNode, err = client.FindNode(paramsAutomationRunFindNode, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automationExecutionNode, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFindNode), fieldsFindNode, usePagerFindNode, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFindNode.Flags().Int64Var(&paramsAutomationRunFindNode.Id, "id", 0, "Automation Run ID.")
+	cmdFindNode.Flags().StringVar(&paramsAutomationRunFindNode.NodeId, "node-id", "", "Node ID from the pinned Automation definition.")
+
+	cmdFindNode.Flags().StringSliceVar(&fieldsFindNode, "fields", []string{}, "comma separated list of field names")
+	cmdFindNode.Flags().StringSliceVar(&formatFindNode, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFindNode.Flags().BoolVar(&usePagerFindNode, "use-pager", usePagerFindNode, "Use $PAGER (.ie less, more, etc)")
+
+	AutomationRuns.AddCommand(cmdFindNode)
 	var fieldsCancel []string
 	var formatCancel []string
 	usePagerCancel := true
@@ -155,5 +184,34 @@ func AutomationRuns() *cobra.Command {
 	cmdCancel.Flags().BoolVar(&usePagerCancel, "use-pager", usePagerCancel, "Use $PAGER (.ie less, more, etc)")
 
 	AutomationRuns.AddCommand(cmdCancel)
+	var fieldsRerun []string
+	var formatRerun []string
+	usePagerRerun := true
+	paramsAutomationRunRerun := files_sdk.AutomationRunRerunParams{}
+
+	cmdRerun := &cobra.Command{
+		Use:   "rerun",
+		Short: `Re-run Automation from Node`,
+		Long:  `Re-run Automation from Node`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation_run.Client{Config: config}
+
+			var automationRun interface{}
+			var err error
+			automationRun, err = client.Rerun(paramsAutomationRunRerun, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automationRun, err, Profile(cmd).Current().SetResourceFormat(cmd, formatRerun), fieldsRerun, usePagerRerun, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdRerun.Flags().Int64Var(&paramsAutomationRunRerun.Id, "id", 0, "Automation Run ID.")
+	cmdRerun.Flags().StringVar(&paramsAutomationRunRerun.NodeId, "node-id", "", "Node ID at which execution should resume.")
+
+	cmdRerun.Flags().StringSliceVar(&fieldsRerun, "fields", []string{}, "comma separated list of field names")
+	cmdRerun.Flags().StringSliceVar(&formatRerun, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdRerun.Flags().BoolVar(&usePagerRerun, "use-pager", usePagerRerun, "Use $PAGER (.ie less, more, etc)")
+
+	AutomationRuns.AddCommand(cmdRerun)
 	return AutomationRuns
 }
