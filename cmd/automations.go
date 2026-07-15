@@ -319,6 +319,34 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
 	Automations.AddCommand(cmdCreate)
+	var fieldsUpgrade []string
+	var formatUpgrade []string
+	usePagerUpgrade := true
+	paramsAutomationUpgrade := files_sdk.AutomationUpgradeParams{}
+
+	cmdUpgrade := &cobra.Command{
+		Use:   "upgrade",
+		Short: `Upgrade a legacy Automation to Automation v2`,
+		Long:  `Upgrade a legacy Automation to Automation v2`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation.Client{Config: config}
+
+			var automation interface{}
+			var err error
+			automation, err = client.Upgrade(paramsAutomationUpgrade, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automation, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpgrade), fieldsUpgrade, usePagerUpgrade, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdUpgrade.Flags().Int64Var(&paramsAutomationUpgrade.Id, "id", 0, "Automation ID.")
+
+	cmdUpgrade.Flags().StringSliceVar(&fieldsUpgrade, "fields", []string{}, "comma separated list of field names")
+	cmdUpgrade.Flags().StringSliceVar(&formatUpgrade, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUpgrade.Flags().BoolVar(&usePagerUpgrade, "use-pager", usePagerUpgrade, "Use $PAGER (.ie less, more, etc)")
+
+	Automations.AddCommand(cmdUpgrade)
 	var fieldsManualRun []string
 	var formatManualRun []string
 	usePagerManualRun := true

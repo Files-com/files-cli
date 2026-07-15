@@ -290,6 +290,14 @@ Create Automation.
 | `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`, `v2`. **Required.** |
 | `--workspace-id` | int64 | Workspace ID |
 
+### `files-cli automations upgrade`
+
+Upgrade a legacy Automation to Automation v2.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Automation ID. **Required.** |
+
 ### `files-cli automations manual-run`
 
 Manually Run Automation. v2 Automations require Site or Workspace Admin permission.
