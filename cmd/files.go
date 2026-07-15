@@ -32,6 +32,7 @@ func Files() *cobra.Command {
 	createCopyBehaviors := true
 	createWithRename := true
 	createBufferedUpload := true
+	createWithDirectConnectionInfo := true
 	paramsFileCreate := files_sdk.FileCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -55,6 +56,9 @@ func Files() *cobra.Command {
 			}
 			if cmd.Flags().Changed("buffered-upload") {
 				paramsFileCreate.BufferedUpload = flib.Bool(createBufferedUpload)
+			}
+			if cmd.Flags().Changed("with-direct-connection-info") {
+				paramsFileCreate.WithDirectConnectionInfo = flib.Bool(createWithDirectConnectionInfo)
 			}
 
 			if paramsFileCreate.ProvidedMtime.IsZero() {
@@ -85,6 +89,7 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Structure, "structure", "", "If copying folder, copy just the structure?")
 	cmdCreate.Flags().BoolVar(&createWithRename, "with-rename", createWithRename, "Allow file rename instead of overwrite?")
 	cmdCreate.Flags().BoolVar(&createBufferedUpload, "buffered-upload", createBufferedUpload, "If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively.")
+	cmdCreate.Flags().BoolVar(&createWithDirectConnectionInfo, "with-direct-connection-info", createWithDirectConnectionInfo, "Include optional direct connection information for a direct Agent transfer attempt?")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -599,6 +604,7 @@ func Files() *cobra.Command {
 	beginUploadMkdirParents := true
 	beginUploadWithRename := true
 	beginUploadBufferedUpload := true
+	beginUploadWithDirectConnectionInfo := true
 	paramsFileBeginUpload := files_sdk.FileBeginUploadParams{}
 
 	cmdBeginUpload := &cobra.Command{
@@ -620,6 +626,9 @@ func Files() *cobra.Command {
 			if cmd.Flags().Changed("buffered-upload") {
 				paramsFileBeginUpload.BufferedUpload = flib.Bool(beginUploadBufferedUpload)
 			}
+			if cmd.Flags().Changed("with-direct-connection-info") {
+				paramsFileBeginUpload.WithDirectConnectionInfo = flib.Bool(beginUploadWithDirectConnectionInfo)
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsFileBeginUpload.Path = args[0]
@@ -639,6 +648,7 @@ func Files() *cobra.Command {
 	cmdBeginUpload.Flags().Int64Var(&paramsFileBeginUpload.Size, "size", 0, "Total bytes of file being uploaded (include bytes being retained if appending/restarting).")
 	cmdBeginUpload.Flags().BoolVar(&beginUploadWithRename, "with-rename", beginUploadWithRename, "Allow file rename instead of overwrite?")
 	cmdBeginUpload.Flags().BoolVar(&beginUploadBufferedUpload, "buffered-upload", beginUploadBufferedUpload, "If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively.")
+	cmdBeginUpload.Flags().BoolVar(&beginUploadWithDirectConnectionInfo, "with-direct-connection-info", beginUploadWithDirectConnectionInfo, "Include optional direct connection information for a direct Agent transfer attempt?")
 
 	cmdBeginUpload.Flags().StringSliceVar(&fieldsBeginUpload, "fields", []string{}, "comma separated list of field names")
 	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", lib.FormatDefaults, lib.FormatHelpText)

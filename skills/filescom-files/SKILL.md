@@ -22,6 +22,7 @@ Download File.
 | `--preview-size` | string | Request a preview size.  Can be `small` (default), `large`, `xlarge`, or `pdf`. |
 | `--with-previews` | bool | Include file preview information? |
 | `--with-priority-color` | bool | Include file priority color information? |
+| `--with-direct-connection-info` | bool | Include optional direct connection information for a direct Agent transfer attempt? |
 
 ### `files-cli files create [path]`
 
@@ -42,6 +43,7 @@ Upload File.
 | `--structure` | string | If copying folder, copy just the structure? |
 | `--with-rename` | bool | Allow file rename instead of overwrite? |
 | `--buffered-upload` | bool | If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively. |
+| `--with-direct-connection-info` | bool | Include optional direct connection information for a direct Agent transfer attempt? |
 
 ### `files-cli files update [path]`
 
@@ -183,4 +185,5 @@ Begin File Upload.
 | `--size` | int64 | Total bytes of file being uploaded (include bytes being retained if appending/restarting). |
 | `--with-rename` | bool | Allow file rename instead of overwrite? |
 | `--buffered-upload` | bool | If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively. |
+| `--with-direct-connection-info` | bool | Include optional direct connection information for a direct Agent transfer attempt? |
 
