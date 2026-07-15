@@ -194,6 +194,7 @@ func Cmd(config files_sdk.Config, command *cobra.Command, displayArgs []string, 
 	ctx = context.WithValue(ctx, "testing", true)
 	profile := &cliLib.Profiles{Config: &config}
 	profile.Init()
+	profile.Current().DisableDirectTransfers = true
 	ctx = context.WithValue(ctx, "profile", profile)
 	command.SetArgs(append(displayArgs, hiddenArgs...))
 

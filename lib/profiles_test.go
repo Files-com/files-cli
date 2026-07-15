@@ -234,6 +234,30 @@ func TestProfiles_SetSingleUseAPIKeyDoesNotPersist(t *testing.T) {
 	assert.Equal(t, "STORED_KEY", profile.Current().APIKey)
 }
 
+func TestProfiles_DirectTransfersPersistsAndResets(t *testing.T) {
+	dir := t.TempDir()
+
+	config := &files_sdk.Config{}
+	profile := &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	require.False(t, profile.Current().DisableDirectTransfers)
+	profile.Current().DisableDirectTransfers = true
+	require.NoError(t, profile.Save())
+
+	config = &files_sdk.Config{}
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	assert.True(t, profile.Current().DisableDirectTransfers)
+
+	require.NoError(t, profile.ResetWith(ResetConfig{DirectTransfers: true}))
+	assert.False(t, profile.Current().DisableDirectTransfers)
+
+	config = &files_sdk.Config{}
+	profile = &Profiles{ConfigDir: dir}
+	require.NoError(t, profile.Load(config, ""))
+	assert.False(t, profile.Current().DisableDirectTransfers)
+}
+
 func TestProfiles_Display(t *testing.T) {
 	profiles := &Profiles{
 		Profiles: map[string]*Profile{

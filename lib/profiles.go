@@ -64,6 +64,7 @@ type Profile struct {
 	configPathOverride        string
 	files_sdk.Environment     `json:"environment"`
 	ConcurrentConnectionLimit int      `json:"concurrent_connection_limit"`
+	DisableDirectTransfers    bool     `json:"disable_direct_transfers"`
 	ResourceFormat            []string `json:"resource_format"`
 }
 
@@ -92,6 +93,7 @@ type ResetConfig struct {
 	Session                   bool
 	VersionCheck              bool
 	ConcurrentConnectionLimit bool
+	DirectTransfers           bool
 	ResourceFormat            bool
 	WorkspaceId               bool
 }
@@ -134,6 +136,9 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 	}
 	if reset.ConcurrentConnectionLimit {
 		p.Current().ConcurrentConnectionLimit = 0
+	}
+	if reset.DirectTransfers {
+		p.Current().DisableDirectTransfers = false
 	}
 	if reset.ResourceFormat {
 		p.Current().ResourceFormat = nil

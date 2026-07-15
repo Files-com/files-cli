@@ -68,6 +68,7 @@ type Transfers struct {
 	ZipBatchMinAdvantage        float64
 	ZipBatchReprobeInterval     time.Duration
 	OpenConnectionStats         bool
+	DirectTransfers             bool
 	// AdaptiveConcurrency enables V2 adaptive part concurrency for transfer commands.
 	AdaptiveConcurrency bool
 	adaptiveUploadMode  bool
@@ -153,6 +154,7 @@ func New() *Transfers {
 		eventErrorsMutex:      &sync.RWMutex{},
 		pathPadding:           40,
 		AdaptiveConcurrency:   true,
+		DirectTransfers:       true,
 		SyncFlag:              false,
 		SendLogsToCloud:       false,
 		DisableProgressOutput: false,
@@ -256,9 +258,12 @@ func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 		"directory_listing_cap":      t.Manager.DirectoryListingManager.Max(),
 		"connection_limit_explicit":  t.ConcurrentConnectionLimitSet,
 		"download_single_stream":     t.DownloadFilesAsSingleStream,
+		"direct_transfers":           t.DirectTransfers,
 		"diagnostic_file_cap_option": t.AdaptiveUploadV2FileConcurrency,
 	}))
-	return config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
+	config = config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
+	config.DisableDirectTransfers = !t.DirectTransfers
+	return config
 }
 
 func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
@@ -451,6 +456,9 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	profileConnectionLimit := 0
 	if profiles, ok := cmd.Context().Value("profile").(*lib.Profiles); ok && profiles != nil {
 		profileConnectionLimit = profiles.Current().ConcurrentConnectionLimit
+		if !cmd.Flags().Changed("direct-transfers") && profiles.Current().DisableDirectTransfers {
+			t.DirectTransfers = false
+		}
 	}
 	t.ConcurrentConnectionLimitSet = cmd.Flags().Changed("concurrent-connection-limit") || profileConnectionLimit != 0
 	if !cmd.Flags().Changed("concurrent-connection-limit") {
@@ -1328,6 +1336,7 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
 	cmd.Flags().IntVar(&t.AdaptiveConcurrencyInitialTarget, "adaptive-concurrency-initial-target", file.AdaptiveTransferHighThroughputInitialTarget, "Set the adaptive transfer starting concurrency. High-throughput transfers may probe higher.")
+	cmd.Flags().BoolVar(&t.DirectTransfers, "direct-transfers", t.DirectTransfers, "Attempt direct transfer paths to the Files Agent when available; set to false to use proxied paths only.")
 	cmd.Flags().MarkHidden("test-progress-bar-out")
 	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
 	cmd.Flags().BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")

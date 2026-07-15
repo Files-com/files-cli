@@ -19,6 +19,7 @@ func Config() *cobra.Command {
 		Run:  func(cmd *cobra.Command, args []string) {},
 	}
 	configParams := &lib.Profile{}
+	directTransfers := true
 	configSet := &cobra.Command{
 		Use:     "set",
 		Aliases: []string{"config-set"},
@@ -50,6 +51,10 @@ func Config() *cobra.Command {
 				Profile(cmd).Current().ConcurrentConnectionLimit = configParams.ConcurrentConnectionLimit
 			}
 
+			if cmd.Flags().Changed("direct-transfers") {
+				Profile(cmd).Current().DisableDirectTransfers = !directTransfers
+			}
+
 			if len(configParams.ResourceFormat) > 0 {
 				Profile(cmd).Current().ResourceFormat = configParams.ResourceFormat
 			}
@@ -65,6 +70,7 @@ func Config() *cobra.Command {
 	configSet.Flags().StringVarP(&configParams.Endpoint, "endpoint", "e", configParams.Endpoint, "For use with custom domains. Example: 'https://myfilescustomdomain.com'")
 	configSet.Flags().StringVarP(&configParams.Language, "language", "l", configParams.Language, "Language to use")
 	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
+	configSet.Flags().BoolVar(&directTransfers, "direct-transfers", directTransfers, "Attempt direct transfer paths to the Files Agent when available; set to false to use proxied paths only.")
 	configSet.Flags().StringSliceVarP(&configParams.ResourceFormat, "format", "f", configParams.ResourceFormat, fmt.Sprintf("Set default resource format: %v", lib.FormatHelpText))
 
 	Config.AddCommand(configSet)
@@ -96,6 +102,7 @@ func Config() *cobra.Command {
 	resetDelete.Flags().BoolVar(&resetConfig.WorkspaceId, flagNameWorkspaceId, false, "Workspace ID")
 	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
 	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Reset the maximum number of concurrent connections.")
+	resetDelete.Flags().BoolVar(&resetConfig.DirectTransfers, "direct-transfers", false, "Restore the enabled default for direct transfers to the Files Agent.")
 	resetDelete.Flags().BoolVarP(&resetConfig.ResourceFormat, "format", "f", false, "Reset default resource format")
 
 	Config.AddCommand(resetDelete)

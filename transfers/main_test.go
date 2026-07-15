@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -13,6 +14,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Files-com/files-cli/lib"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/file/manager"
@@ -47,6 +49,69 @@ func TestAdaptiveConcurrencyDefaultsOnAndCanBeDisabled(t *testing.T) {
 	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency", "false"))
 	assert.NoError(t, transfer.ArgsCheck(cmd))
 	assert.False(t, transfer.AdaptiveConcurrency)
+}
+
+func TestDirectTransfersDefaultsOnAndCanBeDisabled(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.True(t, transfer.DirectTransfers)
+	assert.Equal(t, "true", cmd.Flags().Lookup("direct-transfers").DefValue)
+
+	require.NoError(t, cmd.Flags().Set("direct-transfers", "false"))
+	require.NoError(t, transfer.ArgsCheck(cmd))
+	assert.False(t, transfer.DirectTransfers)
+}
+
+func profilesWithDirectTransfers(enabled bool) *lib.Profiles {
+	profiles := (&lib.Profiles{}).Init()
+	profiles.Profile = "default"
+	profiles.Profiles["default"] = &lib.Profile{DisableDirectTransfers: !enabled}
+	return profiles
+}
+
+func TestDirectTransfersEnabledProfileLeavesDefault(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.WithValue(context.Background(), "profile", profilesWithDirectTransfers(true)))
+	transfer.UploadFlags(cmd)
+
+	require.NoError(t, transfer.ArgsCheck(cmd))
+
+	assert.True(t, transfer.DirectTransfers)
+}
+
+func TestDirectTransfersDisabledProfileOptsOut(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.WithValue(context.Background(), "profile", profilesWithDirectTransfers(false)))
+	transfer.UploadFlags(cmd)
+
+	require.NoError(t, transfer.ArgsCheck(cmd))
+
+	assert.False(t, transfer.DirectTransfers)
+}
+
+func TestDirectTransfersFlagTrueOverridesDisabledProfile(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.WithValue(context.Background(), "profile", profilesWithDirectTransfers(false)))
+	transfer.UploadFlags(cmd)
+
+	require.NoError(t, cmd.Flags().Set("direct-transfers", "true"))
+
+	require.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.DirectTransfers)
 }
 
 func TestAdaptiveConcurrencyUsesV2DefaultCaps(t *testing.T) {
@@ -197,6 +262,7 @@ func TestZipBatchDownloadFlagsParseParams(t *testing.T) {
 func TestZipBatchDownloadFlagsRejectInvalidExtraction(t *testing.T) {
 	transfer := New()
 	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
 	transfer.DownloadFlags(cmd)
 
 	require.NoError(t, cmd.ParseFlags([]string{"--zip-batch-extraction", "invalid"}))
@@ -218,6 +284,7 @@ func TestZipBatchDownloadFlagsRejectNegativeNumericValues(t *testing.T) {
 		t.Run(flag, func(t *testing.T) {
 			transfer := New()
 			cmd := &cobra.Command{}
+			cmd.SetContext(context.Background())
 			transfer.DownloadFlags(cmd)
 
 			require.NoError(t, cmd.ParseFlags([]string{"--" + flag, "-1"}))
@@ -232,6 +299,7 @@ func TestZipBatchDownloadFlagsRejectNegativeNumericValues(t *testing.T) {
 func TestZipBatchDownloadFlagsRejectNaNMinAdvantage(t *testing.T) {
 	transfer := New()
 	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
 	transfer.DownloadFlags(cmd)
 
 	require.NoError(t, cmd.ParseFlags([]string{"--zip-batch-min-advantage", "NaN"}))
@@ -244,6 +312,7 @@ func TestZipBatchDownloadFlagsRejectNaNMinAdvantage(t *testing.T) {
 func TestZipBatchDownloadFlagsRejectForceAndDisable(t *testing.T) {
 	transfer := New()
 	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
 	transfer.DownloadFlags(cmd)
 
 	require.NoError(t, cmd.ParseFlags([]string{"--force-zip-batch", "--no-zip-batch"}))
@@ -328,6 +397,22 @@ func TestBuildConfigLogsTransferManagerCaps(t *testing.T) {
 	assert.Contains(t, logs.String(), "file_concurrency_cap: 128")
 	assert.Contains(t, logs.String(), "part_concurrency_cap: 1024")
 	assert.Contains(t, logs.String(), "directory_listing_cap: 7")
+}
+
+func TestBuildConfigSetsDirectTransfers(t *testing.T) {
+	transfer := New()
+	transfer.UseDownloadMode()
+	transfer.ConcurrentConnectionLimit = manager.ConcurrentFileParts
+	transfer.ConcurrentDirectoryScanning = manager.ConcurrentDirectoryList
+	config := files_sdk.Config{Logger: log.New(io.Discard, "", 0)}.Init()
+
+	config = transfer.BuildConfig(config)
+
+	require.False(t, config.DisableDirectTransfers)
+
+	transfer.DirectTransfers = false
+	config = transfer.BuildConfig(config)
+	require.True(t, config.DisableDirectTransfers)
 }
 
 func TestAdaptiveConcurrencyRaisesOpenFileLimit(t *testing.T) {
