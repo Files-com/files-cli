@@ -191,7 +191,7 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.MaxOpenInterval, "max-open-interval", 0, "Hard-stop duration in seconds for unscheduled expectations.")
-	cmdCreate.Flags().StringVar(&createCriteriaJSON, "criteria", "", "Structured criteria v1 definition for the expectation. Provide as a JSON object.")
+	cmdCreate.Flags().StringVar(&createCriteriaJSON, "criteria", "", "Versioned success criteria definition for the expectation, including optional Files Transform Script content validation in criteria v2. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "criteria", "json")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -350,7 +350,7 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.MaxOpenInterval, "max-open-interval", 0, "Hard-stop duration in seconds for unscheduled expectations.")
-	cmdUpdate.Flags().StringVar(&updateCriteriaJSON, "criteria", "", "Structured criteria v1 definition for the expectation. Provide as a JSON object.")
+	cmdUpdate.Flags().StringVar(&updateCriteriaJSON, "criteria", "", "Versioned success criteria definition for the expectation, including optional Files Transform Script content validation in criteria v2. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "criteria", "json")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 

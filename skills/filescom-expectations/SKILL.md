@@ -56,7 +56,7 @@ Manual expectations have no concept of `late`; they open when triggered and clos
 
 The `criteria` field is a structured JSON object describing what counts as success for the window.
 
-In criteria v1, this can express things like:
+Criteria v1 can express things like:
 
 * file count constraints
 * total byte constraints
@@ -65,9 +65,11 @@ In criteria v1, this can express things like:
 * forbidden files
 * required named or globbed files with their own per-file constraints
 
-Required file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.
+Criteria v2 adds `content_validation`, which runs a customer-authored Files Transform Script in either `per_file` or `whole_batch` mode. Per-file scripts receive the file contents parsed by FTS as `payload`. Whole-batch scripts receive an array of file objects containing `path`, `name`, `size`, `last_modified_at`, and each file's parsed `payload`.
 
-This is intentionally structured rather than scriptable, so it stays safe, explainable, and versionable.
+A content-validation script returns `true` or `{ success: true }` to pass. It returns `false` or `{ success: false, errors: [...] }` to fail. Error entries may be strings or structured objects with values such as `message`, `field`, `row`, `expected`, and `actual`; these details are preserved in readable form in the Evaluation's `criteria_errors`. Script, parsing, download, and size-limit errors also fail the criterion. Each file is limited to 100 MB, and whole-batch mode additionally limits the combined raw input to 100 MB.
+
+Required file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.
 
 ## History and incidents
 
@@ -124,7 +126,7 @@ Create Expectation.
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |
 | `--max-open-interval` | int64 | Hard-stop duration in seconds for unscheduled expectations. |
-| `--criteria` | object | Structured criteria v1 definition for the expectation. |
+| `--criteria` | object | Versioned success criteria definition for the expectation, including optional Files Transform Script content validation in criteria v2. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 
 ### `files-cli expectations trigger-evaluation`
@@ -159,7 +161,7 @@ Update Expectation.
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |
 | `--max-open-interval` | int64 | Hard-stop duration in seconds for unscheduled expectations. |
-| `--criteria` | object | Structured criteria v1 definition for the expectation. |
+| `--criteria` | object | Versioned success criteria definition for the expectation, including optional Files Transform Script content validation in criteria v2. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 
 ### `files-cli expectations delete`
