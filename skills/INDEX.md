@@ -154,6 +154,7 @@ One skill per top-level CLI command.
 | [`filescom-child-site-management-policies`](filescom-child-site-management-policies/SKILL.md) | Child Site Management Policies |
 | [`filescom-custom-domains`](filescom-custom-domains/SKILL.md) | Custom Domains |
 | [`filescom-desktop-configuration-profiles`](filescom-desktop-configuration-profiles/SKILL.md) | Desktop Configuration Profiles |
+| [`filescom-holiday-calendars`](filescom-holiday-calendars/SKILL.md) | Holiday Calendars |
 | [`filescom-holiday-regions`](filescom-holiday-regions/SKILL.md) | Holiday Regions |
 | [`filescom-integration-centric-profiles`](filescom-integration-centric-profiles/SKILL.md) | Integration Centric Profiles |
 | [`filescom-metadata-categories`](filescom-metadata-categories/SKILL.md) | Metadata Categories |

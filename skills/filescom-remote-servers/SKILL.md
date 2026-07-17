@@ -8,7 +8,7 @@ description: |
 
 A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
-Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
+Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.
 
 Not every attribute will apply to every remote server.
 
@@ -33,7 +33,7 @@ WebDAV Servers require that you specify their `hostname`, `username`, and `passw
 
 OneDrive follow the `auth_setup_link` and login with Microsoft.
 
-Sharepoint follow the `auth_setup_link` and login with Microsoft.
+SharePoint supports delegated authentication through `auth_setup_link`, or app-only authentication with `sharepoint_tenant_id`, `sharepoint_client_id`, and either `sharepoint_client_secret` or `sharepoint_client_certificate`. Set `sharepoint_site_url` to scope the remote server to a site granted through Microsoft Graph `Sites.Selected`; leave it blank to browse all sites.
 
 Box follow the `auth_setup_link` and login with Box.
 
@@ -93,6 +93,8 @@ Create Remote Server.
 | `--private-key` | string | Private key, if needed. |
 | `--private-key-passphrase` | string | Passphrase for private key if needed. |
 | `--reset-authentication` | bool | Reset authenticated account? |
+| `--sharepoint-client-certificate` | string | SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication. |
+| `--sharepoint-client-secret` | string | SharePoint: Microsoft Entra application client secret for app-only authentication. |
 | `--ssl-certificate` | string | SSL client certificate. |
 | `--aws-secret-key` | string | AWS: secret key. |
 | `--azure-blob-storage-access-key` | string | Azure Blob Storage: Access Key |
@@ -161,6 +163,9 @@ Create Remote Server.
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts |
 | `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
+| `--sharepoint-client-id` | string | SharePoint: Microsoft Entra application client ID for app-only authentication. |
+| `--sharepoint-site-url` | string | SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites. |
+| `--sharepoint-tenant-id` | string | SharePoint: Microsoft Entra tenant ID for app-only authentication. |
 | `--ssl` | enum | Should we require SSL?. One of: `if_available`, `require`, `require_implicit`, `never`. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |
@@ -206,6 +211,8 @@ Update Remote Server.
 | `--private-key` | string | Private key, if needed. |
 | `--private-key-passphrase` | string | Passphrase for private key if needed. |
 | `--reset-authentication` | bool | Reset authenticated account? |
+| `--sharepoint-client-certificate` | string | SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication. |
+| `--sharepoint-client-secret` | string | SharePoint: Microsoft Entra application client secret for app-only authentication. |
 | `--ssl-certificate` | string | SSL client certificate. |
 | `--aws-secret-key` | string | AWS: secret key. |
 | `--azure-blob-storage-access-key` | string | Azure Blob Storage: Access Key |
@@ -274,6 +281,9 @@ Update Remote Server.
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts |
 | `--server-type` | enum | Remote server type. One of: `ftp`, `sftp`, `s3`, `google_cloud_storage`, `webdav`, `wasabi`, `backblaze_b2`, `one_drive`, `box`, `dropbox`, `google_drive`, `azure`, `sharepoint`, `s3_compatible`, `azure_files`, `files_agent`, `filebase`, `cloudflare`, `linode`, `files_com`. |
+| `--sharepoint-client-id` | string | SharePoint: Microsoft Entra application client ID for app-only authentication. |
+| `--sharepoint-site-url` | string | SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites. |
+| `--sharepoint-tenant-id` | string | SharePoint: Microsoft Entra tenant ID for app-only authentication. |
 | `--ssl` | enum | Should we require SSL?. One of: `if_available`, `require`, `require_implicit`, `never`. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |

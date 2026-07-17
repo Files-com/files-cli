@@ -49,6 +49,8 @@ Create Remote Server Credential.
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
 | `--linode-access-key` | string | Linode: Access Key |
 | `--s3-compatible-access-key` | string | S3-compatible: Access Key |
+| `--sharepoint-client-id` | string | SharePoint: Microsoft Entra application client ID for app-only authentication. |
+| `--sharepoint-tenant-id` | string | SharePoint: Microsoft Entra tenant ID for app-only authentication. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |
 | `--password` | string | Password, if needed. |
@@ -67,6 +69,8 @@ Create Remote Server Credential.
 | `--google-cloud-storage-s3-compatible-secret-key` | string | Google Cloud Storage: S3-compatible secret key |
 | `--linode-secret-key` | string | Linode: Secret Key |
 | `--s3-compatible-secret-key` | string | S3-compatible: Secret Key |
+| `--sharepoint-client-certificate` | string | SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication. |
+| `--sharepoint-client-secret` | string | SharePoint: Microsoft Entra application client secret for app-only authentication. |
 | `--wasabi-secret-key` | string | Wasabi: Secret Key |
 | `--workspace-id` | int64 | Workspace ID (0 for default workspace) |
 | `--copy-values-from-credential-id` | int64 | ID of Remote Server Credential to copy omitted values from. |
@@ -89,6 +93,8 @@ Update Remote Server Credential.
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
 | `--linode-access-key` | string | Linode: Access Key |
 | `--s3-compatible-access-key` | string | S3-compatible: Access Key |
+| `--sharepoint-client-id` | string | SharePoint: Microsoft Entra application client ID for app-only authentication. |
+| `--sharepoint-tenant-id` | string | SharePoint: Microsoft Entra tenant ID for app-only authentication. |
 | `--username` | string | Remote server username. |
 | `--wasabi-access-key` | string | Wasabi: Access Key. |
 | `--password` | string | Password, if needed. |
@@ -107,6 +113,8 @@ Update Remote Server Credential.
 | `--google-cloud-storage-s3-compatible-secret-key` | string | Google Cloud Storage: S3-compatible secret key |
 | `--linode-secret-key` | string | Linode: Secret Key |
 | `--s3-compatible-secret-key` | string | S3-compatible: Secret Key |
+| `--sharepoint-client-certificate` | string | SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication. |
+| `--sharepoint-client-secret` | string | SharePoint: Microsoft Entra application client secret for app-only authentication. |
 | `--wasabi-secret-key` | string | Wasabi: Secret Key |
 
 ### `files-cli remote-server-credentials delete`

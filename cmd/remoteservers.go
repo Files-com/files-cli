@@ -266,6 +266,8 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.PrivateKey, "private-key", "", "Private key, if needed.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.PrivateKeyPassphrase, "private-key-passphrase", "", "Passphrase for private key if needed.")
 	cmdCreate.Flags().BoolVar(&createResetAuthentication, "reset-authentication", createResetAuthentication, "Reset authenticated account?")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointClientCertificate, "sharepoint-client-certificate", "", "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointClientSecret, "sharepoint-client-secret", "", "SharePoint: Microsoft Entra application client secret for app-only authentication.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SslCertificate, "ssl-certificate", "", "SSL client certificate.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AwsSecretKey, "aws-secret-key", "", "AWS: secret key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.AzureBlobStorageAccessKey, "azure-blob-storage-access-key", "", "Azure Blob Storage: Access Key")
@@ -334,6 +336,9 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Username, "username", "", "Remote server username.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
@@ -506,6 +511,12 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("reset-authentication") {
 				mapParams["reset_authentication"] = updateResetAuthentication
+			}
+			if cmd.Flags().Changed("sharepoint-client-certificate") {
+				lib.FlagUpdate(cmd, "sharepoint_client_certificate", paramsRemoteServerUpdate.SharepointClientCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("sharepoint-client-secret") {
+				lib.FlagUpdate(cmd, "sharepoint_client_secret", paramsRemoteServerUpdate.SharepointClientSecret, mapParams)
 			}
 			if cmd.Flags().Changed("ssl-certificate") {
 				lib.FlagUpdate(cmd, "ssl_certificate", paramsRemoteServerUpdate.SslCertificate, mapParams)
@@ -711,6 +722,15 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("server-type") {
 				lib.FlagUpdate(cmd, "server_type", paramsRemoteServerUpdate.ServerType, mapParams)
 			}
+			if cmd.Flags().Changed("sharepoint-client-id") {
+				lib.FlagUpdate(cmd, "sharepoint_client_id", paramsRemoteServerUpdate.SharepointClientId, mapParams)
+			}
+			if cmd.Flags().Changed("sharepoint-site-url") {
+				lib.FlagUpdate(cmd, "sharepoint_site_url", paramsRemoteServerUpdate.SharepointSiteUrl, mapParams)
+			}
+			if cmd.Flags().Changed("sharepoint-tenant-id") {
+				lib.FlagUpdate(cmd, "sharepoint_tenant_id", paramsRemoteServerUpdate.SharepointTenantId, mapParams)
+			}
 			if cmd.Flags().Changed("ssl") {
 				lib.FlagUpdate(cmd, "ssl", paramsRemoteServerUpdate.Ssl, mapParams)
 			}
@@ -738,6 +758,8 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.PrivateKey, "private-key", "", "Private key, if needed.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.PrivateKeyPassphrase, "private-key-passphrase", "", "Passphrase for private key if needed.")
 	cmdUpdate.Flags().BoolVar(&updateResetAuthentication, "reset-authentication", updateResetAuthentication, "Reset authenticated account?")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointClientCertificate, "sharepoint-client-certificate", "", "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointClientSecret, "sharepoint-client-secret", "", "SharePoint: Microsoft Entra application client secret for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SslCertificate, "ssl-certificate", "", "SSL client certificate.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AwsSecretKey, "aws-secret-key", "", "AWS: secret key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.AzureBlobStorageAccessKey, "azure-blob-storage-access-key", "", "Azure Blob Storage: Access Key")
@@ -806,6 +828,9 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Username, "username", "", "Remote server username.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")

@@ -177,6 +177,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.LinodeAccessKey, "linode-access-key", "", "Linode: Access Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Username, "username", "", "Remote server username.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Password, "password", "", "Password, if needed.")
@@ -195,6 +197,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleSecretKey, "google-cloud-storage-s3-compatible-secret-key", "", "Google Cloud Storage: S3-compatible secret key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.SharepointClientCertificate, "sharepoint-client-certificate", "", "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.SharepointClientSecret, "sharepoint-client-secret", "", "SharePoint: Microsoft Entra application client secret for app-only authentication.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace)")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.CopyValuesFromCredentialId, "copy-values-from-credential-id", 0, "ID of Remote Server Credential to copy omitted values from.")
@@ -267,6 +271,12 @@ func RemoteServerCredentials() *cobra.Command {
 			if cmd.Flags().Changed("s3-compatible-access-key") {
 				lib.FlagUpdate(cmd, "s3_compatible_access_key", paramsRemoteServerCredentialUpdate.S3CompatibleAccessKey, mapParams)
 			}
+			if cmd.Flags().Changed("sharepoint-client-id") {
+				lib.FlagUpdate(cmd, "sharepoint_client_id", paramsRemoteServerCredentialUpdate.SharepointClientId, mapParams)
+			}
+			if cmd.Flags().Changed("sharepoint-tenant-id") {
+				lib.FlagUpdate(cmd, "sharepoint_tenant_id", paramsRemoteServerCredentialUpdate.SharepointTenantId, mapParams)
+			}
 			if cmd.Flags().Changed("username") {
 				lib.FlagUpdate(cmd, "username", paramsRemoteServerCredentialUpdate.Username, mapParams)
 			}
@@ -321,6 +331,12 @@ func RemoteServerCredentials() *cobra.Command {
 			if cmd.Flags().Changed("s3-compatible-secret-key") {
 				lib.FlagUpdate(cmd, "s3_compatible_secret_key", paramsRemoteServerCredentialUpdate.S3CompatibleSecretKey, mapParams)
 			}
+			if cmd.Flags().Changed("sharepoint-client-certificate") {
+				lib.FlagUpdate(cmd, "sharepoint_client_certificate", paramsRemoteServerCredentialUpdate.SharepointClientCertificate, mapParams)
+			}
+			if cmd.Flags().Changed("sharepoint-client-secret") {
+				lib.FlagUpdate(cmd, "sharepoint_client_secret", paramsRemoteServerCredentialUpdate.SharepointClientSecret, mapParams)
+			}
 			if cmd.Flags().Changed("wasabi-secret-key") {
 				lib.FlagUpdate(cmd, "wasabi_secret_key", paramsRemoteServerCredentialUpdate.WasabiSecretKey, mapParams)
 			}
@@ -343,6 +359,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.GoogleCloudStorageS3CompatibleAccessKey, "google-cloud-storage-s3-compatible-access-key", "", "Google Cloud Storage: S3-compatible Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.LinodeAccessKey, "linode-access-key", "", "Linode: Access Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.S3CompatibleAccessKey, "s3-compatible-access-key", "", "S3-compatible: Access Key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Username, "username", "", "Remote server username.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Password, "password", "", "Password, if needed.")
@@ -361,6 +379,8 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.GoogleCloudStorageS3CompatibleSecretKey, "google-cloud-storage-s3-compatible-secret-key", "", "Google Cloud Storage: S3-compatible secret key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.LinodeSecretKey, "linode-secret-key", "", "Linode: Secret Key")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.S3CompatibleSecretKey, "s3-compatible-secret-key", "", "S3-compatible: Secret Key")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.SharepointClientCertificate, "sharepoint-client-certificate", "", "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.SharepointClientSecret, "sharepoint-client-secret", "", "SharePoint: Microsoft Entra application client secret for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.WasabiSecretKey, "wasabi-secret-key", "", "Wasabi: Secret Key")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
