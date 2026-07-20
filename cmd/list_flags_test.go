@@ -41,6 +41,10 @@ func TestUsersListFlags(t *testing.T) {
 func TestFoldersListForFlags(t *testing.T) {
 	listFor := findSubcommand(t, Folders(), "list-for")
 
+	concurrencyLimit := listFor.Flags().Lookup("concurrent-directory-list-limit")
+	assert.NotNil(t, concurrencyLimit)
+	assert.Contains(t, concurrencyLimit.Deprecated, "use --per-page and --max-pages")
+
 	assert.NotNil(t, listFor.Flags().Lookup("filter-by"))
 	assert.NotNil(t, listFor.Flags().Lookup("sort-by"))
 	assert.Nil(t, listFor.Flags().Lookup("filter"))

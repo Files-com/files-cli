@@ -7,7 +7,6 @@ import (
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
-	"github.com/Files-com/files-sdk-go/v3/file/manager"
 	"github.com/Files-com/files-sdk-go/v3/folder"
 	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
@@ -81,7 +80,6 @@ func Folders() *cobra.Command {
 			var err error
 			fileClient := file.Client{Config: config}
 			if listRecursively {
-				params.ConcurrencyManager = flib.NewConstrainedWorkGroup(concurrentDirectoryScanning)
 				it, err = fileClient.ListForRecursive(params, files_sdk.WithContext(ctx))
 			} else {
 				it, err = fileClient.ListFor(params, files_sdk.WithContext(ctx))
@@ -120,7 +118,8 @@ func Folders() *cobra.Command {
 
 	cmdListFor.Flags().BoolVar(&listOnlyFolders, "only-folders", listOnlyFolders, "only return folders and not files")
 	cmdListFor.Flags().BoolVar(&listRecursively, "recursive", listOnlyFolders, "list folders/files recursively")
-	cmdListFor.Flags().IntVar(&concurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentFileParts, "Limit the concurrent directory listings of remote directories.")
+	cmdListFor.Flags().IntVar(&concurrentDirectoryScanning, "concurrent-directory-list-limit", 0, "Deprecated: recursive listing concurrency is managed by Files.com; use --per-page and --max-pages to limit results.")
+	cmdListFor.Flags().MarkDeprecated("concurrent-directory-list-limit", "recursive listing concurrency is managed by Files.com; use --per-page and --max-pages to limit results")
 	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
 	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter-by", "field=pattern")
 	cmdListFor.Flags().StringVar(&listForSortByArgs, "sort-by", "", "Sort folders by field in ascending or descending order.")

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -120,50 +121,86 @@ func TestFiles_Delete_Missing_Recursive(t *testing.T) {
 
 func TestFolders_ListFor_FilterBy(t *testing.T) {
 	assert := assert.New(t)
-	r, config, err := CreateConfig("TestFolders_ListFor_FilterBy")
-	if err != nil {
-		t.Fatal(err)
+	type listRequest struct {
+		path      string
+		recursive string
 	}
-	defer r.Stop()
+	requests := make(chan listRequest, 3)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch r.URL.Path {
+		case "/api/rest/v1/file_actions/metadata/TestFolders_ListFor_FilterBy":
+			_, _ = w.Write([]byte(`{"path":"TestFolders_ListFor_FilterBy","type":"directory"}`))
+		case "/api/rest/v1/folders/TestFolders_ListFor_FilterBy":
+			requests <- listRequest{path: r.URL.Path, recursive: r.URL.Query().Get("recursive")}
+			_, _ = w.Write([]byte(`[
+			{"path":"TestFolders_ListFor_FilterBy/food.txt","type":"file"},
+			{"path":"TestFolders_ListFor_FilterBy/space.txt","type":"file"},
+			{"path":"TestFolders_ListFor_FilterBy/cars","type":"directory"},
+			{"path":"TestFolders_ListFor_FilterBy/cars/car.jpg","type":"file"},
+			{"path":"TestFolders_ListFor_FilterBy/cars/super-car.jpg","type":"file"}
+		]`))
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
 
-	folderClient := folder.Client{Config: config}
-	fileClient := file.Client{Config: config}
-
-	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy"})
-	folderClient.Create(files_sdk.FolderCreateParams{Path: "TestFolders_ListFor_FilterBy/cars"})
-	defer fileClient.Delete(files_sdk.FileDeleteParams{Path: "TestFolders_ListFor_FilterBy", Recursive: lib.Bool(true)})
-
-	createFiles := []string{"space.txt", "food.txt", "cars/car.jpg", "cars/super-car.jpg"}
-	for i, f := range createFiles {
-		err = fileClient.Upload(
-			file.UploadWithReader(strings.NewReader("testing "+fmt.Sprintf("%v", i))),
-			file.UploadWithSize(9),
-			file.UploadWithDestinationPath(filepath.Join("TestFolders_ListFor_FilterBy", f)),
-		)
-		require.NoError(t, err)
-	}
+	config := files_sdk.Config{}.Init()
+	config.EndpointOverride = server.URL
+	config.APIKey = "test"
 
 	t.Run("filter-by extension name", func(t *testing.T) {
-		stdout, stderr, _ := callCmd(Folders(), config, []string{
+		stdout, stderr, err := callCmd(Folders(), config, []string{
 			"ls", "TestFolders_ListFor_FilterBy", "--format", "csv,no-headers", `--filter-by="path=*.txt"`, "--fields", "path", "--recursive",
 		})
 
-		assert.Contains(string(stderr), "")
+		require.NoError(t, err)
+		assert.Empty(string(stderr))
 		assert.Contains(string(stdout),
 			`TestFolders_ListFor_FilterBy/food.txt
 TestFolders_ListFor_FilterBy/space.txt`)
 	})
 
 	t.Run("filter-by word", func(t *testing.T) {
-		stdout, stderr, _ := callCmd(Folders(), config, []string{
+		stdout, stderr, err := callCmd(Folders(), config, []string{
 			"ls", "TestFolders_ListFor_FilterBy", "--format", "csv,no-headers", `--filter-by="path=*car*"`, "--fields", "path", "--recursive",
 		})
 
-		assert.Contains(string(stderr), "")
+		require.NoError(t, err)
+		assert.Empty(string(stderr))
 		assert.Contains(string(stdout),
 			`TestFolders_ListFor_FilterBy/cars/car.jpg
 TestFolders_ListFor_FilterBy/cars/super-car.jpg`)
 	})
+
+	t.Run("default table format", func(t *testing.T) {
+		stdout, stderr, err := callCmd(Folders(), config, []string{
+			"ls", "TestFolders_ListFor_FilterBy", "--format", "table", "--fields", "path", "--recursive",
+		})
+
+		require.NoError(t, err)
+		assert.Empty(string(stderr))
+		assert.Contains(string(stdout), "TestFolders_ListFor_FilterBy")
+		assert.Contains(string(stdout), "TestFolders_ListFor_FilterBy/cars/super-car.jpg")
+	})
+
+	t.Run("reject unsupported recursive options before output", func(t *testing.T) {
+		stdout, _, err := callCmd(Folders(), config, []string{
+			"ls", "TestFolders_ListFor_FilterBy", "--recursive", "--sort-by", "size=asc",
+		})
+
+		require.Error(t, err)
+		assert.Contains(err.Error(), "recursive listings do not support sort_by")
+		assert.Empty(string(stdout))
+	})
+
+	require.Equal(t, 3, len(requests))
+	for i := 0; i < 3; i++ {
+		request := <-requests
+		assert.Equal("/api/rest/v1/folders/TestFolders_ListFor_FilterBy", request.path)
+		assert.Equal("true", request.recursive)
+	}
 }
 
 // TODO (adam.duke): audit the usage of this function to ensure callers are checking the returned error
