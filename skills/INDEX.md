@@ -203,6 +203,7 @@ One skill per top-level CLI command.
 | [`filescom-partners`](filescom-partners/SKILL.md) | Partners |
 | [`filescom-permissions`](filescom-permissions/SKILL.md) | Permissions |
 | [`filescom-sso-strategies`](filescom-sso-strategies/SKILL.md) | SSO Strategies |
+| [`filescom-user-additional-email-recipients`](filescom-user-additional-email-recipients/SKILL.md) | User Additional Email Recipients |
 | [`filescom-user-cipher-uses`](filescom-user-cipher-uses/SKILL.md) | User Cipher Uses |
 | [`filescom-user-lifecycle-rules`](filescom-user-lifecycle-rules/SKILL.md) | User Lifecycle Rules |
 | [`filescom-user-requests`](filescom-user-requests/SKILL.md) | User Requests |
