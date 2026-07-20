@@ -291,7 +291,7 @@ func TestZipBatchDownloadFlagsRejectNegativeNumericValues(t *testing.T) {
 			err := transfer.ArgsCheck(cmd)
 
 			require.Error(t, err)
-			assert.Contains(t, err.Error(), "--"+flag+" must be zero or greater")
+			assert.Contains(t, err.Error(), "--"+flag+" cannot be negative")
 		})
 	}
 }
@@ -676,7 +676,7 @@ func TestAdaptiveUploadV2TuningFlagsMarkOverrides(t *testing.T) {
 	assert.Equal(t, 500, transfer.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis)
 }
 
-func TestAdaptiveConcurrencyInitialTargetFlagDefaultsToHighThroughputTarget(t *testing.T) {
+func TestUnsetAdaptiveConcurrencyFlagsUseDetectedProfile(t *testing.T) {
 	transfer := New()
 	transfer.Format = []string{"progress"}
 	transfer.OutFormat = []string{"csv"}
@@ -686,7 +686,10 @@ func TestAdaptiveConcurrencyInitialTargetFlagDefaultsToHighThroughputTarget(t *t
 
 	assert.NoError(t, transfer.ArgsCheck(cmd))
 	assert.False(t, transfer.AdaptiveUploadV2TuningSet)
-	assert.Equal(t, file.AdaptiveTransferHighThroughputInitialTarget, transfer.AdaptiveConcurrencyInitialTarget)
+	assert.Zero(t, transfer.AdaptiveConcurrencyInitialTarget)
+	assert.Zero(t, transfer.AdaptiveConcurrencySoftCeiling)
+	assert.False(t, transfer.ConcurrentConnectionLimitSet)
+	assert.Equal(t, manager.ConcurrentFileParts, transfer.ConcurrentConnectionLimit)
 }
 
 func TestAdaptiveConcurrencyInitialTargetFlagAppliesToUpload(t *testing.T) {
@@ -717,6 +720,48 @@ func TestAdaptiveConcurrencyInitialTargetFlagAppliesToDownload(t *testing.T) {
 	assert.NoError(t, transfer.ArgsCheck(cmd))
 	assert.True(t, transfer.AdaptiveDownloadV2TuningSet)
 	assert.Equal(t, 50, transfer.AdaptiveDownloadV2Tuning.InitialTarget)
+}
+
+func TestAdaptiveConcurrencySoftCeilingFlagAppliesToUpload(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency-soft-ceiling", "64"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveUploadV2TuningSet)
+	assert.Equal(t, 64, transfer.AdaptiveUploadV2Tuning.GrowthCeiling)
+}
+
+func TestAdaptiveConcurrencySoftCeilingFlagAppliesToDownload(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.DownloadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency-soft-ceiling", "64"))
+
+	assert.NoError(t, transfer.ArgsCheck(cmd))
+	assert.True(t, transfer.AdaptiveDownloadV2TuningSet)
+	assert.Equal(t, 64, transfer.AdaptiveDownloadV2Tuning.GrowthCeiling)
+}
+
+func TestAdaptiveConcurrencySoftCeilingFlagRejectsNegativeValues(t *testing.T) {
+	transfer := New()
+	transfer.Format = []string{"progress"}
+	transfer.OutFormat = []string{"csv"}
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+	transfer.UploadFlags(cmd)
+
+	assert.NoError(t, cmd.Flags().Set("adaptive-concurrency-soft-ceiling", "-1"))
+	assert.Error(t, transfer.ArgsCheck(cmd))
 }
 
 func TestStatusWithColorUsesDisplayName(t *testing.T) {

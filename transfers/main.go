@@ -88,6 +88,8 @@ type Transfers struct {
 	AdaptiveDownloadV2Tuning file.UploadV2Tuning
 	// AdaptiveConcurrencyInitialTarget overrides the adaptive transfer starting target.
 	AdaptiveConcurrencyInitialTarget int
+	// AdaptiveConcurrencySoftCeiling overrides the adaptive transfer soft growth ceiling.
+	AdaptiveConcurrencySoftCeiling int
 	// AdaptiveUploadV2FileConcurrency overrides the adaptive upload file admission cap for benchmarks.
 	AdaptiveUploadV2FileConcurrency int
 	// ConcurrentConnectionLimit caps concurrent file-part work. With adaptive upload V2 it is a max cap, not a target.
@@ -412,7 +414,7 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 		{"zip-batch-concurrency", int64(t.ZipBatchConcurrency)},
 	} {
 		if zipBatchFlag.value < 0 {
-			return clierr.Errorf(clierr.ErrorCodeUsage, "--%s must be zero or greater", zipBatchFlag.name)
+			return clierr.Errorf(clierr.ErrorCodeUsage, "--%s cannot be negative", zipBatchFlag.name)
 		}
 	}
 
@@ -462,17 +464,24 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	}
 	t.ConcurrentConnectionLimitSet = cmd.Flags().Changed("concurrent-connection-limit") || profileConnectionLimit != 0
 	if !cmd.Flags().Changed("concurrent-connection-limit") {
-		t.ConcurrentConnectionLimit = lib.DefaultInt(profileConnectionLimit, t.ConcurrentConnectionLimit)
+		t.ConcurrentConnectionLimit = lib.DefaultInt(profileConnectionLimit, manager.ConcurrentFileParts)
 	}
 	if t.AdaptiveUploadV2FileConcurrency < 0 {
-		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-upload-v2-file-concurrency must be zero or greater")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-upload-v2-file-concurrency cannot be negative")
 	}
 	if t.AdaptiveConcurrencyInitialTarget < 0 {
-		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-concurrency-initial-target must be zero or greater")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-concurrency-initial-target cannot be negative")
+	}
+	if t.AdaptiveConcurrencySoftCeiling < 0 {
+		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-concurrency-soft-ceiling cannot be negative")
 	}
 	if cmd.Flags().Changed("adaptive-concurrency-initial-target") {
 		t.AdaptiveUploadV2Tuning.InitialTarget = t.AdaptiveConcurrencyInitialTarget
 		t.AdaptiveDownloadV2Tuning.InitialTarget = t.AdaptiveConcurrencyInitialTarget
+	}
+	if cmd.Flags().Changed("adaptive-concurrency-soft-ceiling") {
+		t.AdaptiveUploadV2Tuning.GrowthCeiling = t.AdaptiveConcurrencySoftCeiling
+		t.AdaptiveDownloadV2Tuning.GrowthCeiling = t.AdaptiveConcurrencySoftCeiling
 	}
 	t.AdaptiveUploadReadyRunwaySet = cmd.Flags().Changed("adaptive-upload-ready-runway-parts") || cmd.Flags().Changed("adaptive-upload-ready-runway-bytes")
 	t.AdaptiveUploadV2TuningSet = t.adaptiveUploadV2TuningFlagChanged(cmd)
@@ -484,6 +493,7 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
 	flags := []string{
 		"adaptive-concurrency-initial-target",
+		"adaptive-concurrency-soft-ceiling",
 		"adaptive-upload-v2-s3-initial-target",
 		"adaptive-upload-v2-s3-adaptive-floor",
 		"adaptive-upload-v2-s3-grow-every",
@@ -521,6 +531,7 @@ func (t *Transfers) adaptiveUploadV2TuningFlagChanged(cmd *cobra.Command) bool {
 func (t *Transfers) adaptiveDownloadV2TuningFlagChanged(cmd *cobra.Command) bool {
 	flags := []string{
 		"adaptive-concurrency-initial-target",
+		"adaptive-concurrency-soft-ceiling",
 	}
 	for _, flag := range flags {
 		if cmd.Flags().Changed(flag) {
@@ -1311,7 +1322,7 @@ func truncateStart(str string, length int, omission string) string {
 }
 
 func (t *Transfers) CommonFlags(cmd *cobra.Command) {
-	cmd.Flags().IntVarP(&t.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", manager.ConcurrentFileParts, "Set the maximum number of concurrent connections.")
+	cmd.Flags().IntVarP(&t.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", 0, "Set a hard limit on concurrent connections. Adaptive transfers never grow beyond it.")
 	cmd.Flags().BoolVarP(&t.SyncFlag, "sync", "s", t.SyncFlag, "Upload only files that have a different size than those on the remote.")
 	if t.SyncFlag {
 		// Allow sync flag to still be called, but since it's the default, it's hidden.
@@ -1335,7 +1346,8 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
 	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
-	cmd.Flags().IntVar(&t.AdaptiveConcurrencyInitialTarget, "adaptive-concurrency-initial-target", file.AdaptiveTransferHighThroughputInitialTarget, "Set the adaptive transfer starting concurrency. High-throughput transfers may probe higher.")
+	cmd.Flags().IntVar(&t.AdaptiveConcurrencyInitialTarget, "adaptive-concurrency-initial-target", 0, "Set the number of concurrent connections an adaptive transfer starts with.")
+	cmd.Flags().IntVar(&t.AdaptiveConcurrencySoftCeiling, "adaptive-concurrency-soft-ceiling", 0, "Set the number of concurrent connections an adaptive transfer may reach before further growth must improve throughput.")
 	cmd.Flags().BoolVar(&t.DirectTransfers, "direct-transfers", t.DirectTransfers, "Attempt direct transfer paths to the Files Agent when available; set to false to use proxied paths only.")
 	cmd.Flags().MarkHidden("test-progress-bar-out")
 	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
@@ -1348,34 +1360,34 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
 	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive upload concurrency. The concurrent connection limit becomes a maximum cap.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadReadyRunwayParts, "adaptive-upload-ready-runway-parts", 4, "Diagnostic override for upload parts prepared ahead of adaptive HTTP concurrency. Unset uses the engine default; zero disables the runway.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadReadyRunwayBytes, "adaptive-upload-ready-runway-bytes", 256*1024*1024, "Diagnostic override for queued bytes in prepared adaptive upload runway parts. Unset uses the engine default; zero leaves queued runway bytes uncapped.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3InitialTarget, "adaptive-upload-v2-s3-initial-target", 0, "Diagnostic override for upload V2 S3 initial adaptive target. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3AdaptiveFloor, "adaptive-upload-v2-s3-adaptive-floor", 0, "Diagnostic override for upload V2 S3 adaptive floor. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowEvery, "adaptive-upload-v2-s3-grow-every", 0, "Diagnostic override for upload V2 S3 successful samples between growth steps. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowStep, "adaptive-upload-v2-s3-grow-step", 0, "Diagnostic override for upload V2 S3 growth step. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputWindow, "adaptive-upload-v2-s3-throughput-window", 0, "Diagnostic override for upload V2 S3 throughput sample window. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputMinGainPercent, "adaptive-upload-v2-s3-throughput-min-gain-percent", 0, "Diagnostic override for upload V2 S3 required throughput gain percent. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinWindows, "adaptive-upload-v2-s3-probe-min-windows", 0, "Diagnostic override for upload V2 S3 repeated probe miss windows before backoff. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloor, "adaptive-upload-v2-s3-probe-floor-target", 0, "Diagnostic override for upload V2 S3 fast-link probe floor. Zero uses the default.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloorRateBytesPerSecond, "adaptive-upload-v2-s3-probe-floor-rate-bps", 0, "Diagnostic override for upload V2 S3 fast-link probe floor bytes per second. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbePlateau, "adaptive-upload-v2-s3-probe-plateau-target", 0, "Diagnostic override for upload V2 S3 probe plateau. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputShrinkPercent, "adaptive-upload-v2-s3-throughput-shrink-percent", 0, "Diagnostic override for upload V2 S3 throughput shrink percent. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputHoldWindows, "adaptive-upload-v2-s3-throughput-hold-windows", 0, "Diagnostic override for upload V2 S3 throughput hold windows after backoff. Zero uses the default.")
-	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinGainPerTargetPercent, "adaptive-upload-v2-s3-probe-min-gain-per-target-percent", 0, "Diagnostic override for upload V2 S3 required gain per target above the plateau. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeLossTolerancePercent, "adaptive-upload-v2-s3-probe-loss-tolerance-percent", 0, "Diagnostic override for upload V2 S3 tolerated throughput loss while probing to the plateau. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowthCeiling, "adaptive-upload-v2-s3-growth-ceiling", 0, "Diagnostic override for upload V2 S3 soft growth ceiling. Zero uses the default.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeBytes, "adaptive-upload-v2-s3-growth-ceiling-probe-bytes", 0, "Diagnostic override for upload V2 S3 bytes required before unlocking the growth ceiling. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeSuccesses, "adaptive-upload-v2-s3-growth-ceiling-probe-successes", 0, "Diagnostic override for upload V2 S3 successful parts required before unlocking the growth ceiling. Zero uses the default.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeRateBytesPerSecond, "adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps", 0, "Diagnostic override for upload V2 S3 throughput required before unlocking the growth ceiling. Zero uses the default.")
-	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyQueueHigh, "adaptive-upload-v2-s3-latency-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue backoff threshold. Zero uses the default.")
-	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyGrowthQueueHigh, "adaptive-upload-v2-s3-latency-growth-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue growth suppression. Zero uses the default.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3PartSizeMiB, "adaptive-upload-v2-s3-part-size-mib", 0, "Diagnostic override for upload V2 S3 known-size part size in MiB. Zero uses the planner.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadBytes, "adaptive-upload-v2-s3-workload-bytes", 0, "Diagnostic override for upload V2 S3 aggregate workload bytes. Zero uses the job estimate.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadTargetPartMultiplier, "adaptive-upload-v2-s3-workload-target-part-multiplier", 0, "Diagnostic override for upload V2 S3 workload target parts per initial target. Zero uses the default.")
-	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadMinPartSizeMiB, "adaptive-upload-v2-s3-workload-min-part-size-mib", 0, "Diagnostic override for upload V2 S3 workload-tuned minimum part size in MiB. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis, "adaptive-upload-v2-s3-workload-scan-wait-ms", 0, "Diagnostic override for upload V2 S3 workload scan wait in milliseconds. Zero uses the default.")
-	cmd.Flags().IntVar(&t.AdaptiveUploadV2FileConcurrency, "adaptive-upload-v2-file-concurrency", 0, "Diagnostic override for upload V2 file admission concurrency. Zero uses the default.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadReadyRunwayParts, "adaptive-upload-ready-runway-parts", 4, "Diagnostic override for upload parts prepared ahead of adaptive HTTP concurrency.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadReadyRunwayBytes, "adaptive-upload-ready-runway-bytes", 256*1024*1024, "Diagnostic override for queued bytes in prepared adaptive upload runway parts.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3InitialTarget, "adaptive-upload-v2-s3-initial-target", 0, "Diagnostic override for upload V2 S3 initial adaptive target.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3AdaptiveFloor, "adaptive-upload-v2-s3-adaptive-floor", 0, "Diagnostic override for upload V2 S3 adaptive floor.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowEvery, "adaptive-upload-v2-s3-grow-every", 0, "Diagnostic override for upload V2 S3 successful samples between growth steps.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowStep, "adaptive-upload-v2-s3-grow-step", 0, "Diagnostic override for upload V2 S3 growth step.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputWindow, "adaptive-upload-v2-s3-throughput-window", 0, "Diagnostic override for upload V2 S3 throughput sample window.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputMinGainPercent, "adaptive-upload-v2-s3-throughput-min-gain-percent", 0, "Diagnostic override for upload V2 S3 required throughput gain percent.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinWindows, "adaptive-upload-v2-s3-probe-min-windows", 0, "Diagnostic override for upload V2 S3 repeated probe miss windows before backoff.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloor, "adaptive-upload-v2-s3-probe-floor-target", 0, "Diagnostic override for upload V2 S3 fast-link probe floor.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeFloorRateBytesPerSecond, "adaptive-upload-v2-s3-probe-floor-rate-bps", 0, "Diagnostic override for upload V2 S3 fast-link probe floor bytes per second.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbePlateau, "adaptive-upload-v2-s3-probe-plateau-target", 0, "Diagnostic override for upload V2 S3 probe plateau.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputShrinkPercent, "adaptive-upload-v2-s3-throughput-shrink-percent", 0, "Diagnostic override for upload V2 S3 throughput shrink percent.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputHoldWindows, "adaptive-upload-v2-s3-throughput-hold-windows", 0, "Diagnostic override for upload V2 S3 throughput hold windows after backoff.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeMinGainPerTargetPercent, "adaptive-upload-v2-s3-probe-min-gain-per-target-percent", 0, "Diagnostic override for upload V2 S3 required gain per target above the plateau.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3ThroughputProbeLossTolerancePercent, "adaptive-upload-v2-s3-probe-loss-tolerance-percent", 0, "Diagnostic override for upload V2 S3 tolerated throughput loss while probing to the plateau.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowthCeiling, "adaptive-upload-v2-s3-growth-ceiling", 0, "Diagnostic override for upload V2 S3 soft growth ceiling.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeBytes, "adaptive-upload-v2-s3-growth-ceiling-probe-bytes", 0, "Diagnostic override for upload V2 S3 bytes required before unlocking the growth ceiling.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeSuccesses, "adaptive-upload-v2-s3-growth-ceiling-probe-successes", 0, "Diagnostic override for upload V2 S3 successful parts required before unlocking the growth ceiling.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3GrowthCeilingProbeRateBytesPerSecond, "adaptive-upload-v2-s3-growth-ceiling-probe-rate-bps", 0, "Diagnostic override for upload V2 S3 throughput required before unlocking the growth ceiling.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyQueueHigh, "adaptive-upload-v2-s3-latency-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue backoff threshold.")
+	cmd.Flags().Float64Var(&t.AdaptiveUploadV2Tuning.S3LatencyGrowthQueueHigh, "adaptive-upload-v2-s3-latency-growth-queue-high", 0, "Diagnostic override for upload V2 S3 latency queue growth suppression.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3PartSizeMiB, "adaptive-upload-v2-s3-part-size-mib", 0, "Diagnostic override for upload V2 S3 known-size part size in MiB.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadBytes, "adaptive-upload-v2-s3-workload-bytes", 0, "Diagnostic override for upload V2 S3 aggregate workload bytes.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadTargetPartMultiplier, "adaptive-upload-v2-s3-workload-target-part-multiplier", 0, "Diagnostic override for upload V2 S3 workload target parts per initial target.")
+	cmd.Flags().Int64Var(&t.AdaptiveUploadV2Tuning.S3WorkloadMinPartSizeMiB, "adaptive-upload-v2-s3-workload-min-part-size-mib", 0, "Diagnostic override for upload V2 S3 workload-tuned minimum part size in MiB.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3WorkloadScanWaitMillis, "adaptive-upload-v2-s3-workload-scan-wait-ms", 0, "Diagnostic override for upload V2 S3 workload scan wait in milliseconds.")
+	cmd.Flags().IntVar(&t.AdaptiveUploadV2FileConcurrency, "adaptive-upload-v2-file-concurrency", 0, "Diagnostic override for upload V2 file admission concurrency.")
 	cmd.Flags().MarkHidden("adaptive-upload-ready-runway-parts")
 	cmd.Flags().MarkHidden("adaptive-upload-ready-runway-bytes")
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-initial-target")
@@ -1416,15 +1428,15 @@ func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
 	cmd.Flags().BoolVar(&t.NoZipBatch, "no-zip-batch", t.NoZipBatch, "Disable batching of small files through the ZIP download endpoint")
 	cmd.Flags().BoolVar(&t.ForceZipBatch, "force-zip-batch", t.ForceZipBatch, "Always use ZIP batching for eligible small files, skipping the automatic speed probe")
-	cmd.Flags().StringVar(&t.ZipBatchExtraction, "zip-batch-extraction", t.ZipBatchExtraction, "Diagnostic ZIP batch extraction mode: spool or stream. Empty uses the SDK default.")
-	cmd.Flags().Int64Var(&t.ZipBatchEligibleSize, "zip-batch-eligible-size", t.ZipBatchEligibleSize, "Diagnostic override for ZIP batch eligible file size in bytes. Zero uses the SDK default.")
-	cmd.Flags().IntVar(&t.ZipBatchMinFiles, "zip-batch-min-files", t.ZipBatchMinFiles, "Diagnostic override for ZIP batch minimum eligible small files before batching engages. Zero uses the SDK default.")
-	cmd.Flags().IntVar(&t.ZipBatchMaxFiles, "zip-batch-max-files", t.ZipBatchMaxFiles, "Diagnostic override for ZIP batch maximum file count cap. Zero uses the SDK default.")
-	cmd.Flags().IntVar(&t.ZipBatchBatchSize, "zip-batch-batch-size", t.ZipBatchBatchSize, "Diagnostic override for fixed ZIP batch file count. Zero uses dynamic sizing.")
-	cmd.Flags().Int64Var(&t.ZipBatchMaxBytes, "zip-batch-max-bytes", t.ZipBatchMaxBytes, "Diagnostic override for ZIP batch maximum bytes. Zero uses the SDK default.")
-	cmd.Flags().IntVar(&t.ZipBatchConcurrency, "zip-batch-concurrency", t.ZipBatchConcurrency, "Diagnostic override for concurrent ZIP batch streams. Zero uses the SDK default.")
-	cmd.Flags().Float64Var(&t.ZipBatchMinAdvantage, "zip-batch-min-advantage", t.ZipBatchMinAdvantage, "Diagnostic ZIP batch minimum speedup before committing. Zero uses the SDK default; negative disables probing.")
-	cmd.Flags().DurationVar(&t.ZipBatchReprobeInterval, "zip-batch-reprobe-interval", t.ZipBatchReprobeInterval, "Diagnostic ZIP batch re-probe interval after dissolve. Zero uses the SDK default; negative disables re-probing.")
+	cmd.Flags().StringVar(&t.ZipBatchExtraction, "zip-batch-extraction", t.ZipBatchExtraction, "Diagnostic ZIP batch extraction mode: spool or stream.")
+	cmd.Flags().Int64Var(&t.ZipBatchEligibleSize, "zip-batch-eligible-size", t.ZipBatchEligibleSize, "Diagnostic override for ZIP batch eligible file size in bytes.")
+	cmd.Flags().IntVar(&t.ZipBatchMinFiles, "zip-batch-min-files", t.ZipBatchMinFiles, "Diagnostic override for ZIP batch minimum eligible small files before batching engages.")
+	cmd.Flags().IntVar(&t.ZipBatchMaxFiles, "zip-batch-max-files", t.ZipBatchMaxFiles, "Diagnostic override for ZIP batch maximum file count cap.")
+	cmd.Flags().IntVar(&t.ZipBatchBatchSize, "zip-batch-batch-size", t.ZipBatchBatchSize, "Diagnostic override for fixed ZIP batch file count.")
+	cmd.Flags().Int64Var(&t.ZipBatchMaxBytes, "zip-batch-max-bytes", t.ZipBatchMaxBytes, "Diagnostic override for ZIP batch maximum bytes.")
+	cmd.Flags().IntVar(&t.ZipBatchConcurrency, "zip-batch-concurrency", t.ZipBatchConcurrency, "Diagnostic override for concurrent ZIP batch streams.")
+	cmd.Flags().Float64Var(&t.ZipBatchMinAdvantage, "zip-batch-min-advantage", t.ZipBatchMinAdvantage, "Diagnostic ZIP batch minimum speedup before committing. Negative disables probing.")
+	cmd.Flags().DurationVar(&t.ZipBatchReprobeInterval, "zip-batch-reprobe-interval", t.ZipBatchReprobeInterval, "Diagnostic ZIP batch re-probe interval after dissolve. Negative disables re-probing.")
 	cmd.Flags().MarkHidden("zip-batch-extraction")
 	cmd.Flags().MarkHidden("zip-batch-eligible-size")
 	cmd.Flags().MarkHidden("zip-batch-min-files")
