@@ -37,6 +37,7 @@ Create Snapshot.
 | `--expires-at` | datetime | When the snapshot expires. |
 | `--name` | string | A name for the snapshot. |
 | `--paths` | []string | An array of paths to add to the snapshot. |
+| `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 
 ### `files-cli snapshots finalize`
 
