@@ -9,5 +9,6 @@ build.sh
 release.sh
 pre_commit.sh
 sign.sh
+sign-windows.ps1
 gon-arm64.hcl
 gon-amd64.hcl
