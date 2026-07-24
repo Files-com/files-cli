@@ -38,10 +38,10 @@ Create Event Target.
 | `--name` | string | Event Target name. **Required.** |
 | `--workspace-id` | int64 | Workspace ID. 0 means the default workspace or site-wide. |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace target can receive events from all workspaces. |
-| `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`. **Required.** |
 | `--enabled` | bool | Whether this Event Target can receive events. |
-| `--config` | object | Event Target configuration. **Required.** |
-| `--delivery-policy` | object | Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400. |
+| `--config` | object | Event Target configuration. Folder targets accept path and format (json or csv). **Required.** |
+| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. |
+| `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`, `folder`. **Required.** |
 
 ### `files-cli event-targets update`
 
@@ -53,10 +53,9 @@ Update Event Target.
 | `--name` | string | Event Target name. |
 | `--workspace-id` | int64 | Workspace ID. 0 means the default workspace or site-wide. |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace target can receive events from all workspaces. |
-| `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`. |
 | `--enabled` | bool | Whether this Event Target can receive events. |
-| `--config` | object | Event Target configuration. |
-| `--delivery-policy` | object | Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400. |
+| `--config` | object | Event Target configuration. Folder targets accept path and format (json or csv). |
+| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. |
 
 ### `files-cli event-targets delete`
 

@@ -186,12 +186,12 @@ func EventTargets() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsEventTargetCreate.Name, "name", "", "Event Target name.")
 	cmdCreate.Flags().Int64Var(&paramsEventTargetCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace target can receive events from all workspaces.")
-	cmdCreate.Flags().StringVar(&EventTargetCreateTargetType, "target-type", "", fmt.Sprintf("Event Target type. %v", reflect.ValueOf(paramsEventTargetCreate.TargetType.Enum()).MapKeys()))
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Target can receive events.")
-	cmdCreate.Flags().StringVar(&createConfigJSON, "config", "", "Event Target configuration. Provide as a JSON object.")
+	cmdCreate.Flags().StringVar(&createConfigJSON, "config", "", "Event Target configuration. Folder targets accept path and format (json or csv). Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "config", "json")
-	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
+	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "delivery-policy", "json")
+	cmdCreate.Flags().StringVar(&EventTargetCreateTargetType, "target-type", "", fmt.Sprintf("Event Target type. %v", reflect.ValueOf(paramsEventTargetCreate.TargetType.Enum()).MapKeys()))
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -204,7 +204,6 @@ func EventTargets() *cobra.Command {
 	updateApplyToAllWorkspaces := true
 	updateEnabled := true
 	paramsEventTargetUpdate := files_sdk.EventTargetUpdateParams{}
-	EventTargetUpdateTargetType := ""
 
 	updateConfigJSON := ""
 	updateDeliveryPolicyJSON := ""
@@ -224,12 +223,6 @@ func EventTargets() *cobra.Command {
 				return convertErr
 			}
 
-			var EventTargetUpdateTargetTypeErr error
-			paramsEventTargetUpdate.TargetType, EventTargetUpdateTargetTypeErr = lib.FetchKey("target-type", paramsEventTargetUpdate.TargetType.Enum(), EventTargetUpdateTargetType)
-			if EventTargetUpdateTargetType != "" && EventTargetUpdateTargetTypeErr != nil {
-				return EventTargetUpdateTargetTypeErr
-			}
-
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsEventTargetUpdate.Id, mapParams)
 			}
@@ -241,9 +234,6 @@ func EventTargets() *cobra.Command {
 			}
 			if cmd.Flags().Changed("apply-to-all-workspaces") {
 				mapParams["apply_to_all_workspaces"] = updateApplyToAllWorkspaces
-			}
-			if cmd.Flags().Changed("target-type") {
-				lib.FlagUpdate(cmd, "target_type", paramsEventTargetUpdate.TargetType, mapParams)
 			}
 			if cmd.Flags().Changed("enabled") {
 				mapParams["enabled"] = updateEnabled
@@ -273,11 +263,10 @@ func EventTargets() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsEventTargetUpdate.Name, "name", "", "Event Target name.")
 	cmdUpdate.Flags().Int64Var(&paramsEventTargetUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace target can receive events from all workspaces.")
-	cmdUpdate.Flags().StringVar(&EventTargetUpdateTargetType, "target-type", "", fmt.Sprintf("Event Target type. %v", reflect.ValueOf(paramsEventTargetUpdate.TargetType.Enum()).MapKeys()))
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "Whether this Event Target can receive events.")
-	cmdUpdate.Flags().StringVar(&updateConfigJSON, "config", "", "Event Target configuration. Provide as a JSON object.")
+	cmdUpdate.Flags().StringVar(&updateConfigJSON, "config", "", "Event Target configuration. Folder targets accept path and format (json or csv). Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "config", "json")
-	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
+	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "delivery-policy", "json")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

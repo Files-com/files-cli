@@ -4182,12 +4182,6 @@
           "description": "If true, this default-workspace target can receive events from all workspaces."
         },
         {
-          "name": "--target-type",
-          "type": "enum",
-          "required": true,
-          "description": "Event Target type."
-        },
-        {
           "name": "--enabled",
           "type": "bool",
           "required": false,
@@ -4197,13 +4191,19 @@
           "name": "--config",
           "type": "object",
           "required": true,
-          "description": "Event Target configuration."
+          "description": "Event Target configuration. Folder targets accept path and format (json or csv)."
         },
         {
           "name": "--delivery-policy",
           "type": "object",
           "required": false,
-          "description": "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400."
+          "description": "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400."
+        },
+        {
+          "name": "--target-type",
+          "type": "enum",
+          "required": true,
+          "description": "Event Target type."
         }
       ]
     },
@@ -4238,12 +4238,6 @@
           "description": "If true, this default-workspace target can receive events from all workspaces."
         },
         {
-          "name": "--target-type",
-          "type": "enum",
-          "required": false,
-          "description": "Event Target type."
-        },
-        {
           "name": "--enabled",
           "type": "bool",
           "required": false,
@@ -4253,13 +4247,13 @@
           "name": "--config",
           "type": "object",
           "required": false,
-          "description": "Event Target configuration."
+          "description": "Event Target configuration. Folder targets accept path and format (json or csv)."
         },
         {
           "name": "--delivery-policy",
           "type": "object",
           "required": false,
-          "description": "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400."
+          "description": "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400."
         }
       ]
     },
