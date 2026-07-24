@@ -10,5 +10,6 @@ release.sh
 pre_commit.sh
 sign.sh
 sign-windows.ps1
+files-cli.wxs
 gon-arm64.hcl
 gon-amd64.hcl
