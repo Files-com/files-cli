@@ -39,9 +39,9 @@ Download the latest release for Windows, macOS, or Linux from the [CLI App Relea
 
 On that page, you'll need to pick your exact operating system to download the correct version.
 
-No installation is necessary. The app is a self contained app which can be stored anywhere on your computer.
+On 64-bit AMD/Intel Windows systems, the MSI installer places the CLI in `C:\Program Files\Files.com-CLI` and adds that directory to the system `%PATH%`. Portable archives are also available and can be stored anywhere on your computer.
 
-We recommend placing the app binary into one of the folders listed in your `%PATH%` (Windows) or `$PATH` (Linux and Mac).
+When using a portable archive, we recommend placing the app binary into one of the folders listed in your `%PATH%` (Windows) or `$PATH` (Linux and Mac).
 
 Here are specific instructions, grouped by OS:
 
@@ -49,10 +49,13 @@ Here are specific instructions, grouped by OS:
 
 **Download**
 
-- AMD/Intel 64-Bit Processors [amd64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_64bit.zip) *(Most Common)*
-- ARM Processors [arm64](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip) *(Less Common)*
+- AMD/Intel 64-Bit Processors [MSI installer](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_64bit.msi) *(Recommended)*
+- AMD/Intel 64-Bit Processors [portable ZIP](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_64bit.zip)
+- ARM Processors [portable ZIP](https://github.com/Files-com/files-cli/releases/latest/download/files-cli_windows_arm64.zip) *(Less Common)*
 
-Download the Zip archive (`*.zip`), extract the files from the archive, and place the `files-cli.exe` binary file into any directory listed in your `%PATH%` environment variable.
+Run the MSI installer (`*.msi`) to install `files-cli.exe` and add it to the system `%PATH%`. Open a new terminal before running `files-cli`.
+
+For a portable installation, download the Zip archive (`*.zip`), extract it, and place `files-cli.exe` into any directory listed in your `%PATH%` environment variable.
 
 #### Mac using Homebrew
 
