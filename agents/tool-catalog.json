@@ -3174,7 +3174,19 @@
           "name": "--skip-child-site-ids",
           "type": "[]int64",
           "required": false,
-          "description": "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`)."
+          "description": "IDs of child sites excluded from this default policy."
+        },
+        {
+          "name": "--child-site-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "IDs of child sites explicitly assigned to this non-default policy."
+        },
+        {
+          "name": "--default-policy",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this policy applies to child sites not explicitly assigned to another policy."
         },
         {
           "name": "--policy-type",
@@ -3218,7 +3230,19 @@
           "name": "--skip-child-site-ids",
           "type": "[]int64",
           "required": false,
-          "description": "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`)."
+          "description": "IDs of child sites excluded from this default policy."
+        },
+        {
+          "name": "--child-site-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "IDs of child sites explicitly assigned to this non-default policy."
+        },
+        {
+          "name": "--default-policy",
+          "type": "bool",
+          "required": false,
+          "description": "Whether this policy applies to child sites not explicitly assigned to another policy."
         },
         {
           "name": "--policy-type",
@@ -15815,13 +15839,13 @@
           "name": "--user-root",
           "type": "string",
           "required": false,
-          "description": "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface."
+          "description": "If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface."
         },
         {
           "name": "--user-home",
           "type": "string",
           "required": false,
-          "description": "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface."
+          "description": "Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface."
         },
         {
           "name": "--workspace-admin",
@@ -16279,13 +16303,13 @@
           "name": "--user-root",
           "type": "string",
           "required": false,
-          "description": "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface."
+          "description": "If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface."
         },
         {
           "name": "--user-home",
           "type": "string",
           "required": false,
-          "description": "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface."
+          "description": "Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface."
         },
         {
           "name": "--workspace-admin",

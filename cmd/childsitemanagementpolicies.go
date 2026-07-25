@@ -8,6 +8,7 @@ import (
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	child_site_management_policy "github.com/Files-com/files-sdk-go/v3/childsitemanagementpolicy"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -110,6 +111,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createDefaultPolicy := true
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
 	ChildSiteManagementPolicyCreatePolicyType := ""
 
@@ -138,6 +140,9 @@ func ChildSiteManagementPolicies() *cobra.Command {
 				}
 				paramsChildSiteManagementPolicyCreate.Value = parsedCreateValue
 			}
+			if cmd.Flags().Changed("default-policy") {
+				paramsChildSiteManagementPolicyCreate.DefaultPolicy = flib.Bool(createDefaultPolicy)
+			}
 
 			var childSiteManagementPolicy interface{}
 			var err error
@@ -147,7 +152,9 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
-	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
+	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites excluded from this default policy.")
+	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.ChildSiteIds, "child-site-ids", []int64{}, "IDs of child sites explicitly assigned to this non-default policy.")
+	cmdCreate.Flags().BoolVar(&createDefaultPolicy, "default-policy", createDefaultPolicy, "Whether this policy applies to child sites not explicitly assigned to another policy.")
 	cmdCreate.Flags().StringVar(&ChildSiteManagementPolicyCreatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyCreate.PolicyType.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Name, "name", "", "Name for this policy.")
 	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Description, "description", "", "Description for this policy.")
@@ -160,6 +167,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateDefaultPolicy := true
 	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
 	ChildSiteManagementPolicyUpdatePolicyType := ""
 
@@ -199,6 +207,12 @@ func ChildSiteManagementPolicies() *cobra.Command {
 			if cmd.Flags().Changed("skip-child-site-ids") {
 				lib.FlagUpdateLen(cmd, "skip_child_site_ids", paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, mapParams)
 			}
+			if cmd.Flags().Changed("child-site-ids") {
+				lib.FlagUpdateLen(cmd, "child_site_ids", paramsChildSiteManagementPolicyUpdate.ChildSiteIds, mapParams)
+			}
+			if cmd.Flags().Changed("default-policy") {
+				mapParams["default_policy"] = updateDefaultPolicy
+			}
 			if cmd.Flags().Changed("policy-type") {
 				lib.FlagUpdate(cmd, "policy_type", paramsChildSiteManagementPolicyUpdate.PolicyType, mapParams)
 			}
@@ -218,7 +232,9 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsChildSiteManagementPolicyUpdate.Id, "id", 0, "Child Site Management Policy ID.")
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
-	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).")
+	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites excluded from this default policy.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.ChildSiteIds, "child-site-ids", []int64{}, "IDs of child sites explicitly assigned to this non-default policy.")
+	cmdUpdate.Flags().BoolVar(&updateDefaultPolicy, "default-policy", updateDefaultPolicy, "Whether this policy applies to child sites not explicitly assigned to another policy.")
 	cmdUpdate.Flags().StringVar(&ChildSiteManagementPolicyUpdatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Name, "name", "", "Name for this policy.")
 	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Description, "description", "", "Description for this policy.")
