@@ -15734,6 +15734,18 @@
           "description": "Is a password change required upon next user login?"
         },
         {
+          "name": "--responsible-group-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the internal Group responsible for this Partner User, overriding the Partner default."
+        },
+        {
+          "name": "--responsible-user-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the internal User responsible for this Partner User, overriding the Partner default."
+        },
+        {
           "name": "--restapi-permission",
           "type": "bool",
           "required": false,
@@ -16184,6 +16196,18 @@
           "type": "bool",
           "required": false,
           "description": "Is a password change required upon next user login?"
+        },
+        {
+          "name": "--responsible-group-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the internal Group responsible for this Partner User, overriding the Partner default."
+        },
+        {
+          "name": "--responsible-user-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of the internal User responsible for this Partner User, overriding the Partner default."
         },
         {
           "name": "--restapi-permission",

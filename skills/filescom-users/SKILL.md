@@ -109,6 +109,8 @@ Create User.
 | `--notify-on-all-expectation-failures` | bool | Should the user receive expectation failures and misses via email? |
 | `--require-login-by` | datetime | Require user to login by specified date otherwise it will be disabled. |
 | `--require-password-change` | bool | Is a password change required upon next user login? |
+| `--responsible-group-id` | int64 | ID of the internal Group responsible for this Partner User, overriding the Partner default. |
+| `--responsible-user-id` | int64 | ID of the internal User responsible for this Partner User, overriding the Partner default. |
 | `--restapi-permission` | bool | Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.) |
 | `--self-managed` | bool | Does this user manage it's own credentials or is it a shared/bot user? |
 | `--sftp-permission` | bool | Can the user access with SFTP? |
@@ -207,6 +209,8 @@ Update User.
 | `--notify-on-all-expectation-failures` | bool | Should the user receive expectation failures and misses via email? |
 | `--require-login-by` | datetime | Require user to login by specified date otherwise it will be disabled. |
 | `--require-password-change` | bool | Is a password change required upon next user login? |
+| `--responsible-group-id` | int64 | ID of the internal Group responsible for this Partner User, overriding the Partner default. |
+| `--responsible-user-id` | int64 | ID of the internal User responsible for this Partner User, overriding the Partner default. |
 | `--restapi-permission` | bool | Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.) |
 | `--self-managed` | bool | Does this user manage it's own credentials or is it a shared/bot user? |
 | `--sftp-permission` | bool | Can the user access with SFTP? |

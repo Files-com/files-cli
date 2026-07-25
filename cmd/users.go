@@ -409,6 +409,8 @@ func Users() *cobra.Command {
 	paramsUserCreate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdCreate.Flags().BoolVar(&createRequirePasswordChange, "require-password-change", createRequirePasswordChange, "Is a password change required upon next user login?")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the internal Group responsible for this Partner User, overriding the Partner default.")
+	cmdCreate.Flags().Int64Var(&paramsUserCreate.ResponsibleUserId, "responsible-user-id", 0, "ID of the internal User responsible for this Partner User, overriding the Partner default.")
 	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)")
 	cmdCreate.Flags().BoolVar(&createSelfManaged, "self-managed", createSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
 	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "Can the user access with SFTP?")
@@ -749,6 +751,12 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("require-password-change") {
 				mapParams["require_password_change"] = updateRequirePasswordChange
 			}
+			if cmd.Flags().Changed("responsible-group-id") {
+				lib.FlagUpdate(cmd, "responsible_group_id", paramsUserUpdate.ResponsibleGroupId, mapParams)
+			}
+			if cmd.Flags().Changed("responsible-user-id") {
+				lib.FlagUpdate(cmd, "responsible_user_id", paramsUserUpdate.ResponsibleUserId, mapParams)
+			}
 			if cmd.Flags().Changed("restapi-permission") {
 				mapParams["restapi_permission"] = updateRestapiPermission
 			}
@@ -869,6 +877,8 @@ func Users() *cobra.Command {
 	paramsUserUpdate.RequireLoginBy = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.RequireLoginBy, "require-login-by", "Require user to login by specified date otherwise it will be disabled.")
 	cmdUpdate.Flags().BoolVar(&updateRequirePasswordChange, "require-password-change", updateRequirePasswordChange, "Is a password change required upon next user login?")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the internal Group responsible for this Partner User, overriding the Partner default.")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.ResponsibleUserId, "responsible-user-id", 0, "ID of the internal User responsible for this Partner User, overriding the Partner default.")
 	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)")
 	cmdUpdate.Flags().BoolVar(&updateSelfManaged, "self-managed", updateSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
 	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "Can the user access with SFTP?")
