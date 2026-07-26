@@ -125,6 +125,8 @@ func Sites() *cobra.Command {
 	updateDocumentEditsInBundleAllowed := true
 	updatePasswordRequirementsApplyToBundles := true
 	updatePreventRootPermissionsForNonSiteAdmins := true
+	updateRestrictRootFolderBehaviorsToSiteAdmins := true
+	updateRootFolderBehaviorsApplyToWorkspaces := true
 	updateOptOutGlobal := true
 	updateUseProvidedModifiedAt := true
 	updateCustomNamespace := true
@@ -470,6 +472,12 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("prevent-root-permissions-for-non-site-admins") {
 				mapParams["prevent_root_permissions_for_non_site_admins"] = updatePreventRootPermissionsForNonSiteAdmins
+			}
+			if cmd.Flags().Changed("restrict-root-folder-behaviors-to-site-admins") {
+				mapParams["restrict_root_folder_behaviors_to_site_admins"] = updateRestrictRootFolderBehaviorsToSiteAdmins
+			}
+			if cmd.Flags().Changed("root-folder-behaviors-apply-to-workspaces") {
+				mapParams["root_folder_behaviors_apply_to_workspaces"] = updateRootFolderBehaviorsApplyToWorkspaces
 			}
 			if cmd.Flags().Changed("opt-out-global") {
 				mapParams["opt_out_global"] = updateOptOutGlobal
@@ -851,6 +859,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateDocumentEditsInBundleAllowed, "document-edits-in-bundle-allowed", updateDocumentEditsInBundleAllowed, "If true, allow public viewers of Bundles with full permissions to use document editing integrations.")
 	cmdUpdate.Flags().BoolVar(&updatePasswordRequirementsApplyToBundles, "password-requirements-apply-to-bundles", updatePasswordRequirementsApplyToBundles, "Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords?")
 	cmdUpdate.Flags().BoolVar(&updatePreventRootPermissionsForNonSiteAdmins, "prevent-root-permissions-for-non-site-admins", updatePreventRootPermissionsForNonSiteAdmins, "If true, we will prevent non-administrators from receiving any permissions directly on the root folder.  This is commonly used to prevent the accidental application of permissions.")
+	cmdUpdate.Flags().BoolVar(&updateRestrictRootFolderBehaviorsToSiteAdmins, "restrict-root-folder-behaviors-to-site-admins", updateRestrictRootFolderBehaviorsToSiteAdmins, "If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one.")
+	cmdUpdate.Flags().BoolVar(&updateRootFolderBehaviorsApplyToWorkspaces, "root-folder-behaviors-apply-to-workspaces", updateRootFolderBehaviorsApplyToWorkspaces, "If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled.")
 	cmdUpdate.Flags().BoolVar(&updateOptOutGlobal, "opt-out-global", updateOptOutGlobal, "Use servers in the USA only?")
 	cmdUpdate.Flags().BoolVar(&updateUseProvidedModifiedAt, "use-provided-modified-at", updateUseProvidedModifiedAt, "Allow uploaders to set `provided_modified_at` for uploaded files?")
 	cmdUpdate.Flags().BoolVar(&updateCustomNamespace, "custom-namespace", updateCustomNamespace, "Is this site using a custom namespace for users?")

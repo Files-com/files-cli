@@ -633,6 +633,18 @@
       "category": "not-authorized"
     },
     {
+      "type": "not-authorized/root-folder-behavior-site-admin-required",
+      "title": "Root Folder Behavior Site Admin Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
+      "type": "not-authorized/root-folder-behavior-skip-site-admin-required",
+      "title": "Root Folder Behavior Skip Site Admin Required",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
       "type": "not-authorized/self-managed-required",
       "title": "Self Managed Required",
       "http_code": 403,

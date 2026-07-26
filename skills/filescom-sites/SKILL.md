@@ -121,6 +121,8 @@ Update Site Settings.
 | `--document-edits-in-bundle-allowed` | bool | If true, allow public viewers of Bundles with full permissions to use document editing integrations. |
 | `--password-requirements-apply-to-bundles` | bool | Require bundles' passwords, and passwords for other items (inboxes, public shares, etc.) to conform to the same requirements as users' passwords? |
 | `--prevent-root-permissions-for-non-site-admins` | bool | If true, we will prevent non-administrators from receiving any permissions directly on the root folder.  This is commonly used to prevent the accidental application of permissions. |
+| `--restrict-root-folder-behaviors-to-site-admins` | bool | If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one. |
+| `--root-folder-behaviors-apply-to-workspaces` | bool | If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled. |
 | `--opt-out-global` | bool | Use servers in the USA only? |
 | `--use-provided-modified-at` | bool | Allow uploaders to set `provided_modified_at` for uploaded files? |
 | `--custom-namespace` | bool | Is this site using a custom namespace for users? |
