@@ -134,6 +134,7 @@ func Partners() *cobra.Command {
 	createAllowProvidingGpgKeys := true
 	createAllowUserCreation := true
 	createCcEmailsToResponsibleParty := true
+	createShowPartnerChannelHomePage := true
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -161,6 +162,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("cc-emails-to-responsible-party") {
 				paramsPartnerCreate.CcEmailsToResponsibleParty = flib.Bool(createCcEmailsToResponsibleParty)
 			}
+			if cmd.Flags().Changed("show-partner-channel-home-page") {
+				paramsPartnerCreate.ShowPartnerChannelHomePage = flib.Bool(createShowPartnerChannelHomePage)
+			}
 
 			var partner interface{}
 			var err error
@@ -179,6 +183,7 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.PartnerChannelTemplateId, "partner-channel-template-id", 0, "ID of the Partner Channel Template assigned to this Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
+	cmdCreate.Flags().BoolVar(&createShowPartnerChannelHomePage, "show-partner-channel-home-page", createShowPartnerChannelHomePage, "Show Partner users a simplified home page built from this Partner's Channels.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
@@ -197,6 +202,7 @@ func Partners() *cobra.Command {
 	updateAllowProvidingGpgKeys := true
 	updateAllowUserCreation := true
 	updateCcEmailsToResponsibleParty := true
+	updateShowPartnerChannelHomePage := true
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -250,6 +256,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("responsible-user-id") {
 				lib.FlagUpdate(cmd, "responsible_user_id", paramsPartnerUpdate.ResponsibleUserId, mapParams)
 			}
+			if cmd.Flags().Changed("show-partner-channel-home-page") {
+				mapParams["show_partner_channel_home_page"] = updateShowPartnerChannelHomePage
+			}
 			if cmd.Flags().Changed("tags") {
 				lib.FlagUpdate(cmd, "tags", paramsPartnerUpdate.Tags, mapParams)
 			}
@@ -278,6 +287,7 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.PartnerChannelTemplateId, "partner-channel-template-id", 0, "ID of the Partner Channel Template assigned to this Partner.")
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the Group responsible for this Partner.")
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.ResponsibleUserId, "responsible-user-id", 0, "ID of the User responsible for this Partner.")
+	cmdUpdate.Flags().BoolVar(&updateShowPartnerChannelHomePage, "show-partner-channel-home-page", updateShowPartnerChannelHomePage, "Show Partner users a simplified home page built from this Partner's Channels.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")

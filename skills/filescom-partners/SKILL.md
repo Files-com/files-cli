@@ -46,6 +46,7 @@ Create Partner.
 | `--partner-channel-template-id` | int64 | ID of the Partner Channel Template assigned to this Partner. |
 | `--responsible-group-id` | int64 | ID of the Group responsible for this Partner. |
 | `--responsible-user-id` | int64 | ID of the User responsible for this Partner. |
+| `--show-partner-channel-home-page` | bool | Show Partner users a simplified home page built from this Partner's Channels. |
 | `--tags` | string | Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--name` | string | The name of the Partner. **Required.** |
 | `--root-folder` | string | The root folder path for this Partner. **Required.** |
@@ -69,6 +70,7 @@ Update Partner.
 | `--partner-channel-template-id` | int64 | ID of the Partner Channel Template assigned to this Partner. |
 | `--responsible-group-id` | int64 | ID of the Group responsible for this Partner. |
 | `--responsible-user-id` | int64 | ID of the User responsible for this Partner. |
+| `--show-partner-channel-home-page` | bool | Show Partner users a simplified home page built from this Partner's Channels. |
 | `--tags` | string | Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--name` | string | The name of the Partner. |
 | `--root-folder` | string | The root folder path for this Partner. |

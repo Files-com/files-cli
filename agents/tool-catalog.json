@@ -8768,6 +8768,12 @@
           "description": "ID of the User responsible for this Partner."
         },
         {
+          "name": "--show-partner-channel-home-page",
+          "type": "bool",
+          "required": false,
+          "description": "Show Partner users a simplified home page built from this Partner's Channels."
+        },
+        {
           "name": "--tags",
           "type": "string",
           "required": false,
@@ -8870,6 +8876,12 @@
           "type": "int64",
           "required": false,
           "description": "ID of the User responsible for this Partner."
+        },
+        {
+          "name": "--show-partner-channel-home-page",
+          "type": "bool",
+          "required": false,
+          "description": "Show Partner users a simplified home page built from this Partner's Channels."
         },
         {
           "name": "--tags",
