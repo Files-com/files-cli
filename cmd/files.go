@@ -24,6 +24,7 @@ func Files() *cobra.Command {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command files\n\t%v", args[0])
 		},
 	}
+	addUnderscoreFileCommands(Files)
 	Files.AddCommand(Download())
 	var fieldsCreate []string
 	var formatCreate []string
