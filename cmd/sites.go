@@ -104,6 +104,7 @@ func Sites() *cobra.Command {
 	updateSftpInsecureCiphers := true
 	updateSftpInsecureDiffieHellman := true
 	updateDisableFilesCertificateGeneration := true
+	updateFedramp := true
 	updateUserLockout := true
 	updateIncludePasswordInWelcomeEmail := true
 	updateAllowUserLevel2faOverride := true
@@ -367,6 +368,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("disable-files-certificate-generation") {
 				mapParams["disable_files_certificate_generation"] = updateDisableFilesCertificateGeneration
+			}
+			if cmd.Flags().Changed("fedramp") {
+				mapParams["fedramp"] = updateFedramp
 			}
 			if cmd.Flags().Changed("user-lockout") {
 				mapParams["user_lockout"] = updateUserLockout
@@ -824,6 +828,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureDiffieHellman, "sftp-insecure-diffie-hellman", updateSftpInsecureDiffieHellman, "If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.")
 	cmdUpdate.Flags().BoolVar(&updateDisableFilesCertificateGeneration, "disable-files-certificate-generation", updateDisableFilesCertificateGeneration, "If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain.")
+	cmdUpdate.Flags().BoolVar(&updateFedramp, "fedramp", updateFedramp, "Are FedRAMP security restrictions enabled for this site?")
 	cmdUpdate.Flags().BoolVar(&updateUserLockout, "user-lockout", updateUserLockout, "Will users be locked out after incorrect login attempts?")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.UserLockoutTries, "user-lockout-tries", 0, "Number of login tries within `user_lockout_within` hours before users are locked out")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.UserLockoutWithin, "user-lockout-within", 0, "Number of hours for user lockout window")

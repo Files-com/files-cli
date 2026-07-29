@@ -86,6 +86,7 @@ Update Site Settings.
 | `--sftp-insecure-ciphers` | bool | If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility. |
 | `--sftp-insecure-diffie-hellman` | bool | If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option. |
 | `--disable-files-certificate-generation` | bool | If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain. |
+| `--fedramp` | bool | Are FedRAMP security restrictions enabled for this site? |
 | `--user-lockout` | bool | Will users be locked out after incorrect login attempts? |
 | `--user-lockout-tries` | int64 | Number of login tries within `user_lockout_within` hours before users are locked out |
 | `--user-lockout-within` | int64 | Number of hours for user lockout window |
