@@ -20,7 +20,7 @@ List User Additional Email Recipients.
 | --- | --- | --- |
 | `--user-id` | int64 | User ID.  Provide a value of `0` to operate the current session's user. |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `email`, `user_id` or `workspace_id`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `email` and `workspace_id`. Valid field combinations are `[ workspace_id, email ]`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `email`, `workspace_id` or `user_id`. Valid field combinations are `[ workspace_id, email ]`, `[ user_id, email ]`, `[ workspace_id, user_id ]` or `[ workspace_id, user_id, email ]`. |
 | `--filter-prefix` | object | If set, return records where the specified field is prefixed by the supplied value. Valid fields are `email`. |
 
 ### `files-cli user-additional-email-recipients find`

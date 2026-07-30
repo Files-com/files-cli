@@ -14916,7 +14916,7 @@
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `email` and `workspace_id`. Valid field combinations are `[ workspace_id, email ]`."
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `email`, `workspace_id` or `user_id`. Valid field combinations are `[ workspace_id, email ]`, `[ user_id, email ]`, `[ workspace_id, user_id ]` or `[ workspace_id, user_id, email ]`."
         },
         {
           "name": "--filter-prefix",
