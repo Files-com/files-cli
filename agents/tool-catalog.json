@@ -11903,7 +11903,7 @@
       "name": "sessions create",
       "group": "sessions",
       "description": "Create user session (log in)",
-      "auth_required": true,
+      "auth_required": false,
       "parameters": [
         {
           "name": "--username",
@@ -11935,7 +11935,7 @@
       "name": "sessions delete",
       "group": "sessions",
       "description": "Delete user session (log out)",
-      "auth_required": true,
+      "auth_required": false,
       "parameters": [
 
       ]
