@@ -74,6 +74,14 @@ Show Remote Server.
 | --- | --- | --- |
 | `--id` | int64 | Remote Server ID. **Required.** |
 
+### `files-cli remote-servers agent-nodes`
+
+List Files.com Agent nodes.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Remote Server ID. **Required.** |
+
 ### `files-cli remote-servers find-configuration-file`
 
 Download configuration file (required for some Remote Server integrations, such as the Files.com Agent).

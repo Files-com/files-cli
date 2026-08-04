@@ -140,6 +140,34 @@ func RemoteServers() *cobra.Command {
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdFind)
+	var fieldsAgentNodes []string
+	var formatAgentNodes []string
+	usePagerAgentNodes := true
+	paramsRemoteServerAgentNodes := files_sdk.RemoteServerAgentNodesParams{}
+
+	cmdAgentNodes := &cobra.Command{
+		Use:   "agent-nodes",
+		Short: `List Files.com Agent nodes`,
+		Long:  `List Files.com Agent nodes`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := remote_server.Client{Config: config}
+
+			var agentNode interface{}
+			var err error
+			agentNode, err = client.AgentNodes(paramsRemoteServerAgentNodes, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), agentNode, err, Profile(cmd).Current().SetResourceFormat(cmd, formatAgentNodes), fieldsAgentNodes, usePagerAgentNodes, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdAgentNodes.Flags().Int64Var(&paramsRemoteServerAgentNodes.Id, "id", 0, "Remote Server ID.")
+
+	cmdAgentNodes.Flags().StringSliceVar(&fieldsAgentNodes, "fields", []string{}, "comma separated list of field names")
+	cmdAgentNodes.Flags().StringSliceVar(&formatAgentNodes, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdAgentNodes.Flags().BoolVar(&usePagerAgentNodes, "use-pager", usePagerAgentNodes, "Use $PAGER (.ie less, more, etc)")
+
+	RemoteServers.AddCommand(cmdAgentNodes)
 	var fieldsFindConfigurationFile []string
 	var formatFindConfigurationFile []string
 	usePagerFindConfigurationFile := true

@@ -10214,6 +10214,20 @@
       ]
     },
     {
+      "name": "remote-servers agent-nodes",
+      "group": "remote-servers",
+      "description": "List Files.com Agent nodes",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Remote Server ID."
+        }
+      ]
+    },
+    {
       "name": "remote-servers find-configuration-file",
       "group": "remote-servers",
       "description": "Download configuration file (required for some Remote Server integrations, such as the Files.com Agent)",
