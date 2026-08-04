@@ -219,6 +219,12 @@
       "category": "bad-request"
     },
     {
+      "type": "bad-request/offset-upload-not-allowed-with-malware-scanning",
+      "title": "Offset Upload Not Allowed With Malware Scanning",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
       "type": "bad-request/part-number-too-large",
       "title": "Part Number Too Large",
       "http_code": 422,
