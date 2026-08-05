@@ -300,7 +300,7 @@ Upgrade a legacy Automation to Automation v2.
 
 ### `files-cli automations manual-run`
 
-Manually Run Automation. v2 Automations require Site or Workspace Admin permission.
+Manually Run Automation.
 
 | Flag | Type | Description |
 | --- | --- | --- |

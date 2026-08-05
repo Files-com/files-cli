@@ -1712,7 +1712,7 @@
     {
       "name": "automations manual-run",
       "group": "automations",
-      "description": "Manually Run Automation. v2 Automations require Site or Workspace Admin permission",
+      "description": "Manually Run Automation",
       "auth_required": true,
       "parameters": [
         {
