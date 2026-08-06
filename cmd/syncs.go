@@ -180,14 +180,15 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is this sync disabled?")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.HolidayRegion, "holiday-region", "", "Skip sync if there is a formal, observed holiday for this region.")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.HolidayRegion, "holiday-region", "", "Skip the sync if there is a formal, observed holiday for this region.")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.IncludePatterns, "include-patterns", []string{}, "Array of glob patterns to include")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdCreate.Flags().BoolVar(&createKeepAfterCopy, "keep-after-copy", createKeepAfterCopy, "Keep files after copying?")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Name, "name", "", "Name for this sync job")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
-	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for scheduled times. If not set, times are interpreted as UTC.")
+	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.SrcPath, "src-path", "", "Absolute source path for the sync")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
@@ -332,6 +333,9 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsSyncUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-id") {
+				lib.FlagUpdate(cmd, "schedule_id", paramsSyncUpdate.ScheduleId, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsSyncUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -373,14 +377,15 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.DestRemoteServerId, "dest-remote-server-id", 0, "Remote server ID for the destination (if remote)")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is this sync disabled?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ExcludePatterns, "exclude-patterns", []string{}, "Array of glob patterns to exclude")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.HolidayRegion, "holiday-region", "", "Skip sync if there is a formal, observed holiday for this region.")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.HolidayRegion, "holiday-region", "", "Skip the sync if there is a formal, observed holiday for this region.")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.IncludePatterns, "include-patterns", []string{}, "Array of glob patterns to include")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`")
 	cmdUpdate.Flags().BoolVar(&updateKeepAfterCopy, "keep-after-copy", updateKeepAfterCopy, "Keep files after copying?")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Name, "name", "", "Name for this sync job")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
-	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for scheduled times. If not set, times are interpreted as UTC.")
+	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.SrcPath, "src-path", "", "Absolute source path for the sync")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")

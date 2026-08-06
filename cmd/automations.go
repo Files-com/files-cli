@@ -287,10 +287,11 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
-	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
-	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC.")
-	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC.")
-	cmdCreate.Flags().StringVar(&paramsAutomationCreate.HolidayRegion, "holiday-region", "", "Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers.")
+	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.")
+	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
+	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC.")
+	cmdCreate.Flags().StringVar(&paramsAutomationCreate.HolidayRegion, "holiday-region", "", "Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`.")
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdCreate.Flags().BoolVar(&createAlwaysSerializeJobs, "always-serialize-jobs", createAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
@@ -465,6 +466,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("group-ids") {
 				lib.FlagUpdate(cmd, "group_ids", paramsAutomationUpdate.GroupIds, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-id") {
+				lib.FlagUpdate(cmd, "schedule_id", paramsAutomationUpdate.ScheduleId, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAutomationUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -563,10 +567,11 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.SyncIds, "sync-ids", "", "A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
-	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
-	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC.")
-	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC.")
-	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.HolidayRegion, "holiday-region", "", "Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers.")
+	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
+	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC.")
+	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.HolidayRegion, "holiday-region", "", "Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysSerializeJobs, "always-serialize-jobs", updateAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")

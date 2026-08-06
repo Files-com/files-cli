@@ -190,10 +190,11 @@ func ScheduledExports() *cobra.Command {
 	cmdCreate.Flags().StringVar(&ScheduledExportCreateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsScheduledExportCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
-	cmdCreate.Flags().StringSliceVar(&paramsScheduledExportCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for schedule-driven exports.")
-	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the scheduled export.")
-	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by schedule-driven exports.")
+	cmdCreate.Flags().StringSliceVar(&paramsScheduledExportCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the scheduled export schedule.")
+	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the scheduled export schedule.")
+	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the scheduled export schedule.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -261,6 +262,9 @@ func ScheduledExports() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsScheduledExportUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-id") {
+				lib.FlagUpdate(cmd, "schedule_id", paramsScheduledExportUpdate.ScheduleId, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsScheduledExportUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -290,10 +294,11 @@ func ScheduledExports() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&ScheduledExportUpdateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsScheduledExportUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
-	cmdUpdate.Flags().StringSliceVar(&paramsScheduledExportUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for schedule-driven exports.")
-	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the scheduled export.")
-	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by schedule-driven exports.")
+	cmdUpdate.Flags().StringSliceVar(&paramsScheduledExportUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the scheduled export schedule.")
+	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the scheduled export schedule.")
+	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the scheduled export schedule.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -183,10 +183,11 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&ExpectationCreateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsExpectationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
-	cmdCreate.Flags().StringSliceVar(&paramsExpectationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for schedule-driven expectations.")
-	cmdCreate.Flags().StringVar(&paramsExpectationCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the expectation schedule.")
-	cmdCreate.Flags().StringVar(&paramsExpectationCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by schedule-driven expectations.")
+	cmdCreate.Flags().StringSliceVar(&paramsExpectationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")
+	cmdCreate.Flags().StringVar(&paramsExpectationCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the Expectation schedule.")
+	cmdCreate.Flags().StringVar(&paramsExpectationCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the Expectation schedule.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LookbackInterval, "lookback-interval", 0, "How many seconds before the due boundary the window starts.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
@@ -288,6 +289,9 @@ func Expectations() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsExpectationUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-id") {
+				lib.FlagUpdate(cmd, "schedule_id", paramsExpectationUpdate.ScheduleId, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsExpectationUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -342,10 +346,11 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&ExpectationUpdateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsExpectationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
-	cmdUpdate.Flags().StringSliceVar(&paramsExpectationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for schedule-driven expectations.")
-	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the expectation schedule.")
-	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by schedule-driven expectations.")
+	cmdUpdate.Flags().StringSliceVar(&paramsExpectationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")
+	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the Expectation schedule.")
+	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the Expectation schedule.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LookbackInterval, "lookback-interval", 0, "How many seconds before the due boundary the window starts.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")

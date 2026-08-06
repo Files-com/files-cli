@@ -46,7 +46,7 @@ By default, Copy and Move automations that use globs will implicitly replicate m
 
 Automations can be triggered in the following ways:
 
-* `custom_schedule` : The automation will run according to the custom schedule parameters for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.
+* `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.
 * `daily` : The automation will run once in a picked `interval`. You can specify `recurring_day` to select day number inside a picked `interval` it should be run on.
 * `webhook` : the automation will run when a request is sent to the corresponding webhook URL.
 * `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.
@@ -265,10 +265,11 @@ Create Automation.
 | `--sync-ids` | string | A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--user-ids` | string | A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
-| `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
-| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC. |
-| `--schedule-time-zone` | string | Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC. |
-| `--holiday-region` | string | Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
+| `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
+| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC. |
+| `--schedule-time-zone` | string | Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC. |
+| `--holiday-region` | string | Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`. |
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |
 | `--always-serialize-jobs` | bool | Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance. |
 | `--description` | string | Description for the this Automation. |
@@ -324,10 +325,11 @@ Update Automation.
 | `--sync-ids` | string | A list of sync IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--user-ids` | string | A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
-| `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
-| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC. |
-| `--schedule-time-zone` | string | Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC. |
-| `--holiday-region` | string | Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
+| `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
+| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC. |
+| `--schedule-time-zone` | string | Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC. |
+| `--holiday-region` | string | Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`. |
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |
 | `--always-serialize-jobs` | bool | Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance. |
 | `--description` | string | Description for the this Automation. |

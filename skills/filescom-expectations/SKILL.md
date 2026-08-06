@@ -45,7 +45,7 @@ An Expectation has only one open window at a time.
 Expectations can open windows in three ways:
 
 * `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and `recurring_day`.
-* `custom_schedule`: run on specific weekdays and times using `schedule_days_of_week`, `schedule_times_of_day`, and optional `schedule_time_zone` / `holiday_region`.
+* `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.
 * `manual`: an operator explicitly opens the window.
 
 Schedule-driven expectations define an on-time deadline and may optionally remain eligible to close as `late` during `late_acceptance_interval`.
@@ -118,10 +118,11 @@ Create Expectation.
 | `--trigger` | enum | How this expectation opens windows. One of: `manual`, `upload`, `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the expectation. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for schedule-driven expectations. |
-| `--schedule-time-zone` | string | Time zone used by the expectation schedule. |
-| `--holiday-region` | string | Optional holiday region used by schedule-driven expectations. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
+| `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
+| `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |
 | `--lookback-interval` | int64 | How many seconds before the due boundary the window starts. |
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |
@@ -153,10 +154,11 @@ Update Expectation.
 | `--trigger` | enum | How this expectation opens windows. One of: `manual`, `upload`, `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the expectation. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for schedule-driven expectations. |
-| `--schedule-time-zone` | string | Time zone used by the expectation schedule. |
-| `--holiday-region` | string | Optional holiday region used by schedule-driven expectations. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
+| `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
+| `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |
 | `--lookback-interval` | int64 | How many seconds before the due boundary the window starts. |
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |

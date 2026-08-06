@@ -44,10 +44,11 @@ Create Scheduled Export.
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the scheduled export. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for schedule-driven exports. |
-| `--schedule-time-zone` | string | Time zone used by the scheduled export. |
-| `--holiday-region` | string | Optional holiday region used by schedule-driven exports. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the scheduled export schedule. |
+| `--schedule-time-zone` | string | Time zone used by the scheduled export schedule. |
+| `--holiday-region` | string | Optional holiday region used by the scheduled export schedule. |
 
 ### `files-cli scheduled-exports update`
 
@@ -64,10 +65,11 @@ Update Scheduled Export.
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the scheduled export. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for schedule-driven exports. |
-| `--schedule-time-zone` | string | Time zone used by the scheduled export. |
-| `--holiday-region` | string | Optional holiday region used by schedule-driven exports. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the scheduled export schedule. |
+| `--schedule-time-zone` | string | Time zone used by the scheduled export schedule. |
+| `--holiday-region` | string | Optional holiday region used by the scheduled export schedule. |
 
 ### `files-cli scheduled-exports delete`
 

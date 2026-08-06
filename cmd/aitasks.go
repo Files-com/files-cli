@@ -173,16 +173,17 @@ func AiTasks() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Description, "description", "", "AI Task description.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this AI Task will not run.")
-	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by scheduled AI Tasks.")
+	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the AI Task schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the AI Task.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Name, "name", "", "AI Task name.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
 	cmdCreate.Flags().StringVar(&AiTaskCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskCreate.PermissionSet.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAiTaskCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the AI Task schedule.")
-	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for scheduled AI Tasks.")
+	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")
 	cmdCreate.Flags().StringVar(&AiTaskCreateTrigger, "trigger", "", fmt.Sprintf("How this AI Task is triggered. %v", reflect.ValueOf(paramsAiTaskCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy.")
@@ -287,6 +288,9 @@ func AiTasks() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsAiTaskUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-id") {
+				lib.FlagUpdate(cmd, "schedule_id", paramsAiTaskUpdate.ScheduleId, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAiTaskUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -321,16 +325,17 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.Id, "id", 0, "Ai Task ID.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Description, "description", "", "AI Task description.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this AI Task will not run.")
-	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by scheduled AI Tasks.")
+	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the AI Task schedule.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the AI Task.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Name, "name", "", "AI Task name.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
 	cmdUpdate.Flags().StringVar(&AiTaskUpdatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskUpdate.PermissionSet.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAiTaskUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the AI Task schedule.")
-	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for scheduled AI Tasks.")
+	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")
 	cmdUpdate.Flags().StringVar(&AiTaskUpdateTrigger, "trigger", "", fmt.Sprintf("How this AI Task is triggered. %v", reflect.ValueOf(paramsAiTaskUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy.")

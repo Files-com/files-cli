@@ -352,7 +352,7 @@
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by scheduled AI Tasks."
+          "description": "Optional holiday region used by the AI Task schedule."
         },
         {
           "name": "--interval",
@@ -391,6 +391,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -406,7 +412,7 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for scheduled AI Tasks."
+          "description": "Times of day in HH:MM format for the AI Task schedule."
         },
         {
           "name": "--source",
@@ -476,7 +482,7 @@
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by scheduled AI Tasks."
+          "description": "Optional holiday region used by the AI Task schedule."
         },
         {
           "name": "--interval",
@@ -515,6 +521,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -530,7 +542,7 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for scheduled AI Tasks."
+          "description": "Times of day in HH:MM format for the AI Task schedule."
         },
         {
           "name": "--source",
@@ -1550,28 +1562,34 @@
           "description": "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
-          "description": "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
+          "description": "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
         },
         {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC."
+          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC."
+          "description": "Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers."
+          "description": "Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`."
         },
         {
           "name": "--always-overwrite-size-matching-files",
@@ -1802,28 +1820,34 @@
           "description": "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
-          "description": "If trigger is `custom_schedule`. A list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
+          "description": "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
         },
         {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` triggers. Optional for `daily` triggers - if not set, runs at midnight UTC."
+          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone for scheduled times. Optional for both `custom_schedule` and `daily` triggers. If not set, times are interpreted as UTC."
+          "description": "Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Skip automation on holidays in this region. Optional for both `custom_schedule` and `daily` triggers."
+          "description": "Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`."
         },
         {
           "name": "--always-overwrite-size-matching-files",
@@ -4550,6 +4574,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -4559,19 +4589,19 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for schedule-driven expectations."
+          "description": "Times of day in HH:MM format for the Expectation schedule."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone used by the expectation schedule."
+          "description": "Time zone used by the Expectation schedule."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by schedule-driven expectations."
+          "description": "Optional holiday region used by the Expectation schedule."
         },
         {
           "name": "--lookback-interval",
@@ -4692,6 +4722,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -4701,19 +4737,19 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for schedule-driven expectations."
+          "description": "Times of day in HH:MM format for the Expectation schedule."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone used by the expectation schedule."
+          "description": "Time zone used by the Expectation schedule."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by schedule-driven expectations."
+          "description": "Optional holiday region used by the Expectation schedule."
         },
         {
           "name": "--lookback-interval",
@@ -11630,6 +11666,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -11639,19 +11681,19 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for schedule-driven exports."
+          "description": "Times of day in HH:MM format for the scheduled export schedule."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone used by the scheduled export."
+          "description": "Time zone used by the scheduled export schedule."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by schedule-driven exports."
+          "description": "Optional holiday region used by the scheduled export schedule."
         }
       ]
     },
@@ -11716,6 +11758,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -11725,19 +11773,19 @@
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day in HH:MM format for schedule-driven exports."
+          "description": "Times of day in HH:MM format for the scheduled export schedule."
         },
         {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone used by the scheduled export."
+          "description": "Time zone used by the scheduled export schedule."
         },
         {
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Optional holiday region used by schedule-driven exports."
+          "description": "Optional holiday region used by the scheduled export schedule."
         }
       ]
     },
@@ -11752,6 +11800,130 @@
           "type": "int64",
           "required": true,
           "description": "Scheduled Export ID."
+        }
+      ]
+    },
+    {
+      "name": "schedules list",
+      "group": "schedules",
+      "description": "List Schedules",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `name`."
+        }
+      ]
+    },
+    {
+      "name": "schedules find",
+      "group": "schedules",
+      "description": "Show Schedule",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Schedule ID."
+        }
+      ]
+    },
+    {
+      "name": "schedules create",
+      "group": "schedules",
+      "description": "Create Schedule",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Schedule name."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": true,
+          "description": "0-based weekdays used by the Schedule. 0 is Sunday."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": true,
+          "description": "Times of day in HH:MM format (24-hour)."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone for scheduled times. If not set, times are interpreted as UTC."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region on which linked resources do not run."
+        }
+      ]
+    },
+    {
+      "name": "schedules update",
+      "group": "schedules",
+      "description": "Update Schedule",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Schedule ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Schedule name."
+        },
+        {
+          "name": "--schedule-days-of-week",
+          "type": "[]int64",
+          "required": false,
+          "description": "0-based weekdays used by the Schedule. 0 is Sunday."
+        },
+        {
+          "name": "--schedule-times-of-day",
+          "type": "[]string",
+          "required": false,
+          "description": "Times of day in HH:MM format (24-hour)."
+        },
+        {
+          "name": "--schedule-time-zone",
+          "type": "string",
+          "required": false,
+          "description": "Time zone for scheduled times. If not set, times are interpreted as UTC."
+        },
+        {
+          "name": "--holiday-region",
+          "type": "string",
+          "required": false,
+          "description": "Optional holiday region on which linked resources do not run."
+        }
+      ]
+    },
+    {
+      "name": "schedules delete",
+      "group": "schedules",
+      "description": "Delete Schedule",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Schedule ID."
         }
       ]
     },
@@ -14579,7 +14751,7 @@
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Skip sync if there is a formal, observed holiday for this region."
+          "description": "Skip the sync if there is a formal, observed holiday for this region."
         },
         {
           "name": "--include-patterns",
@@ -14612,6 +14784,12 @@
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -14621,7 +14799,7 @@
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone for scheduled times. If not set, times are interpreted as UTC."
+          "description": "Time zone for the schedule. If not set, times are interpreted as UTC."
         },
         {
           "name": "--schedule-times-of-day",
@@ -14753,7 +14931,7 @@
           "name": "--holiday-region",
           "type": "string",
           "required": false,
-          "description": "Skip sync if there is a formal, observed holiday for this region."
+          "description": "Skip the sync if there is a formal, observed holiday for this region."
         },
         {
           "name": "--include-patterns",
@@ -14786,6 +14964,12 @@
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
+          "name": "--schedule-id",
+          "type": "int64",
+          "required": false,
+          "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -14795,7 +14979,7 @@
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
-          "description": "Time zone for scheduled times. If not set, times are interpreted as UTC."
+          "description": "Time zone for the schedule. If not set, times are interpreted as UTC."
         },
         {
           "name": "--schedule-times-of-day",

@@ -37,16 +37,17 @@ Create Ai Task.
 | --- | --- | --- |
 | `--description` | string | AI Task description. |
 | `--disabled` | bool | If true, this AI Task will not run. |
-| `--holiday-region` | string | Optional holiday region used by scheduled AI Tasks. |
+| `--holiday-region` | string | Optional holiday region used by the AI Task schedule. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the AI Task. |
 | `--name` | string | AI Task name. **Required.** |
 | `--path` | string | Path scope used for action-triggered AI Tasks. |
 | `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. **Required.** |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for scheduled AI Tasks. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the AI Task schedule. |
 | `--source` | string | Source glob used with `path` for action-triggered AI Tasks. |
 | `--trigger` | enum | How this AI Task is triggered. One of: `manual`, `daily`, `custom_schedule`, `action`. |
 | `--trigger-actions` | []string | If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy. |
@@ -69,16 +70,17 @@ Update Ai Task.
 | `--id` | int64 | Ai Task ID. **Required.** |
 | `--description` | string | AI Task description. |
 | `--disabled` | bool | If true, this AI Task will not run. |
-| `--holiday-region` | string | Optional holiday region used by scheduled AI Tasks. |
+| `--holiday-region` | string | Optional holiday region used by the AI Task schedule. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the AI Task. |
 | `--name` | string | AI Task name. |
 | `--path` | string | Path scope used for action-triggered AI Tasks. |
 | `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |
-| `--schedule-times-of-day` | []string | Times of day in HH:MM format for scheduled AI Tasks. |
+| `--schedule-times-of-day` | []string | Times of day in HH:MM format for the AI Task schedule. |
 | `--source` | string | Source glob used with `path` for action-triggered AI Tasks. |
 | `--trigger` | enum | How this AI Task is triggered. One of: `manual`, `daily`, `custom_schedule`, `action`. |
 | `--trigger-actions` | []string | If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy. |
