@@ -391,6 +391,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
+        },
+        {
           "name": "--schedule-id",
           "type": "int64",
           "required": false,
@@ -519,6 +525,12 @@
           "type": "int64",
           "required": false,
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
         },
         {
           "name": "--schedule-id",
@@ -1700,6 +1712,12 @@
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
+        },
+        {
           "name": "--automation",
           "type": "enum",
           "required": true,
@@ -1956,6 +1974,12 @@
           "type": "int64",
           "required": false,
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
+        },
+        {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
           "name": "--automation",
@@ -4574,6 +4598,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
+        },
+        {
           "name": "--schedule-id",
           "type": "int64",
           "required": false,
@@ -4720,6 +4750,12 @@
           "type": "int64",
           "required": false,
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
         },
         {
           "name": "--schedule-id",
@@ -11666,6 +11702,12 @@
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
         },
         {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
+        },
+        {
           "name": "--schedule-id",
           "type": "int64",
           "required": false,
@@ -11756,6 +11798,12 @@
           "type": "int64",
           "required": false,
           "description": "If trigger is `daily`, this selects the day number inside the chosen interval."
+        },
+        {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval."
         },
         {
           "name": "--schedule-id",
@@ -14784,6 +14832,12 @@
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
+        },
+        {
           "name": "--schedule-id",
           "type": "int64",
           "required": false,
@@ -14962,6 +15016,12 @@
           "type": "int64",
           "required": false,
           "description": "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
+        },
+        {
+          "name": "--recurring-days",
+          "type": "[]int64",
+          "required": false,
+          "description": "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`."
         },
         {
           "name": "--schedule-id",

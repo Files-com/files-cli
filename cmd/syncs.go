@@ -186,6 +186,7 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createKeepAfterCopy, "keep-after-copy", createKeepAfterCopy, "Keep files after copying?")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.Name, "name", "", "Name for this sync job")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")
@@ -333,6 +334,9 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsSyncUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("recurring-days") {
+				lib.FlagUpdateLen(cmd, "recurring_days", paramsSyncUpdate.RecurringDays, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-id") {
 				lib.FlagUpdate(cmd, "schedule_id", paramsSyncUpdate.ScheduleId, mapParams)
 			}
@@ -383,6 +387,7 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateKeepAfterCopy, "keep-after-copy", updateKeepAfterCopy, "Keep files after copying?")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Name, "name", "", "Name for this sync job")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")

@@ -190,6 +190,7 @@ func ScheduledExports() *cobra.Command {
 	cmdCreate.Flags().StringVar(&ScheduledExportCreateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdCreate.Flags().Int64SliceVar(&paramsScheduledExportCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsScheduledExportCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdCreate.Flags().StringSliceVar(&paramsScheduledExportCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the scheduled export schedule.")
@@ -262,6 +263,9 @@ func ScheduledExports() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsScheduledExportUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("recurring-days") {
+				lib.FlagUpdateLen(cmd, "recurring_days", paramsScheduledExportUpdate.RecurringDays, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-id") {
 				lib.FlagUpdate(cmd, "schedule_id", paramsScheduledExportUpdate.ScheduleId, mapParams)
 			}
@@ -294,6 +298,7 @@ func ScheduledExports() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&ScheduledExportUpdateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsScheduledExportUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsScheduledExportUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdUpdate.Flags().StringSliceVar(&paramsScheduledExportUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the scheduled export schedule.")

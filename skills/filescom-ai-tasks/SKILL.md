@@ -44,6 +44,7 @@ Create Ai Task.
 | `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. **Required.** |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |
@@ -77,6 +78,7 @@ Update Ai Task.
 | `--permission-set` | enum | Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. One of: `full`, `files_only`. |
 | `--prompt` | string | Prompt sent when this AI Task is invoked. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |

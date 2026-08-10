@@ -44,7 +44,7 @@ An Expectation has only one open window at a time.
 
 Expectations can open windows in three ways:
 
-* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and `recurring_day`.
+* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and either `recurring_day` or `recurring_days`.
 * `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.
 * `manual`: an operator explicitly opens the window.
 
@@ -118,6 +118,7 @@ Create Expectation.
 | `--trigger` | enum | How this expectation opens windows. One of: `manual`, `upload`, `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the expectation. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
@@ -154,6 +155,7 @@ Update Expectation.
 | `--trigger` | enum | How this expectation opens windows. One of: `manual`, `upload`, `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the expectation. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |

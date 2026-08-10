@@ -47,7 +47,7 @@ By default, Copy and Move automations that use globs will implicitly replicate m
 Automations can be triggered in the following ways:
 
 * `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.
-* `daily` : The automation will run once in a picked `interval`. You can specify `recurring_day` to select day number inside a picked `interval` it should be run on.
+* `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.
 * `webhook` : the automation will run when a request is sent to the corresponding webhook URL.
 * `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.
 
@@ -288,6 +288,7 @@ Create Automation.
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
+| `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`, `v2`. **Required.** |
 | `--workspace-id` | int64 | Workspace ID |
 
@@ -348,6 +349,7 @@ Update Automation.
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
+| `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--automation` | enum | Automation type. One of: `create_folder`, `delete_file`, `copy_file`, `move_file`, `as2_send`, `run_sync`, `import_file`, `v2`. |
 
 ### `files-cli automations delete`

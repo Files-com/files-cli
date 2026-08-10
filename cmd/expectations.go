@@ -183,6 +183,7 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&ExpectationCreateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationCreate.Trigger.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdCreate.Flags().Int64SliceVar(&paramsExpectationCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsExpectationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdCreate.Flags().StringSliceVar(&paramsExpectationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")
@@ -289,6 +290,9 @@ func Expectations() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsExpectationUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("recurring-days") {
+				lib.FlagUpdateLen(cmd, "recurring_days", paramsExpectationUpdate.RecurringDays, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-id") {
 				lib.FlagUpdate(cmd, "schedule_id", paramsExpectationUpdate.ScheduleId, mapParams)
 			}
@@ -346,6 +350,7 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&ExpectationUpdateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationUpdate.Trigger.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsExpectationUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsExpectationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
 	cmdUpdate.Flags().StringSliceVar(&paramsExpectationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")

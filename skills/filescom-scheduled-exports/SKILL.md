@@ -44,6 +44,7 @@ Create Scheduled Export.
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the scheduled export. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the scheduled export schedule. |
@@ -65,6 +66,7 @@ Update Scheduled Export.
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
 | `--interval` | string | If trigger is `daily`, this specifies how often to run the scheduled export. |
 | `--recurring-day` | int64 | If trigger is `daily`, this selects the day number inside the chosen interval. |
+| `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the scheduled export schedule. |

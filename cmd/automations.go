@@ -312,6 +312,7 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().StringVar(&AutomationCreateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 
@@ -543,6 +544,9 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("recurring-day") {
 				lib.FlagUpdate(cmd, "recurring_day", paramsAutomationUpdate.RecurringDay, mapParams)
 			}
+			if cmd.Flags().Changed("recurring-days") {
+				lib.FlagUpdateLen(cmd, "recurring_days", paramsAutomationUpdate.RecurringDays, mapParams)
+			}
 			if cmd.Flags().Changed("automation") {
 				lib.FlagUpdate(cmd, "automation", paramsAutomationUpdate.Automation, mapParams)
 			}
@@ -592,6 +596,7 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

@@ -49,6 +49,7 @@ Create Sync.
 | `--keep-after-copy` | bool | Keep files after copying? |
 | `--name` | string | Name for this sync job |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
+| `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc. |
 | `--schedule-time-zone` | string | Time zone for the schedule. If not set, times are interpreted as UTC. |
@@ -96,6 +97,7 @@ Update Sync.
 | `--keep-after-copy` | bool | Keep files after copying? |
 | `--name` | string | Name for this sync job |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
+| `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc. |
 | `--schedule-time-zone` | string | Time zone for the schedule. If not set, times are interpreted as UTC. |
