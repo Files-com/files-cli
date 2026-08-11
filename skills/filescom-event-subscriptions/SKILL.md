@@ -39,6 +39,8 @@ Create Event Subscription.
 | `--workspace-id` | int64 | Workspace ID. 0 means the default workspace or site-wide. |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace subscription applies to events from all workspaces. |
 | `--name` | string | Event Subscription name. **Required.** |
+| `--subject` | string | Custom subject line to use for notification emails. |
+| `--message` | string | Custom message to include in notification emails. |
 | `--enabled` | bool | Whether this Event Subscription can dispatch events. |
 | `--event-types` | []string | Event type strings matched by this subscription. Blank means all event types. |
 | `--filter` | object | Structured event payload filter. |
@@ -56,6 +58,8 @@ Update Event Subscription.
 | `--workspace-id` | int64 | Workspace ID. 0 means the default workspace or site-wide. |
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace subscription applies to events from all workspaces. |
 | `--name` | string | Event Subscription name. |
+| `--subject` | string | Custom subject line to use for notification emails. |
+| `--message` | string | Custom message to include in notification emails. |
 | `--enabled` | bool | Whether this Event Subscription can dispatch events. |
 | `--event-types` | []string | Event type strings matched by this subscription. Blank means all event types. |
 | `--filter` | object | Structured event payload filter. |

@@ -169,6 +169,8 @@ func EventSubscriptions() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsEventSubscriptionCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace subscription applies to events from all workspaces.")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Name, "name", "", "Event Subscription name.")
+	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Subject, "subject", "", "Custom subject line to use for notification emails.")
+	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Subscription can dispatch events.")
 	cmdCreate.Flags().StringSliceVar(&paramsEventSubscriptionCreate.EventTypes, "event-types", []string{}, "Event type strings matched by this subscription. Blank means all event types.")
 	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Subscription delivery policy. Provide as a JSON object.")
@@ -219,6 +221,12 @@ func EventSubscriptions() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsEventSubscriptionUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("subject") {
+				lib.FlagUpdate(cmd, "subject", paramsEventSubscriptionUpdate.Subject, mapParams)
+			}
+			if cmd.Flags().Changed("message") {
+				lib.FlagUpdate(cmd, "message", paramsEventSubscriptionUpdate.Message, mapParams)
+			}
 			if cmd.Flags().Changed("enabled") {
 				mapParams["enabled"] = updateEnabled
 			}
@@ -249,6 +257,8 @@ func EventSubscriptions() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsEventSubscriptionUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace subscription applies to events from all workspaces.")
 	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Name, "name", "", "Event Subscription name.")
+	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Subject, "subject", "", "Custom subject line to use for notification emails.")
+	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "Whether this Event Subscription can dispatch events.")
 	cmdUpdate.Flags().StringSliceVar(&paramsEventSubscriptionUpdate.EventTypes, "event-types", []string{}, "Event type strings matched by this subscription. Blank means all event types.")
 	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Subscription delivery policy. Provide as a JSON object.")

@@ -4082,6 +4082,18 @@
           "description": "Event Subscription name."
         },
         {
+          "name": "--subject",
+          "type": "string",
+          "required": false,
+          "description": "Custom subject line to use for notification emails."
+        },
+        {
+          "name": "--message",
+          "type": "string",
+          "required": false,
+          "description": "Custom message to include in notification emails."
+        },
+        {
           "name": "--enabled",
           "type": "bool",
           "required": false,
@@ -4148,6 +4160,18 @@
           "type": "string",
           "required": false,
           "description": "Event Subscription name."
+        },
+        {
+          "name": "--subject",
+          "type": "string",
+          "required": false,
+          "description": "Custom subject line to use for notification emails."
+        },
+        {
+          "name": "--message",
+          "type": "string",
+          "required": false,
+          "description": "Custom message to include in notification emails."
         },
         {
           "name": "--enabled",
