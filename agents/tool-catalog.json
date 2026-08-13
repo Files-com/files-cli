@@ -13747,6 +13747,12 @@
           "description": "Do Bundles require recipients for sharing?"
         },
         {
+          "name": "--bundle-send-one-time-password-to-recipient-at-registration",
+          "type": "bool",
+          "required": false,
+          "description": "If true, new Share Links must send a one-time password to the recipient when they register. Requires bundle_require_share_recipient and cannot be enabled with bundle_password_required."
+        },
+        {
           "name": "--bundle-registration-notifications",
           "type": "string",
           "required": false,

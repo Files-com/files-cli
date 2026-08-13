@@ -123,6 +123,7 @@ func Sites() *cobra.Command {
 	updateBundlePasswordRequired := true
 	updateBundleRequireRegistration := true
 	updateBundleRequireShareRecipient := true
+	updateBundleSendOneTimePasswordToRecipientAtRegistration := true
 	updateDocumentEditsInBundleAllowed := true
 	updatePasswordRequirementsApplyToBundles := true
 	updatePreventRootPermissionsForNonSiteAdmins := true
@@ -458,6 +459,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("bundle-require-share-recipient") {
 				mapParams["bundle_require_share_recipient"] = updateBundleRequireShareRecipient
+			}
+			if cmd.Flags().Changed("bundle-send-one-time-password-to-recipient-at-registration") {
+				mapParams["bundle_send_one_time_password_to_recipient_at_registration"] = updateBundleSendOneTimePasswordToRecipientAtRegistration
 			}
 			if cmd.Flags().Changed("bundle-registration-notifications") {
 				lib.FlagUpdate(cmd, "bundle_registration_notifications", paramsSiteUpdate.BundleRegistrationNotifications, mapParams)
@@ -858,6 +862,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateBundlePasswordRequired, "bundle-password-required", updateBundlePasswordRequired, "Do Bundles require password protection?")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireRegistration, "bundle-require-registration", updateBundleRequireRegistration, "Do Bundles require registration?")
 	cmdUpdate.Flags().BoolVar(&updateBundleRequireShareRecipient, "bundle-require-share-recipient", updateBundleRequireShareRecipient, "Do Bundles require recipients for sharing?")
+	cmdUpdate.Flags().BoolVar(&updateBundleSendOneTimePasswordToRecipientAtRegistration, "bundle-send-one-time-password-to-recipient-at-registration", updateBundleSendOneTimePasswordToRecipientAtRegistration, "If true, new Share Links must send a one-time password to the recipient when they register. Requires bundle_require_share_recipient and cannot be enabled with bundle_password_required.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleRegistrationNotifications, "bundle-registration-notifications", "", "Do Bundle owners receive registration notification?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleActivityNotifications, "bundle-activity-notifications", "", "Do Bundle owners receive activity notifications?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.BundleUploadReceiptNotifications, "bundle-upload-receipt-notifications", "", "Do Bundle uploaders receive upload confirmation notifications?")

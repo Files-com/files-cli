@@ -116,6 +116,7 @@ Update Site Settings.
 | `--bundle-password-required` | bool | Do Bundles require password protection? |
 | `--bundle-require-registration` | bool | Do Bundles require registration? |
 | `--bundle-require-share-recipient` | bool | Do Bundles require recipients for sharing? |
+| `--bundle-send-one-time-password-to-recipient-at-registration` | bool | If true, new Share Links must send a one-time password to the recipient when they register. Requires bundle_require_share_recipient and cannot be enabled with bundle_password_required. |
 | `--bundle-registration-notifications` | string | Do Bundle owners receive registration notification? |
 | `--bundle-activity-notifications` | string | Do Bundle owners receive activity notifications? |
 | `--bundle-upload-receipt-notifications` | string | Do Bundle uploaders receive upload confirmation notifications? |
