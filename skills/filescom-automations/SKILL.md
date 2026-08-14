@@ -273,6 +273,7 @@ Create Automation.
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |
 | `--always-serialize-jobs` | bool | Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance. |
 | `--description` | string | Description for the this Automation. |
+| `--definition` | object | Automation v2 graph definition. |
 | `--disabled` | bool | If true, this automation will not run. |
 | `--exclude-pattern` | string | If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts. |
 | `--import-urls` | []object | List of URLs to be imported and names to be used. |
@@ -334,6 +335,7 @@ Update Automation.
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |
 | `--always-serialize-jobs` | bool | Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance. |
 | `--description` | string | Description for the this Automation. |
+| `--definition` | object | Automation v2 graph definition. |
 | `--disabled` | bool | If true, this automation will not run. |
 | `--exclude-pattern` | string | If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts. |
 | `--import-urls` | []object | List of URLs to be imported and names to be used. |

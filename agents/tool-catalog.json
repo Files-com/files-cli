@@ -1622,6 +1622,12 @@
           "description": "Description for the this Automation."
         },
         {
+          "name": "--definition",
+          "type": "object",
+          "required": false,
+          "description": "Automation v2 graph definition."
+        },
+        {
           "name": "--disabled",
           "type": "bool",
           "required": false,
@@ -1884,6 +1890,12 @@
           "type": "string",
           "required": false,
           "description": "Description for the this Automation."
+        },
+        {
+          "name": "--definition",
+          "type": "object",
+          "required": false,
+          "description": "Automation v2 graph definition."
         },
         {
           "name": "--disabled",
@@ -6892,6 +6904,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--definition",
+          "type": "object",
+          "required": true,
+          "description": "Holiday rules for the calendar."
+        },
+        {
           "name": "--name",
           "type": "string",
           "required": true,
@@ -6910,6 +6928,12 @@
           "type": "int64",
           "required": true,
           "description": "Holiday Calendar ID."
+        },
+        {
+          "name": "--definition",
+          "type": "object",
+          "required": false,
+          "description": "Holiday rules for the calendar."
         },
         {
           "name": "--name",

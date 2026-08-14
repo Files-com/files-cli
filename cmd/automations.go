@@ -208,6 +208,7 @@ func Automations() *cobra.Command {
 	AutomationCreateTrigger := ""
 	AutomationCreateAutomation := ""
 
+	createDefinitionJSON := ""
 	createImportUrlsJSON := ""
 	createValueJSON := ""
 
@@ -237,6 +238,13 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("always-serialize-jobs") {
 				paramsAutomationCreate.AlwaysSerializeJobs = flib.Bool(createAlwaysSerializeJobs)
+			}
+			if cmd.Flags().Changed("definition") {
+				parsedCreateDefinition, parseCreateDefinitionErr := lib.ParseJSONObjectFlag("definition", createDefinitionJSON)
+				if parseCreateDefinitionErr != nil {
+					return parseCreateDefinitionErr
+				}
+				paramsAutomationCreate.Definition = parsedCreateDefinition
 			}
 			if cmd.Flags().Changed("disabled") {
 				paramsAutomationCreate.Disabled = flib.Bool(createDisabled)
@@ -295,6 +303,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", createAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdCreate.Flags().BoolVar(&createAlwaysSerializeJobs, "always-serialize-jobs", createAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.Description, "description", "", "Description for the this Automation.")
+	cmdCreate.Flags().StringVar(&createDefinitionJSON, "definition", "", "Automation v2 graph definition. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "definition", "json")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this automation will not run.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
 	cmdCreate.Flags().StringVar(&createImportUrlsJSON, "import-urls", "", "List of URLs to be imported and names to be used. Provide as a JSON array of objects.")
@@ -405,6 +415,7 @@ func Automations() *cobra.Command {
 	AutomationUpdateTrigger := ""
 	AutomationUpdateAutomation := ""
 
+	updateDefinitionJSON := ""
 	updateImportUrlsJSON := ""
 	updateValueJSON := ""
 
@@ -490,6 +501,13 @@ func Automations() *cobra.Command {
 			}
 			if cmd.Flags().Changed("description") {
 				lib.FlagUpdate(cmd, "description", paramsAutomationUpdate.Description, mapParams)
+			}
+			if cmd.Flags().Changed("definition") {
+				parsedUpdateDefinition, parseUpdateDefinitionErr := lib.ParseJSONObjectFlag("definition", updateDefinitionJSON)
+				if parseUpdateDefinitionErr != nil {
+					return parseUpdateDefinitionErr
+				}
+				mapParams["definition"] = parsedUpdateDefinition
 			}
 			if cmd.Flags().Changed("disabled") {
 				mapParams["disabled"] = updateDisabled
@@ -579,6 +597,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAlwaysOverwriteSizeMatchingFiles, "always-overwrite-size-matching-files", updateAlwaysOverwriteSizeMatchingFiles, "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysSerializeJobs, "always-serialize-jobs", updateAlwaysSerializeJobs, "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Description, "description", "", "Description for the this Automation.")
+	cmdUpdate.Flags().StringVar(&updateDefinitionJSON, "definition", "", "Automation v2 graph definition. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "definition", "json")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this automation will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.ExcludePattern, "exclude-pattern", "", "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.")
 	cmdUpdate.Flags().StringVar(&updateImportUrlsJSON, "import-urls", "", "List of URLs to be imported and names to be used. Provide as a JSON array of objects.")

@@ -34,6 +34,7 @@ Create Holiday Calendar.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--definition` | object | Holiday rules for the calendar. **Required.** |
 | `--name` | string | Holiday Calendar name. **Required.** |
 
 ### `files-cli holiday-calendars update`
@@ -43,6 +44,7 @@ Update Holiday Calendar.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Holiday Calendar ID. **Required.** |
+| `--definition` | object | Holiday rules for the calendar. |
 | `--name` | string | Holiday Calendar name. |
 
 ### `files-cli holiday-calendars delete`

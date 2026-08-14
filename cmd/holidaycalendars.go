@@ -120,6 +120,8 @@ func HolidayCalendars() *cobra.Command {
 	usePagerCreate := true
 	paramsHolidayCalendarCreate := files_sdk.HolidayCalendarCreateParams{}
 
+	createDefinitionJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Holiday Calendar`,
@@ -130,12 +132,22 @@ func HolidayCalendars() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := holiday_calendar.Client{Config: config}
 
+			if cmd.Flags().Changed("definition") {
+				parsedCreateDefinition, parseCreateDefinitionErr := lib.ParseJSONObjectFlag("definition", createDefinitionJSON)
+				if parseCreateDefinitionErr != nil {
+					return parseCreateDefinitionErr
+				}
+				paramsHolidayCalendarCreate.Definition = parsedCreateDefinition
+			}
+
 			var holidayCalendar interface{}
 			var err error
 			holidayCalendar, err = client.Create(paramsHolidayCalendarCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), holidayCalendar, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&createDefinitionJSON, "definition", "", "Holiday rules for the calendar. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "definition", "json")
 	cmdCreate.Flags().StringVar(&paramsHolidayCalendarCreate.Name, "name", "", "Holiday Calendar name.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -147,6 +159,8 @@ func HolidayCalendars() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	paramsHolidayCalendarUpdate := files_sdk.HolidayCalendarUpdateParams{}
+
+	updateDefinitionJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -166,6 +180,13 @@ func HolidayCalendars() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsHolidayCalendarUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("definition") {
+				parsedUpdateDefinition, parseUpdateDefinitionErr := lib.ParseJSONObjectFlag("definition", updateDefinitionJSON)
+				if parseUpdateDefinitionErr != nil {
+					return parseUpdateDefinitionErr
+				}
+				mapParams["definition"] = parsedUpdateDefinition
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsHolidayCalendarUpdate.Name, mapParams)
 			}
@@ -177,6 +198,8 @@ func HolidayCalendars() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsHolidayCalendarUpdate.Id, "id", 0, "Holiday Calendar ID.")
+	cmdUpdate.Flags().StringVar(&updateDefinitionJSON, "definition", "", "Holiday rules for the calendar. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "definition", "json")
 	cmdUpdate.Flags().StringVar(&paramsHolidayCalendarUpdate.Name, "name", "", "Holiday Calendar name.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
