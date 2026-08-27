@@ -541,6 +541,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("active-sftp-host-key-id") {
 				lib.FlagUpdate(cmd, "active_sftp_host_key_id", paramsSiteUpdate.ActiveSftpHostKeyId, mapParams)
 			}
+			if cmd.Flags().Changed("active-sftp-host-key-ids") {
+				lib.FlagUpdateLen(cmd, "active_sftp_host_key_ids", paramsSiteUpdate.ActiveSftpHostKeyIds, mapParams)
+			}
 			if cmd.Flags().Changed("protocol-access-groups-only") {
 				mapParams["protocol_access_groups_only"] = updateProtocolAccessGroupsOnly
 			}
@@ -889,6 +892,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateShowUserNotificationsLogInLink, "show-user-notifications-log-in-link", updateShowUserNotificationsLogInLink, "Show log in link in user notifications?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SftpHostKeyType, "sftp-host-key-type", "", "Sftp Host Key Type")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.ActiveSftpHostKeyId, "active-sftp-host-key-id", 0, "Id of the currently selected custom SFTP Host Key")
+	cmdUpdate.Flags().Int64SliceVar(&paramsSiteUpdate.ActiveSftpHostKeyIds, "active-sftp-host-key-ids", []int64{}, "Ids of the selected custom SFTP Host Keys")
 	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
 	cmdUpdate.Flags().BoolVar(&updateRevokeBundleAccessOnDisableOrDelete, "revoke-bundle-access-on-disable-or-delete", updateRevokeBundleAccessOnDisableOrDelete, "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.")
 	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")

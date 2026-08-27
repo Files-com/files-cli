@@ -4,6 +4,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	sftp_host_key "github.com/Files-com/files-sdk-go/v3/sftphostkey"
 	"github.com/spf13/cobra"
 )
@@ -107,6 +108,7 @@ func SftpHostKeys() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createActive := true
 	paramsSftpHostKeyCreate := files_sdk.SftpHostKeyCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -119,12 +121,17 @@ func SftpHostKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := sftp_host_key.Client{Config: config}
 
+			if cmd.Flags().Changed("active") {
+				paramsSftpHostKeyCreate.Active = flib.Bool(createActive)
+			}
+
 			var sftpHostKey interface{}
 			var err error
 			sftpHostKey, err = client.Create(paramsSftpHostKeyCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), sftpHostKey, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().BoolVar(&createActive, "active", createActive, "If true, use this SFTP Host Key.")
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.PrivateKey, "private-key", "", "The private key data.")
 
@@ -136,6 +143,7 @@ func SftpHostKeys() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateActive := true
 	paramsSftpHostKeyUpdate := files_sdk.SftpHostKeyUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -156,6 +164,9 @@ func SftpHostKeys() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsSftpHostKeyUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("active") {
+				mapParams["active"] = updateActive
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsSftpHostKeyUpdate.Name, mapParams)
 			}
@@ -170,6 +181,7 @@ func SftpHostKeys() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
+	cmdUpdate.Flags().BoolVar(&updateActive, "active", updateActive, "If true, use this SFTP Host Key.")
 	cmdUpdate.Flags().StringVar(&paramsSftpHostKeyUpdate.Name, "name", "", "The friendly name of this SFTP Host Key.")
 	cmdUpdate.Flags().StringVar(&paramsSftpHostKeyUpdate.PrivateKey, "private-key", "", "The private key data.")
 

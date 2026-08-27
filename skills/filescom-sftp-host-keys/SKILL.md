@@ -34,6 +34,7 @@ Create SFTP Host Key.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--active` | bool | If true, use this SFTP Host Key. |
 | `--name` | string | The friendly name of this SFTP Host Key. |
 | `--private-key` | string | The private key data. |
 
@@ -44,6 +45,7 @@ Update SFTP Host Key.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Sftp Host Key ID. **Required.** |
+| `--active` | bool | If true, use this SFTP Host Key. |
 | `--name` | string | The friendly name of this SFTP Host Key. |
 | `--private-key` | string | The private key data. |
 

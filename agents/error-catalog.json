@@ -807,6 +807,12 @@
       "category": "processing-failure"
     },
     {
+      "type": "processing-failure/agent-push-update-blocked",
+      "title": "Agent Push Update Blocked",
+      "http_code": 409,
+      "category": "processing-failure"
+    },
+    {
       "type": "processing-failure/agent-unavailable",
       "title": "Agent Unavailable",
       "http_code": 422,

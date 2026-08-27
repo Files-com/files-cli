@@ -143,6 +143,7 @@ Update Site Settings.
 | `--show-user-notifications-log-in-link` | bool | Show log in link in user notifications? |
 | `--sftp-host-key-type` | string | Sftp Host Key Type |
 | `--active-sftp-host-key-id` | int64 | Id of the currently selected custom SFTP Host Key |
+| `--active-sftp-host-key-ids` | []int64 | Ids of the selected custom SFTP Host Keys |
 | `--protocol-access-groups-only` | bool | If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site. |
 | `--revoke-bundle-access-on-disable-or-delete` | bool | Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period. |
 | `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |

@@ -12316,6 +12316,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--active",
+          "type": "bool",
+          "required": false,
+          "description": "If true, use this SFTP Host Key."
+        },
+        {
           "name": "--name",
           "type": "string",
           "required": false,
@@ -12340,6 +12346,12 @@
           "type": "int64",
           "required": true,
           "description": "Sftp Host Key ID."
+        },
+        {
+          "name": "--active",
+          "type": "bool",
+          "required": false,
+          "description": "If true, use this SFTP Host Key."
         },
         {
           "name": "--name",
@@ -13931,6 +13943,12 @@
           "type": "int64",
           "required": false,
           "description": "Id of the currently selected custom SFTP Host Key"
+        },
+        {
+          "name": "--active-sftp-host-key-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Ids of the selected custom SFTP Host Keys"
         },
         {
           "name": "--protocol-access-groups-only",
