@@ -35,6 +35,7 @@ Create Partner Channel Template.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
@@ -52,6 +53,7 @@ Update Partner Channel Template.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Partner Channel Template ID. **Required.** |
+| `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |

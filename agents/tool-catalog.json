@@ -8374,6 +8374,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--direction",
+          "type": "enum",
+          "required": false,
+          "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
+        },
+        {
           "name": "--from-partner-folder-name",
           "type": "string",
           "required": false,
@@ -8440,6 +8446,12 @@
           "type": "int64",
           "required": true,
           "description": "Partner Channel Template ID."
+        },
+        {
+          "name": "--direction",
+          "type": "enum",
+          "required": false,
+          "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
         },
         {
           "name": "--from-partner-folder-name",
@@ -8546,6 +8558,12 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--direction",
+          "type": "enum",
+          "required": false,
+          "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
+        },
+        {
           "name": "--from-partner-folder-name",
           "type": "string",
           "required": false,
@@ -8612,6 +8630,12 @@
           "type": "int64",
           "required": true,
           "description": "Partner Channel ID."
+        },
+        {
+          "name": "--direction",
+          "type": "enum",
+          "required": false,
+          "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
         },
         {
           "name": "--from-partner-folder-name",

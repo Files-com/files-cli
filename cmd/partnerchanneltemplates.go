@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -129,6 +132,7 @@ func PartnerChannelTemplates() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	paramsPartnerChannelTemplateCreate := files_sdk.PartnerChannelTemplateCreateParams{}
+	PartnerChannelTemplateCreateDirection := ""
 
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
@@ -140,6 +144,12 @@ func PartnerChannelTemplates() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := partner_channel_template.Client{Config: config}
 
+			var PartnerChannelTemplateCreateDirectionErr error
+			paramsPartnerChannelTemplateCreate.Direction, PartnerChannelTemplateCreateDirectionErr = lib.FetchKey("direction", paramsPartnerChannelTemplateCreate.Direction.Enum(), PartnerChannelTemplateCreateDirection)
+			if PartnerChannelTemplateCreateDirection != "" && PartnerChannelTemplateCreateDirectionErr != nil {
+				return PartnerChannelTemplateCreateDirectionErr
+			}
+
 			if len(args) > 0 && args[0] != "" {
 				paramsPartnerChannelTemplateCreate.Path = args[0]
 			}
@@ -149,6 +159,7 @@ func PartnerChannelTemplates() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), partnerChannelTemplate, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().StringVar(&PartnerChannelTemplateCreateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelTemplateCreate.Direction.Enum()).MapKeys()))
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelTemplateCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")
@@ -168,6 +179,7 @@ func PartnerChannelTemplates() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	paramsPartnerChannelTemplateUpdate := files_sdk.PartnerChannelTemplateUpdateParams{}
+	PartnerChannelTemplateUpdateDirection := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
@@ -184,8 +196,17 @@ func PartnerChannelTemplates() *cobra.Command {
 				return convertErr
 			}
 
+			var PartnerChannelTemplateUpdateDirectionErr error
+			paramsPartnerChannelTemplateUpdate.Direction, PartnerChannelTemplateUpdateDirectionErr = lib.FetchKey("direction", paramsPartnerChannelTemplateUpdate.Direction.Enum(), PartnerChannelTemplateUpdateDirection)
+			if PartnerChannelTemplateUpdateDirection != "" && PartnerChannelTemplateUpdateDirectionErr != nil {
+				return PartnerChannelTemplateUpdateDirectionErr
+			}
+
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsPartnerChannelTemplateUpdate.Id, mapParams)
+			}
+			if cmd.Flags().Changed("direction") {
+				lib.FlagUpdate(cmd, "direction", paramsPartnerChannelTemplateUpdate.Direction, mapParams)
 			}
 			if cmd.Flags().Changed("from-partner-folder-name") {
 				lib.FlagUpdate(cmd, "from_partner_folder_name", paramsPartnerChannelTemplateUpdate.FromPartnerFolderName, mapParams)
@@ -222,6 +243,7 @@ func PartnerChannelTemplates() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerChannelTemplateUpdate.Id, "id", 0, "Partner Channel Template ID.")
+	cmdUpdate.Flags().StringVar(&PartnerChannelTemplateUpdateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelTemplateUpdate.Direction.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelTemplateUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")

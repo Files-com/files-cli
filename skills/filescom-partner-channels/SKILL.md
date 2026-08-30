@@ -35,6 +35,7 @@ Create Partner Channel.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path` | string | Optional route path for files uploaded by the Partner. |
@@ -52,6 +53,7 @@ Update Partner Channel.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Partner Channel ID. **Required.** |
+| `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path` | string | Optional route path for files uploaded by the Partner. |
