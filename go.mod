@@ -28,7 +28,7 @@ require (
 	github.com/theckman/yacspin v0.13.12
 	github.com/vbauerster/mpb/v8 v8.9.3
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
-	golang.org/x/crypto v0.55.0
+	golang.org/x/crypto v0.56.0
 )
 
 require (
