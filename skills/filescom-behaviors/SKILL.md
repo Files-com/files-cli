@@ -14,7 +14,7 @@ Each behavior type also has a recursion mode in the behavior type documentation.
 
 Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins.  All the details are below.
 
-Each behavior uses a different format for storing its settings value.  Next to each behavior type is an example value.  Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the `value` field.  Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.
+Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the `value` field.
 
 Note: Append Timestamp behavior removed. Check [Override Upload Filename](#override-upload-filename-behaviors) behavior which have even more functionality to modify name on upload.
 
@@ -56,7 +56,7 @@ Create Behavior.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--value` | object | This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior. |
+| `--value` | object | This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior. |
 | `--attachment-file` | file | Certain behaviors may require a file, for instance, the `watermark` behavior requires a watermark image. Attach that file here. |
 | `--disable-parent-folder-behavior` | bool | If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree. |
 | `--recursive` | bool | Whether the behavior should apply to child folders. This is only configurable for behavior types whose recursion mode is `sometimes`; `always` behaviors stay recursive and `never` behaviors stay non-recursive. |
@@ -84,7 +84,7 @@ Update Behavior.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Behavior ID. **Required.** |
-| `--value` | object | This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior. |
+| `--value` | object | This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior. |
 | `--attachment-file` | file | Certain behaviors may require a file, for instance, the `watermark` behavior requires a watermark image. Attach that file here. |
 | `--disable-parent-folder-behavior` | bool | If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree. |
 | `--recursive` | bool | Whether the behavior should apply to child folders. This is only configurable for behavior types whose recursion mode is `sometimes`; `always` behaviors stay recursive and `never` behaviors stay non-recursive. |

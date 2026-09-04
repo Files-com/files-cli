@@ -2135,7 +2135,7 @@
           "name": "--value",
           "type": "object",
           "required": false,
-          "description": "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior."
+          "description": "This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior."
         },
         {
           "name": "--attachment-file",
@@ -2235,7 +2235,7 @@
           "name": "--value",
           "type": "object",
           "required": false,
-          "description": "This field stores a hash of data specific to the type of behavior. See The Behavior Types section for example values for each type of behavior."
+          "description": "This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior."
         },
         {
           "name": "--attachment-file",
