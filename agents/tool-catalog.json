@@ -16723,7 +16723,7 @@
           "name": "--convert-to-partner-user",
           "type": "bool",
           "required": false,
-          "description": "If true, convert this user to a partner user by assigning the partner_id provided."
+          "description": "Required when assigning a Partner to an existing non-Partner user. If true, convert the user by assigning the partner_id provided."
         }
       ]
     },

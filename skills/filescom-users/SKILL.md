@@ -228,7 +228,7 @@ Update User.
 | `--username` | string | User's username |
 | `--workspace-id` | int64 | Workspace ID |
 | `--clear-2fa` | bool | If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases. |
-| `--convert-to-partner-user` | bool | If true, convert this user to a partner user by assigning the partner_id provided. |
+| `--convert-to-partner-user` | bool | Required when assigning a Partner to an existing non-Partner user. If true, convert the user by assigning the partner_id provided. |
 
 ### `files-cli users delete`
 
