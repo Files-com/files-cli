@@ -4106,6 +4106,12 @@
           "description": "Custom message to include in notification emails."
         },
         {
+          "name": "--message-only",
+          "type": "bool",
+          "required": false,
+          "description": "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets."
+        },
+        {
           "name": "--enabled",
           "type": "bool",
           "required": false,
@@ -4184,6 +4190,12 @@
           "type": "string",
           "required": false,
           "description": "Custom message to include in notification emails."
+        },
+        {
+          "name": "--message-only",
+          "type": "bool",
+          "required": false,
+          "description": "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets."
         },
         {
           "name": "--enabled",

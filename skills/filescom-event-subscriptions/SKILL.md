@@ -41,6 +41,7 @@ Create Event Subscription.
 | `--name` | string | Event Subscription name. **Required.** |
 | `--subject` | string | Custom subject line to use for notification emails. |
 | `--message` | string | Custom message to include in notification emails. |
+| `--message-only` | bool | If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets. |
 | `--enabled` | bool | Whether this Event Subscription can dispatch events. |
 | `--event-types` | []string | Event type strings matched by this subscription. Blank means all event types. |
 | `--filter` | object | Structured event payload filter. |
@@ -60,6 +61,7 @@ Update Event Subscription.
 | `--name` | string | Event Subscription name. |
 | `--subject` | string | Custom subject line to use for notification emails. |
 | `--message` | string | Custom message to include in notification emails. |
+| `--message-only` | bool | If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets. |
 | `--enabled` | bool | Whether this Event Subscription can dispatch events. |
 | `--event-types` | []string | Event type strings matched by this subscription. Blank means all event types. |
 | `--filter` | object | Structured event payload filter. |

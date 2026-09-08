@@ -130,6 +130,7 @@ func EventSubscriptions() *cobra.Command {
 	var formatCreate []string
 	usePagerCreate := true
 	createApplyToAllWorkspaces := true
+	createMessageOnly := true
 	createEnabled := true
 	paramsEventSubscriptionCreate := files_sdk.EventSubscriptionCreateParams{}
 
@@ -147,6 +148,9 @@ func EventSubscriptions() *cobra.Command {
 
 			if cmd.Flags().Changed("apply-to-all-workspaces") {
 				paramsEventSubscriptionCreate.ApplyToAllWorkspaces = flib.Bool(createApplyToAllWorkspaces)
+			}
+			if cmd.Flags().Changed("message-only") {
+				paramsEventSubscriptionCreate.MessageOnly = flib.Bool(createMessageOnly)
 			}
 			if cmd.Flags().Changed("enabled") {
 				paramsEventSubscriptionCreate.Enabled = flib.Bool(createEnabled)
@@ -171,6 +175,7 @@ func EventSubscriptions() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Name, "name", "", "Event Subscription name.")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Subject, "subject", "", "Custom subject line to use for notification emails.")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Message, "message", "", "Custom message to include in notification emails.")
+	cmdCreate.Flags().BoolVar(&createMessageOnly, "message-only", createMessageOnly, "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Subscription can dispatch events.")
 	cmdCreate.Flags().StringSliceVar(&paramsEventSubscriptionCreate.EventTypes, "event-types", []string{}, "Event type strings matched by this subscription. Blank means all event types.")
 	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Subscription delivery policy. Provide as a JSON object.")
@@ -186,6 +191,7 @@ func EventSubscriptions() *cobra.Command {
 	var formatUpdate []string
 	usePagerUpdate := true
 	updateApplyToAllWorkspaces := true
+	updateMessageOnly := true
 	updateEnabled := true
 	paramsEventSubscriptionUpdate := files_sdk.EventSubscriptionUpdateParams{}
 
@@ -227,6 +233,9 @@ func EventSubscriptions() *cobra.Command {
 			if cmd.Flags().Changed("message") {
 				lib.FlagUpdate(cmd, "message", paramsEventSubscriptionUpdate.Message, mapParams)
 			}
+			if cmd.Flags().Changed("message-only") {
+				mapParams["message_only"] = updateMessageOnly
+			}
 			if cmd.Flags().Changed("enabled") {
 				mapParams["enabled"] = updateEnabled
 			}
@@ -259,6 +268,7 @@ func EventSubscriptions() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Name, "name", "", "Event Subscription name.")
 	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Subject, "subject", "", "Custom subject line to use for notification emails.")
 	cmdUpdate.Flags().StringVar(&paramsEventSubscriptionUpdate.Message, "message", "", "Custom message to include in notification emails.")
+	cmdUpdate.Flags().BoolVar(&updateMessageOnly, "message-only", updateMessageOnly, "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.")
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "Whether this Event Subscription can dispatch events.")
 	cmdUpdate.Flags().StringSliceVar(&paramsEventSubscriptionUpdate.EventTypes, "event-types", []string{}, "Event type strings matched by this subscription. Blank means all event types.")
 	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Subscription delivery policy. Provide as a JSON object.")
