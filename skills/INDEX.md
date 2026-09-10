@@ -63,11 +63,6 @@ One skill per top-level CLI command.
 | [`filescom-files`](filescom-files/SKILL.md) | Files |
 | [`filescom-folders`](filescom-folders/SKILL.md) | Folders |
 | [`filescom-locks`](filescom-locks/SKILL.md) | Locks |
-| [`filescom-message-comment-reactions`](filescom-message-comment-reactions/SKILL.md) | Message Comment Reactions |
-| [`filescom-message-comments`](filescom-message-comments/SKILL.md) | Message Comments |
-| [`filescom-message-reactions`](filescom-message-reactions/SKILL.md) | Message Reactions |
-| [`filescom-messages`](filescom-messages/SKILL.md) | Messages |
-| [`filescom-projects`](filescom-projects/SKILL.md) | Projects |
 | [`filescom-requests`](filescom-requests/SKILL.md) | Requests |
 | [`filescom-restores`](filescom-restores/SKILL.md) | Restores |
 | [`filescom-snapshots`](filescom-snapshots/SKILL.md) | Snapshots |
