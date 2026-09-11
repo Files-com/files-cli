@@ -1,5 +1,5 @@
-github.com/Files-com/files-sdk-go/v3 v3.3.242 h1:B8dMNXbpzXMzBq2n0UMAgt9pplK2Ejb2WE/5trwU8I0=
-github.com/Files-com/files-sdk-go/v3 v3.3.242/go.mod h1:Gi/SqF5cq1DVIOB22X/93f6LIH5w61hdiY5GmedyYbw=
+github.com/Files-com/files-sdk-go/v3 v3.3.243 h1:MK7n7+CgR6mLLKfnp+/jiuM7Uw97xM50xcwZOh4cLK4=
+github.com/Files-com/files-sdk-go/v3 v3.3.243/go.mod h1:Gi/SqF5cq1DVIOB22X/93f6LIH5w61hdiY5GmedyYbw=
 github.com/IGLOU-EU/go-wildcard v1.0.3 h1:r8T46+8/9V1STciXJomTWRpPEv4nGJATDbJkdU0Nou0=
 github.com/IGLOU-EU/go-wildcard v1.0.3/go.mod h1:/qeV4QLmydCbwH0UMQJmXDryrFKJknWi/jjO8IiuQfY=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
