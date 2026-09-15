@@ -1,9 +1,9 @@
 module github.com/Files-com/files-cli
 
-go 1.26.0
+go 1.26.8
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.244
+	github.com/Files-com/files-sdk-go/v3 v3.3.245
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/atotto/clipboard v0.1.4
