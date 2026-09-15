@@ -31,6 +31,7 @@ Upload File.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
+| `--custom-metadata` | object | Custom metadata map to save when `action=end` completes the upload.  Replaces existing metadata; an empty map clears it.  No separate metadata-edit permission is required.  Supported on native files and configured remote mounts, excluding remote server automount paths.  Limited to 32 keys, 256 characters per key and 1024 characters per value. |
 | `--length` | int64 | Length of file. |
 | `--mkdir-parents` | bool | Create parent directories if they do not exist? |
 | `--part` | int64 | Part if uploading a part. |

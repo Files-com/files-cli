@@ -36,6 +36,8 @@ func Files() *cobra.Command {
 	createWithDirectConnectionInfo := true
 	paramsFileCreate := files_sdk.FileCreateParams{}
 
+	createCustomMetadataJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
 		Short: `Upload File`,
@@ -46,6 +48,13 @@ func Files() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
 
+			if cmd.Flags().Changed("custom-metadata") {
+				parsedCreateCustomMetadata, parseCreateCustomMetadataErr := lib.ParseJSONObjectFlag("custom-metadata", createCustomMetadataJSON)
+				if parseCreateCustomMetadataErr != nil {
+					return parseCreateCustomMetadataErr
+				}
+				paramsFileCreate.CustomMetadata = parsedCreateCustomMetadata
+			}
 			if cmd.Flags().Changed("mkdir-parents") {
 				paramsFileCreate.MkdirParents = flib.Bool(createMkdirParents)
 			}
@@ -77,6 +86,8 @@ func Files() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Path, "path", "", "Path to operate on.")
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Action, "action", "", "The action to perform.  Can be `append`, `attachment`, `end`, `upload`, `put`, or may not exist")
+	cmdCreate.Flags().StringVar(&createCustomMetadataJSON, "custom-metadata", "", "Custom metadata map to save when `action=end` completes the upload.  Replaces existing metadata; an empty map clears it.  No separate metadata-edit permission is required.  Supported on native files and configured remote mounts, excluding remote server automount paths.  Limited to 32 keys, 256 characters per key and 1024 characters per value. Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "custom-metadata", "json")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Length, "length", 0, "Length of file.")
 	cmdCreate.Flags().BoolVar(&createMkdirParents, "mkdir-parents", createMkdirParents, "Create parent directories if they do not exist?")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Part, "part", 0, "Part if uploading a part.")
