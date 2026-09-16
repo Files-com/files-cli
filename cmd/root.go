@@ -126,7 +126,7 @@ var (
 					sdkConfig.Logger = log.New(logFile, "", log.LstdFlags)
 				}
 				sdkConfig.Debug = true
-				sdkConfig.Logger.Printf("Command: %v", strings.Join(lib.SanitizeArgsForDisplay(os.Args), " "))
+				sdkConfig.Logger.Printf("Command: %v", strings.Join(os.Args, " "))
 			}
 
 			profile := &lib.Profiles{}
