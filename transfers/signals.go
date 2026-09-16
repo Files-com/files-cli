@@ -39,8 +39,24 @@ func dumpGoroutine() {
 	buf := make([]byte, 1<<20)
 	stack := runtime.Stack(buf, true)
 	fmt.Printf("=== received SIGQUIT ===\n*** goroutine dump...\n%s\n*** end\n", buf[:stack])
-	err := os.WriteFile("files-cli_dump.txt", buf[:stack], 0644)
+	err := writeGoroutineDump(buf[:stack])
 	if err != nil {
 		fmt.Printf("Failed to write goroutine dump to file: %v\n", err)
 	}
+}
+
+func writeGoroutineDump(data []byte) error {
+	file, err := os.CreateTemp(".", ".files-cli_dump-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(file.Name())
+	if _, err := file.Write(data); err != nil {
+		file.Close()
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	return os.Rename(file.Name(), "files-cli_dump.txt")
 }

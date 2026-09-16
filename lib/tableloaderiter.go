@@ -288,7 +288,7 @@ func (t *tableLoaderIter) OnEnter(model *tableModel) (table.Model, tea.Cmd) {
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf(err.Error()),
+				tea.Printf("%s", err.Error()),
 			)
 		}
 		model.SetLoader(loader)
@@ -305,7 +305,7 @@ func (t *tableLoaderIter) OnEnter(model *tableModel) (table.Model, tea.Cmd) {
 		it, err := resourceLoader.LoadResource(id)
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf(err.Error()),
+				tea.Printf("%s", err.Error()),
 			)
 		}
 
@@ -337,7 +337,7 @@ func (t *tableLoaderIter) OnBackspace(model *tableModel) (table.Model, tea.Cmd) 
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf(err.Error()),
+				tea.Printf("%s", err.Error()),
 			)
 		}
 		model.SetLoader(loader)
@@ -362,7 +362,7 @@ func (t *tableLoaderIter) OnBackspace(model *tableModel) (table.Model, tea.Cmd) 
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf(err.Error()),
+				tea.Printf("%s", err.Error()),
 			)
 		}
 		model.SetLoader(loader)

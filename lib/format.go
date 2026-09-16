@@ -50,7 +50,7 @@ func Format(ctx context.Context, result interface{}, format []string, fields []s
 	case "table-v2":
 		return TableMarshalV2(format[1], result, fields, usePager, out[0], format[2])
 	default:
-		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `"+format[0]+"`")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `%s`", format[0])
 	}
 }
 
@@ -82,7 +82,7 @@ func FormatIter(ctx context.Context, it Iter, format []string, fields []string, 
 	case "":
 		return nil
 	default:
-		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `"+format[0]+"`")
+		return clierr.Errorf(clierr.ErrorCodeUsage, "unknown format `%s`", format[0])
 	}
 }
 

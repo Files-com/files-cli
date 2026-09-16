@@ -82,7 +82,7 @@ func GetLog(ctx context.Context, cmd *cobra.Command, config files_sdk.Config, ta
 
 	out, err := glamour.Render(body, "dark")
 
-	fmt.Fprintf(cmd.OutOrStdout(), out)
+	fmt.Fprint(cmd.OutOrStdout(), out)
 	return err
 }
 

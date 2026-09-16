@@ -136,7 +136,7 @@ func (t *tableResource) Update(model *tableModel, msg tea.Msg) (tableLoader, tea
 			err := clipboard.WriteAll(text)
 			if err != nil {
 				return t, tea.Batch(
-					tea.Printf(err.Error()),
+					tea.Printf("%s", err.Error()),
 				)
 			}
 			return t, cmd
@@ -145,7 +145,7 @@ func (t *tableResource) Update(model *tableModel, msg tea.Msg) (tableLoader, tea
 			err := Format(t.Context(), t.resource, []string{"json"}, model.fields, false)
 			if err != nil {
 				return t, tea.Batch(
-					tea.Printf(err.Error()),
+					tea.Printf("%s", err.Error()),
 					tea.Quit,
 				)
 			}
