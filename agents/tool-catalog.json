@@ -3491,6 +3491,26 @@
       ]
     },
     {
+      "name": "custom-domains create-allocate-ip",
+      "group": "custom-domains",
+      "description": "Allocate dedicated IP addresses to this Custom Domain",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Custom Domain ID."
+        },
+        {
+          "name": "--count",
+          "type": "int64",
+          "required": true,
+          "description": "Number of dedicated IP addresses to allocate."
+        }
+      ]
+    },
+    {
       "name": "custom-domains create",
       "group": "custom-domains",
       "description": "Create Custom Domain",
@@ -11945,6 +11965,12 @@
           "description": "If true, use this SFTP Host Key."
         },
         {
+          "name": "--custom-domain-id",
+          "type": "int64",
+          "required": false,
+          "description": "Custom Domain ID. If set, this key is used only for that Custom Domain."
+        },
+        {
           "name": "--name",
           "type": "string",
           "required": false,
@@ -11975,6 +12001,12 @@
           "type": "bool",
           "required": false,
           "description": "If true, use this SFTP Host Key."
+        },
+        {
+          "name": "--custom-domain-id",
+          "type": "int64",
+          "required": false,
+          "description": "Custom Domain ID. If set, this key is used only for that Custom Domain."
         },
         {
           "name": "--name",

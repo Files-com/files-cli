@@ -132,6 +132,7 @@ func SftpHostKeys() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().BoolVar(&createActive, "active", createActive, "If true, use this SFTP Host Key.")
+	cmdCreate.Flags().Int64Var(&paramsSftpHostKeyCreate.CustomDomainId, "custom-domain-id", 0, "Custom Domain ID. If set, this key is used only for that Custom Domain.")
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.Name, "name", "", "The friendly name of this SFTP Host Key.")
 	cmdCreate.Flags().StringVar(&paramsSftpHostKeyCreate.PrivateKey, "private-key", "", "The private key data.")
 
@@ -167,6 +168,9 @@ func SftpHostKeys() *cobra.Command {
 			if cmd.Flags().Changed("active") {
 				mapParams["active"] = updateActive
 			}
+			if cmd.Flags().Changed("custom-domain-id") {
+				lib.FlagUpdate(cmd, "custom_domain_id", paramsSftpHostKeyUpdate.CustomDomainId, mapParams)
+			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsSftpHostKeyUpdate.Name, mapParams)
 			}
@@ -182,6 +186,7 @@ func SftpHostKeys() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
 	cmdUpdate.Flags().BoolVar(&updateActive, "active", updateActive, "If true, use this SFTP Host Key.")
+	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.CustomDomainId, "custom-domain-id", 0, "Custom Domain ID. If set, this key is used only for that Custom Domain.")
 	cmdUpdate.Flags().StringVar(&paramsSftpHostKeyUpdate.Name, "name", "", "The friendly name of this SFTP Host Key.")
 	cmdUpdate.Flags().StringVar(&paramsSftpHostKeyUpdate.PrivateKey, "private-key", "", "The private key data.")
 

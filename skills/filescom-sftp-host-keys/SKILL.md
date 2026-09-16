@@ -35,6 +35,7 @@ Create SFTP Host Key.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--active` | bool | If true, use this SFTP Host Key. |
+| `--custom-domain-id` | int64 | Custom Domain ID. If set, this key is used only for that Custom Domain. |
 | `--name` | string | The friendly name of this SFTP Host Key. |
 | `--private-key` | string | The private key data. |
 
@@ -46,6 +47,7 @@ Update SFTP Host Key.
 | --- | --- | --- |
 | `--id` | int64 | Sftp Host Key ID. **Required.** |
 | `--active` | bool | If true, use this SFTP Host Key. |
+| `--custom-domain-id` | int64 | Custom Domain ID. If set, this key is used only for that Custom Domain. |
 | `--name` | string | The friendly name of this SFTP Host Key. |
 | `--private-key` | string | The private key data. |
 
