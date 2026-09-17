@@ -3,9 +3,11 @@ package lib
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFormat(t *testing.T) {
@@ -27,4 +29,28 @@ func TestFormat(t *testing.T) {
     "last_name": "Smith"
 }]
 `, buf.String())
+}
+
+func TestFormat_JSONKeepsControlCharactersLossless(t *testing.T) {
+	remote := RemoteFile{Path: oscClipboardBEL, DisplayName: unicodeName}
+	buf := bytes.NewBufferString("")
+	require.NoError(t, Format(context.Background(), remote, []string{"json"}, []string{}, false, buf))
+
+	assertNoTerminalControls(t, buf.String())
+
+	var decoded RemoteFile
+	require.NoError(t, json.Unmarshal(buf.Bytes(), &decoded))
+	assert.Equal(t, remote, decoded)
+}
+
+func TestFormat_JSONRedirectedKeepsDELAndC1Raw(t *testing.T) {
+	remote := RemoteFile{Path: c1AndDEL}
+	buf := bytes.NewBufferString("")
+	require.NoError(t, Format(context.Background(), remote, []string{"json", "raw"}, []string{}, false, buf))
+
+	assert.Contains(t, buf.String(), c1AndDEL, "encoding/json bytes are unchanged when not on a terminal")
+
+	var decoded RemoteFile
+	require.NoError(t, json.Unmarshal(buf.Bytes(), &decoded))
+	assert.Equal(t, remote, decoded)
 }

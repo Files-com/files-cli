@@ -546,6 +546,22 @@ to specify that the output should be formatted in JSON format, use the option
 - json,raw *(compact)*
 - csv
 
+### Control Characters in Output
+
+Values returned by the API, such as file names, can contain terminal
+escape sequences and other control characters. Table output always
+displays them as escaped text (for example `\x1b` for ESC) instead of
+sending them to the terminal as controls. CSV and text output are escaped
+the same way when written directly to a terminal; when redirected to a file
+or piped to another program, values are written exactly as returned by the
+API so exports stay lossless. Newline and tab characters keep their existing
+formatting and are not escaped. JSON output always escapes control characters
+as required by the JSON format; on a terminal the remaining DEL and C1
+characters are shown as `\uXXXX` escapes as well, so terminal JSON stays valid
+and decodes to the same values, while redirected JSON keeps its exact bytes.
+Error messages and `--debug=STDOUT` logs are escaped the same way when written
+to a terminal.
+
 ``` shell
 files-cli users list --format=table,interactive
 ```

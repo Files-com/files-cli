@@ -204,7 +204,7 @@ func (t *tableLoaderIter) addRow(model *tableModel, result interface{}) error {
 	}
 
 	for i, key := range orderedKeys {
-		cell := fmt.Sprintf("%v", formatValuePretty(key, record[key]))
+		cell := displayCell(key, record[key])
 
 		if i == 0 && okId {
 			rowData[key] = CellWrapper{cell: cell, data: id, Iterable: iteratable}
@@ -229,7 +229,7 @@ func (t *tableLoaderIter) addRow(model *tableModel, result interface{}) error {
 			columns,
 			table.NewColumn(
 				fmt.Sprintf("%v", key),
-				fmt.Sprintf("%v", key),
+				escapeTerminalControls(key),
 				model.maxColumnWidth[fmt.Sprintf("%v", key)],
 			).WithFiltered(true),
 		)
@@ -288,7 +288,7 @@ func (t *tableLoaderIter) OnEnter(model *tableModel) (table.Model, tea.Cmd) {
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf("%s", err.Error()),
+				printError(err),
 			)
 		}
 		model.SetLoader(loader)
@@ -305,7 +305,7 @@ func (t *tableLoaderIter) OnEnter(model *tableModel) (table.Model, tea.Cmd) {
 		it, err := resourceLoader.LoadResource(id)
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf("%s", err.Error()),
+				printError(err),
 			)
 		}
 
@@ -337,7 +337,7 @@ func (t *tableLoaderIter) OnBackspace(model *tableModel) (table.Model, tea.Cmd) 
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf("%s", err.Error()),
+				printError(err),
 			)
 		}
 		model.SetLoader(loader)
@@ -362,7 +362,7 @@ func (t *tableLoaderIter) OnBackspace(model *tableModel) (table.Model, tea.Cmd) 
 		})
 		if err != nil {
 			return model.Model, tea.Batch(
-				tea.Printf("%s", err.Error()),
+				printError(err),
 			)
 		}
 		model.SetLoader(loader)

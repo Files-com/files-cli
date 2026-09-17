@@ -14,10 +14,13 @@ func CSVMarshal(result interface{}, fields []string, out io.Writer, settings str
 	if settings == "no-headers" {
 		writeHeader = false
 	}
-	return csvMarshal(w, result, fields, writeHeader)
+	return csvMarshal(w, result, fields, writeHeader, terminalEscaper(out))
 }
 
-func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader bool) error {
+// csvMarshal writes one record. escape is applied to every header and value;
+// callers pass terminalEscaper(out) so terminal output is escaped while
+// redirected output keeps the exact values.
+func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader bool, escape func(string) string) error {
 	record, orderedKeys, err := OnlyFields(fields, result)
 	if err != nil {
 		return err
@@ -25,7 +28,7 @@ func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader 
 	if writeHeader {
 		var headers []string
 		for _, key := range orderedKeys {
-			headers = append(headers, key)
+			headers = append(headers, escape(key))
 		}
 		err = w.Write(headers)
 		if err != nil {
@@ -35,11 +38,7 @@ func csvMarshal(w *csv.Writer, result interface{}, fields []string, writeHeader 
 
 	var values []string
 	for _, key := range orderedKeys {
-		value := record[key]
-		if value == nil {
-			value = ""
-		}
-		values = append(values, fmt.Sprintf("%v", formatValue(record[key])))
+		values = append(values, escape(fmt.Sprintf("%v", formatValue(record[key]))))
 	}
 
 	err = w.Write(values)
@@ -58,6 +57,7 @@ func CSVMarshalIter(it Iter, fields []string, filterIter FilterIter, out io.Writ
 	}
 	defer spinner.Stop(false)
 	w := csv.NewWriter(out)
+	escape := terminalEscaper(out)
 	writeHeader := true
 	if settings == "no-headers" {
 		writeHeader = false
@@ -81,7 +81,7 @@ func CSVMarshalIter(it Iter, fields []string, filterIter FilterIter, out io.Writ
 			}
 		}
 		spinner.Stop(true)
-		csvMarshal(w, current, fields, writeHeader)
+		csvMarshal(w, current, fields, writeHeader, escape)
 		writeHeader = false
 	}
 	return it.Err()

@@ -2,8 +2,10 @@ package lib
 
 import (
 	"bytes"
+	"os"
 	"testing"
 
+	"github.com/Files-com/files-cli/lib/ptytest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -105,4 +107,31 @@ func TestCSVMarshalIter_FilterIter(t *testing.T) {
 	a.Equal(`first_name,last_name,age
 Dustin,Zeisler,100
 `, buf.String())
+}
+
+func TestCSVMarshal_TerminalOutputEscapesControls(t *testing.T) {
+	remote := RemoteFile{Path: oscClipboardST, DisplayName: c1AndDEL}
+
+	got := ptytest.Capture(t, func(slave *os.File) error {
+		return CSVMarshal(remote, []string{}, slave, "")
+	})
+
+	assertNoTerminalControls(t, got)
+	assert.Contains(t, got, "path,display_name")
+	assert.Contains(t, got, oscClipboardSTEscaped+","+c1AndDELEscaped)
+}
+
+func TestCSVMarshalIter_RedirectedOutputKeepsExactValues(t *testing.T) {
+	it := &SliceIter{Items: []interface{}{
+		RemoteFile{Path: oscClipboardBEL, DisplayName: unicodeName},
+		RemoteFile{Path: "notes.txt", DisplayName: "multi\nline\ttab"},
+	}}
+
+	got := capturePipeOutput(t, func(w *os.File) error {
+		return CSVMarshalIter(it, []string{}, nil, w, "")
+	})
+
+	assert.Equal(t, "path,display_name\n"+
+		oscClipboardBEL+","+unicodeName+"\n"+
+		"notes.txt,\"multi\nline\ttab\"\n", got)
 }

@@ -16,7 +16,7 @@ func (t TitledSpinner) View() string {
 	if t.Title == nil {
 		return fmt.Sprintf("%v", t.Model.View())
 	} else {
-		return fmt.Sprintf("%v %v", t.Model.View(), t.Title)
+		return fmt.Sprintf("%v %v", t.Model.View(), escapeTerminalControls(fmt.Sprintf("%v", t.Title)))
 	}
 }
 

@@ -6,7 +6,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTableMarshal_Vertical(t *testing.T) {
@@ -88,4 +90,60 @@ func sanitizeOutput(str string) string {
 		newStr += "\n" + string(m)
 	}
 	return newStr
+}
+
+func TestTableMarshal_EscapesTerminalControlsInData(t *testing.T) {
+	remote := RemoteFile{Path: oscClipboardBEL, DisplayName: unicodeName}
+
+	for _, direction := range []string{"horizontal", "vertical"} {
+		t.Run(direction, func(t *testing.T) {
+			out := strings.Builder{}
+			require.NoError(t, TableMarshal("", remote, []string{}, true, &out, direction))
+
+			assertNoTerminalControls(t, out.String())
+			assert.Contains(t, out.String(), oscClipboardBELEscaped)
+			assert.Contains(t, out.String(), unicodeName)
+		})
+	}
+}
+
+func TestTableMarshalIter_EscapesTerminalControlsAcrossStyles(t *testing.T) {
+	newIter := func() Iter {
+		return &SliceIter{Items: []interface{}{
+			RemoteFile{Path: oscClipboardST, DisplayName: csiClearScreen},
+			RemoteFile{Path: oscHyperlink, DisplayName: c1AndDEL},
+		}}
+	}
+
+	t.Run("markdown", func(t *testing.T) {
+		out := strings.Builder{}
+		require.NoError(t, TableMarshalIter(context.Background(), "markdown", newIter(), []string{}, false, &out, nil))
+
+		assertNoTerminalControls(t, out.String())
+		assert.Contains(t, out.String(), "| "+oscClipboardSTEscaped+" | "+csiClearScreenEscaped+" |")
+		assert.Contains(t, out.String(), "| "+oscHyperlinkEscaped+" | "+c1AndDELEscaped+" |")
+	})
+
+	t.Run("dark keeps renderer colors but not data controls", func(t *testing.T) {
+		// go-pretty honors NO_COLOR; force colors so the renderer emits its own
+		// sequences, then put the global setting back the way it was.
+		colorsWereEnabled := text.FgRed.Sprint("probe") != "probe"
+		text.EnableColors()
+		defer func() {
+			if !colorsWereEnabled {
+				text.DisableColors()
+			}
+		}()
+		out := strings.Builder{}
+		require.NoError(t, TableMarshalIter(context.Background(), "dark", newIter(), []string{}, false, &out, nil))
+
+		assert.Contains(t, out.String(), "\x1b[", "renderer-generated style sequences remain")
+		assert.NotContains(t, out.String(), "\x1b]", "no OSC sequence from data")
+		assert.NotContains(t, out.String(), "\x1b[2J", "no CSI sequence from data")
+		assert.NotContains(t, out.String(), "\x07")
+		assert.NotContains(t, out.String(), "\x7f")
+		assert.NotContains(t, out.String(), "\u009b")
+		assert.Contains(t, out.String(), oscClipboardSTEscaped)
+		assert.Contains(t, out.String(), csiClearScreenEscaped)
+	})
 }

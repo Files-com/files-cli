@@ -117,7 +117,7 @@ var (
 					)
 				}
 				if strings.ToLower(debug) == flagValueStdout {
-					sdkConfig.Logger = log.New(os.Stdout, "", log.LstdFlags)
+					sdkConfig.Logger = log.New(lib.DiagnosticWriter(os.Stdout), "", log.LstdFlags)
 				} else {
 					logFile, err := openDebugLog(debug)
 					if err != nil {
@@ -221,9 +221,17 @@ func Init(version string, _commit string, _date string, config files.Config) {
 	Version = version
 	RootCmd.Version = strings.TrimSuffix(Version, "\n")
 	config.UserAgent = cliUserAgent(Version)
-	if err := RootCmd.ExecuteContext(context.WithValue(context.Background(), contextKeyConfig, config)); err != nil {
+	if err := execute(config); err != nil {
 		checkErr(err)
 	}
+}
+
+// execute runs the root command. Errors and hints Cobra prints, and every
+// cmd.ErrOrStderr() diagnostic, are escaped when the configured error
+// destination is a terminal and left byte-exact when it is redirected.
+func execute(config files.Config) error {
+	RootCmd.SetErr(lib.DiagnosticWriter(RootCmd.ErrOrStderr()))
+	return RootCmd.ExecuteContext(context.WithValue(context.Background(), contextKeyConfig, config))
 }
 
 func cliUserAgent(version string) string {

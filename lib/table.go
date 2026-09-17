@@ -91,11 +91,11 @@ func tableMarshalVertical(t table.Writer, result interface{}, fields []string, w
 	for i, key := range orderedKeys {
 		if record[key] != nil || !skipNil {
 			if i == 0 {
-				headers = append(headers, text.FormatUpper.Apply(key))
-				headers = append(headers, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
+				headers = append(headers, escapeTerminalControls(text.FormatUpper.Apply(key)))
+				headers = append(headers, displayCell(key, record[key]))
 			} else {
-				values = append(values, text.FormatUpper.Apply(key))
-				values = append(values, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
+				values = append(values, escapeTerminalControls(text.FormatUpper.Apply(key)))
+				values = append(values, displayCell(key, record[key]))
 				t.AppendRow(values)
 				values = table.Row{}
 			}
@@ -118,8 +118,8 @@ func tableMarshal(t table.Writer, result interface{}, fields []string, writeHead
 	var values table.Row
 	for _, key := range orderedKeys {
 		if record[key] != nil || !skipNil {
-			values = append(values, fmt.Sprintf("%v", formatValuePretty(key, record[key])))
-			headers = append(headers, key)
+			values = append(values, displayCell(key, record[key]))
+			headers = append(headers, escapeTerminalControls(key))
 		}
 	}
 	if writeHeader {

@@ -9,6 +9,7 @@ import (
 )
 
 func TextMarshalIter(_ context.Context, it Iter, _usePager bool, out io.Writer, filterIter FilterIter) error {
+	escape := terminalEscaper(out)
 	for it.Next() {
 		if it.Err() != nil {
 			return it.Err()
@@ -30,7 +31,7 @@ func TextMarshalIter(_ context.Context, it Iter, _usePager bool, out io.Writer, 
 		}
 
 		if filter {
-			fmt.Fprintf(out, "%v\n", current)
+			fmt.Fprintf(out, "%s\n", escape(fmt.Sprintf("%v", current)))
 		}
 	}
 

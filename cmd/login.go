@@ -36,7 +36,7 @@ func Login() *cobra.Command {
 			Profile(cmd).Overrides = lib.Overrides{Out: cmd.OutOrStdout(), In: cmd.InOrStdin()}.Init()
 			err := lib.CreateSession(cmd.Context(), files.SessionCreateParams{}, Profile(cmd))
 			if err != nil {
-				fmt.Println(err)
+				fmt.Fprintln(lib.DiagnosticWriter(os.Stdout), err)
 				os.Exit(1)
 			}
 		},

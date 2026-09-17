@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-sdk-go/v3/lib/ostuning"
 	"github.com/spf13/cobra"
 )
@@ -206,7 +207,7 @@ func runOSTuningStepCommands(cmd *cobra.Command, plan ostuning.Plan, steps []ost
 
 	results := ostuning.RunSteps(ctx, steps, ostuning.RunOptions{
 		Stdout:      cmd.OutOrStdout(),
-		Stderr:      cmd.ErrOrStderr(),
+		Stderr:      lib.UnwrapDiagnosticWriter(cmd.ErrOrStderr()), // child output streams byte for byte
 		StopOnError: true,
 		BeforeStep: func(step ostuning.Step) {
 			renderOSTuningRunningStep(cmd.OutOrStdout(), step)
@@ -250,7 +251,7 @@ func runOSTuningRepairCommands(cmd *cobra.Command, plan ostuning.Plan, options *
 	runner := func(steps []ostuning.Step) []ostuning.StepResult {
 		return ostuning.RunSteps(ctx, steps, ostuning.RunOptions{
 			Stdout:      cmd.OutOrStdout(),
-			Stderr:      cmd.ErrOrStderr(),
+			Stderr:      lib.UnwrapDiagnosticWriter(cmd.ErrOrStderr()), // child output streams byte for byte
 			StopOnError: true,
 			BeforeStep: func(step ostuning.Step) {
 				renderOSTuningRunningStep(cmd.OutOrStdout(), step)

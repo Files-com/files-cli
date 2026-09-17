@@ -2,6 +2,7 @@ package lib
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strconv"
 
@@ -33,6 +34,12 @@ func formatValuePretty(key string, value interface{}) interface{} {
 	}
 
 	return formatValue(value)
+}
+
+// displayCell formats a record value for human table display, escaping any
+// terminal control characters carried by the value.
+func displayCell(key string, value interface{}) string {
+	return escapeTerminalControls(fmt.Sprintf("%v", formatValuePretty(key, value)))
 }
 
 func formatSize(value interface{}) interface{} {

@@ -91,8 +91,10 @@ func (t *tableResource) addRow(model *tableModel, result interface{}) error {
 
 	for _, key := range orderedKeys {
 		rowData := make(table.RowData)
-		rowData["column"] = fmt.Sprintf("%v", key)
-		rowData["value"] = fmt.Sprintf("%v", formatValuePretty(key, record[key]))
+		rowData["column"] = escapeTerminalControls(key)
+		value := fmt.Sprintf("%v", formatValuePretty(key, record[key]))
+		// The cell shows the escaped text; the copy action needs the exact value.
+		rowData["value"] = CellWrapper{cell: escapeTerminalControls(value), data: value}
 		t.rows = append(t.rows, table.NewRow(rowData))
 	}
 
@@ -131,12 +133,12 @@ func (t *tableResource) Update(model *tableModel, msg tea.Msg) (tableLoader, tea
 		case "c":
 			var cmd tea.Cmd
 			row := model.HighlightedRow()
-			text := fmt.Sprintf("%v", row.Data["value"])
+			text := clipboardText(row.Data["value"])
 
 			err := clipboard.WriteAll(text)
 			if err != nil {
 				return t, tea.Batch(
-					tea.Printf("%s", err.Error()),
+					printError(err),
 				)
 			}
 			return t, cmd
@@ -145,7 +147,7 @@ func (t *tableResource) Update(model *tableModel, msg tea.Msg) (tableLoader, tea
 			err := Format(t.Context(), t.resource, []string{"json"}, model.fields, false)
 			if err != nil {
 				return t, tea.Batch(
-					tea.Printf("%s", err.Error()),
+					printError(err),
 					tea.Quit,
 				)
 			}
@@ -155,6 +157,15 @@ func (t *tableResource) Update(model *tableModel, msg tea.Msg) (tableLoader, tea
 		}
 	}
 	return t, cmd
+}
+
+// clipboardText returns the exact value behind a displayed cell so copying is
+// not affected by terminal escaping.
+func clipboardText(cell interface{}) string {
+	if wrapped, ok := cell.(CellWrapper); ok {
+		return fmt.Sprintf("%v", wrapped.data)
+	}
+	return fmt.Sprintf("%v", cell)
 }
 
 func (t *tableResource) ResourceIterator() (files_sdk.ResourceIterator, bool) {

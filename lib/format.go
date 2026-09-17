@@ -119,6 +119,7 @@ var FormatHelpText = `'format,style,direction' e.g. --format='table,dark'
 formats: {table, json, csv}
 table-styles: {light, interactive, dark, bright}
 table-directions: {vertical, horizontal}
-json-styles: {raw, pretty}`
+json-styles: {raw, pretty}
+terminal display escapes control characters in data and errors (newline and tab are kept; json stays valid using \uXXXX); csv and json redirected to a file or pipe are written unchanged`
 
 var FormatDefaults = []string{"table", "light"}

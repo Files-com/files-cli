@@ -66,7 +66,7 @@ func (t *tableModel) View() string {
 	}
 
 	if t.tableLoader.Err() != nil {
-		return t.tableLoader.Err().Error()
+		return escapeTerminalControls(t.tableLoader.Err().Error())
 	}
 
 	body := strings.Builder{}
@@ -228,7 +228,7 @@ func (t *tableModel) addRow(result interface{}, rows []table.Row) ([]table.Row, 
 	}
 
 	for i, key := range orderedKeys {
-		cell := fmt.Sprintf("%v", formatValuePretty(key, record[key]))
+		cell := displayCell(key, record[key])
 
 		if i == 0 && ok {
 			rowData[key] = CellWrapper{cell: cell, data: id, Iterable: iteratable}
@@ -253,7 +253,7 @@ func (t *tableModel) addRow(result interface{}, rows []table.Row) ([]table.Row, 
 			columns,
 			table.NewColumn(
 				fmt.Sprintf("%v", key),
-				fmt.Sprintf("%v", key),
+				escapeTerminalControls(key),
 				t.maxColumnWidth[fmt.Sprintf("%v", key)],
 			).WithFiltered(true),
 		)
@@ -278,21 +278,29 @@ func (t *tableModel) updateTable(columns []table.Column, rows []table.Row) {
 func (t *tableModel) updateFooter() {
 	footer := fmt.Sprintf("Page %v of %v | Total: %v%v%v", t.Model.CurrentPage(), t.Model.MaxPages(), t.Model.TotalRows(), t.Loading(), t.currentResource())
 	if t.Err() != nil {
-		footer = fmt.Sprintf("%v - Error: %v", footer, t.Err().Error())
+		footer = fmt.Sprintf("%v - Error: %v", footer, escapeTerminalControls(t.Err().Error()))
 	}
 	t.Model = t.Model.
 		WithStaticFooter(footer)
 }
 
-func (t *tableModel) currentResource() interface{} {
+// currentResource is the identifier of the resource being browsed, such as a
+// folder path, escaped for terminal display.
+func (t *tableModel) currentResource() string {
 	var resource interface{}
 	if len(t.parentResources) > 0 {
 		resource = t.parentResources[len(t.parentResources)-1]
 	}
 	if resource == nil {
-		resource = ""
+		return ""
 	}
-	return resource
+	return escapeTerminalControls(fmt.Sprintf("%v", resource))
+}
+
+// printError shows an error above the interactive table with its control
+// characters escaped; the error itself is left unchanged.
+func printError(err error) tea.Cmd {
+	return tea.Printf("%s", escapeTerminalControls(err.Error()))
 }
 
 func (t *tableModel) buildTable(columns []table.Column) {

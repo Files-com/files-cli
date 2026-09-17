@@ -40,8 +40,8 @@ func clientError(profile *Profiles, err error, out ...io.Writer) error {
 		if err != nil {
 			path = os.Args[0]
 		}
-		filepath.Base(path)
-		fmt.Fprintf(out[0], "\n\t%v %v --reauthentication\n", filepath.Base(path), strings.Join(SanitizeArgsForDisplay(os.Args[1:]), " "))
+		// The invocation echoes the user's own command line: redacted, and escaped when shown on a terminal.
+		fmt.Fprintf(DiagnosticWriter(out[0]), "\n\t%v %v --reauthentication\n", filepath.Base(path), strings.Join(SanitizeArgsForDisplay(os.Args[1:]), " "))
 		return err
 	}
 
