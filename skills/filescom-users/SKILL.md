@@ -112,6 +112,7 @@ Create User.
 | `--responsible-group-id` | int64 | ID of the internal Group responsible for this Partner User, overriding the Partner default. |
 | `--responsible-user-id` | int64 | ID of the internal User responsible for this Partner User, overriding the Partner default. |
 | `--restapi-permission` | bool | Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.) |
+| `--s3-compatible-endpoint-permission` | bool | Can the user access the S3-compatible endpoint? Defaults to true. |
 | `--self-managed` | bool | Does this user manage it's own credentials or is it a shared/bot user? |
 | `--sftp-permission` | bool | Can the user access with SFTP? |
 | `--site-admin` | bool | Is the user an administrator for this site? |
@@ -212,6 +213,7 @@ Update User.
 | `--responsible-group-id` | int64 | ID of the internal Group responsible for this Partner User, overriding the Partner default. |
 | `--responsible-user-id` | int64 | ID of the internal User responsible for this Partner User, overriding the Partner default. |
 | `--restapi-permission` | bool | Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.) |
+| `--s3-compatible-endpoint-permission` | bool | Can the user access the S3-compatible endpoint? Defaults to true. |
 | `--self-managed` | bool | Does this user manage it's own credentials or is it a shared/bot user? |
 | `--sftp-permission` | bool | Can the user access with SFTP? |
 | `--site-admin` | bool | Is the user an administrator for this site? |

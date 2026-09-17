@@ -77,6 +77,7 @@ Create Share Link.
 | `--snapshot-id` | int64 | ID of the snapshot containing this bundle's contents. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 | `--watermark-attachment-file` | file | Preview watermark image applied to all bundle items. |
+| `--watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 
 ### `files-cli bundles share`
 
@@ -126,6 +127,7 @@ Update Share Link.
 | `--user-id` | int64 | The owning user id. Only site admins can set this. |
 | `--watermark-attachment-delete` | bool | If true, will delete the file stored in watermark_attachment |
 | `--watermark-attachment-file` | file | Preview watermark image applied to all bundle items. |
+| `--watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
 
 ### `files-cli bundles delete`

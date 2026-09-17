@@ -1,12 +1,14 @@
 ---
 name: filescom-siem-http-destinations
 description: |
-  Files.com Siem Http Destinations via files-cli.
+  A SIEM HTTP Destination defines where Files.com sends the log types you select.
 ---
 
 # filescom-siem-http-destinations
 
-Files.com Siem Http Destinations management via files-cli.
+A SIEM HTTP Destination defines where Files.com sends the log types you select.
+For HTTP destinations, Files.com sends JSON to the configured endpoint.
+For file destinations, Files.com writes JSON or CSV files to the configured folder.
 
 All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 

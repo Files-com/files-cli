@@ -2912,6 +2912,12 @@
           "type": "file",
           "required": false,
           "description": "Preview watermark image applied to all bundle items."
+        },
+        {
+          "name": "--watermark-value",
+          "type": "object",
+          "required": false,
+          "description": "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value"
         }
       ]
     },
@@ -3138,6 +3144,12 @@
           "type": "file",
           "required": false,
           "description": "Preview watermark image applied to all bundle items."
+        },
+        {
+          "name": "--watermark-value",
+          "type": "object",
+          "required": false,
+          "description": "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value"
         },
         {
           "name": "--workspace-id",
@@ -6412,6 +6424,12 @@
           "description": "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level."
         },
         {
+          "name": "--s3-compatible-endpoint-permission",
+          "type": "bool",
+          "required": false,
+          "description": "If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false."
+        },
+        {
           "name": "--desktop-configuration-profile-id",
           "type": "int64",
           "required": false,
@@ -6502,6 +6520,12 @@
           "type": "bool",
           "required": false,
           "description": "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level."
+        },
+        {
+          "name": "--s3-compatible-endpoint-permission",
+          "type": "bool",
+          "required": false,
+          "description": "If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false."
         },
         {
           "name": "--desktop-configuration-profile-id",
@@ -6861,7 +6885,7 @@
           "name": "--query-failure-type",
           "type": "string",
           "required": false,
-          "description": "If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`, `country_mismatch`, `insecure_ftp`, `insecure_cipher`, `rate_limited`"
+          "description": "If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`, `country_mismatch`, `insecure_ftp`, `insecure_cipher`, `rate_limited`, `no_s3_compatible_endpoint_permission`"
         },
         {
           "name": "--query-target-id",
@@ -13538,12 +13562,6 @@
           "description": "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period."
         },
         {
-          "name": "--bundle-watermark-value",
-          "type": "object",
-          "required": false,
-          "description": "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value"
-        },
-        {
           "name": "--group-admins-can-add-users",
           "type": "bool",
           "required": false,
@@ -13872,6 +13890,12 @@
           "type": "bool",
           "required": false,
           "description": "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?"
+        },
+        {
+          "name": "--bundle-watermark-value",
+          "type": "object",
+          "required": false,
+          "description": "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value"
         },
         {
           "name": "--icon16-file",
@@ -15711,6 +15735,12 @@
           "description": "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)"
         },
         {
+          "name": "--s3-compatible-endpoint-permission",
+          "type": "bool",
+          "required": false,
+          "description": "Can the user access the S3-compatible endpoint? Defaults to true."
+        },
+        {
           "name": "--self-managed",
           "type": "bool",
           "required": false,
@@ -16173,6 +16203,12 @@
           "type": "bool",
           "required": false,
           "description": "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)"
+        },
+        {
+          "name": "--s3-compatible-endpoint-permission",
+          "type": "bool",
+          "required": false,
+          "description": "Can the user access the S3-compatible endpoint? Defaults to true."
         },
         {
           "name": "--self-managed",

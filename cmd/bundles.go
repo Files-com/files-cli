@@ -210,6 +210,8 @@ func Bundles() *cobra.Command {
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
 	BundleCreatePermissions := ""
 
+	createWatermarkValueJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create",
 		Short: `Create Share Link`,
@@ -259,6 +261,13 @@ func Bundles() *cobra.Command {
 			if cmd.Flags().Changed("skip-company") {
 				paramsBundleCreate.SkipCompany = flib.Bool(createSkipCompany)
 			}
+			if cmd.Flags().Changed("watermark-value") {
+				parsedCreateWatermarkValue, parseCreateWatermarkValueErr := lib.ParseJSONObjectFlag("watermark-value", createWatermarkValueJSON)
+				if parseCreateWatermarkValueErr != nil {
+					return parseCreateWatermarkValueErr
+				}
+				paramsBundleCreate.WatermarkValue = parsedCreateWatermarkValue
+			}
 
 			if paramsBundleCreate.ExpiresAt.IsZero() {
 				paramsBundleCreate.ExpiresAt = nil
@@ -305,6 +314,8 @@ func Bundles() *cobra.Command {
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.StartAccessOnDate, "start-access-on-date", "Date when share will start to be accessible. If `nil` access granted right after create.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.SnapshotId, "snapshot-id", 0, "ID of the snapshot containing this bundle's contents.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
+	cmdCreate.Flags().StringVar(&createWatermarkValueJSON, "watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "watermark-value", "json")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -372,6 +383,8 @@ func Bundles() *cobra.Command {
 	updateWatermarkAttachmentDelete := true
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 	BundleUpdatePermissions := ""
+
+	updateWatermarkValueJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -486,6 +499,13 @@ func Bundles() *cobra.Command {
 			}
 			if cmd.Flags().Changed("watermark-attachment-file") {
 			}
+			if cmd.Flags().Changed("watermark-value") {
+				parsedUpdateWatermarkValue, parseUpdateWatermarkValueErr := lib.ParseJSONObjectFlag("watermark-value", updateWatermarkValueJSON)
+				if parseUpdateWatermarkValueErr != nil {
+					return parseUpdateWatermarkValueErr
+				}
+				mapParams["watermark_value"] = parsedUpdateWatermarkValue
+			}
 			if cmd.Flags().Changed("workspace-id") {
 				lib.FlagUpdate(cmd, "workspace_id", paramsBundleUpdate.WorkspaceId, mapParams)
 			}
@@ -535,6 +555,8 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "BundleRegistrations can be saved without providing name?")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.UserId, "user-id", 0, "The owning user id. Only site admins can set this.")
 	cmdUpdate.Flags().BoolVar(&updateWatermarkAttachmentDelete, "watermark-attachment-delete", updateWatermarkAttachmentDelete, "If true, will delete the file stored in watermark_attachment")
+	cmdUpdate.Flags().StringVar(&updateWatermarkValueJSON, "watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "watermark-value", "json")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

@@ -146,7 +146,6 @@ Update Site Settings.
 | `--active-sftp-host-key-ids` | []int64 | Ids of the selected custom SFTP Host Keys |
 | `--protocol-access-groups-only` | bool | If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site. |
 | `--revoke-bundle-access-on-disable-or-delete` | bool | Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period. |
-| `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--group-admins-can-add-users` | bool | Allow group admins to create users in their groups |
 | `--group-admins-can-manage-group-memberships` | bool | Allow group admins to add or remove existing users in their groups |
 | `--group-admins-can-delete-users` | bool | Allow group admins to delete users in their groups |
@@ -202,6 +201,7 @@ Update Site Settings.
 | `--ldap-group-inclusion` | string | Comma or newline separated list of group names (with optional wildcards) to include when syncing. |
 | `--ldap-base-dn` | string | Base DN for looking up users in LDAP server |
 | `--uploads-via-email-authentication` | bool | Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC? |
+| `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--icon16-file` | file | (no description) |
 | `--icon16-delete` | bool | If true, will delete the file stored in icon16 |
 | `--icon32-file` | file | (no description) |

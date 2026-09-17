@@ -50,6 +50,7 @@ Create Group.
 | `--sftp-permission` | bool | If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level. |
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
 | `--restapi-permission` | bool | If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level. |
+| `--s3-compatible-endpoint-permission` | bool | If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false. |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |
@@ -71,6 +72,7 @@ Update Group.
 | `--sftp-permission` | bool | If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level. |
 | `--dav-permission` | bool | If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level. |
 | `--restapi-permission` | bool | If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level. |
+| `--s3-compatible-endpoint-permission` | bool | If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false. |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--integration-centric-profile-id` | int64 | Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it. |
 | `--allowed-ips` | string | A list of allowed IPs if applicable.  Newline delimited |

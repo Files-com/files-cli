@@ -214,6 +214,7 @@ func Users() *cobra.Command {
 	createNotifyOnAllExpectationFailures := true
 	createRequirePasswordChange := true
 	createRestapiPermission := true
+	createS3CompatibleEndpointPermission := true
 	createSelfManaged := true
 	createSftpPermission := true
 	createSiteAdmin := true
@@ -326,6 +327,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("restapi-permission") {
 				paramsUserCreate.RestapiPermission = flib.Bool(createRestapiPermission)
 			}
+			if cmd.Flags().Changed("s3-compatible-endpoint-permission") {
+				paramsUserCreate.S3CompatibleEndpointPermission = flib.Bool(createS3CompatibleEndpointPermission)
+			}
 			if cmd.Flags().Changed("self-managed") {
 				paramsUserCreate.SelfManaged = flib.Bool(createSelfManaged)
 			}
@@ -412,6 +416,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the internal Group responsible for this Partner User, overriding the Partner default.")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.ResponsibleUserId, "responsible-user-id", 0, "ID of the internal User responsible for this Partner User, overriding the Partner default.")
 	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)")
+	cmdCreate.Flags().BoolVar(&createS3CompatibleEndpointPermission, "s3-compatible-endpoint-permission", createS3CompatibleEndpointPermission, "Can the user access the S3-compatible endpoint? Defaults to true.")
 	cmdCreate.Flags().BoolVar(&createSelfManaged, "self-managed", createSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
 	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "Can the user access with SFTP?")
 	cmdCreate.Flags().BoolVar(&createSiteAdmin, "site-admin", createSiteAdmin, "Is the user an administrator for this site?")
@@ -549,6 +554,7 @@ func Users() *cobra.Command {
 	updateNotifyOnAllExpectationFailures := true
 	updateRequirePasswordChange := true
 	updateRestapiPermission := true
+	updateS3CompatibleEndpointPermission := true
 	updateSelfManaged := true
 	updateSftpPermission := true
 	updateSiteAdmin := true
@@ -760,6 +766,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("restapi-permission") {
 				mapParams["restapi_permission"] = updateRestapiPermission
 			}
+			if cmd.Flags().Changed("s3-compatible-endpoint-permission") {
+				mapParams["s3_compatible_endpoint_permission"] = updateS3CompatibleEndpointPermission
+			}
 			if cmd.Flags().Changed("self-managed") {
 				mapParams["self_managed"] = updateSelfManaged
 			}
@@ -880,6 +889,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.ResponsibleGroupId, "responsible-group-id", 0, "ID of the internal Group responsible for this Partner User, overriding the Partner default.")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.ResponsibleUserId, "responsible-user-id", 0, "ID of the internal User responsible for this Partner User, overriding the Partner default.")
 	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)")
+	cmdUpdate.Flags().BoolVar(&updateS3CompatibleEndpointPermission, "s3-compatible-endpoint-permission", updateS3CompatibleEndpointPermission, "Can the user access the S3-compatible endpoint? Defaults to true.")
 	cmdUpdate.Flags().BoolVar(&updateSelfManaged, "self-managed", updateSelfManaged, "Does this user manage it's own credentials or is it a shared/bot user?")
 	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "Can the user access with SFTP?")
 	cmdUpdate.Flags().BoolVar(&updateSiteAdmin, "site-admin", updateSiteAdmin, "Is the user an administrator for this site?")

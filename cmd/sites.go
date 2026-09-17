@@ -550,13 +550,6 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("revoke-bundle-access-on-disable-or-delete") {
 				mapParams["revoke_bundle_access_on_disable_or_delete"] = updateRevokeBundleAccessOnDisableOrDelete
 			}
-			if cmd.Flags().Changed("bundle-watermark-value") {
-				parsedUpdateBundleWatermarkValue, parseUpdateBundleWatermarkValueErr := lib.ParseJSONObjectFlag("bundle-watermark-value", updateBundleWatermarkValueJSON)
-				if parseUpdateBundleWatermarkValueErr != nil {
-					return parseUpdateBundleWatermarkValueErr
-				}
-				mapParams["bundle_watermark_value"] = parsedUpdateBundleWatermarkValue
-			}
 			if cmd.Flags().Changed("group-admins-can-add-users") {
 				mapParams["group_admins_can_add_users"] = updateGroupAdminsCanAddUsers
 			}
@@ -721,6 +714,13 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("uploads-via-email-authentication") {
 				mapParams["uploads_via_email_authentication"] = updateUploadsViaEmailAuthentication
+			}
+			if cmd.Flags().Changed("bundle-watermark-value") {
+				parsedUpdateBundleWatermarkValue, parseUpdateBundleWatermarkValueErr := lib.ParseJSONObjectFlag("bundle-watermark-value", updateBundleWatermarkValueJSON)
+				if parseUpdateBundleWatermarkValueErr != nil {
+					return parseUpdateBundleWatermarkValueErr
+				}
+				mapParams["bundle_watermark_value"] = parsedUpdateBundleWatermarkValue
 			}
 			if cmd.Flags().Changed("icon16-file") {
 			}
@@ -895,8 +895,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64SliceVar(&paramsSiteUpdate.ActiveSftpHostKeyIds, "active-sftp-host-key-ids", []int64{}, "Ids of the selected custom SFTP Host Keys")
 	cmdUpdate.Flags().BoolVar(&updateProtocolAccessGroupsOnly, "protocol-access-groups-only", updateProtocolAccessGroupsOnly, "If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.")
 	cmdUpdate.Flags().BoolVar(&updateRevokeBundleAccessOnDisableOrDelete, "revoke-bundle-access-on-disable-or-delete", updateRevokeBundleAccessOnDisableOrDelete, "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.")
-	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
-	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanAddUsers, "group-admins-can-add-users", updateGroupAdminsCanAddUsers, "Allow group admins to create users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanManageGroupMemberships, "group-admins-can-manage-group-memberships", updateGroupAdminsCanManageGroupMemberships, "Allow group admins to add or remove existing users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanDeleteUsers, "group-admins-can-delete-users", updateGroupAdminsCanDeleteUsers, "Allow group admins to delete users in their groups")
@@ -952,6 +950,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupInclusion, "ldap-group-inclusion", "", "Comma or newline separated list of group names (with optional wildcards) to include when syncing.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapBaseDn, "ldap-base-dn", "", "Base DN for looking up users in LDAP server")
 	cmdUpdate.Flags().BoolVar(&updateUploadsViaEmailAuthentication, "uploads-via-email-authentication", updateUploadsViaEmailAuthentication, "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?")
+	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
 	cmdUpdate.Flags().BoolVar(&updateIcon16Delete, "icon16-delete", updateIcon16Delete, "If true, will delete the file stored in icon16")
 	cmdUpdate.Flags().BoolVar(&updateIcon32Delete, "icon32-delete", updateIcon32Delete, "If true, will delete the file stored in icon32")
 	cmdUpdate.Flags().BoolVar(&updateIcon48Delete, "icon48-delete", updateIcon48Delete, "If true, will delete the file stored in icon48")

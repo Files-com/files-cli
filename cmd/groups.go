@@ -150,6 +150,7 @@ func Groups() *cobra.Command {
 	createSftpPermission := true
 	createDavPermission := true
 	createRestapiPermission := true
+	createS3CompatibleEndpointPermission := true
 	paramsGroupCreate := files_sdk.GroupCreateParams{}
 
 	cmdCreate := &cobra.Command{
@@ -174,6 +175,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("restapi-permission") {
 				paramsGroupCreate.RestapiPermission = flib.Bool(createRestapiPermission)
 			}
+			if cmd.Flags().Changed("s3-compatible-endpoint-permission") {
+				paramsGroupCreate.S3CompatibleEndpointPermission = flib.Bool(createS3CompatibleEndpointPermission)
+			}
 
 			var group interface{}
 			var err error
@@ -189,6 +193,7 @@ func Groups() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSftpPermission, "sftp-permission", createSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createDavPermission, "dav-permission", createDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
 	cmdCreate.Flags().BoolVar(&createRestapiPermission, "restapi-permission", createRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
+	cmdCreate.Flags().BoolVar(&createS3CompatibleEndpointPermission, "s3-compatible-endpoint-permission", createS3CompatibleEndpointPermission, "If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.")
 	cmdCreate.Flags().Int64Var(&paramsGroupCreate.DesktopConfigurationProfileId, "desktop-configuration-profile-id", 0, "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.")
 	cmdCreate.Flags().Int64Var(&paramsGroupCreate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.")
 	cmdCreate.Flags().StringVar(&paramsGroupCreate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
@@ -207,6 +212,7 @@ func Groups() *cobra.Command {
 	updateSftpPermission := true
 	updateDavPermission := true
 	updateRestapiPermission := true
+	updateS3CompatibleEndpointPermission := true
 	paramsGroupUpdate := files_sdk.GroupUpdateParams{}
 
 	cmdUpdate := &cobra.Command{
@@ -251,6 +257,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("restapi-permission") {
 				mapParams["restapi_permission"] = updateRestapiPermission
 			}
+			if cmd.Flags().Changed("s3-compatible-endpoint-permission") {
+				mapParams["s3_compatible_endpoint_permission"] = updateS3CompatibleEndpointPermission
+			}
 			if cmd.Flags().Changed("desktop-configuration-profile-id") {
 				lib.FlagUpdate(cmd, "desktop_configuration_profile_id", paramsGroupUpdate.DesktopConfigurationProfileId, mapParams)
 			}
@@ -279,6 +288,7 @@ func Groups() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSftpPermission, "sftp-permission", updateSftpPermission, "If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateDavPermission, "dav-permission", updateDavPermission, "If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.")
 	cmdUpdate.Flags().BoolVar(&updateRestapiPermission, "restapi-permission", updateRestapiPermission, "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.")
+	cmdUpdate.Flags().BoolVar(&updateS3CompatibleEndpointPermission, "s3-compatible-endpoint-permission", updateS3CompatibleEndpointPermission, "If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.")
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.DesktopConfigurationProfileId, "desktop-configuration-profile-id", 0, "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.")
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
