@@ -2,14 +2,19 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/dustin/go-humanize"
@@ -113,6 +118,60 @@ func TestUploadCmdShellExpansion(t *testing.T) {
 	assert.Equal("", string(stdErr))
 
 	assert.ElementsMatch(expectation, strings.Split(string(stdOut), "\n")[0:2])
+}
+
+// The upload command reads a directory source the way rsync does: "source/",
+// "source/." and "." upload the contents of source, while "source" uploads the
+// directory itself. A dry run indexes the destinations without calling the API.
+func TestUploadCmdDirectorySourceSelectors(t *testing.T) {
+	source := filepath.Join(t.TempDir(), "source")
+	require.NoError(t, os.MkdirAll(filepath.Join(source, "nested"), 0755))
+	require.NoError(t, os.WriteFile(filepath.Join(source, "top.txt"), []byte("top"), 0644))
+	require.NoError(t, os.WriteFile(filepath.Join(source, "nested", "child.txt"), []byte("child"), 0644))
+
+	var apiRequests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		apiRequests.Add(1)
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	t.Cleanup(server.Close)
+	config := files_sdk.Config{APIKey: "dry-run-unused", EndpointOverride: server.URL}.Init()
+
+	separator := string(os.PathSeparator)
+	contentsOnly := []string{"dest/nested", "dest/nested/child.txt", "dest/top.txt"}
+	includingSource := []string{"dest/source", "dest/source/nested", "dest/source/nested/child.txt", "dest/source/top.txt"}
+	testCases := []struct {
+		name      string
+		localPath string
+		chdir     bool
+		expected  []string
+	}{
+		{name: "trailing separator uploads only the contents", localPath: source + separator, expected: contentsOnly},
+		{name: "final dot component uploads only the contents", localPath: source + separator + ".", expected: contentsOnly},
+		{name: "bare dot uploads only the contents", localPath: ".", chdir: true, expected: contentsOnly},
+		{name: "plain directory uploads the directory itself", localPath: source, expected: includingSource},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.chdir {
+				t.Chdir(source)
+			}
+			stdout, stderr, err := callCmd(Upload(), config, []string{tc.localPath, "dest/", "--dry-run", "--format", "json"})
+			require.NoError(t, err, string(stderr))
+
+			var results []struct {
+				RemotePath string `json:"remote_path"`
+			}
+			require.NoError(t, json.Unmarshal(stdout, &results), string(stdout))
+			var remotePaths []string
+			for _, result := range results {
+				remotePaths = append(remotePaths, result.RemotePath)
+			}
+			assert.ElementsMatch(t, tc.expected, remotePaths)
+		})
+	}
+	assert.Zero(t, apiRequests.Load(), "dry run must not call the API")
 }
 
 func TestUpload(t *testing.T) {
