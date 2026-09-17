@@ -416,45 +416,6 @@ func RemoteServers() *cobra.Command {
 	cmdAgentPushUpdate.Flags().BoolVar(&usePagerAgentPushUpdate, "use-pager", usePagerAgentPushUpdate, "Use $PAGER (.ie less, more, etc)")
 
 	RemoteServers.AddCommand(cmdAgentPushUpdate)
-	var fieldsConfigurationFile []string
-	var formatConfigurationFile []string
-	usePagerConfigurationFile := true
-	paramsRemoteServerConfigurationFile := files_sdk.RemoteServerConfigurationFileParams{}
-
-	cmdConfigurationFile := &cobra.Command{
-		Use:   "configuration-file",
-		Short: `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
-		Long:  `Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent)`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := remote_server.Client{Config: config}
-
-			var remoteServerConfigurationFile interface{}
-			var err error
-			remoteServerConfigurationFile, err = client.ConfigurationFile(paramsRemoteServerConfigurationFile, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), remoteServerConfigurationFile, err, Profile(cmd).Current().SetResourceFormat(cmd, formatConfigurationFile), fieldsConfigurationFile, usePagerConfigurationFile, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Id, "id", 0, "Remote Server ID.")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ApiToken, "api-token", "", "Files Agent API Token")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PermissionSet, "permission-set", "", "The permission set for the agent ['read_write', 'read_only', 'write_only']")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Root, "root", "", "The root directory for the agent")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Hostname, "hostname", "", "")
-	cmdConfigurationFile.Flags().Int64Var(&paramsRemoteServerConfigurationFile.Port, "port", 0, "Incoming port for files agent connections")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Status, "status", "", "either running or shutdown")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ConfigVersion, "config-version", "", "agent config version")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PrivateKey, "private-key", "", "The private key for the agent")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.PublicKey, "public-key", "", "public key")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.ServerHostKey, "server-host-key", "", "")
-	cmdConfigurationFile.Flags().StringVar(&paramsRemoteServerConfigurationFile.Subdomain, "subdomain", "", "Files.com subdomain site name")
-
-	cmdConfigurationFile.Flags().StringSliceVar(&fieldsConfigurationFile, "fields", []string{}, "comma separated list of field names")
-	cmdConfigurationFile.Flags().StringSliceVar(&formatConfigurationFile, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdConfigurationFile.Flags().BoolVar(&usePagerConfigurationFile, "use-pager", usePagerConfigurationFile, "Use $PAGER (.ie less, more, etc)")
-
-	RemoteServers.AddCommand(cmdConfigurationFile)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true

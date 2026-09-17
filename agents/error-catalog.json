@@ -339,12 +339,6 @@
       "category": "not-authenticated"
     },
     {
-      "type": "not-authenticated/files-agent-token-failed",
-      "title": "Files Agent Token Failed",
-      "http_code": 401,
-      "category": "not-authenticated"
-    },
-    {
       "type": "not-authenticated/inbox-registration-code-failed",
       "title": "Inbox Registration Code Failed",
       "http_code": 401,

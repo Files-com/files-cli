@@ -189,25 +189,6 @@ Push update to Files Agent.
 | --- | --- | --- |
 | `--id` | int64 | Remote Server ID. **Required.** |
 
-### `files-cli remote-servers configuration-file`
-
-Post local changes, check in, and download configuration file (used by some Remote Server integrations, such as the Files.com Agent).
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--id` | int64 | Remote Server ID. **Required.** |
-| `--api-token` | string | Files Agent API Token |
-| `--permission-set` | string | The permission set for the agent ['read_write', 'read_only', 'write_only'] |
-| `--root` | string | The root directory for the agent |
-| `--hostname` | string | (no description) |
-| `--port` | int64 | Incoming port for files agent connections |
-| `--status` | string | either running or shutdown |
-| `--config-version` | string | agent config version |
-| `--private-key` | string | The private key for the agent |
-| `--public-key` | string | public key |
-| `--server-host-key` | string | (no description) |
-| `--subdomain` | string | Files.com subdomain site name |
-
 ### `files-cli remote-servers update`
 
 Update Remote Server.
