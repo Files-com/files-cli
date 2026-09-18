@@ -40,7 +40,7 @@ Upload File.
 | `--ref` | string | (no description) |
 | `--restart` | int64 | File byte offset to restart from. |
 | `--size` | int64 | Size of file. |
-| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors to the destination folder tree? |
+| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree? |
 | `--structure` | string | If copying folder, copy just the structure? |
 | `--with-rename` | bool | Allow file rename instead of overwrite? |
 | `--buffered-upload` | bool | If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively. |
@@ -93,7 +93,7 @@ Copy File/Folder.
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
 | `--destination` | string | Copy destination path. **Required.** |
-| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors to the destination folder tree? |
+| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree? |
 | `--structure` | bool | Copy structure only? |
 | `--overwrite` | bool | Overwrite existing file(s) in the destination? |
 

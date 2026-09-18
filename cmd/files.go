@@ -97,7 +97,7 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Ref, "ref", "", "")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Restart, "restart", 0, "File byte offset to restart from.")
 	cmdCreate.Flags().Int64Var(&paramsFileCreate.Size, "size", 0, "Size of file.")
-	cmdCreate.Flags().BoolVar(&createCopyBehaviors, "copy-behaviors", createCopyBehaviors, "If copying a folder, also copy supported behaviors to the destination folder tree?")
+	cmdCreate.Flags().BoolVar(&createCopyBehaviors, "copy-behaviors", createCopyBehaviors, "If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree?")
 	cmdCreate.Flags().StringVar(&paramsFileCreate.Structure, "structure", "", "If copying folder, copy just the structure?")
 	cmdCreate.Flags().BoolVar(&createWithRename, "with-rename", createWithRename, "Allow file rename instead of overwrite?")
 	cmdCreate.Flags().BoolVar(&createBufferedUpload, "buffered-upload", createBufferedUpload, "If true, and the path refers to a destination not stored on Files.com (such as a remote server mount), the upload will be uploaded first to Files.com before being sent to the remote server mount. This can allow clients to upload using parallel parts to a remote server destination that does not offer parallel parts support natively.")
@@ -334,7 +334,7 @@ func Files() *cobra.Command {
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Destination, "destination", "", "Copy destination path.")
-	cmdCopy.Flags().BoolVar(&copyCopyBehaviors, "copy-behaviors", copyCopyBehaviors, "If copying a folder, also copy supported behaviors to the destination folder tree?")
+	cmdCopy.Flags().BoolVar(&copyCopyBehaviors, "copy-behaviors", copyCopyBehaviors, "If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree?")
 	cmdCopy.Flags().BoolVar(&copyStructure, "structure", copyStructure, "Copy structure only?")
 	cmdCopy.Flags().BoolVar(&copyOverwrite, "overwrite", copyOverwrite, "Overwrite existing file(s) in the destination?")
 

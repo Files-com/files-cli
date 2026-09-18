@@ -5265,7 +5265,7 @@
           "name": "--copy-behaviors",
           "type": "bool",
           "required": false,
-          "description": "If copying a folder, also copy supported behaviors to the destination folder tree?"
+          "description": "If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree?"
         },
         {
           "name": "--structure",
@@ -5413,7 +5413,7 @@
           "name": "--copy-behaviors",
           "type": "bool",
           "required": false,
-          "description": "If copying a folder, also copy supported behaviors to the destination folder tree?"
+          "description": "If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree?"
         },
         {
           "name": "--structure",
