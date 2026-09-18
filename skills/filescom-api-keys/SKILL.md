@@ -8,8 +8,10 @@ description: |
 
 An APIKey is a key that allows programmatic access to your Site.
 
-API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
+API keys use the owning user's permissions, narrowed by the key's permission set, workspace scope, and any folder path restriction.
 If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.
+
+Set `path` when creating a key to limit file and folder access to that folder and its descendants. This restriction applies to every permission set and to every path an API request accesses, including both source and destination paths for copy and move operations. It never grants additional access to the owning user. Requests outside the restriction are denied with `not-authorized/api-key-is-path-restricted`.
 
 We recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.
 
@@ -56,7 +58,7 @@ Create API Key.
 | `--expires-at` | datetime | API Key expiration date |
 | `--name` | string | Internal name for the API Key.  For your use. **Required.** |
 | `--aws-style-credentials` | bool | If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint. |
-| `--path` | string | Folder path restriction for `office_integration` permission set API keys. |
+| `--path` | string | Restricts this API key to the specified folder and its descendants. Applies to every permission set and all paths accessed by a request, including copy and move destinations. Does not grant access beyond the owning user's permissions. Optional except for `office_integration` keys, which require a path the owning user can read. |
 | `--permission-set` | enum | Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user. One of: `none`, `full`, `desktop_app`, `sync_app`, `office_integration`, `mobile_app`, `files_only`. |
 | `--workspace-id` | int64 | Workspace ID for this API Key. `0` means the default workspace. |
 

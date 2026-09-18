@@ -709,7 +709,7 @@
           "name": "--path",
           "type": "string",
           "required": false,
-          "description": "Folder path restriction for `office_integration` permission set API keys."
+          "description": "Restricts this API key to the specified folder and its descendants. Applies to every permission set and all paths accessed by a request, including copy and move destinations. Does not grant access beyond the owning user's permissions. Optional except for `office_integration` keys, which require a path the owning user can read."
         },
         {
           "name": "--permission-set",
