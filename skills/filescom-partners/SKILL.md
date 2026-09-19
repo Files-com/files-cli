@@ -73,6 +73,7 @@ Update Partner.
 | `--show-partner-channel-home-page` | bool | Show Partner users a simplified home page built from this Partner's Channels. |
 | `--tags` | string | Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--name` | string | The name of the Partner. |
+| `--partnership-role` | enum | This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`. One of: `host`, `guest`, `host_and_guest`. |
 | `--root-folder` | string | The root folder path for this Partner. |
 
 ### `files-cli partners delete`

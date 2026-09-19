@@ -55,6 +55,7 @@ Approve partner site request.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--pairing-key` | string | Pairing key for the partner site request **Required.** |
+| `--partner-id` | int64 | ID of an existing Partner on this site, with the host role, that represents the requesting organization. The connection binds to that Partner and makes it host_and_guest. When omitted, a guest Partner named after the host site is created. |
 
 ### `files-cli partner-site-requests delete`
 

@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -204,6 +207,7 @@ func Partners() *cobra.Command {
 	updateCcEmailsToResponsibleParty := true
 	updateShowPartnerChannelHomePage := true
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
+	PartnerUpdatePartnershipRole := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update",
@@ -218,6 +222,12 @@ func Partners() *cobra.Command {
 			mapParams, convertErr := lib.StructToMap(files_sdk.PartnerUpdateParams{})
 			if convertErr != nil {
 				return convertErr
+			}
+
+			var PartnerUpdatePartnershipRoleErr error
+			paramsPartnerUpdate.PartnershipRole, PartnerUpdatePartnershipRoleErr = lib.FetchKey("partnership-role", paramsPartnerUpdate.PartnershipRole.Enum(), PartnerUpdatePartnershipRole)
+			if PartnerUpdatePartnershipRole != "" && PartnerUpdatePartnershipRoleErr != nil {
+				return PartnerUpdatePartnershipRoleErr
 			}
 
 			if cmd.Flags().Changed("id") {
@@ -265,6 +275,9 @@ func Partners() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsPartnerUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("partnership-role") {
+				lib.FlagUpdate(cmd, "partnership_role", paramsPartnerUpdate.PartnershipRole, mapParams)
+			}
 			if cmd.Flags().Changed("root-folder") {
 				lib.FlagUpdate(cmd, "root_folder", paramsPartnerUpdate.RootFolder, mapParams)
 			}
@@ -290,6 +303,7 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateShowPartnerChannelHomePage, "show-partner-channel-home-page", updateShowPartnerChannelHomePage, "Show Partner users a simplified home page built from this Partner's Channels.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
+	cmdUpdate.Flags().StringVar(&PartnerUpdatePartnershipRole, "partnership-role", "", fmt.Sprintf("This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`. %v", reflect.ValueOf(paramsPartnerUpdate.PartnershipRole.Enum()).MapKeys()))
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")

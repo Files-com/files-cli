@@ -8488,6 +8488,12 @@
           "type": "string",
           "required": true,
           "description": "Pairing key for the partner site request"
+        },
+        {
+          "name": "--partner-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of an existing Partner on this site, with the host role, that represents the requesting organization. The connection binds to that Partner and makes it host_and_guest. When omitted, a guest Partner named after the host site is created."
         }
       ]
     },
@@ -8752,6 +8758,12 @@
           "type": "string",
           "required": false,
           "description": "The name of the Partner."
+        },
+        {
+          "name": "--partnership-role",
+          "type": "enum",
+          "required": false,
+          "description": "This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`."
         },
         {
           "name": "--root-folder",

@@ -210,6 +210,7 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdApprove.Flags().StringVar(&paramsPartnerSiteRequestApprove.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
+	cmdApprove.Flags().Int64Var(&paramsPartnerSiteRequestApprove.PartnerId, "partner-id", 0, "ID of an existing Partner on this site, with the host role, that represents the requesting organization. The connection binds to that Partner and makes it host_and_guest. When omitted, a guest Partner named after the host site is created.")
 
 	cmdApprove.Flags().StringSliceVar(&fieldsApprove, "fields", []string{}, "comma separated list of field names")
 	cmdApprove.Flags().StringSliceVar(&formatApprove, "format", lib.FormatDefaults, lib.FormatHelpText)
