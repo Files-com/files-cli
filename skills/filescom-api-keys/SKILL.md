@@ -11,7 +11,7 @@ An APIKey is a key that allows programmatic access to your Site.
 API keys use the owning user's permissions, narrowed by the key's permission set, workspace scope, and any folder path restriction.
 If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.
 
-Set `path` when creating a key to limit file and folder access to that folder and its descendants. This restriction applies to every permission set and to every path an API request accesses, including both source and destination paths for copy and move operations. It never grants additional access to the owning user. Requests outside the restriction are denied with `not-authorized/api-key-is-path-restricted`.
+Set `path` when creating a key to limit file and folder access to that folder and its descendants. Except for `office_integration` keys, the path does not need to exist when the key is created. This restriction applies to every permission set and to every path an API request accesses, including both source and destination paths for copy and move operations. It never grants additional access to the owning user. Requests outside the restriction are denied with `not-authorized/api-key-is-path-restricted`.
 
 We recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.
 
