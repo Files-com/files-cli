@@ -423,6 +423,12 @@
       "category": "not-authorized"
     },
     {
+      "type": "not-authorized/api-key-only-for-file-operations",
+      "title": "Api Key Only For File Operations",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
       "type": "not-authorized/api-key-only-for-mobile-app",
       "title": "Api Key Only For Mobile App",
       "http_code": 403,
