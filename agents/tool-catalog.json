@@ -2147,7 +2147,7 @@
           "name": "--disable-parent-folder-behavior",
           "type": "bool",
           "required": false,
-          "description": "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree."
+          "description": "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types."
         },
         {
           "name": "--recursive",
@@ -2247,7 +2247,7 @@
           "name": "--disable-parent-folder-behavior",
           "type": "bool",
           "required": false,
-          "description": "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree."
+          "description": "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types."
         },
         {
           "name": "--recursive",

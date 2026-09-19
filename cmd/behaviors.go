@@ -257,7 +257,7 @@ func Behaviors() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
-	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
+	cmdCreate.Flags().BoolVar(&createDisableParentFolderBehavior, "disable-parent-folder-behavior", createDisableParentFolderBehavior, "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Whether the behavior should apply to child folders. This is only configurable for behavior types whose recursion mode is `sometimes`; `always` behaviors stay recursive and `never` behaviors stay non-recursive.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Name, "name", "", "Name for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
@@ -386,7 +386,7 @@ func Behaviors() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
-	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If `true`, the parent folder's behavior will be disabled for this folder and its children. This is the main mechanism for canceling out a `recursive` behavior higher in the folder tree.")
+	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.")
 	cmdUpdate.Flags().BoolVar(&updateRecursive, "recursive", updateRecursive, "Whether the behavior should apply to child folders. This is only configurable for behavior types whose recursion mode is `sometimes`; `always` behaviors stay recursive and `never` behaviors stay non-recursive.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Name, "name", "", "Name for this behavior.")
 	cmdUpdate.Flags().StringVar(&paramsBehaviorUpdate.Description, "description", "", "Description for this behavior.")
