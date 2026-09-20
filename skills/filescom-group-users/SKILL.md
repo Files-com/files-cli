@@ -22,7 +22,7 @@ List Group Users.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--group-id` | int64 | Group ID.  If provided, will return group_users of this group. |
+| `--group-id` | int64 | Group ID. If provided, returns memberships of this group. Requires a Site Administrator, a Read-only Administrator, a Workspace Administrator for the group's workspace, or a Group Administrator of this group. |
 | `--user-id` | int64 | User ID.  If provided, will return group_users of this user. |
 
 ### `files-cli group-users create`

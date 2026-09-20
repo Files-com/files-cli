@@ -228,7 +228,7 @@ Update User.
 | `--user-home` | string | Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface. |
 | `--workspace-admin` | bool | Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set. |
 | `--username` | string | User's username |
-| `--workspace-id` | int64 | Workspace ID |
+| `--workspace-id` | int64 | Workspace ID. Only Site Administrators can change this field. Values supplied by Workspace Administrators, Group Administrators, or other non-Site Administrators using `/user` are ignored. |
 | `--clear-2fa` | bool | If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases. |
 | `--convert-to-partner-user` | bool | Required when assigning a Partner to an existing non-Partner user. If true, convert the user by assigning the partner_id provided. |
 

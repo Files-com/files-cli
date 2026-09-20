@@ -904,7 +904,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserHome, "user-home", "", "Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.")
 	cmdUpdate.Flags().BoolVar(&updateWorkspaceAdmin, "workspace-admin", updateWorkspaceAdmin, "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Username, "username", "", "User's username")
-	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
+	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. Only Site Administrators can change this field. Values supplied by Workspace Administrators, Group Administrators, or other non-Site Administrators using `/user` are ignored.")
 	cmdUpdate.Flags().BoolVar(&updateClear2fa, "clear-2fa", updateClear2fa, "If true when changing authentication_method from `password` to `sso`, remove all two-factor methods. Ignored in all other cases.")
 	cmdUpdate.Flags().BoolVar(&updateConvertToPartnerUser, "convert-to-partner-user", updateConvertToPartnerUser, "Required when assigning a Partner to an existing non-Partner user. If true, convert the user by assigning the partner_id provided.")
 
