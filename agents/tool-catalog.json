@@ -1550,12 +1550,6 @@
           "description": "Path on which this Automation runs.  Supports globs, except on remote mounts."
         },
         {
-          "name": "--legacy-sync-ids",
-          "type": "string",
-          "required": false,
-          "description": "A list of legacy sync IDs the automation is associated with. If sent as a string, it should be comma-delimited."
-        },
-        {
           "name": "--sync-ids",
           "type": "string",
           "required": false,
@@ -1818,12 +1812,6 @@
           "type": "string",
           "required": false,
           "description": "Path on which this Automation runs.  Supports globs, except on remote mounts."
-        },
-        {
-          "name": "--legacy-sync-ids",
-          "type": "string",
-          "required": false,
-          "description": "A list of legacy sync IDs the automation is associated with. If sent as a string, it should be comma-delimited."
         },
         {
           "name": "--sync-ids",
