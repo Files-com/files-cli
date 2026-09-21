@@ -1417,7 +1417,7 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	cmd.Flags().MarkHidden("adaptive-upload-v2-s3-workload-scan-wait-ms")
 	cmd.Flags().MarkHidden("adaptive-upload-v2-file-concurrency")
 	cmd.Flags().IntVar(&t.ConcurrentDirectoryScanning, "concurrent-directory-list-limit", manager.ConcurrentDirectoryList, "Limit the concurrent directory listings of local file system.")
-	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
+	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during upload. See https://git-scm.com/docs/gitignore#_pattern_format. Unfinished downloads of this tool, named .~files-cli.*.download or .~files-cli~*.download, are always ignored.")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during upload. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().BoolVarP(&t.UploadPreserveTimes, "times", "t", true, "Uploaded files to include the original modification time (Limited to native files.com storage)")
 }
@@ -1446,7 +1446,7 @@ func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	cmd.Flags().MarkHidden("zip-batch-concurrency")
 	cmd.Flags().MarkHidden("zip-batch-min-advantage")
 	cmd.Flags().MarkHidden("zip-batch-reprobe-interval")
-	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during download. See https://git-scm.com/docs/gitignore#_pattern_format")
+	cmd.Flags().StringSliceVarP(t.Ignore, "ignore", "i", *t.Ignore, "File patterns to ignore during download. See https://git-scm.com/docs/gitignore#_pattern_format. Unfinished downloads of this tool, named .~files-cli.*.download or .~files-cli~*.download, are always ignored.")
 	cmd.Flags().StringSliceVarP(t.Include, "include", "n", *t.Include, "File patterns to include during download. See https://git-scm.com/docs/gitignore#_pattern_format")
 	cmd.Flags().BoolVarP(&t.DownloadPreserveTimes, "times", "t", false, "Downloaded files to include the original modification time")
 }
