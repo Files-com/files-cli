@@ -2761,7 +2761,7 @@
           "name": "--expires-at",
           "type": "datetime",
           "required": false,
-          "description": "Bundle expiration date/time"
+          "description": "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply."
         },
         {
           "name": "--finalize-snapshot",
@@ -3011,7 +3011,7 @@
           "name": "--expires-at",
           "type": "datetime",
           "required": false,
-          "description": "Bundle expiration date/time"
+          "description": "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply."
         },
         {
           "name": "--finalize-snapshot",

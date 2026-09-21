@@ -53,7 +53,7 @@ Create Share Link.
 | `--form-field-set-id` | int64 | Id of Form Field Set to use with this bundle |
 | `--create-snapshot` | bool | If true, create a snapshot of this bundle's contents. |
 | `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
-| `--expires-at` | datetime | Bundle expiration date/time |
+| `--expires-at` | datetime | Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply. |
 | `--finalize-snapshot` | bool | If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true. |
 | `--max-uses` | int64 | Maximum number of times bundle can be accessed |
 | `--group-id` | int64 | Owning group ID. If set, members of this group can view, edit, and share this Share Link. |
@@ -106,7 +106,7 @@ Update Share Link.
 | `--create-snapshot` | bool | If true, create a snapshot of this bundle's contents. |
 | `--description` | string | Public description |
 | `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
-| `--expires-at` | datetime | Bundle expiration date/time |
+| `--expires-at` | datetime | Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply. |
 | `--finalize-snapshot` | bool | If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true. |
 | `--inbox-id` | int64 | ID of the associated inbox, if available. |
 | `--max-uses` | int64 | Maximum number of times bundle can be accessed |

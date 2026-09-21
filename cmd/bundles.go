@@ -290,7 +290,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createCreateSnapshot, "create-snapshot", createCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
 	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleCreate.ExpiresAt = &time.Time{}
-	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Bundle expiration date/time")
+	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdCreate.Flags().BoolVar(&createFinalizeSnapshot, "finalize-snapshot", createFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.GroupId, "group-id", 0, "Owning group ID. If set, members of this group can view, edit, and share this Share Link.")
@@ -534,7 +534,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Description, "description", "", "Public description")
 	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleUpdate.ExpiresAt = &time.Time{}
-	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Bundle expiration date/time")
+	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdUpdate.Flags().BoolVar(&updateFinalizeSnapshot, "finalize-snapshot", updateFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
