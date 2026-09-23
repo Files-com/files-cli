@@ -85,6 +85,7 @@ func ActionNotificationExports() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
+	cmdCreate.Flags().Int64Var(&paramsActionNotificationExportCreate.WorkspaceId, "workspace-id", 0, "Workspace whose logs are exported. Set to `0` for the default workspace. A null value means a site-wide export.")
 	paramsActionNotificationExportCreate.StartAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsActionNotificationExportCreate.StartAt, "start-at", "Start date/time of export range.")
 	paramsActionNotificationExportCreate.EndAt = &time.Time{}

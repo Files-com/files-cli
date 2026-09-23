@@ -111,6 +111,12 @@
           "description": "User ID.  Provide a value of `0` to operate the current session's user."
         },
         {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace whose logs are exported. Set to `0` for the default workspace. A null value means a site-wide export."
+        },
+        {
           "name": "--start-at",
           "type": "datetime",
           "required": false,

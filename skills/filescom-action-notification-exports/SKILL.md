@@ -10,12 +10,15 @@ An ActionNotificationExport is an operation that provides access to outgoing web
 
 All queries against the archive must be submitted as Exports.  (Even our Web UI creates an Export behind the scenes.)
 
+Only Site Administrators, including Read-only Administrators, and Workspace Administrators can create exports and access their results.
+Workspace Administrators are limited to the workspace selected for the request. Site Administrators can select a workspace using `workspace_id` when creating an export, or use `X-Files-Workspace-Id` to scope requests to a workspace. Without a workspace selection, Site Administrators can export logs across the site.
+
 In any query field in this API, you may specify multiple values separated by commas.  That means that commas
 cannot be searched for themselves, and neither can single quotation marks.
 
 Use the following steps to complete an export:
 
-1. Initiate the export by using the Create Action Notification Export endpoint. Non Site Admins must query by folder or path.
+1. Initiate the export by using the Create Action Notification Export endpoint.
 2. Using the `id` from the response to step 1, poll the Show Action Notification Export endpoint. Check the `status` field until it is `ready`.
 3. You can download the results of the export as a CSV file using the `results_url` field in the response from step 2. If you want to page through the records in JSON format, use the List Action Notification Export Results endpoint, passing the `id` that you got in step 1 as the `action_notification_export_id` parameter. Check the `X-Files-Cursor-Next` header to see if there are more records available, and resubmit the same request with a `cursor` parameter to fetch the next page of results.  Unlike most API Endpoints, this endpoint does not provide `X-Files-Cursor-Prev` cursors allowing reverse pagination through the results.  This is due to limitations in Amazon Athena, the underlying data lake for these records.
 
@@ -47,6 +50,7 @@ Create Action Notification Export.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--user-id` | int64 | User ID.  Provide a value of `0` to operate the current session's user. |
+| `--workspace-id` | int64 | Workspace whose logs are exported. Set to `0` for the default workspace. A null value means a site-wide export. |
 | `--start-at` | datetime | Start date/time of export range. |
 | `--end-at` | datetime | End date/time of export range. |
 | `--query-message` | string | Error message associated with the request, if any. |
