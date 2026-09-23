@@ -178,7 +178,7 @@ Update Site Settings.
 | `--site-public-footer` | string | Custom site footer text for public pages |
 | `--login-help-text` | string | Login help text |
 | `--use-dedicated-ips-for-smtp` | bool | If using custom SMTP, should we use dedicated IPs to deliver emails? |
-| `--email-footer-custom-text` | string | Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day). |
+| `--email-footer-custom-text` | string | Custom footer text for system-generated emails (as Markdown). Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day). |
 | `--smtp-address` | string | SMTP server hostname or IP |
 | `--smtp-authentication` | string | SMTP server authentication type |
 | `--smtp-from` | string | From address to use when mailing through custom SMTP |

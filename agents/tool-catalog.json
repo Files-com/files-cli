@@ -13757,7 +13757,7 @@
           "name": "--email-footer-custom-text",
           "type": "string",
           "required": false,
-          "description": "Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day)."
+          "description": "Custom footer text for system-generated emails (as Markdown). Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day)."
         },
         {
           "name": "--smtp-address",
