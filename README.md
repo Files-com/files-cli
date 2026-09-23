@@ -384,16 +384,16 @@ files-cli folders ls some/path \
 
 ## Paths
 
-Working with paths in Files.com involves several important considerations. Understanding how path comparisons are applied helps developers ensure consistency and accuracy across all interactions with the platform.
+Files.com preserves the spelling of file and folder paths while comparing them using shared case and Unicode rules. Use the SDK comparison helpers when matching paths locally.
 <div></div>
 
 ### Capitalization
 
-Files.com compares paths in a **case-insensitive** manner. This means path segments are treated as equivalent regardless of letter casing.
+Files.com uses case-insensitive path matching based on its fixed Unicode comparison map.
 
-For example, all of the following resolve to the same internal path:
+For example, the following paths have the same comparison key:
 
-| Path Variant                          | Interpreted As              |
+| Path Variant                          | Comparison Key              |
 |---------------------------------------|------------------------------|
 | `Documents/Reports/Q1.pdf`            | `documents/reports/q1.pdf`  |
 | `documents/reports/q1.PDF`            | `documents/reports/q1.pdf`  |
@@ -408,32 +408,27 @@ See also: [Case Sensitivity Documentation](https://www.files.com/docs/files-and-
 
 ### Slashes
 
-All path parameters in Files.com (API, SDKs, CLI, automations, integrations) must **omit leading and trailing slashes**. Paths are always treated as **absolute and slash-delimited**, so only internal `/` separators are used and never at the start or end of the string.
+Use `/` between folder and file names, without leading or trailing slashes. SDK normalization helpers convert backslashes to `/`, remove duplicate separators, and discard exact `.` and `..` components. Discarding `..` leaves the preceding folder name intact.
 
-####  Path Slash Examples
-| Path                              | Valid? | Notes                         |
-|-----------------------------------|--------|-------------------------------|
-| `folder/subfolder/file.txt`       |   ✅   | Correct, internal separators only |
-| `/folder/subfolder/file.txt`      |   ❌   | Leading slash not allowed     |
-| `folder/subfolder/file.txt/`      |   ❌   | Trailing slash not allowed    |
-| `//folder//file.txt`              |   ❌   | Duplicate separators not allowed |
+| Input | Normalized path |
+|-------|-----------------|
+| `folder/subfolder/file.txt` | `folder/subfolder/file.txt` |
+| `/folder/subfolder/file.txt` | `folder/subfolder/file.txt` |
+| `folder/subfolder/file.txt/` | `folder/subfolder/file.txt` |
+| `//folder//file.txt` | `folder/file.txt` |
+| `folder/../file.txt` | `folder/file.txt` |
 
 <div></div>
 
-### Unicode Normalization
+### Unicode and Path Comparison
 
-Files.com normalizes all paths using [Unicode NFC (Normalization Form C)](https://www.unicode.org/reports/tr15/#Norm_Forms) before comparison. This ensures consistency across different representations of the same characters.
+Files.com compares paths using a fixed mapping shared by the server and SDKs. It treats case and many accent differences as equivalent: `Résumé.txt` and `resume.txt` identify the same file, as do `q` followed by a combining acute accent and `q`. The mapping also handles other equivalences, such as Hiragana and Katakana. Lowercasing or applying a standard Unicode normalization form alone does not reproduce these rules.
 
-For example, the following two paths are treated as equivalent after NFC normalization:
+SDK comparison helpers normalize path separators and dot segments, then apply the bundled [versioned comparison map](https://github.com/Files-com/files-sdk-javascript/blob/master/shared/path_comparison.json). The [shared examples](https://github.com/Files-com/files-sdk-javascript/blob/master/shared/comparison_examples.json) give exact comparison results for integrations that implement their own matching. The map uses hexadecimal Unicode scalar values as keys: a missing entry preserves the character, an empty replacement removes it, and other replacements may contain several characters. Apply each replacement once without normalizing or lowercasing the result again.
 
-| Input                                  | Normalized Form       |
-|----------------------------------------|------------------------|
-| `uploads/\u0065\u0301.txt`             | `uploads/é.txt`        |
-| `docs/Café/Report.txt`                 | `docs/Café/Report.txt` |
+Use comparison results only for matching. Send the original path spelling in API requests and preserve it for display and local filenames; comparison results can have a different spelling or length.
 
-- All input must be UTF‑8 encoded.
-- Precomposed and decomposed characters are unified.
-- This affects search, deduplication, and comparisons across SDKs.
+Trailing whitespace is significant for comparison. `report.txt` and `report.txt ` are different file paths, and SDK helpers preserve spaces, tabs, and newlines. Folder names cannot end in whitespace. See [Unicode Normalization](https://www.files.com/docs/files-and-folders/file-system-semantics/unicode-normalization) for the complete path rules.
 
 <div></div>
 
