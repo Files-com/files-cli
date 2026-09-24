@@ -16,8 +16,9 @@ func init() {
 
 func HistoryExports() *cobra.Command {
 	HistoryExports := &cobra.Command{
-		Use:  "history-exports [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "history-exports [command]",
+		Short: "A History Export is a resource on the API that is used to export historical action (history) logs.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command history-exports\n\t%v", args[0])
 		},
@@ -44,6 +45,7 @@ func HistoryExports() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHistoryExportFind.Id, "id", 0, "History Export ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

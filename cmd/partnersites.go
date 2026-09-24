@@ -14,8 +14,9 @@ func init() {
 
 func PartnerSites() *cobra.Command {
 	PartnerSites := &cobra.Command{
-		Use:  "partner-sites [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "partner-sites [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partner-sites\n\t%v", args[0])
 		},
@@ -44,6 +45,7 @@ func PartnerSites() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPartnerSiteDelete.Id, "id", 0, "Partner Site ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

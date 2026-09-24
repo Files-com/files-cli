@@ -11,8 +11,9 @@ func init() {
 
 func SyncRunLiveTransfers() *cobra.Command {
 	SyncRunLiveTransfers := &cobra.Command{
-		Use:  "sync-run-live-transfers [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sync-run-live-transfers [command]",
+		Short: "Represents a single in-progress file transfer within a running SyncRun.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sync-run-live-transfers\n\t%v", args[0])
 		},

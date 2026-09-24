@@ -11,8 +11,9 @@ func init() {
 
 func RemoteServerConfigurationFiles() *cobra.Command {
 	RemoteServerConfigurationFiles := &cobra.Command{
-		Use:  "remote-server-configuration-files [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "remote-server-configuration-files [command]",
+		Short: "A RemoteServerConfigurationFile is a configuration file (required for some Remote Server integrations, such as the Files.com Agent).",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command remote-server-configuration-files\n\t%v", args[0])
 		},

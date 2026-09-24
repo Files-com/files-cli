@@ -14,8 +14,9 @@ func init() {
 
 func ChatSessions() *cobra.Command {
 	ChatSessions := &cobra.Command{
-		Use:  "chat-sessions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "chat-sessions [command]",
+		Short: "A ChatSession represents one conversation with the Files.com AI Assistant.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command chat-sessions\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func ChatSessions() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsChatSessionList := files_sdk.ChatSessionListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -40,6 +42,13 @@ func ChatSessions() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsChatSessionList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -77,7 +86,11 @@ func ChatSessions() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -96,6 +109,7 @@ func ChatSessions() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ChatSessions.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -119,6 +133,7 @@ func ChatSessions() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().StringVar(&paramsChatSessionFind.Id, "id", "", "Chat Session ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

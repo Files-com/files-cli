@@ -17,8 +17,9 @@ func init() {
 
 func GpgKeys() *cobra.Command {
 	GpgKeys := &cobra.Command{
-		Use:  "gpg-keys [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "gpg-keys [command]",
+		Short: "A GPGKey object on Files.com is used to securely store both the private and public keys associated with a GPG (GNU Privacy Guard) encryption key pair.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command gpg-keys\n\t%v", args[0])
 		},
@@ -29,6 +30,7 @@ func GpgKeys() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsGpgKeyList := files_sdk.GpgKeyListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -47,6 +49,13 @@ func GpgKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsGpgKeyList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -112,7 +121,11 @@ func GpgKeys() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -140,6 +153,7 @@ func GpgKeys() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	GpgKeys.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -163,6 +177,7 @@ func GpgKeys() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsGpgKeyFind.Id, "id", 0, "Gpg Key ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -205,6 +220,7 @@ func GpgKeys() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKey, "private-key", "", "The GPG private key")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.PrivateKeyPassword, "private-key-password", "", "The GPG private key password")
 	cmdCreate.Flags().StringVar(&paramsGpgKeyCreate.Name, "name", "", "GPG key name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64Var(&paramsGpgKeyCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for default workspace).")
 	paramsGpgKeyCreate.GenerateExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsGpgKeyCreate.GenerateExpiresAt, "generate-expires-at", "Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
@@ -263,6 +279,7 @@ func GpgKeys() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.Id, "id", 0, "Gpg Key ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().Int64Var(&paramsGpgKeyUpdate.PartnerId, "partner-id", 0, "Partner ID who owns this GPG Key, if applicable.")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PublicKey, "public-key", "", "The GPG public key")
 	cmdUpdate.Flags().StringVar(&paramsGpgKeyUpdate.PrivateKey, "private-key", "", "The GPG private key")
@@ -298,6 +315,7 @@ func GpgKeys() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsGpgKeyDelete.Id, "id", 0, "Gpg Key ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

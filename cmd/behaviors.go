@@ -15,8 +15,9 @@ func init() {
 
 func Behaviors() *cobra.Command {
 	Behaviors := &cobra.Command{
-		Use:  "behaviors [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "behaviors [command]",
+		Short: "A Behavior is an API resource for what are also known as Folder Settings.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command behaviors\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func Behaviors() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsBehaviorList := files_sdk.BehaviorListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func Behaviors() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func Behaviors() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Behaviors.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -132,6 +147,7 @@ func Behaviors() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsBehaviorListFor := files_sdk.BehaviorListForParams{}
 	var MaxPagesListFor int64
+	var jsonEnvelopeListFor bool
 	var listForSortByArgs string
 	var listForFilterArgs []string
 	listForAncestorBehaviors := true
@@ -147,6 +163,13 @@ func Behaviors() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorListFor
 			params.MaxPages = MaxPagesListFor
+			var envelopeStyle string
+			if jsonEnvelopeListFor {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -191,7 +214,11 @@ func Behaviors() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListFor {
+				err = lib.JSONEnvelopeIter(it, fieldsListFor, listFilter, usePagerListFor, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -212,6 +239,7 @@ func Behaviors() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
+	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Behaviors.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -263,6 +291,7 @@ func Behaviors() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Description, "description", "", "Description for this behavior.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Path, "path", "", "Path where this behavior should apply.")
 	cmdCreate.Flags().StringVar(&paramsBehaviorCreate.Behavior, "behavior", "", "Behavior type.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "behavior")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -311,6 +340,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Url, "url", "", "URL for testing the webhook.")
+	lib.SetFlagAPIRequired(cmdWebhookTest.Flags(), "url")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Method, "method", "", "HTTP request method (GET or POST).")
 	cmdWebhookTest.Flags().StringVar(&paramsBehaviorWebhookTest.Encoding, "encoding", "", "Encoding type for the webhook payload. Can be JSON, XML, or RAW (form data).")
 	cmdWebhookTest.Flags().StringVar(&webhookTestHeadersJSON, "headers", "", "Additional request headers to send via HTTP. Provide as a JSON object.")
@@ -384,6 +414,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBehaviorUpdate.Id, "id", 0, "Behavior ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "This field stores data specific to the type of behavior. See The Behavior Types section for the accepted value for each type of behavior. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().BoolVar(&updateDisableParentFolderBehavior, "disable-parent-folder-behavior", updateDisableParentFolderBehavior, "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.")
@@ -421,6 +452,7 @@ func Behaviors() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBehaviorDelete.Id, "id", 0, "Behavior ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

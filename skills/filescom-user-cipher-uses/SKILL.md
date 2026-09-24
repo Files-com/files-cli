@@ -9,7 +9,7 @@ description: |
 A UserCipherUse is a way to see the exact set of encryption ciphers and protocols used by a given user.
 This is most often used to support migrations from one TLS version to the next.  You can query each user and determine who is still using legacy ciphers.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

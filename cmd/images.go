@@ -11,8 +11,9 @@ func init() {
 
 func Images() *cobra.Command {
 	Images := &cobra.Command{
-		Use:  "images [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "images [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command images\n\t%v", args[0])
 		},

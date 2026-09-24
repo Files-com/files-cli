@@ -10,7 +10,7 @@ An App represents one of the various integrations provided by Files.com.  These 
 
 Currently, all apps are developed internally by Files.com, though we do have the infrastructure to support vendor-developed apps.  If you are a third party vendor interested in developing for the Files.com ecosystem, please contact us.  We'd love to hear more.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

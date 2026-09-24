@@ -14,8 +14,9 @@ func init() {
 
 func ActionNotificationExportResults() *cobra.Command {
 	ActionNotificationExportResults := &cobra.Command{
-		Use:  "action-notification-export-results [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "action-notification-export-results [command]",
+		Short: "An ActionNotificationExportResult is a single record containing webhook log information that can be obtained as a part of Action Notification Export request.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command action-notification-export-results\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func ActionNotificationExportResults() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsActionNotificationExportResultList := files_sdk.ActionNotificationExportResultListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func ActionNotificationExportResults() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsActionNotificationExportResultList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := action_notification_export_result.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func ActionNotificationExportResults() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -72,11 +85,13 @@ func ActionNotificationExportResults() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsActionNotificationExportResultList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsActionNotificationExportResultList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsActionNotificationExportResultList.ActionNotificationExportId, "action-notification-export-id", 0, "ID of the associated action notification export.")
+	lib.SetFlagAPIRequired(cmdList.Flags(), "action-notification-export-id")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ActionNotificationExportResults.AddCommand(cmdList)
 	return ActionNotificationExportResults
 }

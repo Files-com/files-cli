@@ -15,8 +15,9 @@ func init() {
 
 func SftpHostKeys() *cobra.Command {
 	SftpHostKeys := &cobra.Command{
-		Use:  "sftp-host-keys [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sftp-host-keys [command]",
+		Short: "An SFTP Host Key is a cryptographic key used to verify the identity of the server during an SFTP connection.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sftp-host-keys\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func SftpHostKeys() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSftpHostKeyList := files_sdk.SftpHostKeyListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -39,6 +41,13 @@ func SftpHostKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSftpHostKeyList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := sftp_host_key.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -61,7 +70,11 @@ func SftpHostKeys() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -76,6 +89,7 @@ func SftpHostKeys() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	SftpHostKeys.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -99,6 +113,7 @@ func SftpHostKeys() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSftpHostKeyFind.Id, "id", 0, "Sftp Host Key ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -185,6 +200,7 @@ func SftpHostKeys() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.Id, "id", 0, "Sftp Host Key ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateActive, "active", updateActive, "If true, use this SFTP Host Key.")
 	cmdUpdate.Flags().Int64Var(&paramsSftpHostKeyUpdate.CustomDomainId, "custom-domain-id", 0, "Custom Domain ID. If set, this key is used only for that Custom Domain.")
 	cmdUpdate.Flags().StringVar(&paramsSftpHostKeyUpdate.Name, "name", "", "The friendly name of this SFTP Host Key.")
@@ -219,6 +235,7 @@ func SftpHostKeys() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsSftpHostKeyDelete.Id, "id", 0, "Sftp Host Key ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

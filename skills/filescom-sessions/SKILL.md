@@ -13,7 +13,7 @@ Sessions in the API and SDKs use the exact same mechanism (and work the same) as
 
 After creating a session, the Session object returned will include plenty of relevant information about the current user, often used to customize the interface or enable further automation.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

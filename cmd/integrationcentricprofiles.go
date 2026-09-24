@@ -15,8 +15,9 @@ func init() {
 
 func IntegrationCentricProfiles() *cobra.Command {
 	IntegrationCentricProfiles := &cobra.Command{
-		Use:  "integration-centric-profiles [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "integration-centric-profiles [command]",
+		Short: "An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command integration-centric-profiles\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func IntegrationCentricProfiles() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsIntegrationCentricProfileList := files_sdk.IntegrationCentricProfileListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func IntegrationCentricProfiles() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIntegrationCentricProfileList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func IntegrationCentricProfiles() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func IntegrationCentricProfiles() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	IntegrationCentricProfiles.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func IntegrationCentricProfiles() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsIntegrationCentricProfileFind.Id, "id", 0, "Integration Centric Profile ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -162,8 +177,10 @@ func IntegrationCentricProfiles() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsIntegrationCentricProfileCreate.Name, "name", "", "Profile name")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&createExpectedRemoteServersJSON, "expected-remote-servers", "", "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`. Provide as a JSON array of objects.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "expected-remote-servers", "json")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "expected-remote-servers")
 	cmdCreate.Flags().Int64Var(&paramsIntegrationCentricProfileCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createUseForAllUsers, "use-for-all-users", createUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
 
@@ -222,6 +239,7 @@ func IntegrationCentricProfiles() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsIntegrationCentricProfileUpdate.Id, "id", 0, "Integration Centric Profile ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsIntegrationCentricProfileUpdate.Name, "name", "", "Profile name")
 	cmdUpdate.Flags().Int64Var(&paramsIntegrationCentricProfileUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().StringVar(&updateExpectedRemoteServersJSON, "expected-remote-servers", "", "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`. Provide as a JSON array of objects.")
@@ -257,6 +275,7 @@ func IntegrationCentricProfiles() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsIntegrationCentricProfileDelete.Id, "id", 0, "Integration Centric Profile ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

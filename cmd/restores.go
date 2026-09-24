@@ -19,8 +19,9 @@ func init() {
 
 func Restores() *cobra.Command {
 	Restores := &cobra.Command{
-		Use:  "restores [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "restores [command]",
+		Short: "A Restore kicks off a process to restore deleted data for your Site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command restores\n\t%v", args[0])
 		},
@@ -31,6 +32,7 @@ func Restores() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRestoreList := files_sdk.RestoreListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -45,6 +47,13 @@ func Restores() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRestoreList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -82,7 +91,11 @@ func Restores() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -101,6 +114,7 @@ func Restores() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Restores.AddCommand(cmdList)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -149,8 +163,10 @@ func Restores() *cobra.Command {
 	}
 	paramsRestoreCreate.EarliestDate = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsRestoreCreate.EarliestDate, "earliest-date", "Restore all files deleted after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "earliest-date")
 	cmdCreate.Flags().StringVar(&paramsRestoreCreate.Prefix, "prefix", "", "Prefix of the files/folders to restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items, specify an empty string (`''`) in the prefix field or omit the field from the request.")
 	cmdCreate.Flags().StringVar(&RestoreCreateRestorationType, "restoration-type", "", fmt.Sprintf("Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated access/authentication records. %v", reflect.ValueOf(paramsRestoreCreate.RestorationType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "restoration-type", paramsRestoreCreate.RestorationType.Enum())
 	cmdCreate.Flags().BoolVar(&createRestoreDeletedPermissions, "restore-deleted-permissions", createRestoreDeletedPermissions, "If true, we will also restore any Permissions that match the same path prefix from the same dates.")
 	cmdCreate.Flags().BoolVar(&createRestoreInPlace, "restore-in-place", createRestoreInPlace, "If true, we will restore the files in place (into their original paths). If false, we will create a new restoration folder in the root and restore files there.")
 	cmdCreate.Flags().BoolVar(&createUpdateTimestamps, "update-timestamps", createUpdateTimestamps, "If true, we will update the last modified timestamp of restored files to today's date. If false, we might trigger File Expiration to delete the file again.")

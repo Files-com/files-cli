@@ -34,8 +34,9 @@ func RemoteMounts() *cobra.Command {
 	var createFolder bool
 	var remoteServerName string
 	create := &cobra.Command{
-		Use:  "create",
-		Args: cobra.NoArgs,
+		Use:   "create",
+		Short: "Create Remote Mount",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if remoteServerName != "" {
 				var err error
@@ -97,6 +98,7 @@ func RemoteMounts() *cobra.Command {
 	usePagerList := true
 	paramsBehaviorList := files_sdk.BehaviorListParams{Filter: files_sdk.Behavior{Behavior: "remote_server_mount"}}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	cmdList := &cobra.Command{
 		Use:   "list",
 		Short: "List Remote Mounts",
@@ -107,6 +109,13 @@ func RemoteMounts() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBehaviorList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := behavior.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -123,7 +132,11 @@ func RemoteMounts() *cobra.Command {
 				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 			}
 
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, expandBehavior(), usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, expandBehavior(), cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -135,6 +148,7 @@ func RemoteMounts() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	mounts.AddCommand(cmdList)
 
 	var fieldsFind []string

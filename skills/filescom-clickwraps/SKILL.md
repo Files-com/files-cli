@@ -15,7 +15,7 @@ The values for `use_with_users`, `use_with_bundles`, `use_with_inboxes` are expl
 * `available` - This Clickwrap may be assigned in this context, but only by Site Admins.  We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.
 * `required` - This Clickwrap will always be used in this context, and may not be overridden.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

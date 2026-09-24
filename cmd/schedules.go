@@ -14,8 +14,9 @@ func init() {
 
 func Schedules() *cobra.Command {
 	Schedules := &cobra.Command{
-		Use:  "schedules [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "schedules [command]",
+		Short: "A Schedule is a named, reusable weekday-and-time schedule shared by scheduled resources across a Site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command schedules\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func Schedules() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsScheduleList := files_sdk.ScheduleListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 
 	cmdList := &cobra.Command{
@@ -39,6 +41,13 @@ func Schedules() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsScheduleList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -69,7 +78,11 @@ func Schedules() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -86,6 +99,7 @@ func Schedules() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Schedules.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -109,6 +123,7 @@ func Schedules() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsScheduleFind.Id, "id", 0, "Schedule ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -137,8 +152,11 @@ func Schedules() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsScheduleCreate.Name, "name", "", "Schedule name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64SliceVar(&paramsScheduleCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "0-based weekdays used by the Schedule. 0 is Sunday.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "schedule-days-of-week")
 	cmdCreate.Flags().StringSliceVar(&paramsScheduleCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format (24-hour).")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "schedule-times-of-day")
 	cmdCreate.Flags().StringVar(&paramsScheduleCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for scheduled times. If not set, times are interpreted as UTC.")
 	cmdCreate.Flags().StringVar(&paramsScheduleCreate.HolidayRegion, "holiday-region", "", "Optional holiday region on which linked resources do not run.")
 
@@ -193,6 +211,7 @@ func Schedules() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsScheduleUpdate.Id, "id", 0, "Schedule ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsScheduleUpdate.Name, "name", "", "Schedule name.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsScheduleUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "0-based weekdays used by the Schedule. 0 is Sunday.")
 	cmdUpdate.Flags().StringSliceVar(&paramsScheduleUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format (24-hour).")
@@ -228,6 +247,7 @@ func Schedules() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsScheduleDelete.Id, "id", 0, "Schedule ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

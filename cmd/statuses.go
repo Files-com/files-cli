@@ -11,8 +11,9 @@ func init() {
 
 func Statuses() *cobra.Command {
 	Statuses := &cobra.Command{
-		Use:  "statuses [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "statuses [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command statuses\n\t%v", args[0])
 		},

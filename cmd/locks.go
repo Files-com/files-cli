@@ -15,8 +15,9 @@ func init() {
 
 func Locks() *cobra.Command {
 	Locks := &cobra.Command{
-		Use:  "locks [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "locks [command]",
+		Short: "A Lock can be used by your custom-developed applications to implement file locking and concurrency features.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command locks\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func Locks() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsLockListFor := files_sdk.LockListForParams{}
 	var MaxPagesListFor int64
+	var jsonEnvelopeListFor bool
 	listForIncludeChildren := true
 
 	cmdListFor := &cobra.Command{
@@ -40,6 +42,13 @@ func Locks() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsLockListFor
 			params.MaxPages = MaxPagesListFor
+			var envelopeStyle string
+			if jsonEnvelopeListFor {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -69,7 +78,11 @@ func Locks() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListFor {
+				err = lib.JSONEnvelopeIter(it, fieldsListFor, listFilter, usePagerListFor, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -86,6 +99,7 @@ func Locks() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
+	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Locks.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -163,6 +177,7 @@ func Locks() *cobra.Command {
 	}
 	cmdDelete.Flags().StringVar(&paramsLockDelete.Path, "path", "", "Path")
 	cmdDelete.Flags().StringVar(&paramsLockDelete.Token, "token", "", "Lock token")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "token")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

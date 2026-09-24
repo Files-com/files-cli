@@ -14,14 +14,16 @@ func init() {
 
 func Config() *cobra.Command {
 	Config := &cobra.Command{
-		Use:  "config",
-		Args: cobra.ExactArgs(0),
-		Run:  func(cmd *cobra.Command, args []string) {},
+		Use:   "config",
+		Short: "Manages settings stored in the files-cli config file.",
+		Args:  cobra.ExactArgs(0),
+		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	configParams := &lib.Profile{}
 	directTransfers := true
 	configSet := &cobra.Command{
 		Use:     "set",
+		Short:   "Stores connection settings and defaults in the config file.",
 		Aliases: []string{"config-set"},
 		Run: func(cmd *cobra.Command, args []string) {
 			if configParams.Subdomain != "" {
@@ -78,6 +80,7 @@ func Config() *cobra.Command {
 	var resetDelete *cobra.Command
 	resetDelete = &cobra.Command{
 		Use:     "reset",
+		Short:   "Resets the flagged settings, or the whole profile when no flags are given.",
 		Aliases: []string{"config-reset"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			anyFlagSet := false
@@ -109,6 +112,7 @@ func Config() *cobra.Command {
 
 	configShow := &cobra.Command{
 		Use:     "show",
+		Short:   "Shows the settings stored for the current profile.",
 		Aliases: []string{"config-show"},
 		Run: func(cmd *cobra.Command, args []string) {
 			fields := ""

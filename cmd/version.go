@@ -18,6 +18,7 @@ var (
 func init() {
 	VersionCmd = &cobra.Command{
 		Use:     "version",
+		Short:   "Shows the files-cli version.",
 		Aliases: []string{"version"},
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {

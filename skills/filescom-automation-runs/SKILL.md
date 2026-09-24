@@ -12,7 +12,7 @@ Automation Runs can be retried upon `failure` or `partial_failure` by setting th
 
 When retries occur, a new AutomationRun will be created for each retry.  The property `retry_at` on the original run, if set, represents when that run will be retried next.  The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry.  The property `retry_of_run_id` will be set in the new run.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

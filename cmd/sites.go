@@ -14,8 +14,9 @@ func init() {
 
 func Sites() *cobra.Command {
 	Sites := &cobra.Command{
-		Use:  "sites [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sites [command]",
+		Short: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sites\n\t%v", args[0])
 		},

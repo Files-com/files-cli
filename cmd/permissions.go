@@ -15,8 +15,9 @@ func init() {
 
 func Permissions() *cobra.Command {
 	Permissions := &cobra.Command{
-		Use:  "permissions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "permissions [command]",
+		Short: "A Permission object represents a grant of access permission on a specific Path to a User or Group.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command permissions\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func Permissions() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPermissionList := files_sdk.PermissionListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -43,6 +45,13 @@ func Permissions() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPermissionList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -94,7 +103,11 @@ func Permissions() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -120,6 +133,7 @@ func Permissions() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Permissions.AddCommand(cmdList)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -190,6 +204,7 @@ func Permissions() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPermissionDelete.Id, "id", 0, "Permission ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

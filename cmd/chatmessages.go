@@ -11,8 +11,9 @@ func init() {
 
 func ChatMessages() *cobra.Command {
 	ChatMessages := &cobra.Command{
-		Use:  "chat-messages [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "chat-messages [command]",
+		Short: "A ChatMessage represents one message within a ChatSession, which is a conversation with the Files.com AI Assistant.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command chat-messages\n\t%v", args[0])
 		},

@@ -14,8 +14,9 @@ func init() {
 
 func SyncRuns() *cobra.Command {
 	SyncRuns := &cobra.Command{
-		Use:  "sync-runs [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sync-runs [command]",
+		Short: "A SyncRun represents a single execution (run) of a Sync job.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sync-runs\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func SyncRuns() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSyncRunList := files_sdk.SyncRunListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -44,6 +46,13 @@ func SyncRuns() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSyncRunList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -109,7 +118,11 @@ func SyncRuns() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -137,6 +150,7 @@ func SyncRuns() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	SyncRuns.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -160,6 +174,7 @@ func SyncRuns() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSyncRunFind.Id, "id", 0, "Sync Run ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -15,8 +15,9 @@ func init() {
 
 func PublicKeys() *cobra.Command {
 	PublicKeys := &cobra.Command{
-		Use:  "public-keys [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "public-keys [command]",
+		Short: "A PublicKey is used to authenticate to Files.com via SFTP (SSH File Transfer Protocol).",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command public-keys\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func PublicKeys() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPublicKeyList := files_sdk.PublicKeyListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -45,6 +47,13 @@ func PublicKeys() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPublicKeyList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -110,7 +119,11 @@ func PublicKeys() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -138,6 +151,7 @@ func PublicKeys() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	PublicKeys.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -161,6 +175,7 @@ func PublicKeys() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPublicKeyFind.Id, "id", 0, "Public Key ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -195,6 +210,7 @@ func PublicKeys() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsPublicKeyCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.Title, "title", "", "Internal reference for key.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "title")
 	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.PublicKey, "public-key", "", "Actual contents of SSH key.")
 	cmdCreate.Flags().BoolVar(&createGenerateKeypair, "generate-keypair", createGenerateKeypair, "If true, generate a new SSH key pair. Can not be used with `public_key`")
 	cmdCreate.Flags().StringVar(&paramsPublicKeyCreate.GeneratePrivateKeyPassword, "generate-private-key-password", "", "Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.")
@@ -240,7 +256,9 @@ func PublicKeys() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPublicKeyUpdate.Id, "id", 0, "Public Key ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsPublicKeyUpdate.Title, "title", "", "Internal reference for key.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "title")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -271,6 +289,7 @@ func PublicKeys() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPublicKeyDelete.Id, "id", 0, "Public Key ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

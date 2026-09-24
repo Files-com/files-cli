@@ -14,8 +14,9 @@ func init() {
 
 func Invoices() *cobra.Command {
 	Invoices := &cobra.Command{
-		Use:  "invoices [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "invoices [command]",
+		Short: "An AccountLineItem is a single line item in the accounting ledger for a billing account.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command invoices\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func Invoices() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsInvoiceList := files_sdk.InvoiceListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func Invoices() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsInvoiceList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := invoice.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func Invoices() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -75,6 +88,7 @@ func Invoices() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Invoices.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -98,6 +112,7 @@ func Invoices() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsInvoiceFind.Id, "id", 0, "Invoice ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

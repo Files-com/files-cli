@@ -17,8 +17,9 @@ func init() {
 
 func PartnerChannels() *cobra.Command {
 	PartnerChannels := &cobra.Command{
-		Use:  "partner-channels [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "partner-channels [command]",
+		Short: "A PartnerChannel defines a structured communication path within a Partner root folder, including directional folder names and partner-scoped routing configuration.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partner-channels\n\t%v", args[0])
 		},
@@ -29,6 +30,7 @@ func PartnerChannels() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPartnerChannelList := files_sdk.PartnerChannelListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -43,6 +45,13 @@ func PartnerChannels() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPartnerChannelList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -80,7 +89,11 @@ func PartnerChannels() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -99,6 +112,7 @@ func PartnerChannels() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	PartnerChannels.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -122,6 +136,7 @@ func PartnerChannels() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPartnerChannelFind.Id, "id", 0, "Partner Channel ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -160,6 +175,7 @@ func PartnerChannels() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&PartnerChannelCreateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelCreate.Direction.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "direction", paramsPartnerChannelCreate.Direction.Enum())
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
@@ -167,6 +183,7 @@ func PartnerChannels() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelCreate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.ToPartnerRoutePath, "to-partner-route-path", "", "Optional route path for files delivered to the Partner.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerChannelCreate.PartnerId, "partner-id", 0, "ID of the Partner this Channel belongs to.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "partner-id")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.Path, "path", "", "Channel path relative to the Partner root folder.")
 	cmdCreate.Flags().Int64Var(&paramsPartnerChannelCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this Partner Channel.")
 
@@ -240,7 +257,9 @@ func PartnerChannels() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerChannelUpdate.Id, "id", 0, "Partner Channel ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&PartnerChannelUpdateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelUpdate.Direction.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "direction", paramsPartnerChannelUpdate.Direction.Enum())
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
@@ -278,6 +297,7 @@ func PartnerChannels() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPartnerChannelDelete.Id, "id", 0, "Partner Channel ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

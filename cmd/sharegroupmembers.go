@@ -11,8 +11,9 @@ func init() {
 
 func ShareGroupMembers() *cobra.Command {
 	ShareGroupMembers := &cobra.Command{
-		Use:  "share-group-members [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "share-group-members [command]",
+		Short: "A ShareGroupMember is a single user record that belongs to a ShareGroup.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command share-group-members\n\t%v", args[0])
 		},

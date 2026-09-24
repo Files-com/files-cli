@@ -18,8 +18,9 @@ func init() {
 
 func Expectations() *cobra.Command {
 	Expectations := &cobra.Command{
-		Use:  "expectations [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "expectations [command]",
+		Short: "Expectations let your Files.com site define what “correct” file delivery looks like, continuously evaluate whether it happened, and keep history when it did not.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command expectations\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func Expectations() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsExpectationList := files_sdk.ExpectationListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func Expectations() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsExpectationList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func Expectations() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func Expectations() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Expectations.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func Expectations() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExpectationFind.Id, "id", 0, "Expectation ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -181,6 +196,7 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.ExcludePattern, "exclude-pattern", "", "Optional source exclusion glob.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, the expectation is disabled.")
 	cmdCreate.Flags().StringVar(&ExpectationCreateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationCreate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "trigger", paramsExpectationCreate.Trigger.Enum())
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdCreate.Flags().Int64SliceVar(&paramsExpectationCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
@@ -224,6 +240,7 @@ func Expectations() *cobra.Command {
 		},
 	}
 	cmdTriggerEvaluation.Flags().Int64Var(&paramsExpectationTriggerEvaluation.Id, "id", 0, "Expectation ID.")
+	lib.SetFlagAPIRequired(cmdTriggerEvaluation.Flags(), "id")
 
 	cmdTriggerEvaluation.Flags().StringSliceVar(&fieldsTriggerEvaluation, "fields", []string{}, "comma separated list of field names")
 	cmdTriggerEvaluation.Flags().StringSliceVar(&formatTriggerEvaluation, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -341,6 +358,7 @@ func Expectations() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.Id, "id", 0, "Expectation ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Name, "name", "", "Expectation name.")
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Description, "description", "", "Expectation description.")
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Path, "path", "", "Path scope for the expectation. Supports workspace-relative presentation.")
@@ -348,6 +366,7 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.ExcludePattern, "exclude-pattern", "", "Optional source exclusion glob.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, the expectation is disabled.")
 	cmdUpdate.Flags().StringVar(&ExpectationUpdateTrigger, "trigger", "", fmt.Sprintf("How this expectation opens windows. %v", reflect.ValueOf(paramsExpectationUpdate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "trigger", paramsExpectationUpdate.Trigger.Enum())
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the expectation.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsExpectationUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
@@ -393,6 +412,7 @@ func Expectations() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsExpectationDelete.Id, "id", 0, "Expectation ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -18,8 +18,9 @@ func init() {
 
 func RemoteMountBackends() *cobra.Command {
 	RemoteMountBackends := &cobra.Command{
-		Use:  "remote-mount-backends [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "remote-mount-backends [command]",
+		Short: "A Remote Mount Backend is used to provide high availability for a Remote Server Mount Folder Behavior.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command remote-mount-backends\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func RemoteMountBackends() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRemoteMountBackendList := files_sdk.RemoteMountBackendListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
@@ -43,6 +45,13 @@ func RemoteMountBackends() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteMountBackendList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
 			if parseListFilterErr != nil {
@@ -73,7 +82,11 @@ func RemoteMountBackends() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -90,6 +103,7 @@ func RemoteMountBackends() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	RemoteMountBackends.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -113,6 +127,7 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteMountBackendFind.Id, "id", 0, "Remote Mount Backend ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -160,13 +175,17 @@ func RemoteMountBackends() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Fall, "fall", 0, "Number of consecutive failures before considering the backend unhealthy.")
 	cmdCreate.Flags().BoolVar(&createHealthCheckEnabled, "health-check-enabled", createHealthCheckEnabled, "True if health checks are enabled for this backend.")
 	cmdCreate.Flags().StringVar(&RemoteMountBackendCreateHealthCheckType, "health-check-type", "", fmt.Sprintf("Type of health check to perform. %v", reflect.ValueOf(paramsRemoteMountBackendCreate.HealthCheckType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "health-check-type", paramsRemoteMountBackendCreate.HealthCheckType.Enum())
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Interval, "interval", 0, "Interval in seconds between health checks.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Priority, "priority", 0, "Priority of this backend.")
 	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Rise, "rise", 0, "Number of consecutive successes before considering the backend healthy.")
 	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.CanaryFilePath, "canary-file-path", "", "Path to the canary file used for health checks.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "canary-file-path")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerMountId, "remote-server-mount-id", 0, "The mount ID of the Remote Server Mount that this backend is associated with.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "remote-server-mount-id")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.RemoteServerId, "remote-server-id", 0, "The remote server that this backend is associated with.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "remote-server-id")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -197,6 +216,7 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 	cmdResetStatus.Flags().Int64Var(&paramsRemoteMountBackendResetStatus.Id, "id", 0, "Remote Mount Backend ID.")
+	lib.SetFlagAPIRequired(cmdResetStatus.Flags(), "id")
 
 	cmdResetStatus.Flags().StringSliceVar(&fieldsResetStatus, "fields", []string{}, "comma separated list of field names")
 	cmdResetStatus.Flags().StringSliceVar(&formatResetStatus, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -277,10 +297,12 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Id, "id", 0, "Remote Mount Backend ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "True if this backend is enabled.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Fall, "fall", 0, "Number of consecutive failures before considering the backend unhealthy.")
 	cmdUpdate.Flags().BoolVar(&updateHealthCheckEnabled, "health-check-enabled", updateHealthCheckEnabled, "True if health checks are enabled for this backend.")
 	cmdUpdate.Flags().StringVar(&RemoteMountBackendUpdateHealthCheckType, "health-check-type", "", fmt.Sprintf("Type of health check to perform. %v", reflect.ValueOf(paramsRemoteMountBackendUpdate.HealthCheckType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "health-check-type", paramsRemoteMountBackendUpdate.HealthCheckType.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Interval, "interval", 0, "Interval in seconds between health checks.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Priority, "priority", 0, "Priority of this backend.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteMountBackendUpdate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
@@ -317,6 +339,7 @@ func RemoteMountBackends() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRemoteMountBackendDelete.Id, "id", 0, "Remote Mount Backend ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -15,8 +15,9 @@ func init() {
 
 func EventSubscriptions() *cobra.Command {
 	EventSubscriptions := &cobra.Command{
-		Use:  "event-subscriptions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "event-subscriptions [command]",
+		Short: "An EventSubscription selects EventRecords for an EventChannel and sends them to one or more EventTargets.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command event-subscriptions\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func EventSubscriptions() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsEventSubscriptionList := files_sdk.EventSubscriptionListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func EventSubscriptions() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsEventSubscriptionList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func EventSubscriptions() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func EventSubscriptions() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	EventSubscriptions.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func EventSubscriptions() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsEventSubscriptionFind.Id, "id", 0, "Event Subscription ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -173,6 +188,7 @@ func EventSubscriptions() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsEventSubscriptionCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace subscription applies to events from all workspaces.")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Name, "name", "", "Event Subscription name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Subject, "subject", "", "Custom subject line to use for notification emails.")
 	cmdCreate.Flags().StringVar(&paramsEventSubscriptionCreate.Message, "message", "", "Custom message to include in notification emails.")
 	cmdCreate.Flags().BoolVar(&createMessageOnly, "message-only", createMessageOnly, "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.")
@@ -262,6 +278,7 @@ func EventSubscriptions() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsEventSubscriptionUpdate.Id, "id", 0, "Event Subscription ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().Int64Var(&paramsEventSubscriptionUpdate.EventChannelId, "event-channel-id", 0, "Event Channel ID")
 	cmdUpdate.Flags().Int64Var(&paramsEventSubscriptionUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace subscription applies to events from all workspaces.")
@@ -304,6 +321,7 @@ func EventSubscriptions() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsEventSubscriptionDelete.Id, "id", 0, "Event Subscription ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

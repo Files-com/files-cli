@@ -17,8 +17,9 @@ func init() {
 
 func RemoteServerCredentials() *cobra.Command {
 	RemoteServerCredentials := &cobra.Command{
-		Use:  "remote-server-credentials [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "remote-server-credentials [command]",
+		Short: "A RemoteServerCredential is a way to store a credential for Remote Servers in a centralized vault and then reference it from Remote Server definitions.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command remote-server-credentials\n\t%v", args[0])
 		},
@@ -29,6 +30,7 @@ func RemoteServerCredentials() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRemoteServerCredentialList := files_sdk.RemoteServerCredentialListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -44,6 +46,13 @@ func RemoteServerCredentials() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteServerCredentialList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -88,7 +97,11 @@ func RemoteServerCredentials() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -109,6 +122,7 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	RemoteServerCredentials.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -132,6 +146,7 @@ func RemoteServerCredentials() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerCredentialFind.Id, "id", 0, "Remote Server Credential ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -169,6 +184,7 @@ func RemoteServerCredentials() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Name, "name", "", "Internal name for your reference")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.Description, "description", "", "Internal description for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCredentialCreateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialCreate.ServerType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "server-type", paramsRemoteServerCredentialCreate.ServerType.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCredentialCreate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCredentialCreate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
@@ -348,9 +364,11 @@ func RemoteServerCredentials() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerCredentialUpdate.Id, "id", 0, "Remote Server Credential ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Name, "name", "", "Internal name for your reference")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.Description, "description", "", "Internal description for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerCredentialUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server. %v", reflect.ValueOf(paramsRemoteServerCredentialUpdate.ServerType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "server-type", paramsRemoteServerCredentialUpdate.ServerType.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.AwsAccessKey, "aws-access-key", "", "AWS Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerCredentialUpdate.S3AssumeRoleArn, "s3-assume-role-arn", "", "AWS IAM Role ARN for AssumeRole authentication.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerCredentialUpdate.S3AssumeRoleDurationSeconds, "s3-assume-role-duration-seconds", 0, "Session duration in seconds for AssumeRole authentication (900-43200).")
@@ -412,6 +430,7 @@ func RemoteServerCredentials() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerCredentialDelete.Id, "id", 0, "Remote Server Credential ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

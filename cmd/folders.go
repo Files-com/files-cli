@@ -18,8 +18,9 @@ func init() {
 
 func Folders() *cobra.Command {
 	Folders := &cobra.Command{
-		Use:  "folders [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "folders [command]",
+		Short: "A File object represents a file or folder on your Files.com site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command folders\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func Folders() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsFolderListFor := files_sdk.FolderListForParams{}
 	var MaxPagesListFor int64
+	var jsonEnvelopeListFor bool
 	var listForSortByArgs string
 	listForSearchAll := true
 	listForWithPreviews := true
@@ -50,6 +52,13 @@ func Folders() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsFolderListFor
 			params.MaxPages = MaxPagesListFor
+			var envelopeStyle string
+			if jsonEnvelopeListFor {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -111,7 +120,11 @@ func Folders() *cobra.Command {
 					}
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListFor {
+				err = lib.JSONEnvelopeIter(it, fieldsListFor, listFilter, usePagerListFor, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -142,6 +155,7 @@ func Folders() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
+	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string

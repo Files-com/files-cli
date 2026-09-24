@@ -20,8 +20,9 @@ func init() {
 
 func Login() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "login",
-		Args: cobra.NoArgs,
+		Use:   "login",
+		Short: "Logs in with a username and password and stores the session.",
+		Args:  cobra.NoArgs,
 		PreRunE: func(command *cobra.Command, args []string) error {
 			// the non-interactive flag is hidden, but is technically still
 			// available. The logic here returns an error indicating that

@@ -18,8 +18,9 @@ func init() {
 
 func ScheduledExports() *cobra.Command {
 	ScheduledExports := &cobra.Command{
-		Use:  "scheduled-exports [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "scheduled-exports [command]",
+		Short: "A Scheduled Export defines a recurring schedule for generating one of the built-in CSV exports and e-mailing it to a Site Admin recipient.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command scheduled-exports\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func ScheduledExports() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsScheduledExportList := files_sdk.ScheduledExportListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -45,6 +47,13 @@ func ScheduledExports() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsScheduledExportList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -89,7 +98,11 @@ func ScheduledExports() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -110,6 +123,7 @@ func ScheduledExports() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ScheduledExports.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -133,6 +147,7 @@ func ScheduledExports() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsScheduledExportFind.Id, "id", 0, "Scheduled Export ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -182,12 +197,15 @@ func ScheduledExports() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.Name, "name", "", "Name for this scheduled export.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.ExportType, "export-type", "", "Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "export-type")
 	cmdCreate.Flags().StringVar(&createExportOptionsJSON, "export-options", "", "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "export-options", "json")
 	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.UserId, "user-id", 0, "Site Admin user who receives the completed export e-mail.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "If true, this scheduled export will not run.")
 	cmdCreate.Flags().StringVar(&ScheduledExportCreateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportCreate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "trigger", paramsScheduledExportCreate.Trigger.Enum())
 	cmdCreate.Flags().StringVar(&paramsScheduledExportCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdCreate.Flags().Int64Var(&paramsScheduledExportCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdCreate.Flags().Int64SliceVar(&paramsScheduledExportCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
@@ -289,6 +307,7 @@ func ScheduledExports() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.Id, "id", 0, "Scheduled Export ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.Name, "name", "", "Name for this scheduled export.")
 	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.ExportType, "export-type", "", "Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit")
 	cmdUpdate.Flags().StringVar(&updateExportOptionsJSON, "export-options", "", "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`. Provide as a JSON object.")
@@ -296,6 +315,7 @@ func ScheduledExports() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.UserId, "user-id", 0, "Site Admin user who receives the completed export e-mail.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this scheduled export will not run.")
 	cmdUpdate.Flags().StringVar(&ScheduledExportUpdateTrigger, "trigger", "", fmt.Sprintf("Schedule trigger type: `daily` or `custom_schedule`. %v", reflect.ValueOf(paramsScheduledExportUpdate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "trigger", paramsScheduledExportUpdate.Trigger.Enum())
 	cmdUpdate.Flags().StringVar(&paramsScheduledExportUpdate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the scheduled export.")
 	cmdUpdate.Flags().Int64Var(&paramsScheduledExportUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsScheduledExportUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
@@ -334,6 +354,7 @@ func ScheduledExports() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsScheduledExportDelete.Id, "id", 0, "Scheduled Export ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

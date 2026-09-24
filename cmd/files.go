@@ -18,8 +18,9 @@ func init() {
 
 func Files() *cobra.Command {
 	Files := &cobra.Command{
-		Use:  "files [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "files [command]",
+		Short: "A File object represents a file or folder on your Files.com site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command files\n\t%v", args[0])
 		},
@@ -334,6 +335,7 @@ func Files() *cobra.Command {
 	}
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Path, "path", "", "Path to operate on.")
 	cmdCopy.Flags().StringVar(&paramsFileCopy.Destination, "destination", "", "Copy destination path.")
+	lib.SetFlagAPIRequired(cmdCopy.Flags(), "destination")
 	cmdCopy.Flags().BoolVar(&copyCopyBehaviors, "copy-behaviors", copyCopyBehaviors, "If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree?")
 	cmdCopy.Flags().BoolVar(&copyStructure, "structure", copyStructure, "Copy structure only?")
 	cmdCopy.Flags().BoolVar(&copyOverwrite, "overwrite", copyOverwrite, "Overwrite existing file(s) in the destination?")
@@ -387,6 +389,7 @@ func Files() *cobra.Command {
 	}
 	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
 	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
+	lib.SetFlagAPIRequired(cmdMove.Flags(), "destination")
 	cmdMove.Flags().BoolVar(&moveOverwrite, "overwrite", moveOverwrite, "Overwrite existing file(s) in the destination?")
 
 	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
@@ -428,8 +431,11 @@ func Files() *cobra.Command {
 	}
 	cmdTransform.Flags().StringVar(&paramsFileTransform.Path, "path", "", "Path to operate on.")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.Destination, "destination", "", "Destination file path for the transformed output.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "destination")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "transform-type")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.TargetFormat, "target-format", "", "Destination format to create.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "target-format")
 	cmdTransform.Flags().StringVar(&paramsFileTransform.Script, "script", "", "Files TransformScript source. Required when transform_type is `files_transform_script_execute`.")
 	cmdTransform.Flags().Int64Var(&paramsFileTransform.Width, "width", 0, "Maximum output width for image_convert.")
 	cmdTransform.Flags().Int64Var(&paramsFileTransform.Height, "height", 0, "Maximum output height for image_convert.")
@@ -479,6 +485,7 @@ func Files() *cobra.Command {
 	}
 	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Path, "path", "", "Path to operate on.")
 	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Destination, "destination", "", "Destination file path for the decrypted file.")
+	lib.SetFlagAPIRequired(cmdGpgDecrypt.Flags(), "destination")
 	cmdGpgDecrypt.Flags().Int64SliceVar(&paramsFileGpgDecrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used.")
 	cmdGpgDecrypt.Flags().Int64Var(&paramsFileGpgDecrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for decryption.")
 	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptUseAllPrivateKeys, "use-all-private-keys", gpgDecryptUseAllPrivateKeys, "Use every accessible private GPG key in the source workspace for decryption.")
@@ -525,6 +532,7 @@ func Files() *cobra.Command {
 	}
 	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Path, "path", "", "Path to operate on.")
 	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Destination, "destination", "", "Destination file path for the encrypted file.")
+	lib.SetFlagAPIRequired(cmdGpgEncrypt.Flags(), "destination")
 	cmdGpgEncrypt.Flags().Int64SliceVar(&paramsFileGpgEncrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to encrypt with.")
 	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for encryption.")
 	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.SigningKeyId, "signing-key-id", 0, "Optional GPG Key ID to sign with.")
@@ -567,6 +575,7 @@ func Files() *cobra.Command {
 	}
 	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Path, "path", "", "ZIP file path to extract.")
 	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Destination, "destination", "", "Destination folder path for extracted files.")
+	lib.SetFlagAPIRequired(cmdUnzip.Flags(), "destination")
 	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Filename, "filename", "", "Optional single entry filename to extract.")
 	cmdUnzip.Flags().BoolVar(&unzipOverwrite, "overwrite", unzipOverwrite, "Overwrite existing files in the destination?")
 
@@ -602,7 +611,9 @@ func Files() *cobra.Command {
 		},
 	}
 	cmdZip.Flags().StringSliceVar(&paramsFileZip.Paths, "paths", []string{}, "Paths to include in the ZIP.")
+	lib.SetFlagAPIRequired(cmdZip.Flags(), "paths")
 	cmdZip.Flags().StringVar(&paramsFileZip.Destination, "destination", "", "Destination file path for the ZIP.")
+	lib.SetFlagAPIRequired(cmdZip.Flags(), "destination")
 	cmdZip.Flags().BoolVar(&zipOverwrite, "overwrite", zipOverwrite, "Overwrite existing file in the destination?")
 
 	cmdZip.Flags().StringSliceVar(&fieldsZip, "fields", []string{}, "comma separated list of field names")

@@ -18,7 +18,7 @@ Note: Failed Logins are no longer logged in this logging mechanism.
 The `failedlogin` value is still listed in the `action` documentation for legacy reasons.
 Use API or other protocol logs (SFTP, FTP, etc.) for detailed and better information about login failures.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

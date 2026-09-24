@@ -14,8 +14,9 @@ func init() {
 
 func AutomationRuns() *cobra.Command {
 	AutomationRuns := &cobra.Command{
-		Use:  "automation-runs [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "automation-runs [command]",
+		Short: "An AutomationRun is a record with information about a single execution of a given Automation.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command automation-runs\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func AutomationRuns() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAutomationRunList := files_sdk.AutomationRunListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -40,6 +42,13 @@ func AutomationRuns() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAutomationRunList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -77,7 +86,11 @@ func AutomationRuns() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -93,11 +106,13 @@ func AutomationRuns() *cobra.Command {
 	cmdList.Flags().StringVar(&paramsAutomationRunList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsAutomationRunList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().Int64Var(&paramsAutomationRunList.AutomationId, "automation-id", 0, "ID of the associated Automation.")
+	lib.SetFlagAPIRequired(cmdList.Flags(), "automation-id")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	AutomationRuns.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -121,6 +136,7 @@ func AutomationRuns() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationRunFind.Id, "id", 0, "Automation Run ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -149,7 +165,9 @@ func AutomationRuns() *cobra.Command {
 		},
 	}
 	cmdFindNode.Flags().Int64Var(&paramsAutomationRunFindNode.Id, "id", 0, "Automation Run ID.")
+	lib.SetFlagAPIRequired(cmdFindNode.Flags(), "id")
 	cmdFindNode.Flags().StringVar(&paramsAutomationRunFindNode.NodeId, "node-id", "", "Node ID from the pinned Automation definition.")
+	lib.SetFlagAPIRequired(cmdFindNode.Flags(), "node-id")
 
 	cmdFindNode.Flags().StringSliceVar(&fieldsFindNode, "fields", []string{}, "comma separated list of field names")
 	cmdFindNode.Flags().StringSliceVar(&formatFindNode, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -178,6 +196,7 @@ func AutomationRuns() *cobra.Command {
 		},
 	}
 	cmdCancel.Flags().Int64Var(&paramsAutomationRunCancel.Id, "id", 0, "Automation Run ID.")
+	lib.SetFlagAPIRequired(cmdCancel.Flags(), "id")
 
 	cmdCancel.Flags().StringSliceVar(&fieldsCancel, "fields", []string{}, "comma separated list of field names")
 	cmdCancel.Flags().StringSliceVar(&formatCancel, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -206,7 +225,9 @@ func AutomationRuns() *cobra.Command {
 		},
 	}
 	cmdRerun.Flags().Int64Var(&paramsAutomationRunRerun.Id, "id", 0, "Automation Run ID.")
+	lib.SetFlagAPIRequired(cmdRerun.Flags(), "id")
 	cmdRerun.Flags().StringVar(&paramsAutomationRunRerun.NodeId, "node-id", "", "Node ID at which execution should resume.")
+	lib.SetFlagAPIRequired(cmdRerun.Flags(), "node-id")
 
 	cmdRerun.Flags().StringSliceVar(&fieldsRerun, "fields", []string{}, "comma separated list of field names")
 	cmdRerun.Flags().StringSliceVar(&formatRerun, "format", lib.FormatDefaults, lib.FormatHelpText)

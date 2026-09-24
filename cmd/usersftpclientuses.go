@@ -14,8 +14,9 @@ func init() {
 
 func UserSftpClientUses() *cobra.Command {
 	UserSftpClientUses := &cobra.Command{
-		Use:  "user-sftp-client-uses [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "user-sftp-client-uses [command]",
+		Short: "A UserSftpClientUse is a way to see the exact set of SFTP clients used by a given user.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command user-sftp-client-uses\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func UserSftpClientUses() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUserSftpClientUseList := files_sdk.UserSftpClientUseListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func UserSftpClientUses() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserSftpClientUseList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := user_sftp_client_use.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func UserSftpClientUses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -76,6 +89,7 @@ func UserSftpClientUses() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	UserSftpClientUses.AddCommand(cmdList)
 	return UserSftpClientUses
 }

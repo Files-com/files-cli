@@ -32,9 +32,20 @@ func TestEscapeJSONForTerminal(t *testing.T) {
 	}
 }
 
+// cursorSliceIter is a SliceIter that reports a next-page cursor, as the
+// SDK's list iterators do.
+type cursorSliceIter struct {
+	SliceIter
+	cursor string
+}
+
+func (i *cursorSliceIter) GetCursor() string {
+	return i.cursor
+}
+
 // Terminal-destined JSON must not carry DEL or C1 raw, but must still decode
-// to the exact remote value. Covers the iterator (list commands) and single
-// resource (Format) paths, pretty and raw.
+// to the exact remote value. Covers the iterator (list commands), list
+// envelope, and single resource (Format) paths, pretty and raw.
 func TestJSONTerminalOutputEscapesDELAndC1(t *testing.T) {
 	remote := RemoteFile{Path: c1AndDEL, DisplayName: unicodeName}
 	t.Setenv("TERM", "dumb") // keeps the list spinner's clear-screen from reaching the test output
@@ -45,6 +56,9 @@ func TestJSONTerminalOutputEscapesDELAndC1(t *testing.T) {
 		},
 		"iterator raw": func(out *os.File) error {
 			return JsonMarshalIter(context.Background(), &SliceIter{Items: []interface{}{remote}}, []string{}, nil, false, "raw", out)
+		},
+		"envelope pretty": func(out *os.File) error {
+			return JSONEnvelopeIter(&cursorSliceIter{SliceIter: SliceIter{Items: []interface{}{remote}}, cursor: "next"}, []string{}, nil, false, "pretty", out)
 		},
 		"single pretty": func(out *os.File) error {
 			return Format(context.Background(), remote, []string{"json"}, []string{}, false, out)
@@ -65,11 +79,18 @@ func TestJSONTerminalOutputEscapesDELAndC1(t *testing.T) {
 			// the pty turns LF into CR LF; undo that before decoding
 			jsonText := strings.ReplaceAll(got, "\r\n", "\n")
 			var decoded []RemoteFile
-			if strings.HasPrefix(name, "single") {
+			switch {
+			case strings.HasPrefix(name, "single"):
 				var single RemoteFile
 				require.NoError(t, json.Unmarshal([]byte(jsonText), &single), jsonText)
 				decoded = []RemoteFile{single}
-			} else {
+			case strings.HasPrefix(name, "envelope"):
+				var envelope struct {
+					Data []RemoteFile `json:"data"`
+				}
+				require.NoError(t, json.Unmarshal([]byte(jsonText), &envelope), jsonText)
+				decoded = envelope.Data
+			default:
 				require.NoError(t, json.Unmarshal([]byte(jsonText), &decoded), jsonText)
 			}
 			assert.Equal(t, []RemoteFile{remote}, decoded, "terminal JSON decodes to the exact value")

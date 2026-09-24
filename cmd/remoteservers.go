@@ -18,8 +18,9 @@ func init() {
 
 func RemoteServers() *cobra.Command {
 	RemoteServers := &cobra.Command{
-		Use:  "remote-servers [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "remote-servers [command]",
+		Short: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command remote-servers\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func RemoteServers() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRemoteServerList := files_sdk.RemoteServerListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -45,6 +47,13 @@ func RemoteServers() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRemoteServerList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -89,7 +98,11 @@ func RemoteServers() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -111,6 +124,7 @@ func RemoteServers() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	RemoteServers.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -134,6 +148,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsRemoteServerFind.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -162,6 +177,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdAgentNodes.Flags().Int64Var(&paramsRemoteServerAgentNodes.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdAgentNodes.Flags(), "id")
 
 	cmdAgentNodes.Flags().StringSliceVar(&fieldsAgentNodes, "fields", []string{}, "comma separated list of field names")
 	cmdAgentNodes.Flags().StringSliceVar(&formatAgentNodes, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -190,6 +206,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdFindConfigurationFile.Flags().Int64Var(&paramsRemoteServerFindConfigurationFile.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdFindConfigurationFile.Flags(), "id")
 
 	cmdFindConfigurationFile.Flags().StringSliceVar(&fieldsFindConfigurationFile, "fields", []string{}, "comma separated list of field names")
 	cmdFindConfigurationFile.Flags().StringSliceVar(&formatFindConfigurationFile, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -323,6 +340,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.BackblazeB2Bucket, "backblaze-b2-bucket", "", "Backblaze B2 Cloud Storage: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.BackblazeB2S3Endpoint, "backblaze-b2-s3-endpoint", "", "Backblaze B2 Cloud Storage: S3 Endpoint")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateBufferUploads, "buffer-uploads", "", fmt.Sprintf("If set to always, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com. If set to auto, we will perform this optimization if we believe it to be a benefit in a given situation. %v", reflect.ValueOf(paramsRemoteServerCreate.BufferUploads.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "buffer-uploads", paramsRemoteServerCreate.BufferUploads.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")
@@ -333,10 +351,12 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilebaseBucket, "filebase-bucket", "", "Filebase: Bucket name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesApiKey, "files-api-key", "", "Files.com direct link: API key used once to pair the remote server.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "files-agent-permission-set", paramsRemoteServerCreate.FilesAgentPermissionSet.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "google-cloud-storage-authentication-method", paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageOauthScope, "google-cloud-storage-oauth-scope", "", "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
@@ -348,6 +368,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.MaxConnections, "max-connections", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Name, "name", "", "Internal name for your reference")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerCreate.OneDriveAccountType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "one-drive-account-type", paramsRemoteServerCreate.OneDriveAccountType.Enum())
 	cmdCreate.Flags().BoolVar(&createPinToSiteRegion, "pin-to-site-region", createPinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.Port, "port", 0, "Port for remote server.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
@@ -362,12 +383,15 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", createS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Region, "s3-region", "", "S3 region")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "server-certificate", paramsRemoteServerCreate.ServerCertificate.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "server-type", paramsRemoteServerCreate.ServerType.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerCreate.Ssl.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "ssl", paramsRemoteServerCreate.Ssl.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.Username, "username", "", "Remote server username.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.WasabiBucket, "wasabi-bucket", "", "Wasabi: Bucket name")
@@ -410,6 +434,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdAgentPushUpdate.Flags().Int64Var(&paramsRemoteServerAgentPushUpdate.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdAgentPushUpdate.Flags(), "id")
 
 	cmdAgentPushUpdate.Flags().StringSliceVar(&fieldsAgentPushUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdAgentPushUpdate.Flags().StringSliceVar(&formatAgentPushUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -743,6 +768,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Password, "password", "", "Password, if needed.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.PrivateKey, "private-key", "", "Private key, if needed.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.PrivateKeyPassphrase, "private-key-passphrase", "", "Passphrase for private key if needed.")
@@ -776,6 +802,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.BackblazeB2Bucket, "backblaze-b2-bucket", "", "Backblaze B2 Cloud Storage: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.BackblazeB2S3Endpoint, "backblaze-b2-s3-endpoint", "", "Backblaze B2 Cloud Storage: S3 Endpoint")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateBufferUploads, "buffer-uploads", "", fmt.Sprintf("If set to always, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com. If set to auto, we will perform this optimization if we believe it to be a benefit in a given situation. %v", reflect.ValueOf(paramsRemoteServerUpdate.BufferUploads.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "buffer-uploads", paramsRemoteServerUpdate.BufferUploads.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareAccessKey, "cloudflare-access-key", "", "Cloudflare: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareBucket, "cloudflare-bucket", "", "Cloudflare: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.CloudflareEndpoint, "cloudflare-endpoint", "", "Cloudflare: endpoint")
@@ -786,10 +813,12 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilebaseBucket, "filebase-bucket", "", "Filebase: Bucket name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesApiKey, "files-api-key", "", "Files.com direct link: API key used once to pair the remote server.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateFilesAgentPermissionSet, "files-agent-permission-set", "", fmt.Sprintf("Local permissions for files agent. read_only, write_only, or read_write %v", reflect.ValueOf(paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "files-agent-permission-set", paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "google-cloud-storage-authentication-method", paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageOauthScope, "google-cloud-storage-oauth-scope", "", "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageProjectId, "google-cloud-storage-project-id", "", "Google Cloud Storage: Project ID")
@@ -801,6 +830,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.MaxConnections, "max-connections", 0, "Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Name, "name", "", "Internal name for your reference")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateOneDriveAccountType, "one-drive-account-type", "", fmt.Sprintf("OneDrive: Either personal or business_other account types %v", reflect.ValueOf(paramsRemoteServerUpdate.OneDriveAccountType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "one-drive-account-type", paramsRemoteServerUpdate.OneDriveAccountType.Enum())
 	cmdUpdate.Flags().BoolVar(&updatePinToSiteRegion, "pin-to-site-region", updatePinToSiteRegion, "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.Port, "port", 0, "Port for remote server.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.UploadStagingPath, "upload-staging-path", "", "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.")
@@ -815,12 +845,15 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", updateS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "S3 region")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "server-certificate", paramsRemoteServerUpdate.ServerCertificate.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "server-type", paramsRemoteServerUpdate.ServerType.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateSsl, "ssl", "", fmt.Sprintf("Should we require SSL? %v", reflect.ValueOf(paramsRemoteServerUpdate.Ssl.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "ssl", paramsRemoteServerUpdate.Ssl.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.Username, "username", "", "Remote server username.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiAccessKey, "wasabi-access-key", "", "Wasabi: Access Key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.WasabiBucket, "wasabi-bucket", "", "Wasabi: Bucket name")
@@ -855,6 +888,7 @@ func RemoteServers() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRemoteServerDelete.Id, "id", 0, "Remote Server ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

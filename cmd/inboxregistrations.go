@@ -14,8 +14,9 @@ func init() {
 
 func InboxRegistrations() *cobra.Command {
 	InboxRegistrations := &cobra.Command{
-		Use:  "inbox-registrations [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "inbox-registrations [command]",
+		Short: "An InboxRegistration is created when a user fills out the form to access the inbox.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command inbox-registrations\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func InboxRegistrations() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsInboxRegistrationList := files_sdk.InboxRegistrationListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func InboxRegistrations() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsInboxRegistrationList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := inbox_registration.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func InboxRegistrations() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -76,6 +89,7 @@ func InboxRegistrations() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	InboxRegistrations.AddCommand(cmdList)
 	return InboxRegistrations
 }

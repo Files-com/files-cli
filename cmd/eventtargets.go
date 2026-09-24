@@ -18,8 +18,9 @@ func init() {
 
 func EventTargets() *cobra.Command {
 	EventTargets := &cobra.Command{
-		Use:  "event-targets [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "event-targets [command]",
+		Short: "An EventTarget is a delivery destination for EventRecords.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command event-targets\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func EventTargets() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsEventTargetList := files_sdk.EventTargetListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func EventTargets() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsEventTargetList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func EventTargets() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func EventTargets() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	EventTargets.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func EventTargets() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsEventTargetFind.Id, "id", 0, "Event Target ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -184,14 +199,18 @@ func EventTargets() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsEventTargetCreate.Name, "name", "", "Event Target name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64Var(&paramsEventTargetCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace target can receive events from all workspaces.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Target can receive events.")
 	cmdCreate.Flags().StringVar(&createConfigJSON, "config", "", "Event Target configuration. Folder targets accept path and format (json or csv). Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "config", "json")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "config")
 	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "delivery-policy", "json")
 	cmdCreate.Flags().StringVar(&EventTargetCreateTargetType, "target-type", "", fmt.Sprintf("Event Target type. %v", reflect.ValueOf(paramsEventTargetCreate.TargetType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "target-type", paramsEventTargetCreate.TargetType.Enum())
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "target-type")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -260,6 +279,7 @@ func EventTargets() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsEventTargetUpdate.Id, "id", 0, "Event Target ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsEventTargetUpdate.Name, "name", "", "Event Target name.")
 	cmdUpdate.Flags().Int64Var(&paramsEventTargetUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace or site-wide.")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace target can receive events from all workspaces.")
@@ -298,6 +318,7 @@ func EventTargets() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsEventTargetDelete.Id, "id", 0, "Event Target ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

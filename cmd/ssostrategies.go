@@ -14,8 +14,9 @@ func init() {
 
 func SsoStrategies() *cobra.Command {
 	SsoStrategies := &cobra.Command{
-		Use:  "sso-strategies [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sso-strategies [command]",
+		Short: "An SSOStrategy is a way for users to sign in via another identity provider, such as Okta or Auth0.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sso-strategies\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func SsoStrategies() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSsoStrategyList := files_sdk.SsoStrategyListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 
 	cmdList := &cobra.Command{
@@ -39,6 +41,13 @@ func SsoStrategies() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSsoStrategyList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -69,7 +78,11 @@ func SsoStrategies() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -86,6 +99,7 @@ func SsoStrategies() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	SsoStrategies.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -109,6 +123,7 @@ func SsoStrategies() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoStrategyFind.Id, "id", 0, "Sso Strategy ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -139,6 +154,7 @@ func SsoStrategies() *cobra.Command {
 		},
 	}
 	cmdSync.Flags().Int64Var(&paramsSsoStrategySync.Id, "id", 0, "Sso Strategy ID.")
+	lib.SetFlagAPIRequired(cmdSync.Flags(), "id")
 
 	cmdSync.Flags().StringSliceVar(&fieldsSync, "fields", []string{}, "comma separated list of field names")
 	cmdSync.Flags().StringSliceVar(&formatSync, "format", lib.FormatDefaults, lib.FormatHelpText)

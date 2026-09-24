@@ -14,7 +14,7 @@ become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme
 "Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
 The expanded route must point to an existing folder in the same Workspace.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

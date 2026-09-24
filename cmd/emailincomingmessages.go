@@ -14,8 +14,9 @@ func init() {
 
 func EmailIncomingMessages() *cobra.Command {
 	EmailIncomingMessages := &cobra.Command{
-		Use:  "email-incoming-messages [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "email-incoming-messages [command]",
+		Short: "An EmailIncomingMessage is an audit log designed to track status of email to inbox uploads.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command email-incoming-messages\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func EmailIncomingMessages() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsEmailIncomingMessageList := files_sdk.EmailIncomingMessageListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -45,6 +47,13 @@ func EmailIncomingMessages() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsEmailIncomingMessageList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -117,7 +126,11 @@ func EmailIncomingMessages() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -146,6 +159,7 @@ func EmailIncomingMessages() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	EmailIncomingMessages.AddCommand(cmdList)
 	return EmailIncomingMessages
 }

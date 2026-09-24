@@ -11,8 +11,9 @@ func init() {
 
 func AccountLineItems() *cobra.Command {
 	AccountLineItems := &cobra.Command{
-		Use:  "account-line-items [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "account-line-items [command]",
+		Short: "An AccountLineItem is a single line item in the accounting ledger for a billing account.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command account-line-items\n\t%v", args[0])
 		},

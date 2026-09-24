@@ -14,8 +14,9 @@ func init() {
 
 func FileMigrations() *cobra.Command {
 	FileMigrations := &cobra.Command{
-		Use:  "file-migrations [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "file-migrations [command]",
+		Short: "A FileMigration is a background operation on one or more files, such as a copy or a region migration.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-migrations\n\t%v", args[0])
 		},
@@ -42,6 +43,7 @@ func FileMigrations() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsFileMigrationFind.Id, "id", 0, "File Migration ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

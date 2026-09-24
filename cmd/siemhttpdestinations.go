@@ -18,8 +18,9 @@ func init() {
 
 func SiemHttpDestinations() *cobra.Command {
 	SiemHttpDestinations := &cobra.Command{
-		Use:  "siem-http-destinations [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "siem-http-destinations [command]",
+		Short: "A SIEM HTTP Destination defines where Files.com sends the log types you select.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command siem-http-destinations\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func SiemHttpDestinations() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSiemHttpDestinationList := files_sdk.SiemHttpDestinationListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -42,6 +44,13 @@ func SiemHttpDestinations() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSiemHttpDestinationList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := siem_http_destination.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -64,7 +73,11 @@ func SiemHttpDestinations() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -79,6 +92,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	SiemHttpDestinations.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -102,6 +116,7 @@ func SiemHttpDestinations() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSiemHttpDestinationFind.Id, "id", 0, "Siem Http Destination ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -215,8 +230,10 @@ func SiemHttpDestinations() *cobra.Command {
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "additional-headers", "json")
 	cmdCreate.Flags().BoolVar(&createSendingActive, "sending-active", createSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.GenericPayloadType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "generic-payload-type", paramsSiemHttpDestinationCreate.GenericPayloadType.Enum())
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.FileFormat.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "file-format", paramsSiemHttpDestinationCreate.FileFormat.Enum())
 	cmdCreate.Flags().Int64Var(&paramsSiemHttpDestinationCreate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
@@ -243,6 +260,8 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createExavaultApiRequestSendEnabled, "exavault-api-request-send-enabled", createExavaultApiRequestSendEnabled, "Whether or not sending is enabled for exavault_api_request logs.")
 	cmdCreate.Flags().BoolVar(&createSettingsChangeSendEnabled, "settings-change-send-enabled", createSettingsChangeSendEnabled, "Whether or not sending is enabled for settings_change logs.")
 	cmdCreate.Flags().StringVar(&SiemHttpDestinationCreateDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationCreate.DestinationType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "destination-type", paramsSiemHttpDestinationCreate.DestinationType.Enum())
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "destination-type")
 	cmdCreate.Flags().StringVar(&paramsSiemHttpDestinationCreate.DestinationUrl, "destination-url", "", "Destination Url")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -356,14 +375,17 @@ func SiemHttpDestinations() *cobra.Command {
 	}
 	cmdSendTestEntry.Flags().Int64Var(&paramsSiemHttpDestinationSendTestEntry.SiemHttpDestinationId, "siem-http-destination-id", 0, "SIEM HTTP Destination ID")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.DestinationType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdSendTestEntry.Flags(), "destination-type", paramsSiemHttpDestinationSendTestEntry.DestinationType.Enum())
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.DestinationUrl, "destination-url", "", "Destination Url")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.Name, "name", "", "Name for this Destination")
 	cmdSendTestEntry.Flags().StringVar(&sendTestEntryAdditionalHeadersJSON, "additional-headers", "", "Additional HTTP Headers included in calls to the destination URL Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdSendTestEntry.Flags(), "additional-headers", "json")
 	cmdSendTestEntry.Flags().BoolVar(&sendTestEntrySendingActive, "sending-active", sendTestEntrySendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.GenericPayloadType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdSendTestEntry.Flags(), "generic-payload-type", paramsSiemHttpDestinationSendTestEntry.GenericPayloadType.Enum())
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdSendTestEntry.Flags().StringVar(&SiemHttpDestinationSendTestEntryFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationSendTestEntry.FileFormat.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdSendTestEntry.Flags(), "file-format", paramsSiemHttpDestinationSendTestEntry.FileFormat.Enum())
 	cmdSendTestEntry.Flags().Int64Var(&paramsSiemHttpDestinationSendTestEntry.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
 	cmdSendTestEntry.Flags().StringVar(&paramsSiemHttpDestinationSendTestEntry.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
@@ -563,13 +585,16 @@ func SiemHttpDestinations() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSiemHttpDestinationUpdate.Id, "id", 0, "Siem Http Destination ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.Name, "name", "", "Name for this Destination")
 	cmdUpdate.Flags().StringVar(&updateAdditionalHeadersJSON, "additional-headers", "", "Additional HTTP Headers included in calls to the destination URL Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "additional-headers", "json")
 	cmdUpdate.Flags().BoolVar(&updateSendingActive, "sending-active", updateSendingActive, "Whether this SIEM HTTP Destination is currently being sent to or not")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateGenericPayloadType, "generic-payload-type", "", fmt.Sprintf("Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "generic-payload-type", paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum())
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.FileDestinationPath, "file-destination-path", "", "Applicable only for destination type: file. Destination folder path on Files.com.")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateFileFormat, "file-format", "", fmt.Sprintf("Applicable only for destination type: file. Generated file format. %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.FileFormat.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "file-format", paramsSiemHttpDestinationUpdate.FileFormat.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsSiemHttpDestinationUpdate.FileIntervalMinutes, "file-interval-minutes", 0, "Applicable only for destination type: file. Interval, in minutes, between file deliveries. Valid values are 5, 10, 15, 20, 30, 60, 90, 180, 240, 360.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.SplunkToken, "splunk-token", "", "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.")
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.CrowdstrikeToken, "crowdstrike-token", "", "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.")
@@ -596,6 +621,7 @@ func SiemHttpDestinations() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateExavaultApiRequestSendEnabled, "exavault-api-request-send-enabled", updateExavaultApiRequestSendEnabled, "Whether or not sending is enabled for exavault_api_request logs.")
 	cmdUpdate.Flags().BoolVar(&updateSettingsChangeSendEnabled, "settings-change-send-enabled", updateSettingsChangeSendEnabled, "Whether or not sending is enabled for settings_change logs.")
 	cmdUpdate.Flags().StringVar(&SiemHttpDestinationUpdateDestinationType, "destination-type", "", fmt.Sprintf("Destination Type %v", reflect.ValueOf(paramsSiemHttpDestinationUpdate.DestinationType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "destination-type", paramsSiemHttpDestinationUpdate.DestinationType.Enum())
 	cmdUpdate.Flags().StringVar(&paramsSiemHttpDestinationUpdate.DestinationUrl, "destination-url", "", "Destination Url")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
@@ -627,6 +653,7 @@ func SiemHttpDestinations() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsSiemHttpDestinationDelete.Id, "id", 0, "Siem Http Destination ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

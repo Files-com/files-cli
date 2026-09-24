@@ -15,8 +15,9 @@ func init() {
 
 func EventChannels() *cobra.Command {
 	EventChannels := &cobra.Command{
-		Use:  "event-channels [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "event-channels [command]",
+		Short: "An EventChannel is a named grouping of EventSubscriptions.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command event-channels\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func EventChannels() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsEventChannelList := files_sdk.EventChannelListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func EventChannels() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsEventChannelList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func EventChannels() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func EventChannels() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	EventChannels.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func EventChannels() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsEventChannelFind.Id, "id", 0, "Event Channel ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -157,6 +172,7 @@ func EventChannels() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsEventChannelCreate.Name, "name", "", "Event Channel name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64Var(&paramsEventChannelCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace.")
 	cmdCreate.Flags().StringVar(&paramsEventChannelCreate.Description, "description", "", "Event Channel description.")
 	cmdCreate.Flags().BoolVar(&createEnabled, "enabled", createEnabled, "Whether this Event Channel can dispatch events.")
@@ -215,6 +231,7 @@ func EventChannels() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsEventChannelUpdate.Id, "id", 0, "Event Channel ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsEventChannelUpdate.Name, "name", "", "Event Channel name.")
 	cmdUpdate.Flags().Int64Var(&paramsEventChannelUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. 0 means the default workspace.")
 	cmdUpdate.Flags().StringVar(&paramsEventChannelUpdate.Description, "description", "", "Event Channel description.")
@@ -250,6 +267,7 @@ func EventChannels() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsEventChannelDelete.Id, "id", 0, "Event Channel ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

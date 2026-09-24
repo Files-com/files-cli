@@ -48,15 +48,15 @@ Return only files, or only folders, with `--type`:
 
     files-cli folders list-for "/projects" --type=file --format=json
 
-Sort by name, size, or modified time (`--sort-by` is a JSON object; valid fields are `path`, `size`, `modified_at_datetime`, `provided_modified_at`):
+Sort by name, size, or modified time (`--sort-by` takes `field=asc` or `field=desc`; valid fields are `path`, `size`, `modified_at_datetime`, `provided_modified_at`):
 
-    files-cli folders list-for "/projects" --type=file --sort-by='{"modified_at_datetime":"desc"}' --format=json
+    files-cli folders list-for "/projects" --type=file --sort-by=modified_at_datetime=desc --format=json
 
 Return only items modified after a given time (`--modified-at-datetime` must be combined with `--type`):
 
     files-cli folders list-for "/projects" --type=file --modified-at-datetime=2026-01-01T00:00:00Z --format=json
 
-Listings are paginated — page through with the global `--cursor` / `--per-page` / `--max-pages` flags. To search a subtree deterministically, list each folder you care about; descend only into the folders you actually need rather than walking the entire tree.
+Listings are paginated, and `--format=json` alone fetches every page. To read a large folder a page at a time, add `--json-envelope --per-page=N` and pass the returned `next_cursor` back with `--cursor` while `has_more` is true (see `files-cli workflows show context`). To search a subtree deterministically, list each folder you care about; descend only into the folders you actually need rather than walking the entire tree.
 
 ## Anti-patterns
 

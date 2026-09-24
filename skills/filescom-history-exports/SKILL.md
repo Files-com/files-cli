@@ -33,7 +33,7 @@ we may also need to charge an additional cost per query.
 * History of logins and failed logins: `{ "query_action": "login,failedlogin" }`
 * A Complex query: `{ "query_folder": "uploads", "query_action": "create,copy,move", "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }`
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

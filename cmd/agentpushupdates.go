@@ -11,8 +11,9 @@ func init() {
 
 func AgentPushUpdates() *cobra.Command {
 	AgentPushUpdates := &cobra.Command{
-		Use:  "agent-push-updates [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "agent-push-updates [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command agent-push-updates\n\t%v", args[0])
 		},

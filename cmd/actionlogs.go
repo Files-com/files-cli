@@ -14,8 +14,9 @@ func init() {
 
 func ActionLogs() *cobra.Command {
 	ActionLogs := &cobra.Command{
-		Use:  "action-logs [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "action-logs [command]",
+		Short: "An ActionLog is an audit log of file actions performed by users or the system.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command action-logs\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func ActionLogs() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsActionLogList := files_sdk.ActionLogListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listFilterArgs []string
 	var listFilterGtArgs []string
 	var listFilterGteqArgs []string
@@ -44,6 +46,13 @@ func ActionLogs() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsActionLogList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
 			if parseListFilterErr != nil {
@@ -109,7 +118,11 @@ func ActionLogs() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -136,6 +149,7 @@ func ActionLogs() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ActionLogs.AddCommand(cmdList)
 	return ActionLogs
 }

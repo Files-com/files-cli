@@ -11,8 +11,9 @@ func init() {
 
 func InvoiceLineItems() *cobra.Command {
 	InvoiceLineItems := &cobra.Command{
-		Use:  "invoice-line-items [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "invoice-line-items [command]",
+		Short: "An InvoiceLineItem is your invoice record.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command invoice-line-items\n\t%v", args[0])
 		},

@@ -16,8 +16,9 @@ func init() {
 
 func Snapshots() *cobra.Command {
 	Snapshots := &cobra.Command{
-		Use:  "snapshots [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "snapshots [command]",
+		Short: "Snapshots allow you to create a read-only archive of files at a specific point in time.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command snapshots\n\t%v", args[0])
 		},
@@ -28,6 +29,7 @@ func Snapshots() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSnapshotList := files_sdk.SnapshotListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -40,6 +42,13 @@ func Snapshots() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSnapshotList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := snapshot.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -62,7 +71,11 @@ func Snapshots() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -77,6 +90,7 @@ func Snapshots() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Snapshots.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -100,6 +114,7 @@ func Snapshots() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSnapshotFind.Id, "id", 0, "Snapshot ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -166,6 +181,7 @@ func Snapshots() *cobra.Command {
 		},
 	}
 	cmdFinalize.Flags().Int64Var(&paramsSnapshotFinalize.Id, "id", 0, "Snapshot ID.")
+	lib.SetFlagAPIRequired(cmdFinalize.Flags(), "id")
 
 	cmdFinalize.Flags().StringSliceVar(&fieldsFinalize, "fields", []string{}, "comma separated list of field names")
 	cmdFinalize.Flags().StringSliceVar(&formatFinalize, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -216,6 +232,7 @@ func Snapshots() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSnapshotUpdate.Id, "id", 0, "Snapshot ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	paramsSnapshotUpdate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsSnapshotUpdate.ExpiresAt, "expires-at", "When the snapshot expires.")
 	cmdUpdate.Flags().StringVar(&paramsSnapshotUpdate.Name, "name", "", "A name for the snapshot.")
@@ -250,6 +267,7 @@ func Snapshots() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsSnapshotDelete.Id, "id", 0, "Snapshot ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

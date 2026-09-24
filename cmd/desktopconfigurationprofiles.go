@@ -15,8 +15,9 @@ func init() {
 
 func DesktopConfigurationProfiles() *cobra.Command {
 	DesktopConfigurationProfiles := &cobra.Command{
-		Use:  "desktop-configuration-profiles [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "desktop-configuration-profiles [command]",
+		Short: "A Desktop Configuration Profile centrally defines desktop mount point mappings for users in a Site or Workspace.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command desktop-configuration-profiles\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsDesktopConfigurationProfileList := files_sdk.DesktopConfigurationProfileListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func DesktopConfigurationProfiles() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsDesktopConfigurationProfileList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func DesktopConfigurationProfiles() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	DesktopConfigurationProfiles.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsDesktopConfigurationProfileFind.Id, "id", 0, "Desktop Configuration Profile ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -166,8 +181,10 @@ func DesktopConfigurationProfiles() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsDesktopConfigurationProfileCreate.Name, "name", "", "Profile name")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&createMountMappingsJSON, "mount-mappings", "", "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "mount-mappings", "json")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "mount-mappings")
 	cmdCreate.Flags().Int64Var(&paramsDesktopConfigurationProfileCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createUseForAllUsers, "use-for-all-users", createUseForAllUsers, "Whether this profile applies to all users in the Workspace by default")
 	cmdCreate.Flags().BoolVar(&createDisableDriveMounting, "disable-drive-mounting", createDisableDriveMounting, "Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile")
@@ -231,6 +248,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsDesktopConfigurationProfileUpdate.Id, "id", 0, "Desktop Configuration Profile ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsDesktopConfigurationProfileUpdate.Name, "name", "", "Profile name")
 	cmdUpdate.Flags().Int64Var(&paramsDesktopConfigurationProfileUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().StringVar(&updateMountMappingsJSON, "mount-mappings", "", "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Provide as a JSON object.")
@@ -267,6 +285,7 @@ func DesktopConfigurationProfiles() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsDesktopConfigurationProfileDelete.Id, "id", 0, "Desktop Configuration Profile ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

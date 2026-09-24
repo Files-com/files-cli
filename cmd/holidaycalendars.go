@@ -14,8 +14,9 @@ func init() {
 
 func HolidayCalendars() *cobra.Command {
 	HolidayCalendars := &cobra.Command{
-		Use:  "holiday-calendars [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "holiday-calendars [command]",
+		Short: "A Holiday Calendar defines site-wide holiday dates and optional partial-day windows that scheduled resources skip.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command holiday-calendars\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func HolidayCalendars() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsHolidayCalendarList := files_sdk.HolidayCalendarListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 
 	cmdList := &cobra.Command{
@@ -39,6 +41,13 @@ func HolidayCalendars() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHolidayCalendarList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -69,7 +78,11 @@ func HolidayCalendars() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -86,6 +99,7 @@ func HolidayCalendars() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	HolidayCalendars.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -109,6 +123,7 @@ func HolidayCalendars() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsHolidayCalendarFind.Id, "id", 0, "Holiday Calendar ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -148,7 +163,9 @@ func HolidayCalendars() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&createDefinitionJSON, "definition", "", "Holiday rules for the calendar. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "definition", "json")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "definition")
 	cmdCreate.Flags().StringVar(&paramsHolidayCalendarCreate.Name, "name", "", "Holiday Calendar name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -198,6 +215,7 @@ func HolidayCalendars() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsHolidayCalendarUpdate.Id, "id", 0, "Holiday Calendar ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&updateDefinitionJSON, "definition", "", "Holiday rules for the calendar. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "definition", "json")
 	cmdUpdate.Flags().StringVar(&paramsHolidayCalendarUpdate.Name, "name", "", "Holiday Calendar name.")
@@ -231,6 +249,7 @@ func HolidayCalendars() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsHolidayCalendarDelete.Id, "id", 0, "Holiday Calendar ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

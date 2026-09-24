@@ -18,8 +18,9 @@ func init() {
 
 func Syncs() *cobra.Command {
 	Syncs := &cobra.Command{
-		Use:  "syncs [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "syncs [command]",
+		Short: "A Sync represents a file synchronization job between two locations (local-remote, remote-remote, local-child_site, etc).",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command syncs\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func Syncs() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSyncList := files_sdk.SyncListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func Syncs() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSyncList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func Syncs() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func Syncs() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Syncs.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSyncFind.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -195,6 +210,7 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdCreate.Flags().StringVar(&SyncCreateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncCreate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "trigger", paramsSyncCreate.Trigger.Enum())
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 	cmdCreate.Flags().BoolVar(&createAlwaysWriteTriggerFile, "always-write-trigger-file", createAlwaysWriteTriggerFile, "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.WorkspaceId, "workspace-id", 0, "Workspace ID this sync belongs to")
@@ -228,6 +244,7 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdDryRun.Flags().Int64Var(&paramsSyncDryRun.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdDryRun.Flags(), "id")
 
 	cmdDryRun.Flags().StringSliceVar(&fieldsDryRun, "fields", []string{}, "comma separated list of field names")
 	cmdDryRun.Flags().StringSliceVar(&formatDryRun, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -258,6 +275,7 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdManualRun.Flags().Int64Var(&paramsSyncManualRun.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdManualRun.Flags(), "id")
 
 	cmdManualRun.Flags().StringSliceVar(&fieldsManualRun, "fields", []string{}, "comma separated list of field names")
 	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -375,6 +393,7 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateDeleteEmptyFolders, "delete-empty-folders", updateDeleteEmptyFolders, "Delete empty folders after sync?")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.Description, "description", "", "Description for this sync job")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.DestPath, "dest-path", "", "Absolute destination path for the sync")
@@ -396,6 +415,7 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SrcRemoteServerId, "src-remote-server-id", 0, "Remote server ID for the source (if remote)")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.SyncIntervalMinutes, "sync-interval-minutes", 0, "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.")
 	cmdUpdate.Flags().StringVar(&SyncUpdateTrigger, "trigger", "", fmt.Sprintf("Trigger type: daily, custom_schedule, or manual %v", reflect.ValueOf(paramsSyncUpdate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "trigger", paramsSyncUpdate.Trigger.Enum())
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.TriggerFile, "trigger-file", "", "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.")
 	cmdUpdate.Flags().BoolVar(&updateAlwaysWriteTriggerFile, "always-write-trigger-file", updateAlwaysWriteTriggerFile, "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.")
 
@@ -428,6 +448,7 @@ func Syncs() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsSyncDelete.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -15,8 +15,9 @@ func init() {
 func Download() *cobra.Command {
 	transfer := transfers.New()
 	download := &cobra.Command{
-		Use:  "download [remote-path] [local-path]",
-		Args: cobra.RangeArgs(1, 2),
+		Use:   "download [remote-path] [local-path]",
+		Short: "Downloads files or directories from a remote path to a local path.",
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := cmd.Context().Value("config").(files_sdk.Config)

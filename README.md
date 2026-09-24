@@ -128,7 +128,7 @@ If you're driving `files-cli` from an AI agent — or building an agent that use
 | [CONTEXT.md](CONTEXT.md) | CLI-wide invocation contract: authentication, global flags, output format, error conventions. |
 | [skills/](skills/) | `SKILL.md` packages — one per top-level CLI command (Bundles, Users, Files, …), grouped by category. |
 | [skills/INDEX.md](skills/INDEX.md) | Full index of skills. |
-| [agents/tool-catalog.json](agents/tool-catalog.json) | Machine-readable catalog of every command, parameter, and type. |
+| [agents/tool-catalog.json](agents/tool-catalog.json) | Machine-readable catalog of the API resource commands and their parameters, generated from the API schema. |
 | [agents/error-catalog.json](agents/error-catalog.json) | Machine-readable catalog of known error types with HTTP codes. |
 
 Core invocation:
@@ -139,9 +139,20 @@ files-cli <domain> <subcommand> --format json --non-interactive [flags...]
 
 - Pass `--format json` so output is structured (the default `table` is for humans).
 - Pass `--non-interactive` so the CLI never blocks on a prompt.
-- Exit code `0` is success. Non-zero is failure, with a JSON error envelope on stdout.
+- Exit code `0` is success. Non-zero is failure; read diagnostics from stderr. `--format json` does not provide a uniform JSON error envelope.
 
 For Claude Code, Codex, or any agent that supports filesystem-loaded skills, point the skills directory at `skills/`. For agents without skill loading, load the relevant `SKILL.md` directly into context based on the task at hand.
+
+The installed binary can also describe itself, offline and without credentials, matched to its version:
+
+```bash
+files-cli commands                               # top-level commands and groups
+files-cli commands search share link             # find commands by keyword
+files-cli commands describe folders list-for --format json
+files-cli workflows show recipe-searching-for-files
+```
+
+To read a long list a page at a time, add `--json-envelope` to a list command. It prints `{"has_more", "next_cursor", "data"}` for one page; pass `next_cursor` back with `--cursor` to continue. Without the flag, `--format json` output is unchanged. See CONTEXT.md for details.
 
 ## Authentication
 

@@ -15,8 +15,9 @@ func init() {
 
 func WebhookTests() *cobra.Command {
 	WebhookTests := &cobra.Command{
-		Use:  "webhook-tests [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "webhook-tests [command]",
+		Short: "A WebhookTest is an object that can be sent to your Webhook endpoint for connection and response tests.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command webhook-tests\n\t%v", args[0])
 		},
@@ -69,6 +70,7 @@ func WebhookTests() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Url, "url", "", "URL for testing the webhook.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "url")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Method, "method", "", "HTTP method(GET or POST).")
 	cmdCreate.Flags().StringVar(&paramsWebhookTestCreate.Encoding, "encoding", "", "HTTP encoding method.  Can be JSON, XML, or RAW (form data).")
 	cmdCreate.Flags().StringVar(&createHeadersJSON, "headers", "", "Additional request headers. Provide as a JSON object.")

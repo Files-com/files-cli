@@ -17,8 +17,9 @@ func init() {
 
 func ActionNotificationExports() *cobra.Command {
 	ActionNotificationExports := &cobra.Command{
-		Use:  "action-notification-exports [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "action-notification-exports [command]",
+		Short: "An ActionNotificationExport is an operation that provides access to outgoing webhook logs.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command action-notification-exports\n\t%v", args[0])
 		},
@@ -45,6 +46,7 @@ func ActionNotificationExports() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsActionNotificationExportFind.Id, "id", 0, "Action Notification Export ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

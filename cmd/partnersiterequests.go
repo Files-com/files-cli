@@ -14,8 +14,9 @@ func init() {
 
 func PartnerSiteRequests() *cobra.Command {
 	PartnerSiteRequests := &cobra.Command{
-		Use:  "partner-site-requests [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "partner-site-requests [command]",
+		Short: "A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partner-site-requests\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func PartnerSiteRequests() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPartnerSiteRequestList := files_sdk.PartnerSiteRequestListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -40,6 +42,13 @@ func PartnerSiteRequests() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPartnerSiteRequestList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -77,7 +86,11 @@ func PartnerSiteRequests() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -96,6 +109,7 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	PartnerSiteRequests.AddCommand(cmdList)
 	var fieldsFindByPairingKey []string
 	var formatFindByPairingKey []string
@@ -121,6 +135,7 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdFindByPairingKey.Flags().StringVar(&paramsPartnerSiteRequestFindByPairingKey.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
+	lib.SetFlagAPIRequired(cmdFindByPairingKey.Flags(), "pairing-key")
 
 	cmdFindByPairingKey.Flags().StringSliceVar(&fieldsFindByPairingKey, "fields", []string{}, "comma separated list of field names")
 	cmdFindByPairingKey.Flags().StringSliceVar(&formatFindByPairingKey, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -149,7 +164,9 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsPartnerSiteRequestCreate.HostPartnerId, "host-partner-id", 0, "Host Partner ID to link with")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "host-partner-id")
 	cmdCreate.Flags().StringVar(&paramsPartnerSiteRequestCreate.GuestSiteUrl, "guest-site-url", "", "Guest Site URL to link to")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "guest-site-url")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -180,6 +197,7 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdReject.Flags().StringVar(&paramsPartnerSiteRequestReject.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
+	lib.SetFlagAPIRequired(cmdReject.Flags(), "pairing-key")
 
 	cmdReject.Flags().StringSliceVar(&fieldsReject, "fields", []string{}, "comma separated list of field names")
 	cmdReject.Flags().StringSliceVar(&formatReject, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -210,6 +228,7 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdApprove.Flags().StringVar(&paramsPartnerSiteRequestApprove.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
+	lib.SetFlagAPIRequired(cmdApprove.Flags(), "pairing-key")
 	cmdApprove.Flags().Int64Var(&paramsPartnerSiteRequestApprove.PartnerId, "partner-id", 0, "ID of an existing Partner on this site, with the host role, that represents the requesting organization. The connection binds to that Partner and makes it host_and_guest. When omitted, a guest Partner named after the host site is created.")
 
 	cmdApprove.Flags().StringSliceVar(&fieldsApprove, "fields", []string{}, "comma separated list of field names")
@@ -241,6 +260,7 @@ func PartnerSiteRequests() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPartnerSiteRequestDelete.Id, "id", 0, "Partner Site Request ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -11,8 +11,9 @@ func init() {
 
 func PartnerConnections() *cobra.Command {
 	PartnerConnections := &cobra.Command{
-		Use:  "partner-connections [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "partner-connections [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partner-connections\n\t%v", args[0])
 		},

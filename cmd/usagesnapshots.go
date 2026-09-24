@@ -14,8 +14,9 @@ func init() {
 
 func UsageSnapshots() *cobra.Command {
 	UsageSnapshots := &cobra.Command{
-		Use:  "usage-snapshots [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "usage-snapshots [command]",
+		Short: "A UsageSnapshot is a site-wide utilization report of storage, bandwidth, APIs, and user accounts of your Files.com site for the given time period.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command usage-snapshots\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func UsageSnapshots() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUsageSnapshotList := files_sdk.UsageSnapshotListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func UsageSnapshots() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUsageSnapshotList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := usage_snapshot.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func UsageSnapshots() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -75,6 +88,7 @@ func UsageSnapshots() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	UsageSnapshots.AddCommand(cmdList)
 	return UsageSnapshots
 }

@@ -11,8 +11,9 @@ func init() {
 
 func ZipListEntries() *cobra.Command {
 	ZipListEntries := &cobra.Command{
-		Use:  "zip-list-entries [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "zip-list-entries [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command zip-list-entries\n\t%v", args[0])
 		},

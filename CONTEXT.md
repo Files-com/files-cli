@@ -8,8 +8,49 @@ This file documents the agent-relevant invocation contract for `files-cli`. For 
 files-cli <domain> <subcommand> --format json --non-interactive [flags...]
 ```
 
-- Pass `--format json` so output is structured. The default output format is a human-readable table.
+- Pass `--format json` so output is structured. The default output format is a human-readable table. `--format` is defined on each resource command rather than globally.
 - Pass `--non-interactive` so the CLI never blocks on a prompt.
+
+## Discover commands offline
+
+The installed binary describes its own commands and ships these guides. Discovery needs no credentials or network access and never reads or writes the config file.
+
+```bash
+files-cli commands                                      # top-level commands and groups
+files-cli commands list folders                         # the commands in one group
+files-cli commands search share link                    # keyword search, 20 results by default (--limit)
+files-cli commands describe folders list-for --format json
+files-cli commands describe users list --flag cursor    # one flag, full description
+files-cli workflows                                     # task guides
+files-cli workflows show recipe-searching-for-files     # one guide as Markdown
+```
+
+`commands describe` reports usage, positional arguments, and local and inherited flags with their type, static default, and enum values. `required` marks flags the CLI rejects a command without; `api_required` marks parameters the Files.com API requires, which the CLI sends without checking. Flag descriptions longer than 200 characters are cut and marked `truncated`; add `--full` or `--flag NAME` for the complete text.
+
+## Bounded listing with continuation
+
+List commands keep their existing output: `--format json` prints one JSON array and, unless `--max-pages` is set, fetches every page. To read a list incrementally, add `--json-envelope`:
+
+```bash
+files-cli users list --json-envelope --per-page=100 --format json,raw --non-interactive
+```
+
+```json
+{"has_more":true,"next_cursor":"CURSOR","data":[{"id":1,"username":"ann"}]}
+```
+
+Pass `next_cursor` back with `--cursor` until `has_more` is `false`, when `next_cursor` is `null`:
+
+```bash
+files-cli users list --json-envelope --per-page=100 --cursor=CURSOR --format json,raw --non-interactive
+```
+
+- `--json-envelope` fetches one page unless `--max-pages` is given; `--max-pages=0` fetches every page.
+- `--fields`, `--filter-by`, and the API `--filter*` and `--sort-by` flags work as usual. Client-side filters such as `--filter-by` apply after a page is fetched, so `data` can be empty while `has_more` is `true`.
+- The envelope is always JSON: `--format json,raw` makes it compact, and a non-JSON `--format` is rejected before the list is requested.
+- The envelope is written once every selected page has been fetched, so those records are held in memory until then. Keep `--max-pages` bounded for large lists; `--max-pages=0` holds the entire list.
+- If a page fails, nothing is written to stdout and the command exits non-zero; retry with the same `--cursor`.
+- The flag is available on every cursor-based list command, including `folders list-for --recursive`.
 
 ## Authentication
 
@@ -25,7 +66,7 @@ files-cli --api-key=YOUR_API_KEY <domain> <subcommand> ...
 
 API key authentication does not trigger a Two-Factor Authentication challenge, even on accounts that require 2FA for web login.
 
-The CLI also reads the `FILES_API_KEY` environment variable. After an API key is provided once, it is written to the `files-cli` configuration file and reused on subsequent commands.
+The CLI also reads the `FILES_API_KEY` environment variable. Neither `--api-key` nor `FILES_API_KEY` is saved; to store a key in the `files-cli` configuration file for later commands, run `files-cli config set --api-key=YOUR_API_KEY`.
 
 ### Session
 
@@ -36,7 +77,7 @@ files-cli config set --subdomain=MYSITENAME --username=MYUSERNAME
 files-cli login
 ```
 
-Login sessions expire automatically after 6 hours, or sooner if the site's authentication settings dictate a shorter timeout. For custom domains, pass `--endpoint=fully.qualified.host` instead of `--subdomain`.
+Login sessions expire automatically after 6 hours, or sooner if the site's authentication settings dictate a shorter timeout. For custom domains, pass `--endpoint=https://files.example.com` to `config set` instead of `--subdomain`.
 
 ## Global flags (persistent on every subcommand)
 
@@ -48,14 +89,13 @@ Sourced from the CLI's root-command flag definitions.
 | `--session-id=ID` | Set session ID for single use. |
 | `--profile=NAME` | Use a named connection profile. |
 | `--workspace-id=ID` | Scope this command to a specific workspace. |
-| `--endpoint=HOST` | Override the API endpoint (custom domains). |
-| `--format=FORMAT` | Output format (`json` for agents). |
-| `--fields=LIST` | Comma-separated field names to include. |
-| `--output-path=PATH` | Write output to a file instead of stdout. |
+| `--output=PATH`, `-o PATH` | Write output to a file instead of stdout. |
 | `--debug[=PATH]` | Enable verbose logging. `--debug=STDOUT` prints to the screen; `--debug=<file>` writes to a log file. |
 | `--non-interactive` | Do not prompt for user input. |
 | `--reauthentication` | Re-supply session user's password for security-sensitive operations. |
 | `--ignore-version-check` | Skip the CLI version check on startup. |
+
+Resource commands also define `--format` (`json` for agents), `--fields` (comma-separated field names to include), and `--use-pager`; list commands add `--cursor`, `--per-page`, `--max-pages`, and `--json-envelope`. `files-cli commands describe <command>` shows the exact flags of any command.
 
 ## Workspaces
 
@@ -99,10 +139,10 @@ If `$FOLDER_PATH` is empty, the permission applies to the Workspace's root folde
 
 ## Errors
 
-When a command fails, the response includes a `type` field — a stable, hierarchical string like `bad-request/missing-field` or `not-authorized/reauthentication-needed-action`. Route on `type`.
+Check the process exit code: `0` indicates success, and a non-zero code indicates failure. Diagnostics are written to stderr. `--format json` selects result formatting; it does not provide a uniform JSON error envelope on stdout.
 
-The full machine-readable catalog of every known error type, with HTTP codes, is at `agents/error-catalog.json`.
+`agents/error-catalog.json` describes Files.com API error types and HTTP codes. CLI usage errors, local filesystem errors, and other failures do not necessarily carry an API error type.
 
 ## Tool catalog
 
-The full machine-readable catalog of every command and parameter is at `agents/tool-catalog.json`. The per-domain skills under `skills/` cover the same surface in a per-command narrative form.
+A machine-readable catalog of the API resource commands and their API parameters is at `agents/tool-catalog.json`. The per-domain skills under `skills/` cover the same surface in a per-command narrative form. Both are generated from the API schema, so they omit commands such as `upload`, `download`, and `sync`; `files-cli commands` describes the exact commands and flags of the installed binary.

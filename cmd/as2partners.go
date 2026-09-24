@@ -18,8 +18,9 @@ func init() {
 
 func As2Partners() *cobra.Command {
 	As2Partners := &cobra.Command{
-		Use:  "as2-partners [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "as2-partners [command]",
+		Short: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command as2-partners\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func As2Partners() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAs2PartnerList := files_sdk.As2PartnerListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func As2Partners() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAs2PartnerList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func As2Partners() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func As2Partners() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	As2Partners.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func As2Partners() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAs2PartnerFind.Id, "id", 0, "As2 Partner ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -187,15 +202,22 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
 	cmdCreate.Flags().StringVar(&As2PartnerCreateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received. %v", reflect.ValueOf(paramsAs2PartnerCreate.MdnValidationLevel.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "mdn-validation-level", paramsAs2PartnerCreate.MdnValidationLevel.Enum())
 	cmdCreate.Flags().StringVar(&As2PartnerCreateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerCreate.SignatureValidationLevel.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "signature-validation-level", paramsAs2PartnerCreate.SignatureValidationLevel.Enum())
 	cmdCreate.Flags().StringVar(&As2PartnerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerCreate.ServerCertificate.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "server-certificate", paramsAs2PartnerCreate.ServerCertificate.Enum())
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdCreate.Flags().StringVar(&createAdditionalHttpHeadersJSON, "additional-http-headers", "", "Additional HTTP Headers for outgoing message sent to this partner. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "additional-http-headers", "json")
 	cmdCreate.Flags().Int64Var(&paramsAs2PartnerCreate.As2StationId, "as2-station-id", 0, "ID of the AS2 Station associated with this partner.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "as2-station-id")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Name, "name", "", "The partner's formal AS2 name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "uri")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.PublicCertificate, "public-certificate", "", "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "public-certificate")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -292,12 +314,16 @@ func As2Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2PartnerUpdate.Id, "id", 0, "As2 Partner ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateEnableDedicatedIps, "enable-dedicated-ips", updateEnableDedicatedIps, "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthUsername, "http-auth-username", "", "Username to send to server for HTTP Authentication.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.HttpAuthPassword, "http-auth-password", "", "Password to send to server for HTTP Authentication.")
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateMdnValidationLevel, "mdn-validation-level", "", fmt.Sprintf("How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received. %v", reflect.ValueOf(paramsAs2PartnerUpdate.MdnValidationLevel.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "mdn-validation-level", paramsAs2PartnerUpdate.MdnValidationLevel.Enum())
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateSignatureValidationLevel, "signature-validation-level", "", fmt.Sprintf("Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received. %v", reflect.ValueOf(paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "signature-validation-level", paramsAs2PartnerUpdate.SignatureValidationLevel.Enum())
 	cmdUpdate.Flags().StringVar(&As2PartnerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.) %v", reflect.ValueOf(paramsAs2PartnerUpdate.ServerCertificate.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "server-certificate", paramsAs2PartnerUpdate.ServerCertificate.Enum())
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.DefaultMimeType, "default-mime-type", "", "Default mime type of the file attached to the encrypted message")
 	cmdUpdate.Flags().StringVar(&updateAdditionalHttpHeadersJSON, "additional-http-headers", "", "Additional HTTP Headers for outgoing message sent to this partner. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "additional-http-headers", "json")
@@ -334,6 +360,7 @@ func As2Partners() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAs2PartnerDelete.Id, "id", 0, "As2 Partner ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

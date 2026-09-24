@@ -18,8 +18,9 @@ func init() {
 
 func KeyLifecycleRules() *cobra.Command {
 	KeyLifecycleRules := &cobra.Command{
-		Use:  "key-lifecycle-rules [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "key-lifecycle-rules [command]",
+		Short: "A KeyLifecycleRule represents a rule that applies to API keys, GPG keys, and SSH keys (also called User Public Keys) based on their inactivity or age.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command key-lifecycle-rules\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func KeyLifecycleRules() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsKeyLifecycleRuleList := files_sdk.KeyLifecycleRuleListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func KeyLifecycleRules() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsKeyLifecycleRuleList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func KeyLifecycleRules() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func KeyLifecycleRules() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	KeyLifecycleRules.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func KeyLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsKeyLifecycleRuleFind.Id, "id", 0, "Key Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -165,6 +180,7 @@ func KeyLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
 	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.ExpirationDays, "expiration-days", 0, "Number of days after creation before an SSH key expires. Applies only to SSH keys.")
 	cmdCreate.Flags().StringVar(&KeyLifecycleRuleCreateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg, ssh, or api). %v", reflect.ValueOf(paramsKeyLifecycleRuleCreate.KeyType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "key-type", paramsKeyLifecycleRuleCreate.KeyType.Enum())
 	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdCreate.Flags().StringVar(&paramsKeyLifecycleRuleCreate.Name, "name", "", "Key Lifecycle Rule name")
 	cmdCreate.Flags().Int64Var(&paramsKeyLifecycleRuleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
@@ -231,9 +247,11 @@ func KeyLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.Id, "id", 0, "Key Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to keys in all workspaces.")
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.ExpirationDays, "expiration-days", 0, "Number of days after creation before an SSH key expires. Applies only to SSH keys.")
 	cmdUpdate.Flags().StringVar(&KeyLifecycleRuleUpdateKeyType, "key-type", "", fmt.Sprintf("Key type for which the rule will apply (gpg, ssh, or api). %v", reflect.ValueOf(paramsKeyLifecycleRuleUpdate.KeyType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "key-type", paramsKeyLifecycleRuleUpdate.KeyType.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies.")
 	cmdUpdate.Flags().StringVar(&paramsKeyLifecycleRuleUpdate.Name, "name", "", "Key Lifecycle Rule name")
 	cmdUpdate.Flags().Int64Var(&paramsKeyLifecycleRuleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
@@ -267,6 +285,7 @@ func KeyLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsKeyLifecycleRuleDelete.Id, "id", 0, "Key Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

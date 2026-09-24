@@ -14,8 +14,9 @@ func init() {
 
 func UserSecurityEvents() *cobra.Command {
 	UserSecurityEvents := &cobra.Command{
-		Use:  "user-security-events [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "user-security-events [command]",
+		Short: "A UserSecurityEvent is a log record for user security activity such as user lockouts.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command user-security-events\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func UserSecurityEvents() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUserSecurityEventList := files_sdk.UserSecurityEventListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -44,6 +46,13 @@ func UserSecurityEvents() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserSecurityEventList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -109,7 +118,11 @@ func UserSecurityEvents() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -136,6 +149,7 @@ func UserSecurityEvents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	UserSecurityEvents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -159,6 +173,7 @@ func UserSecurityEvents() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserSecurityEventFind.Id, "id", 0, "User Security Event ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -19,8 +19,9 @@ func init() {
 
 func Bundles() *cobra.Command {
 	Bundles := &cobra.Command{
-		Use:  "bundles [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "bundles [command]",
+		Short: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command bundles\n\t%v", args[0])
 		},
@@ -31,6 +32,7 @@ func Bundles() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsBundleList := files_sdk.BundleListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -51,6 +53,13 @@ func Bundles() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBundleList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -127,7 +136,11 @@ func Bundles() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -158,6 +171,7 @@ func Bundles() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Bundles.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -186,6 +200,7 @@ func Bundles() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleFind.Id, "id", 0, "Bundle ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 	cmdFind.Flags().BoolVar(&findDeleted, "deleted", findDeleted, "If true, show a deleted Share Link.")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
@@ -284,6 +299,7 @@ func Bundles() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringSliceVar(&paramsBundleCreate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "paths")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Password, "password", "", "Password for this bundle.")
 	cmdCreate.Flags().BoolVar(&createBypassesSiteExpirationRules, "bypasses-site-expiration-rules", createBypassesSiteExpirationRules, "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
@@ -301,6 +317,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdCreate.Flags().StringVar(&BundleCreatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleCreate.Permissions.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "permissions", paramsBundleCreate.Permissions.Enum())
 	cmdCreate.Flags().BoolVar(&createRequireRegistration, "require-registration", createRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.ClickwrapId, "clickwrap-id", 0, "ID of the clickwrap to use with this bundle.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
@@ -356,6 +373,7 @@ func Bundles() *cobra.Command {
 		},
 	}
 	cmdShare.Flags().Int64Var(&paramsBundleShare.Id, "id", 0, "Bundle ID.")
+	lib.SetFlagAPIRequired(cmdShare.Flags(), "id")
 	cmdShare.Flags().StringSliceVar(&paramsBundleShare.To, "to", []string{}, "A list of email addresses to share this bundle with. Required unless `recipients` is used.")
 	cmdShare.Flags().StringVar(&paramsBundleShare.Note, "note", "", "Note to include in email.")
 	cmdShare.Flags().StringVar(&shareRecipientsJSON, "recipients", "", "A list of recipients to share this bundle with. Required unless `to` is used. Provide as a JSON array of objects.")
@@ -524,6 +542,7 @@ func Bundles() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.Id, "id", 0, "Bundle ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringSliceVar(&paramsBundleUpdate.Paths, "paths", []string{}, "A list of paths to include in this bundle.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Password, "password", "", "Password for this bundle.")
 	cmdUpdate.Flags().BoolVar(&updateBypassesSiteExpirationRules, "bypasses-site-expiration-rules", updateBypassesSiteExpirationRules, "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.")
@@ -544,6 +563,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplate, "path-template", "", "Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.PathTemplateTimeZone, "path-template-time-zone", "", "Timezone to use when rendering timestamps in path templates.")
 	cmdUpdate.Flags().StringVar(&BundleUpdatePermissions, "permissions", "", fmt.Sprintf("Permissions that apply to Folders in this Share Link. %v", reflect.ValueOf(paramsBundleUpdate.Permissions.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "permissions", paramsBundleUpdate.Permissions.Enum())
 	cmdUpdate.Flags().BoolVar(&updateRequireRegistration, "require-registration", updateRequireRegistration, "Show a registration page that captures the downloader's name and email address?")
 	cmdUpdate.Flags().BoolVar(&updateRequireShareRecipient, "require-share-recipient", updateRequireShareRecipient, "Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?")
 	cmdUpdate.Flags().BoolVar(&updateSendOneTimePasswordToRecipientAtRegistration, "send-one-time-password-to-recipient-at-registration", updateSendOneTimePasswordToRecipientAtRegistration, "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.")
@@ -588,6 +608,7 @@ func Bundles() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBundleDelete.Id, "id", 0, "Bundle ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -14,8 +14,9 @@ func init() {
 
 func Styles() *cobra.Command {
 	Styles := &cobra.Command{
-		Use:  "styles [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "styles [command]",
+		Short: "A Style is a custom set of branding that can be applied on a per-folder basis.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command styles\n\t%v", args[0])
 		},

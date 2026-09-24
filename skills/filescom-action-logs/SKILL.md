@@ -10,7 +10,7 @@ An ActionLog is an audit log of file actions performed by users or the system.
 
 Logs available through this endpoint are retained for 6 months, after which they are automatically discarded. For longer retention, use Files.com SIEM integrations to stream logs in real time to your preferred SIEM, or configure SIEM streaming to a file.
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

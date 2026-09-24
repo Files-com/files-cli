@@ -14,8 +14,9 @@ func init() {
 
 func PublicHostingRequestLogs() *cobra.Command {
 	PublicHostingRequestLogs := &cobra.Command{
-		Use:  "public-hosting-request-logs [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "public-hosting-request-logs [command]",
+		Short: "A PublicHostingRequestLog is an audit log for monitoring requests we received to access your publicly served folders.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command public-hosting-request-logs\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func PublicHostingRequestLogs() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPublicHostingRequestLogList := files_sdk.PublicHostingRequestLogListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listFilterArgs []string
 	var listFilterGtArgs []string
 	var listFilterGteqArgs []string
@@ -44,6 +46,13 @@ func PublicHostingRequestLogs() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPublicHostingRequestLogList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
 			if parseListFilterErr != nil {
@@ -109,7 +118,11 @@ func PublicHostingRequestLogs() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -136,6 +149,7 @@ func PublicHostingRequestLogs() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	PublicHostingRequestLogs.AddCommand(cmdList)
 	return PublicHostingRequestLogs
 }

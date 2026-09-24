@@ -16,8 +16,12 @@ For Claude Code, Codex, or any agent that supports filesystem-based skills, poin
 
 For agents that don't support skill loading directly, the same content is readable as plain markdown — load the relevant `SKILL.md` into context manually.
 
+## From the CLI
+
+The installed binary serves the same recipes, matched to its version, without credentials or network access: `files-cli workflows` lists them and `files-cli workflows show <name>` prints one. `files-cli commands` describes the binary's exact commands and flags, including commands such as `upload` that the domain skills do not cover.
+
 ## Companion files
 
 - `../CONTEXT.md` — CLI-wide invocation contract, authentication, global flags. Every skill assumes you've read this.
-- `../agents/tool-catalog.json` — machine-readable catalog of every command and parameter. Use for programmatic surface discovery.
+- `../agents/tool-catalog.json` — machine-readable catalog of the API resource commands and their parameters, generated from the API schema. `files-cli commands describe` covers every command of the installed binary.
 - `../agents/error-catalog.json` — machine-readable catalog of every known error type with HTTP code.

@@ -14,16 +14,18 @@ func init() {
 
 func Sync() *cobra.Command {
 	sync := &cobra.Command{
-		Use:  "sync",
-		Args: cobra.ExactArgs(1),
+		Use:   "sync",
+		Short: "Synchronizes files between --local-path and --remote-path.",
+		Args:  cobra.ExactArgs(1),
 	}
 	transfer := transfers.New()
 	transfer.SyncFlag = true
 	var localPath string
 	var remotePath string
 	push := &cobra.Command{
-		Use:  "push",
-		Args: cobra.NoArgs,
+		Use:   "push",
+		Short: "Uploads new or changed files from --local-path to --remote-path.",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
@@ -65,8 +67,9 @@ func Sync() *cobra.Command {
 		},
 	}
 	pull := &cobra.Command{
-		Use:  "pull",
-		Args: cobra.NoArgs,
+		Use:   "pull",
+		Short: "Downloads new or changed files from --remote-path to --local-path.",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			transfer.UseDownloadMode()
 			if err := transfer.ArgsCheck(cmd); err != nil {

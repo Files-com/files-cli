@@ -16,8 +16,9 @@ func init() {
 
 func Histories() *cobra.Command {
 	Histories := &cobra.Command{
-		Use:  "histories [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "histories [command]",
+		Short: "An Action is a single record in our history log.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command histories\n\t%v", args[0])
 		},
@@ -28,6 +29,7 @@ func Histories() *cobra.Command {
 	filterbyListForFile := make(map[string]string)
 	paramsHistoryListForFile := files_sdk.HistoryListForFileParams{}
 	var MaxPagesListForFile int64
+	var jsonEnvelopeListForFile bool
 	var listForFileSortByArgs string
 
 	cmdListForFile := &cobra.Command{
@@ -40,6 +42,13 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForFile
 			params.MaxPages = MaxPagesListForFile
+			var envelopeStyle string
+			if jsonEnvelopeListForFile {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFile), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -80,7 +89,11 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFile), fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListForFile {
+				err = lib.JSONEnvelopeIter(it, fieldsListForFile, listFilter, usePagerListForFile, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFile), fieldsListForFile, usePagerListForFile, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -103,6 +116,7 @@ func Histories() *cobra.Command {
 	cmdListForFile.Flags().StringSliceVar(&fieldsListForFile, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForFile.Flags().StringSliceVar(&formatListForFile, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
+	cmdListForFile.Flags().BoolVar(&jsonEnvelopeListForFile, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder []string
 	var formatListForFolder []string
@@ -110,6 +124,7 @@ func Histories() *cobra.Command {
 	filterbyListForFolder := make(map[string]string)
 	paramsHistoryListForFolder := files_sdk.HistoryListForFolderParams{}
 	var MaxPagesListForFolder int64
+	var jsonEnvelopeListForFolder bool
 	var listForFolderSortByArgs string
 
 	cmdListForFolder := &cobra.Command{
@@ -122,6 +137,13 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForFolder
 			params.MaxPages = MaxPagesListForFolder
+			var envelopeStyle string
+			if jsonEnvelopeListForFolder {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFolder), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -162,7 +184,11 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFolder), fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListForFolder {
+				err = lib.JSONEnvelopeIter(it, fieldsListForFolder, listFilter, usePagerListForFolder, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForFolder), fieldsListForFolder, usePagerListForFolder, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -185,6 +211,7 @@ func Histories() *cobra.Command {
 	cmdListForFolder.Flags().StringSliceVar(&fieldsListForFolder, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForFolder.Flags().StringSliceVar(&formatListForFolder, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
+	cmdListForFolder.Flags().BoolVar(&jsonEnvelopeListForFolder, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser []string
 	var formatListForUser []string
@@ -192,6 +219,7 @@ func Histories() *cobra.Command {
 	filterbyListForUser := make(map[string]string)
 	paramsHistoryListForUser := files_sdk.HistoryListForUserParams{}
 	var MaxPagesListForUser int64
+	var jsonEnvelopeListForUser bool
 	var listForUserSortByArgs string
 
 	cmdListForUser := &cobra.Command{
@@ -204,6 +232,13 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListForUser
 			params.MaxPages = MaxPagesListForUser
+			var envelopeStyle string
+			if jsonEnvelopeListForUser {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListForUser), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			if params.StartAt.IsZero() {
 				params.StartAt = nil
@@ -241,7 +276,11 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForUser), fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListForUser {
+				err = lib.JSONEnvelopeIter(it, fieldsListForUser, listFilter, usePagerListForUser, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListForUser), fieldsListForUser, usePagerListForUser, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -259,11 +298,13 @@ func Histories() *cobra.Command {
 	cmdListForUser.Flags().StringVar(&paramsHistoryListForUser.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdListForUser.Flags().Int64Var(&paramsHistoryListForUser.UserId, "user-id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdListForUser.Flags(), "user-id")
 
 	cmdListForUser.Flags().Int64VarP(&MaxPagesListForUser, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListForUser.Flags().StringSliceVar(&fieldsListForUser, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListForUser.Flags().StringSliceVar(&formatListForUser, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
+	cmdListForUser.Flags().BoolVar(&jsonEnvelopeListForUser, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins []string
 	var formatListLogins []string
@@ -271,6 +312,7 @@ func Histories() *cobra.Command {
 	filterbyListLogins := make(map[string]string)
 	paramsHistoryListLogins := files_sdk.HistoryListLoginsParams{}
 	var MaxPagesListLogins int64
+	var jsonEnvelopeListLogins bool
 	var listLoginsSortByArgs string
 
 	cmdListLogins := &cobra.Command{
@@ -283,6 +325,13 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryListLogins
 			params.MaxPages = MaxPagesListLogins
+			var envelopeStyle string
+			if jsonEnvelopeListLogins {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListLogins), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			if params.StartAt.IsZero() {
 				params.StartAt = nil
@@ -320,7 +369,11 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListLogins), fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListLogins {
+				err = lib.JSONEnvelopeIter(it, fieldsListLogins, listFilter, usePagerListLogins, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListLogins), fieldsListLogins, usePagerListLogins, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -342,6 +395,7 @@ func Histories() *cobra.Command {
 	cmdListLogins.Flags().StringSliceVar(&fieldsListLogins, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListLogins.Flags().StringSliceVar(&formatListLogins, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
+	cmdListLogins.Flags().BoolVar(&jsonEnvelopeListLogins, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList []string
 	var formatList []string
@@ -349,6 +403,7 @@ func Histories() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsHistoryList := files_sdk.HistoryListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -364,6 +419,13 @@ func Histories() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHistoryList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			if params.StartAt.IsZero() {
 				params.StartAt = nil
@@ -415,7 +477,11 @@ func Histories() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -441,6 +507,7 @@ func Histories() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Histories.AddCommand(cmdList)
 	return Histories
 }

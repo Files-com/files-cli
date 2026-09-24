@@ -16,8 +16,9 @@ func init() {
 
 func ExpectationIncidents() *cobra.Command {
 	ExpectationIncidents := &cobra.Command{
-		Use:  "expectation-incidents [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "expectation-incidents [command]",
+		Short: "An ExpectationIncident groups ongoing failure behavior for an Expectation over time.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command expectation-incidents\n\t%v", args[0])
 		},
@@ -28,6 +29,7 @@ func ExpectationIncidents() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsExpectationIncidentList := files_sdk.ExpectationIncidentListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -42,6 +44,13 @@ func ExpectationIncidents() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsExpectationIncidentList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -79,7 +88,11 @@ func ExpectationIncidents() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -98,6 +111,7 @@ func ExpectationIncidents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ExpectationIncidents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -121,6 +135,7 @@ func ExpectationIncidents() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExpectationIncidentFind.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -149,6 +164,7 @@ func ExpectationIncidents() *cobra.Command {
 		},
 	}
 	cmdResolve.Flags().Int64Var(&paramsExpectationIncidentResolve.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdResolve.Flags(), "id")
 
 	cmdResolve.Flags().StringSliceVar(&fieldsResolve, "fields", []string{}, "comma separated list of field names")
 	cmdResolve.Flags().StringSliceVar(&formatResolve, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -181,8 +197,10 @@ func ExpectationIncidents() *cobra.Command {
 		},
 	}
 	cmdSnooze.Flags().Int64Var(&paramsExpectationIncidentSnooze.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdSnooze.Flags(), "id")
 	paramsExpectationIncidentSnooze.SnoozedUntil = &time.Time{}
 	lib.TimeVar(cmdSnooze.Flags(), paramsExpectationIncidentSnooze.SnoozedUntil, "snoozed-until", "Time until which the incident should remain snoozed.")
+	lib.SetFlagAPIRequired(cmdSnooze.Flags(), "snoozed-until")
 
 	cmdSnooze.Flags().StringSliceVar(&fieldsSnooze, "fields", []string{}, "comma separated list of field names")
 	cmdSnooze.Flags().StringSliceVar(&formatSnooze, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -211,6 +229,7 @@ func ExpectationIncidents() *cobra.Command {
 		},
 	}
 	cmdAcknowledge.Flags().Int64Var(&paramsExpectationIncidentAcknowledge.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdAcknowledge.Flags(), "id")
 
 	cmdAcknowledge.Flags().StringSliceVar(&fieldsAcknowledge, "fields", []string{}, "comma separated list of field names")
 	cmdAcknowledge.Flags().StringSliceVar(&formatAcknowledge, "format", lib.FormatDefaults, lib.FormatHelpText)

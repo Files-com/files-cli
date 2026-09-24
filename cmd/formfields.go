@@ -11,8 +11,9 @@ func init() {
 
 func FormFields() *cobra.Command {
 	FormFields := &cobra.Command{
-		Use:  "form-fields [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "form-fields [command]",
+		Short: "A FormField is a single form field used in Form Field Set.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command form-fields\n\t%v", args[0])
 		},

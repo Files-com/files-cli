@@ -14,8 +14,9 @@ func init() {
 
 func SsoEvents() *cobra.Command {
 	SsoEvents := &cobra.Command{
-		Use:  "sso-events [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sso-events [command]",
+		Short: "An SsoEvent is a log record for SSO-related activity such as LDAP syncs and SSO login attempts.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sso-events\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func SsoEvents() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsSsoEventList := files_sdk.SsoEventListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -45,6 +47,13 @@ func SsoEvents() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsSsoEventList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -117,7 +126,11 @@ func SsoEvents() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -146,6 +159,7 @@ func SsoEvents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	SsoEvents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -169,6 +183,7 @@ func SsoEvents() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsSsoEventFind.Id, "id", 0, "Sso Event ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

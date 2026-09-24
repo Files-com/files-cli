@@ -19,8 +19,9 @@ func init() {
 
 func Users() *cobra.Command {
 	Users := &cobra.Command{
-		Use:  "users [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "users [command]",
+		Short: "A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command users\n\t%v", args[0])
 		},
@@ -31,6 +32,7 @@ func Users() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUserList := files_sdk.UserListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -51,6 +53,13 @@ func Users() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -127,7 +136,11 @@ func Users() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -159,6 +172,7 @@ func Users() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Users.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -182,6 +196,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserFind.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -379,6 +394,7 @@ func Users() *cobra.Command {
 	paramsUserCreate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsUserCreate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdCreate.Flags().StringVar(&UserCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserCreate.AuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "authentication-method", paramsUserCreate.AuthenticationMethod.Enum())
 	cmdCreate.Flags().BoolVar(&createBillingPermission, "billing-permission", createBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
 	cmdCreate.Flags().BoolVar(&createBypassUserLifecycleRules, "bypass-user-lifecycle-rules", createBypassUserLifecycleRules, "Exempt this user from user lifecycle rules?")
 	cmdCreate.Flags().BoolVar(&createBypassSiteAllowedIps, "bypass-site-allowed-ips", createBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
@@ -387,6 +403,7 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.DefaultWorkspaceId, "default-workspace-id", 0, "Workspace ID the user should land in by default when more than one Workspace is available.")
 	cmdCreate.Flags().BoolVar(&createDisabled, "disabled", createDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
 	cmdCreate.Flags().StringVar(&UserCreateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserCreate.FilesystemLayout.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "filesystem-layout", paramsUserCreate.FilesystemLayout.Enum())
 	cmdCreate.Flags().BoolVar(&createFtpPermission, "ftp-permission", createFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned directly to this user, if any.")
@@ -422,15 +439,18 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSiteAdmin, "site-admin", createSiteAdmin, "Is the user an administrator for this site?")
 	cmdCreate.Flags().BoolVar(&createSkipWelcomeScreen, "skip-welcome-screen", createSkipWelcomeScreen, "Skip Welcome page in the UI?")
 	cmdCreate.Flags().StringVar(&UserCreateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserCreate.SslRequired.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "ssl-required", paramsUserCreate.SslRequired.Enum())
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdCreate.Flags().BoolVar(&createSubscribeToNewsletter, "subscribe-to-newsletter", createSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdCreate.Flags().StringVar(&UserCreateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserCreate.Require2fa.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "require-2fa", paramsUserCreate.Require2fa.Enum())
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Tags, "tags", "", "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.TimeZone, "time-zone", "", "User time zone")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserRoot, "user-root", "", "If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.UserHome, "user-home", "", "Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.")
 	cmdCreate.Flags().BoolVar(&createWorkspaceAdmin, "workspace-admin", createWorkspaceAdmin, "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.")
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Username, "username", "", "User's username")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "username")
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -462,6 +482,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdUnlock.Flags(), "id")
 
 	cmdUnlock.Flags().StringSliceVar(&fieldsUnlock, "fields", []string{}, "comma separated list of field names")
 	cmdUnlock.Flags().StringSliceVar(&formatUnlock, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -492,6 +513,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdResendWelcomeEmail.Flags(), "id")
 
 	cmdResendWelcomeEmail.Flags().StringSliceVar(&fieldsResendWelcomeEmail, "fields", []string{}, "comma separated list of field names")
 	cmdResendWelcomeEmail.Flags().StringSliceVar(&formatResendWelcomeEmail, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -522,6 +544,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdUser2faReset.Flags().Int64Var(&paramsUserUser2faReset.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdUser2faReset.Flags(), "id")
 
 	cmdUser2faReset.Flags().StringSliceVar(&fieldsUser2faReset, "fields", []string{}, "comma separated list of field names")
 	cmdUser2faReset.Flags().StringSliceVar(&formatUser2faReset, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -835,6 +858,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateAvatarDelete, "avatar-delete", updateAvatarDelete, "If true, the avatar will be deleted.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.ChangePassword, "change-password", "", "Used for changing a password on an existing user.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.ChangePasswordConfirmation, "change-password-confirmation", "", "Optional, but if provided, we will ensure that it matches the value sent in `change_password`.")
@@ -852,6 +876,7 @@ func Users() *cobra.Command {
 	paramsUserUpdate.AuthenticateUntil = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsUserUpdate.AuthenticateUntil, "authenticate-until", "Scheduled Date/Time at which user will be deactivated")
 	cmdUpdate.Flags().StringVar(&UserUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("How is this user authenticated? %v", reflect.ValueOf(paramsUserUpdate.AuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "authentication-method", paramsUserUpdate.AuthenticationMethod.Enum())
 	cmdUpdate.Flags().BoolVar(&updateBillingPermission, "billing-permission", updateBillingPermission, "Allow this user to perform operations on the account, payments, and invoices?")
 	cmdUpdate.Flags().BoolVar(&updateBypassUserLifecycleRules, "bypass-user-lifecycle-rules", updateBypassUserLifecycleRules, "Exempt this user from user lifecycle rules?")
 	cmdUpdate.Flags().BoolVar(&updateBypassSiteAllowedIps, "bypass-site-allowed-ips", updateBypassSiteAllowedIps, "Allow this user to skip site-wide IP blacklists?")
@@ -860,6 +885,7 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.DefaultWorkspaceId, "default-workspace-id", 0, "Workspace ID the user should land in by default when more than one Workspace is available.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.")
 	cmdUpdate.Flags().StringVar(&UserUpdateFilesystemLayout, "filesystem-layout", "", fmt.Sprintf("File system layout %v", reflect.ValueOf(paramsUserUpdate.FilesystemLayout.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "filesystem-layout", paramsUserUpdate.FilesystemLayout.Enum())
 	cmdUpdate.Flags().BoolVar(&updateFtpPermission, "ftp-permission", updateFtpPermission, "Can the user access with FTP/FTPS?")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.HeaderText, "header-text", "", "Text to display to the user in the header of the UI")
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned directly to this user, if any.")
@@ -895,9 +921,11 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSiteAdmin, "site-admin", updateSiteAdmin, "Is the user an administrator for this site?")
 	cmdUpdate.Flags().BoolVar(&updateSkipWelcomeScreen, "skip-welcome-screen", updateSkipWelcomeScreen, "Skip Welcome page in the UI?")
 	cmdUpdate.Flags().StringVar(&UserUpdateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserUpdate.SslRequired.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "ssl-required", paramsUserUpdate.SslRequired.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdUpdate.Flags().BoolVar(&updateSubscribeToNewsletter, "subscribe-to-newsletter", updateSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdUpdate.Flags().StringVar(&UserUpdateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserUpdate.Require2fa.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "require-2fa", paramsUserUpdate.Require2fa.Enum())
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Tags, "tags", "", "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.TimeZone, "time-zone", "", "User time zone")
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.UserRoot, "user-root", "", "If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface.")
@@ -937,6 +965,7 @@ func Users() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 	cmdDelete.Flags().Int64Var(&paramsUserDelete.NewOwnerId, "new-owner-id", 0, "Provide a User ID here to transfer ownership of certain resources such as Automations and Share Links (Bundles) to that new user.")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")

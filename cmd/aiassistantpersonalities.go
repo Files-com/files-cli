@@ -15,8 +15,9 @@ func init() {
 
 func AiAssistantPersonalities() *cobra.Command {
 	AiAssistantPersonalities := &cobra.Command{
-		Use:  "ai-assistant-personalities [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "ai-assistant-personalities [command]",
+		Short: "An AI Assistant Personality defines a system prompt used to customize the in-app AI Assistant.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command ai-assistant-personalities\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func AiAssistantPersonalities() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAiAssistantPersonalityList := files_sdk.AiAssistantPersonalityListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func AiAssistantPersonalities() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAiAssistantPersonalityList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func AiAssistantPersonalities() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func AiAssistantPersonalities() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	AiAssistantPersonalities.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -120,6 +134,7 @@ func AiAssistantPersonalities() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAiAssistantPersonalityFind.Id, "id", 0, "Ai Assistant Personality ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -158,7 +173,9 @@ func AiAssistantPersonalities() *cobra.Command {
 	}
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, this default-workspace personality can apply to users in all workspaces.")
 	cmdCreate.Flags().StringVar(&paramsAiAssistantPersonalityCreate.Name, "name", "", "AI Assistant Personality name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsAiAssistantPersonalityCreate.SystemPrompt, "system-prompt", "", "System prompt injected into the in-app AI Assistant.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "system-prompt")
 	cmdCreate.Flags().BoolVar(&createUseByDefault, "use-by-default", createUseByDefault, "Whether this personality is the default personality for the Workspace.")
 	cmdCreate.Flags().Int64Var(&paramsAiAssistantPersonalityCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -215,6 +232,7 @@ func AiAssistantPersonalities() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAiAssistantPersonalityUpdate.Id, "id", 0, "Ai Assistant Personality ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, this default-workspace personality can apply to users in all workspaces.")
 	cmdUpdate.Flags().StringVar(&paramsAiAssistantPersonalityUpdate.Name, "name", "", "AI Assistant Personality name.")
 	cmdUpdate.Flags().StringVar(&paramsAiAssistantPersonalityUpdate.SystemPrompt, "system-prompt", "", "System prompt injected into the in-app AI Assistant.")
@@ -250,6 +268,7 @@ func AiAssistantPersonalities() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAiAssistantPersonalityDelete.Id, "id", 0, "Ai Assistant Personality ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

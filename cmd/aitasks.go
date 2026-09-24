@@ -18,8 +18,9 @@ func init() {
 
 func AiTasks() *cobra.Command {
 	AiTasks := &cobra.Command{
-		Use:  "ai-tasks [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "ai-tasks [command]",
+		Short: "An AI Task defines a Files.com AI prompt that can run on a schedule or in response to file actions.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command ai-tasks\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func AiTasks() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAiTaskList := files_sdk.AiTaskListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func AiTasks() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAiTaskList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func AiTasks() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func AiTasks() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	AiTasks.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func AiTasks() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAiTaskFind.Id, "id", 0, "Ai Task ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -176,9 +191,12 @@ func AiTasks() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the AI Task schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Interval, "interval", "", "If trigger is `daily`, this specifies how often to run the AI Task.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Name, "name", "", "AI Task name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
 	cmdCreate.Flags().StringVar(&AiTaskCreatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskCreate.PermissionSet.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "permission-set", paramsAiTaskCreate.PermissionSet.Enum())
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "prompt")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAiTaskCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.")
@@ -187,6 +205,7 @@ func AiTasks() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")
 	cmdCreate.Flags().StringVar(&AiTaskCreateTrigger, "trigger", "", fmt.Sprintf("How this AI Task is triggered. %v", reflect.ValueOf(paramsAiTaskCreate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "trigger", paramsAiTaskCreate.Trigger.Enum())
 	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy.")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -219,6 +238,7 @@ func AiTasks() *cobra.Command {
 		},
 	}
 	cmdManualRun.Flags().Int64Var(&paramsAiTaskManualRun.Id, "id", 0, "Ai Task ID.")
+	lib.SetFlagAPIRequired(cmdManualRun.Flags(), "id")
 
 	cmdManualRun.Flags().StringSliceVar(&fieldsManualRun, "fields", []string{}, "comma separated list of field names")
 	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -327,6 +347,7 @@ func AiTasks() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.Id, "id", 0, "Ai Task ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Description, "description", "", "AI Task description.")
 	cmdUpdate.Flags().BoolVar(&updateDisabled, "disabled", updateDisabled, "If true, this AI Task will not run.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the AI Task schedule.")
@@ -334,6 +355,7 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Name, "name", "", "AI Task name.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Path, "path", "", "Path scope used for action-triggered AI Tasks.")
 	cmdUpdate.Flags().StringVar(&AiTaskUpdatePermissionSet, "permission-set", "", fmt.Sprintf("Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`. %v", reflect.ValueOf(paramsAiTaskUpdate.PermissionSet.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "permission-set", paramsAiTaskUpdate.PermissionSet.Enum())
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Prompt, "prompt", "", "Prompt sent when this AI Task is invoked.")
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.RecurringDay, "recurring-day", 0, "If trigger is `daily`, this selects the day number inside the chosen interval.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAiTaskUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
@@ -343,6 +365,7 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")
 	cmdUpdate.Flags().StringVar(&AiTaskUpdateTrigger, "trigger", "", fmt.Sprintf("How this AI Task is triggered. %v", reflect.ValueOf(paramsAiTaskUpdate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "trigger", paramsAiTaskUpdate.Trigger.Enum())
 	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy.")
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -375,6 +398,7 @@ func AiTasks() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAiTaskDelete.Id, "id", 0, "Ai Task ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

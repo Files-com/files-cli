@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0.0",
-  "description": "Machine-readable command catalog for files-cli. Agents should consult per-domain skills under skills/ for workflow guidance; this catalog is for programmatic surface discovery.",
+  "description": "Machine-readable catalog of the files-cli API resource commands, generated from the API schema. Agents should consult per-domain skills under skills/ for workflow guidance. For the exact commands and flags of an installed binary, including upload, download, and sync, run `files-cli commands describe <command> --format json`.",
   "global_flags": {
     "--api-key": "Single-use API key for this command.",
     "--session-id": "Single-use session ID for this command.",
     "--profile": "Use a named saved profile.",
     "--workspace-id": "Scope this command to a specific workspace.",
-    "--format": "Output format: json, table, csv. Always pass json from an agent.",
-    "--fields": "Comma-separated list of field names to include in the response.",
-    "--output-path": "Write output to a file instead of stdout.",
+    "--format": "Output format: json, table, csv. Always pass json from an agent. Defined on each resource command.",
+    "--fields": "Comma-separated list of field names to include in the response. Defined on each resource command.",
+    "--output": "Write output to a file instead of stdout. Short form -o.",
     "--debug": "Enable verbose logging.",
     "--non-interactive": "Do not prompt for user input.",
     "--reauthentication": "Re-supply the session user's password for security-sensitive operations.",
@@ -17,7 +17,8 @@
   "pagination_flags": {
     "--cursor": "Resume listing from a cursor returned by a previous page.",
     "--per-page": "Records per page. Max 10,000.",
-    "--max-pages": "Cap the total number of pages fetched."
+    "--max-pages": "Cap the total number of pages fetched.",
+    "--json-envelope": "Write {has_more, next_cursor, data} JSON for one page (or --max-pages pages); pass next_cursor to --cursor to continue."
   },
   "commands": [
     {

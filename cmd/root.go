@@ -92,6 +92,13 @@ var (
 	featureFlags           []string
 	RootCmd                = &cobra.Command{
 		Use: "files-cli [resource]",
+		Long: `Files.com command-line interface.
+
+Discover commands and task guides offline, without credentials:
+  files-cli commands                        list command groups
+  files-cli commands search <words>         find commands by keyword
+  files-cli commands describe <command>     usage, arguments, and flags (--format json)
+  files-cli workflows                       task guides for common workflows`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = silenceUsageFunc()
 			// configure non-interactive flag combinations before anything else

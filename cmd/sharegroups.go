@@ -14,8 +14,9 @@ func init() {
 
 func ShareGroups() *cobra.Command {
 	ShareGroups := &cobra.Command{
-		Use:  "share-groups [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "share-groups [command]",
+		Short: "A ShareGroup is a way for you to store and name groups of email contacts to be used for sending share and inbox invitations.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command share-groups\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func ShareGroups() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsShareGroupList := files_sdk.ShareGroupListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func ShareGroups() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsShareGroupList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := share_group.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func ShareGroups() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -76,6 +89,7 @@ func ShareGroups() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ShareGroups.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -99,6 +113,7 @@ func ShareGroups() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsShareGroupFind.Id, "id", 0, "Share Group ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -139,8 +154,10 @@ func ShareGroups() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsShareGroupCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsShareGroupCreate.Notes, "notes", "", "Additional notes of the share group")
 	cmdCreate.Flags().StringVar(&paramsShareGroupCreate.Name, "name", "", "Name of the share group")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&createMembersJSON, "members", "", "A list of share group members. Provide as a JSON array of objects.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "members", "json")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "members")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -193,6 +210,7 @@ func ShareGroups() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsShareGroupUpdate.Id, "id", 0, "Share Group ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsShareGroupUpdate.Notes, "notes", "", "Additional notes of the share group")
 	cmdUpdate.Flags().StringVar(&paramsShareGroupUpdate.Name, "name", "", "Name of the share group")
 	cmdUpdate.Flags().StringVar(&updateMembersJSON, "members", "", "A list of share group members. Provide as a JSON array of objects.")
@@ -227,6 +245,7 @@ func ShareGroups() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsShareGroupDelete.Id, "id", 0, "Share Group ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

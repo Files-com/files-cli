@@ -18,8 +18,9 @@ func init() {
 
 func ChildSiteManagementPolicies() *cobra.Command {
 	ChildSiteManagementPolicies := &cobra.Command{
-		Use:  "child-site-management-policies [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "child-site-management-policies [command]",
+		Short: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command child-site-management-policies\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsChildSiteManagementPolicyList := files_sdk.ChildSiteManagementPolicyListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -42,6 +44,13 @@ func ChildSiteManagementPolicies() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsChildSiteManagementPolicyList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := child_site_management_policy.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -64,7 +73,11 @@ func ChildSiteManagementPolicies() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -79,6 +92,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ChildSiteManagementPolicies.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -102,6 +116,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsChildSiteManagementPolicyFind.Id, "id", 0, "Child Site Management Policy ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -156,6 +171,8 @@ func ChildSiteManagementPolicies() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyCreate.ChildSiteIds, "child-site-ids", []int64{}, "IDs of child sites explicitly assigned to this non-default policy.")
 	cmdCreate.Flags().BoolVar(&createDefaultPolicy, "default-policy", createDefaultPolicy, "Whether this policy applies to child sites not explicitly assigned to another policy.")
 	cmdCreate.Flags().StringVar(&ChildSiteManagementPolicyCreatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyCreate.PolicyType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "policy-type", paramsChildSiteManagementPolicyCreate.PolicyType.Enum())
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "policy-type")
 	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Name, "name", "", "Name for this policy.")
 	cmdCreate.Flags().StringVar(&paramsChildSiteManagementPolicyCreate.Description, "description", "", "Description for this policy.")
 
@@ -230,12 +247,14 @@ func ChildSiteManagementPolicies() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsChildSiteManagementPolicyUpdate.Id, "id", 0, "Child Site Management Policy ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, "skip-child-site-ids", []int64{}, "IDs of child sites excluded from this default policy.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsChildSiteManagementPolicyUpdate.ChildSiteIds, "child-site-ids", []int64{}, "IDs of child sites explicitly assigned to this non-default policy.")
 	cmdUpdate.Flags().BoolVar(&updateDefaultPolicy, "default-policy", updateDefaultPolicy, "Whether this policy applies to child sites not explicitly assigned to another policy.")
 	cmdUpdate.Flags().StringVar(&ChildSiteManagementPolicyUpdatePolicyType, "policy-type", "", fmt.Sprintf("Type of policy.  Valid values: `settings`. %v", reflect.ValueOf(paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "policy-type", paramsChildSiteManagementPolicyUpdate.PolicyType.Enum())
 	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Name, "name", "", "Name for this policy.")
 	cmdUpdate.Flags().StringVar(&paramsChildSiteManagementPolicyUpdate.Description, "description", "", "Description for this policy.")
 
@@ -268,6 +287,7 @@ func ChildSiteManagementPolicies() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsChildSiteManagementPolicyDelete.Id, "id", 0, "Child Site Management Policy ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

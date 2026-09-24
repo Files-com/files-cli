@@ -14,8 +14,9 @@ func init() {
 
 func IpAddresses() *cobra.Command {
 	IpAddresses := &cobra.Command{
-		Use:  "ip-addresses [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "ip-addresses [command]",
+		Short: "An IPAddress is a record of IP addresses that you can use to automate keeping your firewall's configuration up to date.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command ip-addresses\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func IpAddresses() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsIpAddressList := files_sdk.IpAddressListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -38,6 +40,13 @@ func IpAddresses() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := ip_address.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -60,7 +69,11 @@ func IpAddresses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -75,6 +88,7 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetSmartfileReserved []string
 	var formatGetSmartfileReserved []string
@@ -82,6 +96,7 @@ func IpAddresses() *cobra.Command {
 	filterbyGetSmartfileReserved := make(map[string]string)
 	paramsIpAddressGetSmartfileReserved := files_sdk.IpAddressGetSmartfileReservedParams{}
 	var MaxPagesGetSmartfileReserved int64
+	var jsonEnvelopeGetSmartfileReserved bool
 
 	cmdGetSmartfileReserved := &cobra.Command{
 		Use:   "get-smartfile-reserved",
@@ -93,6 +108,13 @@ func IpAddresses() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressGetSmartfileReserved
 			params.MaxPages = MaxPagesGetSmartfileReserved
+			var envelopeStyle string
+			if jsonEnvelopeGetSmartfileReserved {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := ip_address.Client{Config: config}
 			it, err := client.GetSmartfileReserved(params, files_sdk.WithContext(ctx))
@@ -115,7 +137,11 @@ func IpAddresses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), fieldsGetSmartfileReserved, usePagerGetSmartfileReserved, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeGetSmartfileReserved {
+				err = lib.JSONEnvelopeIter(it, fieldsGetSmartfileReserved, listFilter, usePagerGetSmartfileReserved, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), fieldsGetSmartfileReserved, usePagerGetSmartfileReserved, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -130,6 +156,7 @@ func IpAddresses() *cobra.Command {
 	cmdGetSmartfileReserved.Flags().StringSliceVar(&fieldsGetSmartfileReserved, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetSmartfileReserved.Flags().StringSliceVar(&formatGetSmartfileReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetSmartfileReserved.Flags().BoolVar(&usePagerGetSmartfileReserved, "use-pager", usePagerGetSmartfileReserved, "Use $PAGER (.ie less, more, etc)")
+	cmdGetSmartfileReserved.Flags().BoolVar(&jsonEnvelopeGetSmartfileReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	IpAddresses.AddCommand(cmdGetSmartfileReserved)
 	var fieldsGetExavaultReserved []string
 	var formatGetExavaultReserved []string
@@ -137,6 +164,7 @@ func IpAddresses() *cobra.Command {
 	filterbyGetExavaultReserved := make(map[string]string)
 	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
 	var MaxPagesGetExavaultReserved int64
+	var jsonEnvelopeGetExavaultReserved bool
 
 	cmdGetExavaultReserved := &cobra.Command{
 		Use:   "get-exavault-reserved",
@@ -148,6 +176,13 @@ func IpAddresses() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressGetExavaultReserved
 			params.MaxPages = MaxPagesGetExavaultReserved
+			var envelopeStyle string
+			if jsonEnvelopeGetExavaultReserved {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := ip_address.Client{Config: config}
 			it, err := client.GetExavaultReserved(params, files_sdk.WithContext(ctx))
@@ -170,7 +205,11 @@ func IpAddresses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeGetExavaultReserved {
+				err = lib.JSONEnvelopeIter(it, fieldsGetExavaultReserved, listFilter, usePagerGetExavaultReserved, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -185,6 +224,7 @@ func IpAddresses() *cobra.Command {
 	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
+	cmdGetExavaultReserved.Flags().BoolVar(&jsonEnvelopeGetExavaultReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved []string
 	var formatGetReserved []string
@@ -192,6 +232,7 @@ func IpAddresses() *cobra.Command {
 	filterbyGetReserved := make(map[string]string)
 	paramsIpAddressGetReserved := files_sdk.IpAddressGetReservedParams{}
 	var MaxPagesGetReserved int64
+	var jsonEnvelopeGetReserved bool
 
 	cmdGetReserved := &cobra.Command{
 		Use:   "get-reserved",
@@ -203,6 +244,13 @@ func IpAddresses() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsIpAddressGetReserved
 			params.MaxPages = MaxPagesGetReserved
+			var envelopeStyle string
+			if jsonEnvelopeGetReserved {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetReserved), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := ip_address.Client{Config: config}
 			it, err := client.GetReserved(params, files_sdk.WithContext(ctx))
@@ -225,7 +273,11 @@ func IpAddresses() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetReserved), fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeGetReserved {
+				err = lib.JSONEnvelopeIter(it, fieldsGetReserved, listFilter, usePagerGetReserved, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetReserved), fieldsGetReserved, usePagerGetReserved, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -240,6 +292,7 @@ func IpAddresses() *cobra.Command {
 	cmdGetReserved.Flags().StringSliceVar(&fieldsGetReserved, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetReserved.Flags().StringSliceVar(&formatGetReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
+	cmdGetReserved.Flags().BoolVar(&jsonEnvelopeGetReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	IpAddresses.AddCommand(cmdGetReserved)
 	return IpAddresses
 }

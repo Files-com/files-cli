@@ -14,8 +14,9 @@ func init() {
 
 func PendingWorkEvents() *cobra.Command {
 	PendingWorkEvents := &cobra.Command{
-		Use:  "pending-work-events [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "pending-work-events [command]",
+		Short: "A PendingWorkEvent is a log record for pending file work failures, such as GPG Encryption and GPG Decryption.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command pending-work-events\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func PendingWorkEvents() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPendingWorkEventList := files_sdk.PendingWorkEventListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -44,6 +46,13 @@ func PendingWorkEvents() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPendingWorkEventList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -109,7 +118,11 @@ func PendingWorkEvents() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -136,6 +149,7 @@ func PendingWorkEvents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	PendingWorkEvents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -159,6 +173,7 @@ func PendingWorkEvents() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPendingWorkEventFind.Id, "id", 0, "Pending Work Event ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)

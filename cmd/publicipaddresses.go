@@ -11,8 +11,9 @@ func init() {
 
 func PublicIpAddresses() *cobra.Command {
 	PublicIpAddresses := &cobra.Command{
-		Use:  "public-ip-addresses [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "public-ip-addresses [command]",
+		Short: "A PublicIPAddress is an IP address that `app.files.com` (or `*.files.com`) may potentially resolve to over the next 30 days.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command public-ip-addresses\n\t%v", args[0])
 		},

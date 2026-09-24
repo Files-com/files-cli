@@ -17,8 +17,9 @@ func init() {
 
 func ExternalEvents() *cobra.Command {
 	ExternalEvents := &cobra.Command{
-		Use:  "external-events [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "external-events [command]",
+		Short: "An ExternalEvent is a log that is sent to the cloud from a client application such as the Files.com CLI.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command external-events\n\t%v", args[0])
 		},
@@ -29,6 +30,7 @@ func ExternalEvents() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsExternalEventList := files_sdk.ExternalEventListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -47,6 +49,13 @@ func ExternalEvents() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsExternalEventList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -112,7 +121,11 @@ func ExternalEvents() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -139,6 +152,7 @@ func ExternalEvents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	ExternalEvents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -162,6 +176,7 @@ func ExternalEvents() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsExternalEventFind.Id, "id", 0, "External Event ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -197,7 +212,10 @@ func ExternalEvents() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&ExternalEventCreateStatus, "status", "", fmt.Sprintf("Status of event. %v", reflect.ValueOf(paramsExternalEventCreate.Status.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "status", paramsExternalEventCreate.Status.Enum())
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "status")
 	cmdCreate.Flags().StringVar(&paramsExternalEventCreate.Body, "body", "", "Event body")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "body")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -15,8 +15,9 @@ func init() {
 
 func Requests() *cobra.Command {
 	Requests := &cobra.Command{
-		Use:  "requests [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "requests [command]",
+		Short: "A Request is a file that *should* be uploaded by a specific user or group.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command requests\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func Requests() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsRequestList := files_sdk.RequestListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	listMine := true
 
@@ -41,6 +43,13 @@ func Requests() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRequestList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -78,7 +87,11 @@ func Requests() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -97,6 +110,7 @@ func Requests() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Requests.AddCommand(cmdList)
 	var fieldsGetFolder []string
 	var formatGetFolder []string
@@ -104,6 +118,7 @@ func Requests() *cobra.Command {
 	filterbyGetFolder := make(map[string]string)
 	paramsRequestGetFolder := files_sdk.RequestGetFolderParams{}
 	var MaxPagesGetFolder int64
+	var jsonEnvelopeGetFolder bool
 	var getFolderSortByArgs string
 	getFolderMine := true
 
@@ -117,6 +132,13 @@ func Requests() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsRequestGetFolder
 			params.MaxPages = MaxPagesGetFolder
+			var envelopeStyle string
+			if jsonEnvelopeGetFolder {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetFolder), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -154,7 +176,11 @@ func Requests() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetFolder), fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeGetFolder {
+				err = lib.JSONEnvelopeIter(it, fieldsGetFolder, listFilter, usePagerGetFolder, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetFolder), fieldsGetFolder, usePagerGetFolder, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -173,6 +199,7 @@ func Requests() *cobra.Command {
 	cmdGetFolder.Flags().StringSliceVar(&fieldsGetFolder, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetFolder.Flags().StringSliceVar(&formatGetFolder, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetFolder.Flags().BoolVar(&usePagerGetFolder, "use-pager", usePagerGetFolder, "Use $PAGER (.ie less, more, etc)")
+	cmdGetFolder.Flags().BoolVar(&jsonEnvelopeGetFolder, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Requests.AddCommand(cmdGetFolder)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -200,6 +227,7 @@ func Requests() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Path, "path", "", "Folder path on which to request the file.")
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.Destination, "destination", "", "Destination filename (without extension) to request.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "destination")
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.UserIds, "user-ids", "", "A list of user IDs to request the file from. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsRequestCreate.GroupIds, "group-ids", "", "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.")
 
@@ -232,6 +260,7 @@ func Requests() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsRequestDelete.Id, "id", 0, "Request ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

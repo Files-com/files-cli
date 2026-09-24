@@ -15,8 +15,9 @@ func init() {
 
 func GroupUsers() *cobra.Command {
 	GroupUsers := &cobra.Command{
-		Use:  "group-users [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "group-users [command]",
+		Short: "A GroupUser is a record about membership of a User within a Group.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command group-users\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func GroupUsers() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsGroupUserList := files_sdk.GroupUserListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -39,6 +41,13 @@ func GroupUsers() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsGroupUserList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := group_user.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -61,7 +70,11 @@ func GroupUsers() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -78,6 +91,7 @@ func GroupUsers() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	GroupUsers.AddCommand(cmdList)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -106,7 +120,9 @@ func GroupUsers() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.GroupId, "group-id", 0, "Group ID to add user to.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "group-id")
 	cmdCreate.Flags().Int64Var(&paramsGroupUserCreate.UserId, "user-id", 0, "User ID to add to group.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "user-id")
 	cmdCreate.Flags().BoolVar(&createAdmin, "admin", createAdmin, "Is the user a group administrator?")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -155,8 +171,11 @@ func GroupUsers() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.Id, "id", 0, "Group User ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.GroupId, "group-id", 0, "Group ID to add user to.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "group-id")
 	cmdUpdate.Flags().Int64Var(&paramsGroupUserUpdate.UserId, "user-id", 0, "User ID to add to group.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "user-id")
 	cmdUpdate.Flags().BoolVar(&updateAdmin, "admin", updateAdmin, "Is the user a group administrator?")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
@@ -188,8 +207,11 @@ func GroupUsers() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsGroupUserDelete.Id, "id", 0, "Group User ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 	cmdDelete.Flags().Int64Var(&paramsGroupUserDelete.GroupId, "group-id", 0, "Group ID from which to remove user.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "group-id")
 	cmdDelete.Flags().Int64Var(&paramsGroupUserDelete.UserId, "user-id", 0, "User ID to remove from group.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "user-id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

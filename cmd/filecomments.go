@@ -14,8 +14,9 @@ func init() {
 
 func FileComments() *cobra.Command {
 	FileComments := &cobra.Command{
-		Use:  "file-comments [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "file-comments [command]",
+		Short: "A FileComment is a comment attached to a file by a user.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-comments\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func FileComments() *cobra.Command {
 	filterbyListFor := make(map[string]string)
 	paramsFileCommentListFor := files_sdk.FileCommentListForParams{}
 	var MaxPagesListFor int64
+	var jsonEnvelopeListFor bool
 
 	cmdListFor := &cobra.Command{
 		Use:     "list-for [path]",
@@ -38,6 +40,13 @@ func FileComments() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsFileCommentListFor
 			params.MaxPages = MaxPagesListFor
+			var envelopeStyle string
+			if jsonEnvelopeListFor {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 			if len(args) > 0 && args[0] != "" {
 				params.Path = args[0]
 			}
@@ -63,7 +72,11 @@ func FileComments() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeListFor {
+				err = lib.JSONEnvelopeIter(it, fieldsListFor, listFilter, usePagerListFor, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatListFor), fieldsListFor, usePagerListFor, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -79,6 +92,7 @@ func FileComments() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
+	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -105,6 +119,7 @@ func FileComments() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Body, "body", "", "Comment body.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "body")
 	cmdCreate.Flags().StringVar(&paramsFileCommentCreate.Path, "path", "", "File path.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -146,7 +161,9 @@ func FileComments() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsFileCommentUpdate.Id, "id", 0, "File Comment ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsFileCommentUpdate.Body, "body", "", "Comment body.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "body")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -177,6 +194,7 @@ func FileComments() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsFileCommentDelete.Id, "id", 0, "File Comment ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

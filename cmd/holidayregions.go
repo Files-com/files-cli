@@ -14,8 +14,9 @@ func init() {
 
 func HolidayRegions() *cobra.Command {
 	HolidayRegions := &cobra.Command{
-		Use:  "holiday-regions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "holiday-regions [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command holiday-regions\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func HolidayRegions() *cobra.Command {
 	filterbyGetSupported := make(map[string]string)
 	paramsHolidayRegionGetSupported := files_sdk.HolidayRegionGetSupportedParams{}
 	var MaxPagesGetSupported int64
+	var jsonEnvelopeGetSupported bool
 
 	cmdGetSupported := &cobra.Command{
 		Use:   "get-supported",
@@ -37,6 +39,13 @@ func HolidayRegions() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsHolidayRegionGetSupported
 			params.MaxPages = MaxPagesGetSupported
+			var envelopeStyle string
+			if jsonEnvelopeGetSupported {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSupported), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			client := holiday_region.Client{Config: config}
 			it, err := client.GetSupported(params, files_sdk.WithContext(ctx))
@@ -59,7 +68,11 @@ func HolidayRegions() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSupported), fieldsGetSupported, usePagerGetSupported, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeGetSupported {
+				err = lib.JSONEnvelopeIter(it, fieldsGetSupported, listFilter, usePagerGetSupported, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSupported), fieldsGetSupported, usePagerGetSupported, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -74,6 +87,7 @@ func HolidayRegions() *cobra.Command {
 	cmdGetSupported.Flags().StringSliceVar(&fieldsGetSupported, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdGetSupported.Flags().StringSliceVar(&formatGetSupported, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetSupported.Flags().BoolVar(&usePagerGetSupported, "use-pager", usePagerGetSupported, "Use $PAGER (.ie less, more, etc)")
+	cmdGetSupported.Flags().BoolVar(&jsonEnvelopeGetSupported, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	HolidayRegions.AddCommand(cmdGetSupported)
 	return HolidayRegions
 }

@@ -17,8 +17,9 @@ func init() {
 
 func CustomDomains() *cobra.Command {
 	CustomDomains := &cobra.Command{
-		Use:  "custom-domains [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "custom-domains [command]",
+		Short: "A CustomDomain object represents an additional customer-owned domain that routes to a Files.com site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command custom-domains\n\t%v", args[0])
 		},
@@ -29,6 +30,7 @@ func CustomDomains() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsCustomDomainList := files_sdk.CustomDomainListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 
 	cmdList := &cobra.Command{
@@ -42,6 +44,13 @@ func CustomDomains() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsCustomDomainList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -72,7 +81,11 @@ func CustomDomains() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -89,6 +102,7 @@ func CustomDomains() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	CustomDomains.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -112,6 +126,7 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsCustomDomainFind.Id, "id", 0, "Custom Domain ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -140,7 +155,9 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Id, "id", 0, "Custom Domain ID.")
+	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "id")
 	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Count, "count", 0, "Number of dedicated IP addresses to allocate.")
+	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "count")
 
 	cmdCreateAllocateIp.Flags().StringSliceVar(&fieldsCreateAllocateIp, "fields", []string{}, "comma separated list of field names")
 	cmdCreateAllocateIp.Flags().StringSliceVar(&formatCreateAllocateIp, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -176,9 +193,11 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&CustomDomainCreateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainCreate.Destination.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "destination", paramsCustomDomainCreate.Destination.Enum())
 	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")
 	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.SslCertificateId, "ssl-certificate-id", 0, "Current SSL certificate ID.")
 	cmdCreate.Flags().StringVar(&paramsCustomDomainCreate.Domain, "domain", "", "Customer-owned domain name.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "domain")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -235,7 +254,9 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.Id, "id", 0, "Custom Domain ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&CustomDomainUpdateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainUpdate.Destination.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "destination", paramsCustomDomainUpdate.Destination.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.SslCertificateId, "ssl-certificate-id", 0, "Current SSL certificate ID.")
 	cmdUpdate.Flags().StringVar(&paramsCustomDomainUpdate.Domain, "domain", "", "Customer-owned domain name.")
@@ -269,6 +290,7 @@ func CustomDomains() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsCustomDomainDelete.Id, "id", 0, "Custom Domain ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

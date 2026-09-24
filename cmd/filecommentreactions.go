@@ -14,8 +14,9 @@ func init() {
 
 func FileCommentReactions() *cobra.Command {
 	FileCommentReactions := &cobra.Command{
-		Use:  "file-comment-reactions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "file-comment-reactions [command]",
+		Short: "A FileCommentReaction is a reaction that is attached to a comment on a file.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-comment-reactions\n\t%v", args[0])
 		},
@@ -43,7 +44,9 @@ func FileCommentReactions() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64Var(&paramsFileCommentReactionCreate.FileCommentId, "file-comment-id", 0, "ID of file comment to attach reaction to.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "file-comment-id")
 	cmdCreate.Flags().StringVar(&paramsFileCommentReactionCreate.Emoji, "emoji", "", "Emoji to react with.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "emoji")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -74,6 +77,7 @@ func FileCommentReactions() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsFileCommentReactionDelete.Id, "id", 0, "File Comment Reaction ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

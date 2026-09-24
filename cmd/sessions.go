@@ -14,8 +14,9 @@ func init() {
 
 func Sessions() *cobra.Command {
 	Sessions := &cobra.Command{
-		Use:  "sessions [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "sessions [command]",
+		Short: "A Session is an operation that allows you to make further API calls using our REST API or SDKs as a specific user.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command sessions\n\t%v", args[0])
 		},

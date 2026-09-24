@@ -18,8 +18,9 @@ func init() {
 
 func Automations() *cobra.Command {
 	Automations := &cobra.Command{
-		Use:  "automations [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "automations [command]",
+		Short: "An Automation is an automated process of controlling workflows on your Files.com site.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command automations\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func Automations() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsAutomationList := files_sdk.AutomationListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterGtArgs []string
@@ -48,6 +50,13 @@ func Automations() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsAutomationList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -113,7 +122,11 @@ func Automations() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -140,6 +153,7 @@ func Automations() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Automations.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -163,6 +177,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsAutomationFind.Id, "id", 0, "Automation ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -317,12 +332,15 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdCreate.Flags().StringVar(&AutomationCreateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationCreate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "trigger", paramsAutomationCreate.Trigger.Enum())
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy")
 	cmdCreate.Flags().StringVar(&createValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "value", "json")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().StringVar(&AutomationCreateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationCreate.Automation.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "automation", paramsAutomationCreate.Automation.Enum())
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "automation")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -352,6 +370,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdUpgrade.Flags().Int64Var(&paramsAutomationUpgrade.Id, "id", 0, "Automation ID.")
+	lib.SetFlagAPIRequired(cmdUpgrade.Flags(), "id")
 
 	cmdUpgrade.Flags().StringSliceVar(&fieldsUpgrade, "fields", []string{}, "comma separated list of field names")
 	cmdUpgrade.Flags().StringSliceVar(&formatUpgrade, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -392,6 +411,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdManualRun.Flags().Int64Var(&paramsAutomationManualRun.Id, "id", 0, "Automation ID.")
+	lib.SetFlagAPIRequired(cmdManualRun.Flags(), "id")
 	cmdManualRun.Flags().StringVar(&manualRunItemsJSON, "items", "", "Initial items for a v2 manual trigger. Each item contains exactly one `file` path or `data` object. Provide as a JSON array of objects.")
 	lib.SetFlagDisplayType(cmdManualRun.Flags(), "items", "json")
 
@@ -575,6 +595,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.Id, "id", 0, "Automation ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.Source, "source", "", "Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.")
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.Destinations, "destinations", []string{}, "A list of destination paths. Use a trailing slash for folder destinations and omit it for file destinations.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.DestinationReplaceFrom, "destination-replace-from", "", "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.")
@@ -607,12 +628,14 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureIntervalInMinutes, "retry-on-failure-interval-in-minutes", 0, "If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RetryOnFailureNumberOfAttempts, "retry-on-failure-number-of-attempts", 0, "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateTrigger, "trigger", "", fmt.Sprintf("How this automation is triggered to run. %v", reflect.ValueOf(paramsAutomationUpdate.Trigger.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "trigger", paramsAutomationUpdate.Trigger.Enum())
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.TriggerActions, "trigger-actions", []string{}, "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy")
 	cmdUpdate.Flags().StringVar(&updateValueJSON, "value", "", "A Hash of attributes specific to the automation type. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "value", "json")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.RecurringDay, "recurring-day", 0, "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().StringVar(&AutomationUpdateAutomation, "automation", "", fmt.Sprintf("Automation type %v", reflect.ValueOf(paramsAutomationUpdate.Automation.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "automation", paramsAutomationUpdate.Automation.Enum())
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -643,6 +666,7 @@ func Automations() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsAutomationDelete.Id, "id", 0, "Automation ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

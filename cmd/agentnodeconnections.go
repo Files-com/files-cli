@@ -11,8 +11,9 @@ func init() {
 
 func AgentNodeConnections() *cobra.Command {
 	AgentNodeConnections := &cobra.Command{
-		Use:  "agent-node-connections [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "agent-node-connections [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command agent-node-connections\n\t%v", args[0])
 		},

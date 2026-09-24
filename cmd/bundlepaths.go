@@ -11,8 +11,9 @@ func init() {
 
 func BundlePaths() *cobra.Command {
 	BundlePaths := &cobra.Command{
-		Use:  "bundle-paths [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "bundle-paths [command]",
+		Short: "A BundlePath is a single bundlepath in the associated Bundle.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command bundle-paths\n\t%v", args[0])
 		},

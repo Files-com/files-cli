@@ -14,8 +14,9 @@ func init() {
 
 func UserAdditionalEmailRecipients() *cobra.Command {
 	UserAdditionalEmailRecipients := &cobra.Command{
-		Use:  "user-additional-email-recipients [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "user-additional-email-recipients [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command user-additional-email-recipients\n\t%v", args[0])
 		},
@@ -26,6 +27,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUserAdditionalEmailRecipientList := files_sdk.UserAdditionalEmailRecipientListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
@@ -41,6 +43,13 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserAdditionalEmailRecipientList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -85,7 +94,11 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -107,6 +120,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	UserAdditionalEmailRecipients.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -130,6 +144,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserAdditionalEmailRecipientFind.Id, "id", 0, "User Additional Email Recipient ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -159,6 +174,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsUserAdditionalEmailRecipientCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsUserAdditionalEmailRecipientCreate.Email, "email", "", "Additional email recipient address")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "email")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -199,6 +215,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserAdditionalEmailRecipientUpdate.Id, "id", 0, "User Additional Email Recipient ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsUserAdditionalEmailRecipientUpdate.Email, "email", "", "Additional email recipient address")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
@@ -230,6 +247,7 @@ func UserAdditionalEmailRecipients() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserAdditionalEmailRecipientDelete.Id, "id", 0, "User Additional Email Recipient ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -26,7 +26,7 @@ The following table sets forth the available Permission types:
 | `site_admin` | Able to behave as a Site Admin on a given child site. Only applies to child sites. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
 | `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |
 
-All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
+All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 

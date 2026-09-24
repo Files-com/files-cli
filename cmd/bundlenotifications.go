@@ -15,8 +15,9 @@ func init() {
 
 func BundleNotifications() *cobra.Command {
 	BundleNotifications := &cobra.Command{
-		Use:  "bundle-notifications [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "bundle-notifications [command]",
+		Short: "A BundleNotification is an E-Mail sent out to users when certain actions are performed on or within a shared set of files and folders.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command bundle-notifications\n\t%v", args[0])
 		},
@@ -27,6 +28,7 @@ func BundleNotifications() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsBundleNotificationList := files_sdk.BundleNotificationListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -41,6 +43,13 @@ func BundleNotifications() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsBundleNotificationList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -78,7 +87,11 @@ func BundleNotifications() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -99,6 +112,7 @@ func BundleNotifications() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	BundleNotifications.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -122,6 +136,7 @@ func BundleNotifications() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsBundleNotificationFind.Id, "id", 0, "Bundle Notification ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -160,6 +175,7 @@ func BundleNotifications() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.BundleId, "bundle-id", 0, "Bundle ID to notify on")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "bundle-id")
 	cmdCreate.Flags().Int64Var(&paramsBundleNotificationCreate.NotifyUserId, "notify-user-id", 0, "The id of the user to notify.")
 	cmdCreate.Flags().BoolVar(&createNotifyOnRegistration, "notify-on-registration", createNotifyOnRegistration, "Triggers bundle notification when a registration action occurs for it.")
 	cmdCreate.Flags().BoolVar(&createNotifyOnUpload, "notify-on-upload", createNotifyOnUpload, "Triggers bundle notification when a upload action occurs for it.")
@@ -208,6 +224,7 @@ func BundleNotifications() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsBundleNotificationUpdate.Id, "id", 0, "Bundle Notification ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().BoolVar(&updateNotifyOnRegistration, "notify-on-registration", updateNotifyOnRegistration, "Triggers bundle notification when a registration action occurs for it.")
 	cmdUpdate.Flags().BoolVar(&updateNotifyOnUpload, "notify-on-upload", updateNotifyOnUpload, "Triggers bundle notification when a upload action occurs for it.")
 
@@ -240,6 +257,7 @@ func BundleNotifications() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsBundleNotificationDelete.Id, "id", 0, "Bundle Notification ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

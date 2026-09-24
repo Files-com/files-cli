@@ -11,8 +11,9 @@ func init() {
 
 func AutomationExecutionNodes() *cobra.Command {
 	AutomationExecutionNodes := &cobra.Command{
-		Use:  "automation-execution-nodes [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "automation-execution-nodes [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command automation-execution-nodes\n\t%v", args[0])
 		},

@@ -11,8 +11,9 @@ func init() {
 
 func DirectConnectionInfos() *cobra.Command {
 	DirectConnectionInfos := &cobra.Command{
-		Use:  "direct-connection-infos [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "direct-connection-infos [command]",
+		Short: "",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command direct-connection-infos\n\t%v", args[0])
 		},

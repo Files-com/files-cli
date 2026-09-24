@@ -18,8 +18,9 @@ func init() {
 
 func UserLifecycleRules() *cobra.Command {
 	UserLifecycleRules := &cobra.Command{
-		Use:  "user-lifecycle-rules [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "user-lifecycle-rules [command]",
+		Short: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command user-lifecycle-rules\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func UserLifecycleRules() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsUserLifecycleRuleList := files_sdk.UserLifecycleRuleListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func UserLifecycleRules() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsUserLifecycleRuleList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func UserLifecycleRules() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	UserLifecycleRules.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsUserLifecycleRuleFind.Id, "id", 0, "User Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -187,8 +202,10 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.Action.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "action", paramsUserLifecycleRuleCreate.Action.Enum())
 	cmdCreate.Flags().BoolVar(&createApplyToAllWorkspaces, "apply-to-all-workspaces", createApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "authentication-method", paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum())
 	cmdCreate.Flags().Int64SliceVar(&paramsUserLifecycleRuleCreate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdCreate.Flags().BoolVar(&createIncludeSiteAdmins, "include-site-admins", createIncludeSiteAdmins, "If true, the rule will apply to site admins.")
@@ -197,6 +214,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createNotifyUsers, "notify-users", createNotifyUsers, "If true, users will be emailed before the rule disables or deletes them.")
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&UserLifecycleRuleCreateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleCreate.UserState.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "user-state", paramsUserLifecycleRuleCreate.UserState.Enum())
 	cmdCreate.Flags().StringVar(&paramsUserLifecycleRuleCreate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().Int64Var(&paramsUserLifecycleRuleCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -298,9 +316,12 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.Id, "id", 0, "User Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAction, "action", "", fmt.Sprintf("Action to take on inactive users (disable or delete) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.Action.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "action", paramsUserLifecycleRuleUpdate.Action.Enum())
 	cmdUpdate.Flags().BoolVar(&updateApplyToAllWorkspaces, "apply-to-all-workspaces", updateApplyToAllWorkspaces, "If true, a default-workspace rule also applies to users in all workspaces.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateAuthenticationMethod, "authentication-method", "", fmt.Sprintf("User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "authentication-method", paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum())
 	cmdUpdate.Flags().Int64SliceVar(&paramsUserLifecycleRuleUpdate.GroupIds, "group-ids", []int64{}, "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.")
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.InactivityDays, "inactivity-days", 0, "Number of days of inactivity before the rule applies")
 	cmdUpdate.Flags().BoolVar(&updateIncludeSiteAdmins, "include-site-admins", updateIncludeSiteAdmins, "If true, the rule will apply to site admins.")
@@ -309,6 +330,7 @@ func UserLifecycleRules() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateNotifyUsers, "notify-users", updateNotifyUsers, "If true, users will be emailed before the rule disables or deletes them.")
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.PartnerTag, "partner-tag", "", "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&UserLifecycleRuleUpdateUserState, "user-state", "", fmt.Sprintf("State of the users to apply the rule to (inactive or disabled) %v", reflect.ValueOf(paramsUserLifecycleRuleUpdate.UserState.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "user-state", paramsUserLifecycleRuleUpdate.UserState.Enum())
 	cmdUpdate.Flags().StringVar(&paramsUserLifecycleRuleUpdate.UserTag, "user-tag", "", "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().Int64Var(&paramsUserLifecycleRuleUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
 
@@ -341,6 +363,7 @@ func UserLifecycleRules() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsUserLifecycleRuleDelete.Id, "id", 0, "User Lifecycle Rule ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)

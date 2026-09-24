@@ -18,8 +18,9 @@ func init() {
 
 func Partners() *cobra.Command {
 	Partners := &cobra.Command{
-		Use:  "partners [command]",
-		Args: cobra.ExactArgs(1),
+		Use:   "partners [command]",
+		Short: "A Partner is a first-class entity that cleanly represents an external organization, enables delegated administration, and enforces strict boundaries.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command partners\n\t%v", args[0])
 		},
@@ -30,6 +31,7 @@ func Partners() *cobra.Command {
 	filterbyList := make(map[string]string)
 	paramsPartnerList := files_sdk.PartnerListParams{}
 	var MaxPagesList int64
+	var jsonEnvelopeList bool
 	var listSortByArgs string
 	var listFilterArgs []string
 
@@ -44,6 +46,13 @@ func Partners() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			params := paramsPartnerList
 			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
 
 			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
 			if parseListSortByErr != nil {
@@ -81,7 +90,11 @@ func Partners() *cobra.Command {
 					return i, matchOk, err
 				}
 			}
-			err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
 			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
 		},
 	}
@@ -100,6 +113,7 @@ func Partners() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
 	Partners.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -123,6 +137,7 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdFind.Flags().Int64Var(&paramsPartnerFind.Id, "id", 0, "Partner ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
 
 	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -189,7 +204,9 @@ func Partners() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createShowPartnerChannelHomePage, "show-partner-channel-home-page", createShowPartnerChannelHomePage, "Show Partner users a simplified home page built from this Partner's Channels.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.Name, "name", "", "The name of the Partner.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().StringVar(&paramsPartnerCreate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
+	lib.SetFlagAPIRequired(cmdCreate.Flags(), "root-folder")
 	cmdCreate.Flags().Int64Var(&paramsPartnerCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this Partner.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
@@ -289,6 +306,7 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.Id, "id", 0, "Partner ID.")
+	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().Int64Var(&paramsPartnerUpdate.AiAssistantPersonalityId, "ai-assistant-personality-id", 0, "AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.")
 	cmdUpdate.Flags().BoolVar(&updateAllowBypassing2faPolicies, "allow-bypassing-2fa-policies", updateAllowBypassing2faPolicies, "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.")
@@ -304,6 +322,7 @@ func Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Tags, "tags", "", "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.Name, "name", "", "The name of the Partner.")
 	cmdUpdate.Flags().StringVar(&PartnerUpdatePartnershipRole, "partnership-role", "", fmt.Sprintf("This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`. %v", reflect.ValueOf(paramsPartnerUpdate.PartnershipRole.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "partnership-role", paramsPartnerUpdate.PartnershipRole.Enum())
 	cmdUpdate.Flags().StringVar(&paramsPartnerUpdate.RootFolder, "root-folder", "", "The root folder path for this Partner.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
@@ -335,6 +354,7 @@ func Partners() *cobra.Command {
 		},
 	}
 	cmdDelete.Flags().Int64Var(&paramsPartnerDelete.Id, "id", 0, "Partner ID.")
+	lib.SetFlagAPIRequired(cmdDelete.Flags(), "id")
 
 	cmdDelete.Flags().StringSliceVar(&fieldsDelete, "fields", []string{}, "comma separated list of field names")
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
