@@ -8,6 +8,12 @@ description: |
 
 A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
 
+In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
+become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
+"Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
+The expanded route must point to an existing folder in the same Workspace.
+
 All subcommands also accept the global flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
