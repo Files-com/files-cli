@@ -345,9 +345,11 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Con
 		t.logOnEnd(file)
 	}, append(status.Ended, status.Excluded...)...)
 
-	t.Job.RegisterFileEvent(func(file file.JobFile) {
-		t.afterActions(ctx, file, config)
-	}, status.Complete, status.Skipped)
+	if !t.DryRun {
+		t.Job.RegisterFileEvent(func(file file.JobFile) {
+			t.afterActions(ctx, file, config)
+		}, status.Complete, status.Skipped)
+	}
 
 	t.Job.RegisterFileEvent(func(file file.JobFile) {
 		if !t.IteratorErrorOnly {
@@ -604,7 +606,7 @@ func (t *Transfers) SetupSignals(ctx context.Context) {
 				case <-t.Job.Finished.C:
 					if t.Job.Count(status.Errored) == 0 {
 						t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: file.JobFile{}})
-						if t.AfterDeleteEmptySourceFolders {
+						if t.AfterDeleteEmptySourceFolders && !t.DryRun {
 							t.afterActionLog(file.DeleteEmptySourceFolders{Config: t.Config, Direction: t.Job.Direction}.Call(*t.Job, files_sdk.WithContext(ctx)))
 						}
 					}
