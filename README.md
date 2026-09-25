@@ -7,6 +7,9 @@ With universal SFTP, AS2, HTTPS, and 50+ native connectors backed by military-gr
 The content included here should be enough to get started, but please visit our
 [Developer Documentation Website](https://developers.files.com/cli/) for the complete documentation.
 
+The macOS binaries require macOS 13 or later. Building from source requires
+Go 1.27.1 or later.
+
 ## Introduction
 
 The Files.com Command Line Interface (CLI) App is a great option for scripted or automated transfers between a local machine and Files.com.
