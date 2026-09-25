@@ -9,30 +9,37 @@ import (
 	"syscall"
 )
 
-func Signals(ctx context.Context, dumpGoroutinesOnExit bool, shutdown func()) {
+// Signals watches for an interrupt (SIGINT/SIGTERM) and calls interrupt with
+// whether an interrupt was already delivered; SIGQUIT dumps goroutines. It
+// keeps listening until ctx ends or the returned stop function is called, so a
+// second interrupt is seen while the first is still being handled, and the
+// process-wide handler is released whenever the listener exits.
+func Signals(ctx context.Context, dumpGoroutinesOnExit bool, interrupt func(repeated bool)) (stop func()) {
+	ctx, stop = context.WithCancel(ctx)
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
-		called := false
-		select {
-		case <-ctx.Done():
-			return
-		case signal := <-sigCh:
-			switch signal {
-			case syscall.SIGQUIT:
-				dumpGoroutine()
-			case os.Interrupt, syscall.SIGTERM:
-				if called {
-					os.Exit(1)
-				}
-				called = true
-				go shutdown()
-				if dumpGoroutinesOnExit {
+		defer signal.Stop(sigCh)
+		repeated := false
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case sig := <-sigCh:
+				switch sig {
+				case syscall.SIGQUIT:
 					dumpGoroutine()
+				case os.Interrupt, syscall.SIGTERM:
+					if dumpGoroutinesOnExit {
+						dumpGoroutine()
+					}
+					go interrupt(repeated)
+					repeated = true
 				}
 			}
 		}
 	}()
+	return stop
 }
 
 func dumpGoroutine() {

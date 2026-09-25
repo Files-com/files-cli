@@ -2,6 +2,7 @@ package transfers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -38,6 +39,15 @@ import (
 var raiseCurrentProcessOpenFileLimit = ostuning.RaiseCurrentProcessOpenFileLimit
 
 type Transfers struct {
+	// interrupt cancels the download job's context with the pause cause; nil
+	// for transfers that exit at once on an interrupt.
+	interrupt   context.CancelCauseFunc
+	interrupted atomic.Bool
+	stopSignals func()
+	// jobMutex orders the job's creation against an interrupt that arrives
+	// while it is being built, so the pause always reaches the job.
+	jobMutex                    sync.Mutex
+	pauseRequested              bool
 	scanningBar                 *mpb.Bar
 	mainBar                     *mpb.Bar
 	fileStatusBar               *mpb.Bar
@@ -179,21 +189,74 @@ func newTransferRate() ewma.MovingAverage {
 	return ewma.NewMovingAverage()
 }
 
+// InterruptibleContext returns the context a download job must run in so that an
+// interrupt (Ctrl-C, SIGTERM) stops it in an orderly way. The first interrupt
+// cancels this context with file.ErrJobPaused: the SDK stops its writers, keeps
+// the bytes it received under a temporary file a later run continues from, and
+// the command finishes with an error that says so. Without it (uploads, sync),
+// an interrupt cancels the job and exits the process at once, as before.
+func (t *Transfers) InterruptibleContext(ctx context.Context) context.Context {
+	ctx, t.interrupt = context.WithCancelCause(ctx)
+	return ctx
+}
+
 func (t *Transfers) Init(ctx context.Context, stdout io.Writer, stderr io.Writer, jobCaller func() *file.Job) *Transfers {
 	t.it = (&sdklib.IterChan[interface{}]{}).Init(ctx)
-
-	Signals(ctx, t.DumpGoroutinesOnExit, func() {
-		t.Progress.Shutdown()
-		t.Job.Cancel()
-		os.Exit(0)
-	})
-	t.createProgress(ctx)
-	t.start = time.Now()
 	t.Stderr = stderr
 	t.Stdout = stdout
-	t.Job = jobCaller()
+	t.stopSignals = Signals(ctx, t.DumpGoroutinesOnExit, t.onInterrupt)
+	t.createProgress(ctx)
+	t.start = time.Now()
+	job := jobCaller()
+	t.jobMutex.Lock()
+	t.Job = job
+	if t.pauseRequested {
+		// The interrupt arrived while the job was being built.
+		job.Cancel()
+	}
+	t.jobMutex.Unlock()
 	return t
 }
+
+// onInterrupt handles an interrupt signal. A download whose job runs in the
+// InterruptibleContext is paused and left to settle; the command then ends
+// through its normal path. A second interrupt, or a transfer without that
+// context, cancels the job and exits at once: the process must not keep
+// running against the user's wishes, and those transfers have no paused state
+// to keep.
+func (t *Transfers) onInterrupt(repeated bool) {
+	if t.interrupt != nil && !repeated {
+		fmt.Fprintln(t.Stderr, "Interrupted: stopping the download safely. Run the same command again to resume from the progress that could be kept, or interrupt again to exit now.")
+		t.interrupted.Store(true)
+		// The cause is set before the job is canceled, so the SDK sees a pause
+		// and keeps what it can; the job is then marked canceled, so nothing
+		// that only a finished transfer may do (after-actions) runs.
+		t.interrupt(file.ErrJobPaused)
+		t.jobMutex.Lock()
+		t.pauseRequested = true
+		if t.Job != nil {
+			t.Job.Cancel()
+		}
+		t.jobMutex.Unlock()
+		return
+	}
+	t.Progress.Shutdown()
+	t.jobMutex.Lock()
+	if t.Job != nil {
+		t.Job.Cancel()
+	}
+	t.jobMutex.Unlock()
+	if repeated {
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+// ErrInterrupted is the command's result after an orderly interrupt: the
+// transfer did not finish, on purpose, and running the command again resumes
+// it from whatever progress could be kept. Its exit status says the condition
+// is temporary.
+var ErrInterrupted = clierr.New(clierr.ErrorCodeTemporary, errors.New("interrupted: the download was stopped safely; run the same command again to resume"))
 
 func (t *Transfers) createManager() {
 	if t.AdaptiveUploadEnabled() && !t.ConcurrentConnectionLimitSet {
@@ -575,6 +638,13 @@ func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 	if err != nil {
 		t.it.SendError <- err
 	}
+	if t.stopSignals != nil {
+		// The job has settled; a later interrupt is the shell's to handle.
+		t.stopSignals()
+	}
+	if t.interrupted.Load() {
+		t.it.SendError <- ErrInterrupted
+	}
 	t.it.Stop()
 }
 
@@ -592,19 +662,38 @@ func (t *Transfers) SetupSignals(ctx context.Context) {
 		metricsLoggerBackoff := time.Second * 15
 		metricsLoggerTick := time.NewTicker(metricsLoggerBackoff)
 		defer updateStatusTick.Stop()
+		canceled := t.Job.Canceled.C
 		func() {
 			for {
 				select {
-				case <-t.Job.Canceled.C:
+				case <-canceled:
+					canceled = nil
 					t.updateStatus()
 					t.mainBar.Abort(false)
 
 					t.Log("transfer-canceled", fmt.Sprintf("Canceled at %v", time.Now()), nil)
 					t.metricsLogging()
 
-					return
+					if !t.Job.Started.Called() {
+						return
+					}
+					// A started job's workers are still settling: files being
+					// written are trimmed and kept under their paused names, or
+					// removed. Keep reporting until the job has finished, so the
+					// command does not return, and the process exit, with a file
+					// half handled. Only the job's own completion ends this
+					// loop; the file errors reported after it are then final.
 				case <-t.Job.Finished.C:
-					if t.Job.Count(status.Errored) == 0 {
+					if canceled == nil {
+						// The cancellation was reported above; a canceled job
+						// did not complete, and none of the completion output
+						// or after-actions apply to it.
+						return
+					}
+					// Finished and Canceled can both be ready; a canceled job
+					// did not complete, so nothing that only a completed
+					// transfer may do (after-actions) runs for it.
+					if t.Job.Count(status.Errored) == 0 && !t.Job.Canceled.Called() {
 						t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: file.JobFile{}})
 						if t.AfterDeleteEmptySourceFolders && !t.DryRun {
 							t.afterActionLog(file.DeleteEmptySourceFolders{Config: t.Config, Direction: t.Job.Direction}.Call(*t.Job, files_sdk.WithContext(ctx)))

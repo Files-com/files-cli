@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"errors"
+
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/transfers"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -19,7 +21,10 @@ func Download() *cobra.Command {
 		Short: "Downloads files or directories from a remote path to a local path.",
 		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// The job runs in a context an interrupt pauses; the command itself
+			// keeps its own, so the paused result is still reported.
 			ctx := cmd.Context()
+			jobCtx := transfer.InterruptibleContext(ctx)
 			config := cmd.Context().Value("config").(files_sdk.Config)
 			var remotePath string
 			var localPath string
@@ -54,14 +59,17 @@ func Download() *cobra.Command {
 						AdaptiveDownloadV2Tuning:             transfer.AdaptiveDownloadV2Tuning,
 						ZipBatch:                             transfer.ZipBatchParams(),
 					},
-					files_sdk.WithContext(ctx),
+					files_sdk.WithContext(jobCtx),
 				)
 			})
 
-			return lib.CliClientError(
-				Profile(cmd),
-				lib.FormatIter(ctx, transfer.Iter(ctx, config), transfer.Format, transfer.FormatIterFields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout()),
-			)
+			err := lib.FormatIter(ctx, transfer.Iter(ctx, config), transfer.Format, transfer.FormatIterFields, transfer.UsePager, transfer.TextFilterFormat(), cmd.OutOrStdout())
+			if errors.Is(err, transfers.ErrInterrupted) {
+				// Not a client failure: the user stopped the download and can
+				// resume it, and the exit status says so.
+				return err
+			}
+			return lib.CliClientError(Profile(cmd), err)
 		},
 	}
 	transfer.DownloadFlags(download)
