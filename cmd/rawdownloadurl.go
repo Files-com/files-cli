@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -15,6 +17,7 @@ import (
 	"time"
 
 	sdklib "github.com/Files-com/files-sdk-go/v3/lib"
+	"github.com/Files-com/files-sdk-go/v3/lib/privatefile"
 	"github.com/spf13/cobra"
 )
 
@@ -113,11 +116,26 @@ func runRawDownloadURL(ctx context.Context, out io.Writer, rawURL string, localP
 		return rawDownloadURLFinalizeEmpty(localPath)
 	}
 
-	tmpPath := localPath + ".download"
+	// The download is staged beside its destination as a file only the current
+	// user can read, and published with the access a fresh file gets there, or
+	// with no more than an existing destination already allowed.
 	if err := os.MkdirAll(filepath.Dir(localPath), 0755); err != nil {
 		return err
 	}
-	file, err := os.OpenFile(tmpPath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0644)
+	root, err := os.OpenRoot(filepath.Dir(localPath))
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+	finalName := filepath.Base(localPath)
+	stageName := finalName + ".download"
+	// Whatever is at the stage name (a stage a failed run left behind, or a
+	// link someone placed there) is removed rather than written into. Remove
+	// acts on the name itself, never on a link's target.
+	if err := root.Remove(stageName); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	file, err := privatefile.OpenFile(root, stageName, os.O_CREATE|os.O_RDWR|os.O_EXCL, 0o600)
 	if err != nil {
 		return err
 	}
@@ -174,11 +192,25 @@ func runRawDownloadURL(ctx context.Context, out io.Writer, rawURL string, localP
 	if err := file.Sync(); err != nil {
 		return err
 	}
+	// The stage stays private until it is at its final name; only then does
+	// it receive the published access, so a failed publication never leaves
+	// readable bytes behind.
+	publication, err := privatefile.PublicationFor(root, finalName, stageName+"."+rand.Text(), fs.ModePerm)
+	if err != nil {
+		return err
+	}
+	staged, err := file.Stat()
+	if err != nil {
+		return err
+	}
 	if err := file.Close(); err != nil {
 		return err
 	}
-	if err := os.Rename(tmpPath, localPath); err != nil {
+	if err := root.Rename(stageName, finalName); err != nil {
 		return err
+	}
+	if err := publication.ApplyToPublished(root, finalName, staged); err != nil {
+		return fmt.Errorf("%s was written but could not be given its access: %w", localPath, err)
 	}
 
 	elapsed := time.Since(start)
