@@ -9303,15 +9303,15 @@
         },
         {
           "name": "--min-free-cpu",
-          "type": "double",
+          "type": "decimal",
           "required": false,
-          "description": "Minimum free CPU percentage required for this backend to be considered healthy."
+          "description": "Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding."
         },
         {
           "name": "--min-free-mem",
-          "type": "double",
+          "type": "decimal",
           "required": false,
-          "description": "Minimum free memory percentage required for this backend to be considered healthy."
+          "description": "Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding."
         },
         {
           "name": "--priority",
@@ -9409,15 +9409,15 @@
         },
         {
           "name": "--min-free-cpu",
-          "type": "double",
+          "type": "decimal",
           "required": false,
-          "description": "Minimum free CPU percentage required for this backend to be considered healthy."
+          "description": "Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding."
         },
         {
           "name": "--min-free-mem",
-          "type": "double",
+          "type": "decimal",
           "required": false,
-          "description": "Minimum free memory percentage required for this backend to be considered healthy."
+          "description": "Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding."
         },
         {
           "name": "--priority",

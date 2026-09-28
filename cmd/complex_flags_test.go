@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -128,4 +129,58 @@ func TestShareGroupsUpdate_MembersFlag(t *testing.T) {
 	assert.Equal(t, []interface{}{
 		map[string]interface{}{"user_id": float64(1)},
 	}, payload["members"])
+}
+
+func TestRemoteMountBackendsDecimalFlagsSendExactText(t *testing.T) {
+	exact := "1.0049999999999999999999999999"
+	createArgs := []string{"create", "--canary-file-path", "canary.txt", "--remote-server-mount-id", "2", "--remote-server-id", "3"}
+	for _, test := range []struct {
+		name   string
+		args   []string
+		method string
+		want   map[string]interface{}
+	}{
+		{"create", append(createArgs, "--min-free-cpu", exact, "--min-free-mem", "0"), http.MethodPost, map[string]interface{}{"min_free_cpu": exact, "min_free_mem": "0"}},
+		{"create without decimal flags", createArgs, http.MethodPost, map[string]interface{}{}},
+		{"update", []string{"update", "--id", "7", "--min-free-mem", exact}, http.MethodPatch, map[string]interface{}{"min_free_mem": exact}},
+		{"update with signed zero", []string{"update", "--id", "7", "--min-free-cpu", "-0.00"}, http.MethodPatch, map[string]interface{}{"min_free_cpu": "-0.00"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			var payload map[string]interface{}
+			config := newTestConfig(func(req *http.Request) (*http.Response, error) {
+				assert.Equal(t, test.method, req.Method)
+				payload = decodeRequestBody(t, req)
+				return jsonResponse(`{"id":7}`), nil
+			})
+
+			_, stderr, err := callCmd(RemoteMountBackends(), config, append(test.args, "--format", "json"))
+
+			require.NoError(t, err, string(stderr))
+			for _, key := range []string{"min_free_cpu", "min_free_mem"} {
+				assert.Equal(t, test.want[key], payload[key], key) // strings, never JSON numbers
+			}
+		})
+	}
+}
+
+func TestRemoteMountBackendsRejectInvalidDecimalFlagsWithoutSending(t *testing.T) {
+	requests := 0
+	config := newTestConfig(func(req *http.Request) (*http.Response, error) {
+		requests++
+		return jsonResponse(`{"id":7}`), nil
+	})
+
+	for _, args := range [][]string{
+		{"create", "--canary-file-path", "canary.txt", "--remote-server-mount-id", "2", "--remote-server-id", "3", "--min-free-cpu", ""},
+		{"create", "--canary-file-path", "canary.txt", "--remote-server-mount-id", "2", "--remote-server-id", "3", "--min-free-mem", "0x1p0"},
+		{"update", "--id", "7", "--min-free-cpu", " 1.5"},
+		{"update", "--id", "7", "--min-free-mem", "NaN"},
+	} {
+		_, _, err := callCmd(RemoteMountBackends(), config, args)
+
+		require.Error(t, err, "%q", args)
+		assert.Equal(t, clierr.ErrorCodeUsage, clierr.From(err).Code)
+		assert.Contains(t, err.Error(), "expected a decimal number such as 1.5")
+	}
+	assert.Zero(t, requests)
 }

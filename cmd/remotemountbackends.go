@@ -139,6 +139,8 @@ func RemoteMountBackends() *cobra.Command {
 	usePagerCreate := true
 	createEnabled := true
 	createHealthCheckEnabled := true
+	createMinFreeCpu := ""
+	createMinFreeMem := ""
 	paramsRemoteMountBackendCreate := files_sdk.RemoteMountBackendCreateParams{}
 	RemoteMountBackendCreateHealthCheckType := ""
 
@@ -164,6 +166,20 @@ func RemoteMountBackends() *cobra.Command {
 			if cmd.Flags().Changed("health-check-enabled") {
 				paramsRemoteMountBackendCreate.HealthCheckEnabled = flib.Bool(createHealthCheckEnabled)
 			}
+			if cmd.Flags().Changed("min-free-cpu") {
+				parsedCreateMinFreeCpu, parseErr := lib.ParseDecimalFlag("min-free-cpu", createMinFreeCpu)
+				if parseErr != nil {
+					return parseErr
+				}
+				paramsRemoteMountBackendCreate.MinFreeCpuDecimal = &parsedCreateMinFreeCpu
+			}
+			if cmd.Flags().Changed("min-free-mem") {
+				parsedCreateMinFreeMem, parseErr := lib.ParseDecimalFlag("min-free-mem", createMinFreeMem)
+				if parseErr != nil {
+					return parseErr
+				}
+				paramsRemoteMountBackendCreate.MinFreeMemDecimal = &parsedCreateMinFreeMem
+			}
 
 			var remoteMountBackend interface{}
 			var err error
@@ -177,6 +193,10 @@ func RemoteMountBackends() *cobra.Command {
 	cmdCreate.Flags().StringVar(&RemoteMountBackendCreateHealthCheckType, "health-check-type", "", fmt.Sprintf("Type of health check to perform. %v", reflect.ValueOf(paramsRemoteMountBackendCreate.HealthCheckType.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "health-check-type", paramsRemoteMountBackendCreate.HealthCheckType.Enum())
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Interval, "interval", 0, "Interval in seconds between health checks.")
+	cmdCreate.Flags().StringVar(&createMinFreeCpu, "min-free-cpu", "", "Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "min-free-cpu", "decimal")
+	cmdCreate.Flags().StringVar(&createMinFreeMem, "min-free-mem", "", "Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "min-free-mem", "decimal")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Priority, "priority", 0, "Priority of this backend.")
 	cmdCreate.Flags().StringVar(&paramsRemoteMountBackendCreate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
 	cmdCreate.Flags().Int64Var(&paramsRemoteMountBackendCreate.Rise, "rise", 0, "Number of consecutive successes before considering the backend healthy.")
@@ -228,6 +248,8 @@ func RemoteMountBackends() *cobra.Command {
 	usePagerUpdate := true
 	updateEnabled := true
 	updateHealthCheckEnabled := true
+	updateMinFreeCpu := ""
+	updateMinFreeMem := ""
 	paramsRemoteMountBackendUpdate := files_sdk.RemoteMountBackendUpdateParams{}
 	RemoteMountBackendUpdateHealthCheckType := ""
 
@@ -271,8 +293,18 @@ func RemoteMountBackends() *cobra.Command {
 				lib.FlagUpdate(cmd, "interval", paramsRemoteMountBackendUpdate.Interval, mapParams)
 			}
 			if cmd.Flags().Changed("min-free-cpu") {
+				parsedUpdateMinFreeCpu, parseErr := lib.ParseDecimalFlag("min-free-cpu", updateMinFreeCpu)
+				if parseErr != nil {
+					return parseErr
+				}
+				mapParams["min_free_cpu"] = parsedUpdateMinFreeCpu
 			}
 			if cmd.Flags().Changed("min-free-mem") {
+				parsedUpdateMinFreeMem, parseErr := lib.ParseDecimalFlag("min-free-mem", updateMinFreeMem)
+				if parseErr != nil {
+					return parseErr
+				}
+				mapParams["min_free_mem"] = parsedUpdateMinFreeMem
 			}
 			if cmd.Flags().Changed("priority") {
 				lib.FlagUpdate(cmd, "priority", paramsRemoteMountBackendUpdate.Priority, mapParams)
@@ -304,6 +336,10 @@ func RemoteMountBackends() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&RemoteMountBackendUpdateHealthCheckType, "health-check-type", "", fmt.Sprintf("Type of health check to perform. %v", reflect.ValueOf(paramsRemoteMountBackendUpdate.HealthCheckType.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "health-check-type", paramsRemoteMountBackendUpdate.HealthCheckType.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Interval, "interval", 0, "Interval in seconds between health checks.")
+	cmdUpdate.Flags().StringVar(&updateMinFreeCpu, "min-free-cpu", "", "Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "min-free-cpu", "decimal")
+	cmdUpdate.Flags().StringVar(&updateMinFreeMem, "min-free-mem", "", "Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "min-free-mem", "decimal")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Priority, "priority", 0, "Priority of this backend.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteMountBackendUpdate.RemotePath, "remote-path", "", "Path on the remote server to treat as the root of this mount.")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteMountBackendUpdate.Rise, "rise", 0, "Number of consecutive successes before considering the backend healthy.")

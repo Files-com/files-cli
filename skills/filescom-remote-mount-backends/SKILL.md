@@ -39,8 +39,8 @@ Create Remote Mount Backend.
 | `--health-check-enabled` | bool | True if health checks are enabled for this backend. |
 | `--health-check-type` | enum | Type of health check to perform. One of: `active`, `passive`. |
 | `--interval` | int64 | Interval in seconds between health checks. |
-| `--min-free-cpu` | double | Minimum free CPU percentage required for this backend to be considered healthy. |
-| `--min-free-mem` | double | Minimum free memory percentage required for this backend to be considered healthy. |
+| `--min-free-cpu` | decimal | Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding. |
+| `--min-free-mem` | decimal | Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding. |
 | `--priority` | int64 | Priority of this backend. |
 | `--remote-path` | string | Path on the remote server to treat as the root of this mount. |
 | `--rise` | int64 | Number of consecutive successes before considering the backend healthy. |
@@ -68,8 +68,8 @@ Update Remote Mount Backend.
 | `--health-check-enabled` | bool | True if health checks are enabled for this backend. |
 | `--health-check-type` | enum | Type of health check to perform. One of: `active`, `passive`. |
 | `--interval` | int64 | Interval in seconds between health checks. |
-| `--min-free-cpu` | double | Minimum free CPU percentage required for this backend to be considered healthy. |
-| `--min-free-mem` | double | Minimum free memory percentage required for this backend to be considered healthy. |
+| `--min-free-cpu` | decimal | Minimum free CPU percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding. |
+| `--min-free-mem` | decimal | Minimum free memory percentage required for this backend to be considered healthy. Provide as decimal text, such as 1.5; it is sent without rounding. |
 | `--priority` | int64 | Priority of this backend. |
 | `--remote-path` | string | Path on the remote server to treat as the root of this mount. |
 | `--rise` | int64 | Number of consecutive successes before considering the backend healthy. |
