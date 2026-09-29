@@ -8,6 +8,7 @@ import (
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	custom_domain "github.com/Files-com/files-sdk-go/v3/customdomain"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +33,7 @@ func CustomDomains() *cobra.Command {
 	var MaxPagesList int64
 	var jsonEnvelopeList bool
 	var listSortByArgs string
+	var listFilterArgs []string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -58,6 +60,13 @@ func CustomDomains() *cobra.Command {
 			}
 			if parsedListSortBy != nil {
 				params.SortBy = parsedListSortBy
+			}
+			parsedListFilter, parseListFilterErr := lib.ParseAPIListQueryFlag("filter", listFilterArgs)
+			if parseListFilterErr != nil {
+				return parseListFilterErr
+			}
+			if parsedListFilter != nil {
+				params.Filter = parsedListFilter
 			}
 
 			client := custom_domain.Client{Config: config}
@@ -94,6 +103,8 @@ func CustomDomains() *cobra.Command {
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
 	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort custom domains by field in ascending or descending order.")
 	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+	cmdList.Flags().StringArrayVar(&listFilterArgs, "filter", []string{}, "Find custom domains where field exactly matches value.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter", "field=value")
 
 	cmdList.Flags().StringVar(&paramsCustomDomainList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdList.Flags().Int64Var(&paramsCustomDomainList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
@@ -167,6 +178,7 @@ func CustomDomains() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createAvailableToAllWorkspaces := true
 	paramsCustomDomainCreate := files_sdk.CustomDomainCreateParams{}
 	CustomDomainCreateDestination := ""
 
@@ -186,12 +198,18 @@ func CustomDomains() *cobra.Command {
 				return CustomDomainCreateDestinationErr
 			}
 
+			if cmd.Flags().Changed("available-to-all-workspaces") {
+				paramsCustomDomainCreate.AvailableToAllWorkspaces = flib.Bool(createAvailableToAllWorkspaces)
+			}
+
 			var customDomain interface{}
 			var err error
 			customDomain, err = client.Create(paramsCustomDomainCreate, files_sdk.WithContext(ctx))
 			return lib.HandleResponse(ctx, Profile(cmd), customDomain, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
+	cmdCreate.Flags().BoolVar(&createAvailableToAllWorkspaces, "available-to-all-workspaces", createAvailableToAllWorkspaces, "Allow all workspaces to use this default-workspace Custom Domain.")
+	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for the default workspace).")
 	cmdCreate.Flags().StringVar(&CustomDomainCreateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainCreate.Destination.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "destination", paramsCustomDomainCreate.Destination.Enum())
 	cmdCreate.Flags().Int64Var(&paramsCustomDomainCreate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")
@@ -207,6 +225,7 @@ func CustomDomains() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateAvailableToAllWorkspaces := true
 	paramsCustomDomainUpdate := files_sdk.CustomDomainUpdateParams{}
 	CustomDomainUpdateDestination := ""
 
@@ -234,6 +253,12 @@ func CustomDomains() *cobra.Command {
 			if cmd.Flags().Changed("id") {
 				lib.FlagUpdate(cmd, "id", paramsCustomDomainUpdate.Id, mapParams)
 			}
+			if cmd.Flags().Changed("available-to-all-workspaces") {
+				mapParams["available_to_all_workspaces"] = updateAvailableToAllWorkspaces
+			}
+			if cmd.Flags().Changed("workspace-id") {
+				lib.FlagUpdate(cmd, "workspace_id", paramsCustomDomainUpdate.WorkspaceId, mapParams)
+			}
 			if cmd.Flags().Changed("destination") {
 				lib.FlagUpdate(cmd, "destination", paramsCustomDomainUpdate.Destination, mapParams)
 			}
@@ -255,6 +280,8 @@ func CustomDomains() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.Id, "id", 0, "Custom Domain ID.")
 	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
+	cmdUpdate.Flags().BoolVar(&updateAvailableToAllWorkspaces, "available-to-all-workspaces", updateAvailableToAllWorkspaces, "Allow all workspaces to use this default-workspace Custom Domain.")
+	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID (0 for the default workspace).")
 	cmdUpdate.Flags().StringVar(&CustomDomainUpdateDestination, "destination", "", fmt.Sprintf("Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. %v", reflect.ValueOf(paramsCustomDomainUpdate.Destination.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "destination", paramsCustomDomainUpdate.Destination.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsCustomDomainUpdate.FolderBehaviorId, "folder-behavior-id", 0, "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.")

@@ -18,7 +18,8 @@ List Custom Domains.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `id`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `id` or `available_to_all_workspaces`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`. |
 
 ### `files-cli custom-domains find`
 
@@ -43,6 +44,8 @@ Create Custom Domain.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--available-to-all-workspaces` | bool | Allow all workspaces to use this default-workspace Custom Domain. |
+| `--workspace-id` | int64 | Workspace ID (0 for the default workspace). |
 | `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. One of: `site_alias`, `public_hosting`, `s3_endpoint`, `unassigned`. |
 | `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`. |
 | `--ssl-certificate-id` | int64 | Current SSL certificate ID. |
@@ -55,6 +58,8 @@ Update Custom Domain.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Custom Domain ID. **Required.** |
+| `--available-to-all-workspaces` | bool | Allow all workspaces to use this default-workspace Custom Domain. |
+| `--workspace-id` | int64 | Workspace ID (0 for the default workspace). |
 | `--destination` | enum | Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason. One of: `site_alias`, `public_hosting`, `s3_endpoint`, `unassigned`. |
 | `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`. |
 | `--ssl-certificate-id` | int64 | Current SSL certificate ID. |

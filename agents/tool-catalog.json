@@ -3479,7 +3479,13 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `id`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `id` or `available_to_all_workspaces`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`."
         }
       ]
     },
@@ -3524,6 +3530,18 @@
       "auth_required": true,
       "parameters": [
         {
+          "name": "--available-to-all-workspaces",
+          "type": "bool",
+          "required": false,
+          "description": "Allow all workspaces to use this default-workspace Custom Domain."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID (0 for the default workspace)."
+        },
+        {
           "name": "--destination",
           "type": "enum",
           "required": false,
@@ -3560,6 +3578,18 @@
           "type": "int64",
           "required": true,
           "description": "Custom Domain ID."
+        },
+        {
+          "name": "--available-to-all-workspaces",
+          "type": "bool",
+          "required": false,
+          "description": "Allow all workspaces to use this default-workspace Custom Domain."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID (0 for the default workspace)."
         },
         {
           "name": "--destination",
@@ -10348,6 +10378,12 @@
           "description": "Route traffic to outbound on a files-agent"
         },
         {
+          "name": "--custom-domain-id",
+          "type": "int64",
+          "required": false,
+          "description": "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs."
+        },
+        {
           "name": "--google-cloud-storage-authentication-method",
           "type": "enum",
           "required": false,
@@ -10872,6 +10908,12 @@
           "type": "int64",
           "required": false,
           "description": "Route traffic to outbound on a files-agent"
+        },
+        {
+          "name": "--custom-domain-id",
+          "type": "int64",
+          "required": false,
+          "description": "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs."
         },
         {
           "name": "--google-cloud-storage-authentication-method",

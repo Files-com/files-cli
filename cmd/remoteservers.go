@@ -355,6 +355,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
+	cmdCreate.Flags().Int64Var(&paramsRemoteServerCreate.CustomDomainId, "custom-domain-id", 0, "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "google-cloud-storage-authentication-method", paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum())
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
@@ -652,6 +653,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("outbound-agent-id") {
 				lib.FlagUpdate(cmd, "outbound_agent_id", paramsRemoteServerUpdate.OutboundAgentId, mapParams)
 			}
+			if cmd.Flags().Changed("custom-domain-id") {
+				lib.FlagUpdate(cmd, "custom_domain_id", paramsRemoteServerUpdate.CustomDomainId, mapParams)
+			}
 			if cmd.Flags().Changed("google-cloud-storage-authentication-method") {
 				lib.FlagUpdate(cmd, "google_cloud_storage_authentication_method", paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod, mapParams)
 			}
@@ -817,6 +821,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentRoot, "files-agent-root", "", "Agent local root path")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.FilesAgentVersion, "files-agent-version", "", "Files Agent version")
 	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.OutboundAgentId, "outbound-agent-id", 0, "Route traffic to outbound on a files-agent")
+	cmdUpdate.Flags().Int64Var(&paramsRemoteServerUpdate.CustomDomainId, "custom-domain-id", 0, "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateGoogleCloudStorageAuthenticationMethod, "google-cloud-storage-authentication-method", "", fmt.Sprintf("Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. %v", reflect.ValueOf(paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "google-cloud-storage-authentication-method", paramsRemoteServerUpdate.GoogleCloudStorageAuthenticationMethod.Enum())
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.GoogleCloudStorageBucket, "google-cloud-storage-bucket", "", "Google Cloud Storage: Bucket Name")
