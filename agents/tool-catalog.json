@@ -8089,6 +8089,12 @@
           "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
         },
         {
+          "name": "--use-channel-root",
+          "type": "bool",
+          "required": false,
+          "description": "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way."
+        },
+        {
           "name": "--from-partner-folder-name",
           "type": "string",
           "required": false,
@@ -8161,6 +8167,12 @@
           "type": "enum",
           "required": false,
           "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
+        },
+        {
+          "name": "--use-channel-root",
+          "type": "bool",
+          "required": false,
+          "description": "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way."
         },
         {
           "name": "--from-partner-folder-name",
@@ -8273,6 +8285,12 @@
           "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
         },
         {
+          "name": "--use-channel-root",
+          "type": "bool",
+          "required": false,
+          "description": "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way."
+        },
+        {
           "name": "--from-partner-folder-name",
           "type": "string",
           "required": false,
@@ -8345,6 +8363,12 @@
           "type": "enum",
           "required": false,
           "description": "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads."
+        },
+        {
+          "name": "--use-channel-root",
+          "type": "bool",
+          "required": false,
+          "description": "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way."
         },
         {
           "name": "--from-partner-folder-name",

@@ -8,7 +8,7 @@ description: |
 
 A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
 
-In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+Route path patterns can be fixed paths shared by all assigned Partners, or include {{partner_name}} to expand to a single folder name. Slashes in Partner names become pipes (|).
 Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
 become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
 "Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
@@ -42,6 +42,7 @@ Create Partner Channel Template.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
+| `--use-channel-root` | bool | Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
@@ -60,6 +61,7 @@ Update Partner Channel Template.
 | --- | --- | --- |
 | `--id` | int64 | Partner Channel Template ID. **Required.** |
 | `--direction` | enum | Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. One of: `two_way`, `to_partner`, `from_partner`. |
+| `--use-channel-root` | bool | Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |

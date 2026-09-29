@@ -7,6 +7,7 @@ import (
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	flib "github.com/Files-com/files-sdk-go/v3/lib"
 	partner_channel "github.com/Files-com/files-sdk-go/v3/partnerchannel"
 	"github.com/spf13/cobra"
 )
@@ -146,6 +147,7 @@ func PartnerChannels() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createUseChannelRoot := true
 	paramsPartnerChannelCreate := files_sdk.PartnerChannelCreateParams{}
 	PartnerChannelCreateDirection := ""
 
@@ -165,6 +167,10 @@ func PartnerChannels() *cobra.Command {
 				return PartnerChannelCreateDirectionErr
 			}
 
+			if cmd.Flags().Changed("use-channel-root") {
+				paramsPartnerChannelCreate.UseChannelRoot = flib.Bool(createUseChannelRoot)
+			}
+
 			if len(args) > 0 && args[0] != "" {
 				paramsPartnerChannelCreate.Path = args[0]
 			}
@@ -176,6 +182,7 @@ func PartnerChannels() *cobra.Command {
 	}
 	cmdCreate.Flags().StringVar(&PartnerChannelCreateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelCreate.Direction.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "direction", paramsPartnerChannelCreate.Direction.Enum())
+	cmdCreate.Flags().BoolVar(&createUseChannelRoot, "use-channel-root", createUseChannelRoot, "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelCreate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
@@ -195,6 +202,7 @@ func PartnerChannels() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateUseChannelRoot := true
 	paramsPartnerChannelUpdate := files_sdk.PartnerChannelUpdateParams{}
 	PartnerChannelUpdateDirection := ""
 
@@ -224,6 +232,9 @@ func PartnerChannels() *cobra.Command {
 			}
 			if cmd.Flags().Changed("direction") {
 				lib.FlagUpdate(cmd, "direction", paramsPartnerChannelUpdate.Direction, mapParams)
+			}
+			if cmd.Flags().Changed("use-channel-root") {
+				mapParams["use_channel_root"] = updateUseChannelRoot
 			}
 			if cmd.Flags().Changed("from-partner-folder-name") {
 				lib.FlagUpdate(cmd, "from_partner_folder_name", paramsPartnerChannelUpdate.FromPartnerFolderName, mapParams)
@@ -260,6 +271,7 @@ func PartnerChannels() *cobra.Command {
 	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&PartnerChannelUpdateDirection, "direction", "", fmt.Sprintf("Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads. %v", reflect.ValueOf(paramsPartnerChannelUpdate.Direction.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "direction", paramsPartnerChannelUpdate.Direction.Enum())
+	cmdUpdate.Flags().BoolVar(&updateUseChannelRoot, "use-channel-root", updateUseChannelRoot, "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelUpdate.FromPartnerRoutePath, "from-partner-route-path", "", "Optional route path for files uploaded by the Partner.")
