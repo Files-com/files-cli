@@ -686,6 +686,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("ldap-secure") {
 				mapParams["ldap_secure"] = updateLdapSecure
 			}
+			if cmd.Flags().Changed("ldap-server-certificate") {
+				lib.FlagUpdate(cmd, "ldap_server_certificate", paramsSiteUpdate.LdapServerCertificate, mapParams)
+			}
 			if cmd.Flags().Changed("ldap-username") {
 				lib.FlagUpdate(cmd, "ldap_username", paramsSiteUpdate.LdapUsername, mapParams)
 			}
@@ -941,6 +944,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapHost3, "ldap-host-3", "", "LDAP backup host")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.LdapPort, "ldap-port", 0, "LDAP port")
 	cmdUpdate.Flags().BoolVar(&updateLdapSecure, "ldap-secure", updateLdapSecure, "Use secure LDAP?")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapServerCertificate, "ldap-server-certificate", "", "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUsername, "ldap-username", "", "Username for signing in to LDAP server.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUsernameField, "ldap-username-field", "", "LDAP username field")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapDomain, "ldap-domain", "", "Domain name that will be appended to usernames")

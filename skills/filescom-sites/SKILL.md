@@ -191,6 +191,7 @@ Update Site Settings.
 | `--ldap-host-3` | string | LDAP backup host |
 | `--ldap-port` | int64 | LDAP port |
 | `--ldap-secure` | bool | Use secure LDAP? |
+| `--ldap-server-certificate` | string | How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation. |
 | `--ldap-username` | string | Username for signing in to LDAP server. |
 | `--ldap-username-field` | string | LDAP username field |
 | `--ldap-domain` | string | Domain name that will be appended to usernames |

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	tea "github.com/charmbracelet/bubbletea"
@@ -153,4 +154,38 @@ func TestTableModel_InteractiveErrorsAreEscaped(t *testing.T) {
 		assert.Contains(t, printed, escaped)
 		assert.Equal(t, []interface{}{"folder"}, model.parentResources, "navigation keeps the raw identifier")
 	})
+}
+
+// inFlightIter is a listing whose first request is in flight until its
+// context ends, when it fails with the cancellation like an SDK iterator.
+type inFlightIter struct {
+	ctx context.Context
+	err error
+}
+
+func (i *inFlightIter) Next() bool {
+	<-i.ctx.Done()
+	i.err = i.ctx.Err()
+	return false
+}
+
+func (i *inFlightIter) Current() interface{} { return nil }
+func (i *inFlightIter) Err() error           { return i.err }
+
+func TestTableLoaderIter_CancelDuringRequestStopsLoading(t *testing.T) {
+	loader, err := (&tableLoaderIter{}).Init(context.Background(), "", func(ctx context.Context) (Iter, error) {
+		return &inFlightIter{ctx: ctx}, nil
+	})
+	require.NoError(t, err)
+	loader.Load()
+
+	// Navigating away cancels the loader; nothing reads its channels after that.
+	loader.Cancel()
+
+	select {
+	case _, open := <-loader.tableRower:
+		assert.False(t, open, "loading finished without a row")
+	case <-time.After(5 * time.Second):
+		t.Fatal("the canceled loader is still waiting to report its error")
+	}
 }

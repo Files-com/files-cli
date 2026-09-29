@@ -96,19 +96,28 @@ func (t *tableLoaderIter) Load() {
 			if t.context.Err() != nil {
 				return
 			}
-			if t.Iter.Err() != nil {
-				t.tableRowerErr <- t.Iter.Err()
-			}
-			if t.Iter.Current() == nil {
+			if t.Iter.Err() != nil && !sendUnlessDone(t.context, t.tableRowerErr, t.Iter.Err()) {
 				return
 			}
-			t.tableRower <- t.Iter.Current()
+			if t.Iter.Current() == nil || !sendUnlessDone(t.context, t.tableRower, t.Iter.Current()) {
+				return
+			}
 		}
 		if t.Iter.Err() != nil {
-			t.tableRowerErr <- t.Iter.Err()
-			return
+			sendUnlessDone(t.context, t.tableRowerErr, t.Iter.Err())
 		}
 	}()
+}
+
+// sendUnlessDone sends value unless ctx ends first. Once a loader is canceled
+// nothing reads its channels, so an unconditional send would block forever.
+func sendUnlessDone[T any](ctx context.Context, ch chan<- T, value T) bool {
+	select {
+	case ch <- value:
+		return true
+	case <-ctx.Done():
+		return false
+	}
 }
 
 func (t *tableLoaderIter) Loading() string {

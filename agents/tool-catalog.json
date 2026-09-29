@@ -13839,6 +13839,12 @@
           "description": "Use secure LDAP?"
         },
         {
+          "name": "--ldap-server-certificate",
+          "type": "string",
+          "required": false,
+          "description": "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation."
+        },
+        {
           "name": "--ldap-username",
           "type": "string",
           "required": false,
