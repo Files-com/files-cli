@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/version"
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
-	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 )
 
@@ -80,9 +80,7 @@ func GetLog(ctx context.Context, cmd *cobra.Command, config files_sdk.Config, ta
 		body = prepend + body
 	}
 
-	out, err := glamour.Render(body, "dark")
-
-	fmt.Fprint(cmd.OutOrStdout(), out)
+	_, err = io.WriteString(lib.DiagnosticWriter(cmd.OutOrStdout()), renderMarkdown(body))
 	return err
 }
 
