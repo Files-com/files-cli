@@ -958,7 +958,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupExclusion, "ldap-group-exclusion", "", "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupInclusion, "ldap-group-inclusion", "", "Comma or newline separated list of group names (with optional wildcards) to include when syncing.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapBaseDn, "ldap-base-dn", "", "Base DN for looking up users in LDAP server")
-	cmdUpdate.Flags().BoolVar(&updateUploadsViaEmailAuthentication, "uploads-via-email-authentication", updateUploadsViaEmailAuthentication, "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?")
+	cmdUpdate.Flags().BoolVar(&updateUploadsViaEmailAuthentication, "uploads-via-email-authentication", updateUploadsViaEmailAuthentication, "Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site?")
 	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
 	cmdUpdate.Flags().BoolVar(&updateIcon16Delete, "icon16-delete", updateIcon16Delete, "If true, will delete the file stored in icon16")

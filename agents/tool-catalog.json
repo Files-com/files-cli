@@ -13968,7 +13968,7 @@
           "name": "--uploads-via-email-authentication",
           "type": "bool",
           "required": false,
-          "description": "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?"
+          "description": "Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site?"
         },
         {
           "name": "--bundle-watermark-value",

@@ -201,7 +201,7 @@ Update Site Settings.
 | `--ldap-group-exclusion` | string | Comma or newline separated list of group names (with optional wildcards) to exclude when syncing. |
 | `--ldap-group-inclusion` | string | Comma or newline separated list of group names (with optional wildcards) to include when syncing. |
 | `--ldap-base-dn` | string | Base DN for looking up users in LDAP server |
-| `--uploads-via-email-authentication` | bool | Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC? |
+| `--uploads-via-email-authentication` | bool | Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site? |
 | `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--icon16-file` | file | (no description) |
 | `--icon16-delete` | bool | If true, will delete the file stored in icon16 |
