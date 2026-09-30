@@ -108,6 +108,8 @@ func Files() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "File", false)
 	Files.AddCommand(cmdCreate)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -172,6 +174,8 @@ func Files() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "File", false)
 	Files.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -211,6 +215,8 @@ func Files() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	Files.AddCommand(cmdDelete)
 	var fieldsFind []string
 	var formatFind []string
@@ -254,6 +260,8 @@ func Files() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "File", false)
 	Files.AddCommand(cmdFind)
 	var fieldsZipListContents []string
 	var formatZipListContents []string
@@ -285,6 +293,8 @@ func Files() *cobra.Command {
 	cmdZipListContents.Flags().StringSliceVar(&formatZipListContents, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdZipListContents.Flags().BoolVar(&usePagerZipListContents, "use-pager", usePagerZipListContents, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdZipListContents, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdZipListContents, "ZipListEntry", true)
 	Files.AddCommand(cmdZipListContents)
 	var fieldsCopy []string
 	var formatCopy []string
@@ -347,6 +357,9 @@ func Files() *cobra.Command {
 	cmdCopy.Flags().BoolVarP(&blockCopy, "block", "b", blockCopy, "Wait on response for async copy with final status")
 	cmdCopy.Flags().BoolVar(&noProgressCopy, "no-progress", noProgressCopy, "Don't display progress bars when using block flag")
 	cmdCopy.Flags().BoolVar(&eventLogCopy, "event-log", eventLogCopy, "Output full event log for copy when used with block flag")
+	lib.SetCommandEffect(cmdCopy, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdCopy, "FileAction", false)
+	lib.SetCommandResponseWithFlag(cmdCopy, "block", "FileMigration", false)
 	Files.AddCommand(cmdCopy)
 	var fieldsMove []string
 	var formatMove []string
@@ -399,6 +412,9 @@ func Files() *cobra.Command {
 	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
 	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
 	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
+	lib.SetCommandEffect(cmdMove, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdMove, "FileAction", false)
+	lib.SetCommandResponseWithFlag(cmdMove, "block", "FileMigration", false)
 	Files.AddCommand(cmdMove)
 	var fieldsTransform []string
 	var formatTransform []string
@@ -445,6 +461,8 @@ func Files() *cobra.Command {
 	cmdTransform.Flags().StringSliceVar(&formatTransform, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdTransform.Flags().BoolVar(&usePagerTransform, "use-pager", usePagerTransform, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdTransform, lib.EffectMutating)
+	lib.SetCommandResponse(cmdTransform, "FileAction", false)
 	Files.AddCommand(cmdTransform)
 	var fieldsGpgDecrypt []string
 	var formatGpgDecrypt []string
@@ -496,6 +514,8 @@ func Files() *cobra.Command {
 	cmdGpgDecrypt.Flags().StringSliceVar(&formatGpgDecrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGpgDecrypt.Flags().BoolVar(&usePagerGpgDecrypt, "use-pager", usePagerGpgDecrypt, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdGpgDecrypt, lib.EffectMutating)
+	lib.SetCommandResponse(cmdGpgDecrypt, "FileAction", false)
 	Files.AddCommand(cmdGpgDecrypt)
 	var fieldsGpgEncrypt []string
 	var formatGpgEncrypt []string
@@ -543,6 +563,8 @@ func Files() *cobra.Command {
 	cmdGpgEncrypt.Flags().StringSliceVar(&formatGpgEncrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGpgEncrypt.Flags().BoolVar(&usePagerGpgEncrypt, "use-pager", usePagerGpgEncrypt, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdGpgEncrypt, lib.EffectMutating)
+	lib.SetCommandResponse(cmdGpgEncrypt, "FileAction", false)
 	Files.AddCommand(cmdGpgEncrypt)
 	var fieldsUnzip []string
 	var formatUnzip []string
@@ -583,6 +605,8 @@ func Files() *cobra.Command {
 	cmdUnzip.Flags().StringSliceVar(&formatUnzip, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUnzip.Flags().BoolVar(&usePagerUnzip, "use-pager", usePagerUnzip, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUnzip, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUnzip, "FileAction", false)
 	Files.AddCommand(cmdUnzip)
 	var fieldsZip []string
 	var formatZip []string
@@ -620,6 +644,8 @@ func Files() *cobra.Command {
 	cmdZip.Flags().StringSliceVar(&formatZip, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdZip.Flags().BoolVar(&usePagerZip, "use-pager", usePagerZip, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdZip, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdZip, "FileAction", false)
 	Files.AddCommand(cmdZip)
 	var fieldsBeginUpload []string
 	var formatBeginUpload []string
@@ -677,6 +703,8 @@ func Files() *cobra.Command {
 	cmdBeginUpload.Flags().StringSliceVar(&formatBeginUpload, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdBeginUpload.Flags().BoolVar(&usePagerBeginUpload, "use-pager", usePagerBeginUpload, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdBeginUpload, lib.EffectMutating)
+	lib.SetCommandResponse(cmdBeginUpload, "FileUploadPart", true)
 	Files.AddCommand(cmdBeginUpload)
 	return Files
 }

@@ -110,6 +110,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "PartnerSiteRequest", true)
 	PartnerSiteRequests.AddCommand(cmdList)
 	var fieldsFindByPairingKey []string
 	var formatFindByPairingKey []string
@@ -141,6 +143,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdFindByPairingKey.Flags().StringSliceVar(&formatFindByPairingKey, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFindByPairingKey.Flags().BoolVar(&usePagerFindByPairingKey, "use-pager", usePagerFindByPairingKey, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFindByPairingKey, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFindByPairingKey, "", false)
 	PartnerSiteRequests.AddCommand(cmdFindByPairingKey)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -172,6 +176,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "PartnerSiteRequest", false)
 	PartnerSiteRequests.AddCommand(cmdCreate)
 	var fieldsReject []string
 	var formatReject []string
@@ -203,6 +209,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdReject.Flags().StringSliceVar(&formatReject, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdReject.Flags().BoolVar(&usePagerReject, "use-pager", usePagerReject, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdReject, lib.EffectMutating)
+	lib.SetCommandResponse(cmdReject, "", false)
 	PartnerSiteRequests.AddCommand(cmdReject)
 	var fieldsApprove []string
 	var formatApprove []string
@@ -235,6 +243,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdApprove.Flags().StringSliceVar(&formatApprove, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdApprove.Flags().BoolVar(&usePagerApprove, "use-pager", usePagerApprove, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdApprove, lib.EffectMutating)
+	lib.SetCommandResponse(cmdApprove, "", false)
 	PartnerSiteRequests.AddCommand(cmdApprove)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -266,6 +276,8 @@ func PartnerSiteRequests() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	PartnerSiteRequests.AddCommand(cmdDelete)
 	return PartnerSiteRequests
 }

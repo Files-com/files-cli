@@ -2,6 +2,8 @@
 name: recipe-searching-for-files
 description: |
   Find files and folders on Files.com effectively, and pick the right tool for the job; use this when the user wants to locate files by name, path, modified time, or custom metadata. The key distinction: the `--search` / `--search-all` flags on `folders list-for` are the web search bar — best-effort, not real time, and meant only for ad-hoc human lookups — while automated or precise lookups should list a folder directly and filter deterministically. Covers both, and when to use each.
+metadata:
+  files-cli-commands: folders list-for
 ---
 
 # recipe-searching-for-files

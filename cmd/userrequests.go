@@ -89,6 +89,8 @@ func UserRequests() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "UserRequest", true)
 	UserRequests.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -118,6 +120,8 @@ func UserRequests() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "UserRequest", false)
 	UserRequests.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -152,6 +156,8 @@ func UserRequests() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "UserRequest", false)
 	UserRequests.AddCommand(cmdCreate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -183,6 +189,8 @@ func UserRequests() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	UserRequests.AddCommand(cmdDelete)
 	return UserRequests
 }

@@ -18,7 +18,7 @@ For agents that don't support skill loading directly, the same content is readab
 
 ## From the CLI
 
-The installed binary serves the same recipes, matched to its version, without credentials or network access: `files-cli workflows` lists them and `files-cli workflows show <name>` prints one. `files-cli commands` describes the binary's exact commands and flags, including commands such as `upload` that the domain skills do not cover.
+The installed binary serves the same recipes, matched to its version, without credentials or network access: `files-cli workflows` lists them and `files-cli workflows show <name>` prints one. It also serves a domain guide for each domain skill under the same name, such as `files-cli workflows show filescom-permissions`: the skill's overview and guidance without its flag tables, followed by the commands of the group in that binary (`files-cli workflows list --domains` lists them). `files-cli commands` describes the binary's exact commands and flags, including commands such as `upload` that the domain skills do not cover, and `files-cli commands describe <command>` links the guides that apply to a command.
 
 ## Companion files
 

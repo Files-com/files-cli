@@ -52,6 +52,8 @@ func FileCommentReactions() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "FileCommentReaction", false)
 	FileCommentReactions.AddCommand(cmdCreate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -83,6 +85,8 @@ func FileCommentReactions() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	FileCommentReactions.AddCommand(cmdDelete)
 	return FileCommentReactions
 }

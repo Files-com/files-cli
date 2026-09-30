@@ -156,6 +156,8 @@ func Folders() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListFor, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListFor, "File", true)
 	Folders.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -199,6 +201,8 @@ func Folders() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "File", false)
 	Folders.AddCommand(cmdCreate)
 	return Folders
 }

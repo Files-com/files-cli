@@ -117,6 +117,8 @@ func Histories() *cobra.Command {
 	cmdListForFile.Flags().StringSliceVar(&formatListForFile, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFile.Flags().BoolVar(&usePagerListForFile, "use-pager", usePagerListForFile, "Use $PAGER (.ie less, more, etc)")
 	cmdListForFile.Flags().BoolVar(&jsonEnvelopeListForFile, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListForFile, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListForFile, "Action", true)
 	Histories.AddCommand(cmdListForFile)
 	var fieldsListForFolder []string
 	var formatListForFolder []string
@@ -212,6 +214,8 @@ func Histories() *cobra.Command {
 	cmdListForFolder.Flags().StringSliceVar(&formatListForFolder, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForFolder.Flags().BoolVar(&usePagerListForFolder, "use-pager", usePagerListForFolder, "Use $PAGER (.ie less, more, etc)")
 	cmdListForFolder.Flags().BoolVar(&jsonEnvelopeListForFolder, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListForFolder, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListForFolder, "Action", true)
 	Histories.AddCommand(cmdListForFolder)
 	var fieldsListForUser []string
 	var formatListForUser []string
@@ -305,6 +309,8 @@ func Histories() *cobra.Command {
 	cmdListForUser.Flags().StringSliceVar(&formatListForUser, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListForUser.Flags().BoolVar(&usePagerListForUser, "use-pager", usePagerListForUser, "Use $PAGER (.ie less, more, etc)")
 	cmdListForUser.Flags().BoolVar(&jsonEnvelopeListForUser, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListForUser, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListForUser, "Action", true)
 	Histories.AddCommand(cmdListForUser)
 	var fieldsListLogins []string
 	var formatListLogins []string
@@ -396,6 +402,8 @@ func Histories() *cobra.Command {
 	cmdListLogins.Flags().StringSliceVar(&formatListLogins, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListLogins.Flags().BoolVar(&usePagerListLogins, "use-pager", usePagerListLogins, "Use $PAGER (.ie less, more, etc)")
 	cmdListLogins.Flags().BoolVar(&jsonEnvelopeListLogins, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListLogins, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListLogins, "Action", true)
 	Histories.AddCommand(cmdListLogins)
 	var fieldsList []string
 	var formatList []string
@@ -508,6 +516,8 @@ func Histories() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "Action", true)
 	Histories.AddCommand(cmdList)
 	return Histories
 }

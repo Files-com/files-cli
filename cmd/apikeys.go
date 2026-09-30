@@ -156,6 +156,8 @@ func ApiKeys() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "ApiKey", true)
 	ApiKeys.AddCommand(cmdList)
 	var fieldsFindCurrent []string
 	var formatFindCurrent []string
@@ -181,6 +183,8 @@ func ApiKeys() *cobra.Command {
 	cmdFindCurrent.Flags().StringSliceVar(&formatFindCurrent, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFindCurrent.Flags().BoolVar(&usePagerFindCurrent, "use-pager", usePagerFindCurrent, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFindCurrent, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFindCurrent, "ApiKey", false)
 	ApiKeys.AddCommand(cmdFindCurrent)
 	var fieldsFind []string
 	var formatFind []string
@@ -210,6 +214,8 @@ func ApiKeys() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "ApiKey", false)
 	ApiKeys.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -267,6 +273,8 @@ func ApiKeys() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "ApiKey", false)
 	ApiKeys.AddCommand(cmdCreate)
 	var fieldsUpdateCurrent []string
 	var formatUpdateCurrent []string
@@ -325,6 +333,8 @@ func ApiKeys() *cobra.Command {
 	cmdUpdateCurrent.Flags().StringSliceVar(&formatUpdateCurrent, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdateCurrent.Flags().BoolVar(&usePagerUpdateCurrent, "use-pager", usePagerUpdateCurrent, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdateCurrent, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdateCurrent, "ApiKey", false)
 	ApiKeys.AddCommand(cmdUpdateCurrent)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -380,6 +390,8 @@ func ApiKeys() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "ApiKey", false)
 	ApiKeys.AddCommand(cmdUpdate)
 	var fieldsDeleteCurrent []string
 	var formatDeleteCurrent []string
@@ -407,6 +419,8 @@ func ApiKeys() *cobra.Command {
 	cmdDeleteCurrent.Flags().StringSliceVar(&formatDeleteCurrent, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDeleteCurrent.Flags().BoolVar(&usePagerDeleteCurrent, "use-pager", usePagerDeleteCurrent, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDeleteCurrent, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDeleteCurrent, "", false)
 	ApiKeys.AddCommand(cmdDeleteCurrent)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -438,6 +452,8 @@ func ApiKeys() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	ApiKeys.AddCommand(cmdDelete)
 	return ApiKeys
 }

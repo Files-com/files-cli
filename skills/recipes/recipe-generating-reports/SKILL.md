@@ -2,6 +2,8 @@
 name: recipe-generating-reports
 description: |
   Choose the right built-in Files.com report or export instead of assembling one by hand; use this when the user asks for a report, audit, export, or summary — storage/usage, bandwidth/transfer, activity/audit logs, webhook delivery, permissions, group membership, or share-link audits. Files.com already produces these as first-class resources (`usage-snapshots`, `bandwidth-snapshots`, `history-exports`, `action-notification-exports`, and `scheduled-exports`). Prefer them; only home-roll a report by listing and aggregating records when no built-in report covers the need.
+metadata:
+  files-cli-commands: usage-snapshots list, usage-daily-snapshots list, bandwidth-snapshots list, history-exports create, history-exports find, history-export-results list, action-notification-exports create, action-notification-exports find, action-notification-export-results list, scheduled-exports create
 ---
 
 # recipe-generating-reports
@@ -42,11 +44,12 @@ Exporting the action history is a two-step asynchronous operation. Create the ex
 
        files-cli history-exports find --id=EXPORT_ID --format=json
 
-3. Read the rows. When ready, the export carries a `results_url` (a single CSV download of all rows), or page through the rows directly:
+3. Read the rows. When ready, the export carries a `results_url` (a single CSV download of all rows), or list the rows directly. `--format=json` alone fetches every page; to read a page at a time, add `--json-envelope --per-page=N` and pass the returned `next_cursor` back with `--cursor` while `has_more` is true (see `files-cli workflows show context`):
 
-       files-cli history-export-results list --history-export-id=EXPORT_ID --format=json
+       files-cli history-export-results list --history-export-id=EXPORT_ID --json-envelope --per-page=1000 --format=json
+       files-cli history-export-results list --history-export-id=EXPORT_ID --json-envelope --per-page=1000 --cursor=NEXT_CURSOR --format=json
 
-`action-notification-exports` follows the same pattern, paired with `action-notification-export-results list --action-notification-export-id=EXPORT_ID`.
+`action-notification-exports` follows the same pattern, paired with `action-notification-export-results list --action-notification-export-id=EXPORT_ID`, which pages the same way.
 
 ## Scheduled Exports are recurring and emailed
 

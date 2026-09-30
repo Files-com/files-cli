@@ -113,6 +113,8 @@ func AutomationRuns() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "AutomationRun", true)
 	AutomationRuns.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -142,6 +144,8 @@ func AutomationRuns() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "AutomationRun", false)
 	AutomationRuns.AddCommand(cmdFind)
 	var fieldsFindNode []string
 	var formatFindNode []string
@@ -173,6 +177,8 @@ func AutomationRuns() *cobra.Command {
 	cmdFindNode.Flags().StringSliceVar(&formatFindNode, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFindNode.Flags().BoolVar(&usePagerFindNode, "use-pager", usePagerFindNode, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFindNode, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFindNode, "AutomationExecutionNode", false)
 	AutomationRuns.AddCommand(cmdFindNode)
 	var fieldsCancel []string
 	var formatCancel []string
@@ -202,6 +208,8 @@ func AutomationRuns() *cobra.Command {
 	cmdCancel.Flags().StringSliceVar(&formatCancel, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCancel.Flags().BoolVar(&usePagerCancel, "use-pager", usePagerCancel, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCancel, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCancel, "AutomationRun", false)
 	AutomationRuns.AddCommand(cmdCancel)
 	var fieldsRerun []string
 	var formatRerun []string
@@ -233,6 +241,8 @@ func AutomationRuns() *cobra.Command {
 	cmdRerun.Flags().StringSliceVar(&formatRerun, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdRerun.Flags().BoolVar(&usePagerRerun, "use-pager", usePagerRerun, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdRerun, lib.EffectMutating)
+	lib.SetCommandResponse(cmdRerun, "AutomationRun", false)
 	AutomationRuns.AddCommand(cmdRerun)
 	return AutomationRuns
 }

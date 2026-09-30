@@ -89,6 +89,8 @@ func IpAddresses() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "IpAddress", true)
 	IpAddresses.AddCommand(cmdList)
 	var fieldsGetSmartfileReserved []string
 	var formatGetSmartfileReserved []string
@@ -157,6 +159,8 @@ func IpAddresses() *cobra.Command {
 	cmdGetSmartfileReserved.Flags().StringSliceVar(&formatGetSmartfileReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetSmartfileReserved.Flags().BoolVar(&usePagerGetSmartfileReserved, "use-pager", usePagerGetSmartfileReserved, "Use $PAGER (.ie less, more, etc)")
 	cmdGetSmartfileReserved.Flags().BoolVar(&jsonEnvelopeGetSmartfileReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetSmartfileReserved, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetSmartfileReserved, "PublicIpAddress", true)
 	IpAddresses.AddCommand(cmdGetSmartfileReserved)
 	var fieldsGetExavaultReserved []string
 	var formatGetExavaultReserved []string
@@ -225,6 +229,8 @@ func IpAddresses() *cobra.Command {
 	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
 	cmdGetExavaultReserved.Flags().BoolVar(&jsonEnvelopeGetExavaultReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetExavaultReserved, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetExavaultReserved, "PublicIpAddress", true)
 	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved []string
 	var formatGetReserved []string
@@ -293,6 +299,8 @@ func IpAddresses() *cobra.Command {
 	cmdGetReserved.Flags().StringSliceVar(&formatGetReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetReserved.Flags().BoolVar(&usePagerGetReserved, "use-pager", usePagerGetReserved, "Use $PAGER (.ie less, more, etc)")
 	cmdGetReserved.Flags().BoolVar(&jsonEnvelopeGetReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetReserved, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetReserved, "PublicIpAddress", true)
 	IpAddresses.AddCommand(cmdGetReserved)
 	return IpAddresses
 }

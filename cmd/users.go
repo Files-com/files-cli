@@ -173,6 +173,8 @@ func Users() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "User", true)
 	Users.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -202,6 +204,8 @@ func Users() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "User", false)
 	Users.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -457,6 +461,8 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "User", false)
 	Users.AddCommand(cmdCreate)
 	var fieldsUnlock []string
 	var formatUnlock []string
@@ -488,6 +494,8 @@ func Users() *cobra.Command {
 	cmdUnlock.Flags().StringSliceVar(&formatUnlock, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUnlock.Flags().BoolVar(&usePagerUnlock, "use-pager", usePagerUnlock, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUnlock, lib.EffectMutating)
+	lib.SetCommandResponse(cmdUnlock, "", false)
 	Users.AddCommand(cmdUnlock)
 	var fieldsResendWelcomeEmail []string
 	var formatResendWelcomeEmail []string
@@ -519,6 +527,8 @@ func Users() *cobra.Command {
 	cmdResendWelcomeEmail.Flags().StringSliceVar(&formatResendWelcomeEmail, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdResendWelcomeEmail.Flags().BoolVar(&usePagerResendWelcomeEmail, "use-pager", usePagerResendWelcomeEmail, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdResendWelcomeEmail, lib.EffectMutating)
+	lib.SetCommandResponse(cmdResendWelcomeEmail, "", false)
 	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset []string
 	var formatUser2faReset []string
@@ -550,6 +560,8 @@ func Users() *cobra.Command {
 	cmdUser2faReset.Flags().StringSliceVar(&formatUser2faReset, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUser2faReset.Flags().BoolVar(&usePagerUser2faReset, "use-pager", usePagerUser2faReset, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUser2faReset, lib.EffectMutating)
+	lib.SetCommandResponse(cmdUser2faReset, "", false)
 	Users.AddCommand(cmdUser2faReset)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -940,6 +952,8 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "User", false)
 	Users.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -972,6 +986,8 @@ func Users() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	Users.AddCommand(cmdDelete)
 	return Users
 }

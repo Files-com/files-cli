@@ -153,7 +153,10 @@ files-cli commands                               # top-level commands and groups
 files-cli commands search share link             # find commands by keyword
 files-cli commands describe folders list-for --format json
 files-cli workflows show recipe-searching-for-files
+files-cli workflows show filescom-permissions
 ```
+
+`commands describe` also reports a hint about the command's effect (`read_only`, `mutating`, or `destructive`; guidance, not an enforced guarantee), the fields of the records it prints for use with `--fields`, and links to the guides for the command. See CONTEXT.md for details.
 
 To read a long list a page at a time, add `--json-envelope` to a list command. It prints `{"has_more", "next_cursor", "data"}` for one page; pass `next_cursor` back with `--cursor` to continue. Without the flag, `--format json` output is unchanged. See CONTEXT.md for details.
 

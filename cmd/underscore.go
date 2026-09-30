@@ -132,6 +132,7 @@ func copyToDestinationCommand(name string, label string, idFlag string, copyFile
 	command.Flags().BoolVar(&structure, "structure", structure, "Copy structure only.")
 	command.Flags().BoolVar(&overwrite, "overwrite", overwrite, "Overwrite existing files in the destination.")
 	addUnderscoreFileActionFlags(command, "copy", &fields, &format, &usePager, &block, &noProgress, &eventLog)
+	setUnderscoreFileActionMetadata(command)
 	command.MarkFlagRequired("destination")
 	command.MarkFlagRequired(idFlag)
 	return command
@@ -174,6 +175,7 @@ func moveToDestinationCommand(name string, label string, idFlag string, moveFile
 	command.Flags().Int64Var(&destinationID, idFlag, 0, fmt.Sprintf("%s ID. Required.", label))
 	command.Flags().BoolVar(&overwrite, "overwrite", overwrite, "Overwrite existing files in the destination.")
 	addUnderscoreFileActionFlags(command, "move", &fields, &format, &usePager, &block, &noProgress, &eventLog)
+	setUnderscoreFileActionMetadata(command)
 	command.MarkFlagRequired("destination")
 	command.MarkFlagRequired(idFlag)
 	return command
@@ -186,6 +188,16 @@ func addUnderscoreFileActionFlags(command *cobra.Command, operation string, fiel
 	command.Flags().BoolVar(block, "block", false, fmt.Sprintf("Wait for the asynchronous %s to finish.", operation))
 	command.Flags().BoolVar(noProgress, "no-progress", false, "Do not display progress while waiting.")
 	command.Flags().BoolVar(eventLog, "event-log", false, fmt.Sprintf("Output the full event log for the %s when waiting.", operation))
+}
+
+// setUnderscoreFileActionMetadata records the discovery metadata the generated
+// copy and move commands also carry: like them, these can overwrite files at
+// the destination (and move removes the source), and they print the FileAction,
+// or the FileMigration once --block waits for it.
+func setUnderscoreFileActionMetadata(command *cobra.Command) {
+	lib.SetCommandEffect(command, lib.EffectDestructive)
+	lib.SetCommandResponse(command, "FileAction", false)
+	lib.SetCommandResponseWithFlag(command, "block", "FileMigration", false)
 }
 
 func handleUnderscoreFileAction(cmd *cobra.Command, config files_sdk.Config, result files_sdk.FileAction, err error, block bool, noProgress bool, eventLog bool, format []string, fields []string, usePager bool) error {

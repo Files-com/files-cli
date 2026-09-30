@@ -154,6 +154,8 @@ func Automations() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "Automation", true)
 	Automations.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -183,6 +185,8 @@ func Automations() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "Automation", false)
 	Automations.AddCommand(cmdFind)
 	var fieldsGetAuthoringSchema []string
 	var formatGetAuthoringSchema []string
@@ -208,6 +212,8 @@ func Automations() *cobra.Command {
 	cmdGetAuthoringSchema.Flags().StringSliceVar(&formatGetAuthoringSchema, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetAuthoringSchema.Flags().BoolVar(&usePagerGetAuthoringSchema, "use-pager", usePagerGetAuthoringSchema, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdGetAuthoringSchema, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetAuthoringSchema, "AutomationAuthoringSchema", false)
 	Automations.AddCommand(cmdGetAuthoringSchema)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -347,6 +353,8 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "Automation", false)
 	Automations.AddCommand(cmdCreate)
 	var fieldsUpgrade []string
 	var formatUpgrade []string
@@ -376,6 +384,8 @@ func Automations() *cobra.Command {
 	cmdUpgrade.Flags().StringSliceVar(&formatUpgrade, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpgrade.Flags().BoolVar(&usePagerUpgrade, "use-pager", usePagerUpgrade, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpgrade, lib.EffectMutating)
+	lib.SetCommandResponse(cmdUpgrade, "Automation", false)
 	Automations.AddCommand(cmdUpgrade)
 	var fieldsManualRun []string
 	var formatManualRun []string
@@ -419,6 +429,8 @@ func Automations() *cobra.Command {
 	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdManualRun.Flags().BoolVar(&usePagerManualRun, "use-pager", usePagerManualRun, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdManualRun, lib.EffectMutating)
+	lib.SetCommandResponse(cmdManualRun, "", false)
 	Automations.AddCommand(cmdManualRun)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -641,6 +653,8 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "Automation", false)
 	Automations.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -672,6 +686,8 @@ func Automations() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	Automations.AddCommand(cmdDelete)
 	return Automations
 }

@@ -2,6 +2,8 @@
 name: recipe-share-and-notify
 description: |
   Share a Files.com file or folder via a Share Link (bundle) and email it to recipients. Spans `bundles`, `bundle-recipients`, and (optionally) `bundle-notifications`. Use this when the user wants to share files with someone outside Files.com by email, or to notify an internal Files.com user when activity happens on a Share Link. Distinguishes the one-shot invitation email from the ongoing activity-notification subscription — they are different surfaces and different audiences.
+metadata:
+  files-cli-commands: bundles create, bundles share, bundle-recipients create, bundle-notifications create
 ---
 
 # recipe-share-and-notify

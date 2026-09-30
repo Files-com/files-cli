@@ -100,6 +100,8 @@ func SiteSubdomainRedirects() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "SiteSubdomainRedirect", true)
 	SiteSubdomainRedirects.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -129,6 +131,8 @@ func SiteSubdomainRedirects() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "SiteSubdomainRedirect", false)
 	SiteSubdomainRedirects.AddCommand(cmdFind)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -160,6 +164,8 @@ func SiteSubdomainRedirects() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	SiteSubdomainRedirects.AddCommand(cmdDelete)
 	return SiteSubdomainRedirects
 }

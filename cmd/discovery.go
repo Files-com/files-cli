@@ -1,16 +1,64 @@
 package cmd
 
 import (
+	"bytes"
+	"compress/gzip"
+	_ "embed"
+	"encoding/json"
 	"io"
 	"os"
 	"sort"
 	"strings"
+	"sync"
 	"unicode/utf8"
 
 	"github.com/Files-com/files-cli/lib"
 	"github.com/Files-com/files-cli/lib/clierr"
 	"github.com/spf13/cobra"
 )
+
+// The generated, gzip-compressed JSON that the discovery commands read besides
+// the command tree, split so each command decompresses only what it uses:
+// the workflow guides, and the fields of the API entities that generated
+// commands print.
+var (
+	//go:embed guides.json.gz
+	guideData []byte
+	//go:embed responses.json.gz
+	responseData []byte
+)
+
+// bundledGuide is a guide's Markdown source: CONTEXT.md, a recipe SKILL.md, or
+// a generated domain guide.
+type bundledGuide struct {
+	Kind   string `json:"kind"`
+	Source string `json:"source"`
+}
+
+// loadGuides and loadResponseEntities decode their data once, on first use.
+var (
+	loadGuides = sync.OnceValues(func() ([]bundledGuide, error) {
+		var guides []bundledGuide
+		err := decodeEmbedded(guideData, &guides, "workflow guides")
+		return guides, err
+	})
+	loadResponseEntities = sync.OnceValues(func() (map[string]responseEntity, error) {
+		var entities map[string]responseEntity
+		err := decodeEmbedded(responseData, &entities, "response fields")
+		return entities, err
+	})
+)
+
+func decodeEmbedded(data []byte, v any, name string) error {
+	reader, err := gzip.NewReader(bytes.NewReader(data))
+	if err == nil {
+		err = json.NewDecoder(reader).Decode(v)
+	}
+	if err != nil {
+		return clierr.Errorf(clierr.ErrorCodeFatal, "the %s built into this binary are unreadable: %v", name, err)
+	}
+	return nil
+}
 
 // offlinePreRun replaces the root pre-run for the commands and workflows
 // subtrees. They only read the command tree and embedded guides, so they skip

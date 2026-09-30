@@ -93,6 +93,8 @@ func FileComments() *cobra.Command {
 	cmdListFor.Flags().StringSliceVar(&formatListFor, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdListFor.Flags().BoolVar(&usePagerListFor, "use-pager", usePagerListFor, "Use $PAGER (.ie less, more, etc)")
 	cmdListFor.Flags().BoolVar(&jsonEnvelopeListFor, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdListFor, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdListFor, "FileComment", true)
 	FileComments.AddCommand(cmdListFor)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -126,6 +128,8 @@ func FileComments() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "FileComment", false)
 	FileComments.AddCommand(cmdCreate)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -169,6 +173,8 @@ func FileComments() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "FileComment", false)
 	FileComments.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -200,6 +206,8 @@ func FileComments() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	FileComments.AddCommand(cmdDelete)
 	return FileComments
 }

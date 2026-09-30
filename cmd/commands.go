@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 	"text/tabwriter"
 
@@ -25,6 +26,7 @@ type commandSummary struct {
 	Short           string   `json:"short,omitempty"`
 	Aliases         []string `json:"aliases,omitempty"`
 	Args            []string `json:"args,omitempty"`
+	Effect          string   `json:"effect,omitempty"`
 	SubcommandCount int      `json:"subcommand_count,omitempty"`
 }
 
@@ -47,10 +49,13 @@ type commandDescription struct {
 	Long           string            `json:"long,omitempty"`
 	Aliases        []string          `json:"aliases,omitempty"`
 	Args           []string          `json:"args,omitempty"`
+	Effect         string            `json:"effect,omitempty"`
 	Example        string            `json:"example,omitempty"`
 	Subcommands    []commandSummary  `json:"subcommands,omitempty"`
 	Flags          []flagDescription `json:"flags,omitempty"`
 	InheritedFlags []flagDescription `json:"inherited_flags,omitempty"`
+	Response       *commandResponse  `json:"response,omitempty"`
+	Workflows      []workflowLink    `json:"workflows,omitempty"`
 }
 
 type flagDescription struct {
@@ -67,6 +72,48 @@ type flagDescription struct {
 	Truncated     bool     `json:"truncated,omitempty"`
 }
 
+// responseField is a top-level field of the records a command prints, as
+// --fields and the JSON output name it.
+type responseField struct {
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	Description string `json:"description,omitempty"`
+}
+
+// responseEntity is the generated description of an API entity's records.
+type responseEntity struct {
+	Recommended []string        `json:"recommended"`
+	Fields      []responseField `json:"fields"`
+}
+
+// responseDescription describes what a command prints on success: records of
+// an API entity, or nothing.
+type responseDescription struct {
+	Type              string          `json:"type,omitempty"`
+	List              bool            `json:"list,omitempty"`
+	None              bool            `json:"none,omitempty"`
+	RecommendedFields []string        `json:"recommended_fields,omitempty"`
+	Fields            []responseField `json:"fields,omitempty"`
+}
+
+type commandResponse struct {
+	responseDescription
+	WithFlag *flagResponse `json:"with_flag,omitempty"`
+}
+
+// flagResponse is what a command can print instead when the flag is given.
+type flagResponse struct {
+	Flag string `json:"flag"`
+	responseDescription
+}
+
+// workflowLink is a guide related to a command.
+type workflowLink struct {
+	Name        string `json:"name"`
+	Kind        string `json:"kind"`
+	Description string `json:"description"`
+}
+
 func Commands() *cobra.Command {
 	var format []string
 	commands := &cobra.Command{
@@ -80,7 +127,8 @@ With no subcommand, lists the top-level commands and command groups.`,
 files-cli commands list folders
 files-cli commands search share link
 files-cli commands describe folders list-for --format json
-files-cli commands describe users list --flag cursor`,
+files-cli commands describe users list --flag cursor
+files-cli commands describe remote-servers list --response-field server-type`,
 		Args:              cobra.NoArgs,
 		PersistentPreRunE: offlinePreRun,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -121,33 +169,60 @@ files-cli commands describe users list --flag cursor`,
 
 	var full bool
 	var onlyFlags []string
+	var onlyFields []string
 	describe := &cobra.Command{
 		Use:   "describe <command...>",
-		Short: "Describe a command's usage, arguments, and flags",
-		Long: `Describe a command's usage, arguments, subcommands, and local and inherited flags.
+		Short: "Describe a command's usage, arguments, flags, effect, response fields, and related guides",
+		Long: `Describe a command's usage, arguments, subcommands, and local and inherited flags,
+the effect of its API request, the fields of the records it prints, and related
+workflow guides.
 
 Flag types and defaults are the static definitions, never values from the current
-invocation or config. required marks flags the CLI rejects the command without.
+invocation or config. A default is the CLI flag's, not necessarily the API's:
+generated flags for optional API booleans, such as files copy --overwrite and
+--structure, are sent only when given, so leaving one out leaves the choice to the
+API. Pass true or false explicitly for the behavior you intend. required marks
+flags the CLI rejects the command without.
 api_required marks parameters the Files.com API requires; the CLI sends the request
 without checking them. Descriptions longer than 200 characters are truncated and
-marked; use --full, or --flag for specific flags, to see complete descriptions.`,
+marked; use --full, or --flag for specific flags, to see complete descriptions.
+
+effect is a hint about the command's Files.com API request, from the API operation
+or a reviewed handwritten command; it is not enforced and does not cover local
+effects such as saved sessions or config. read_only only reads data. destructive
+can delete, overwrite, or replace existing data. mutating changes data or starts
+an action and is not known to be destructive, which does not make it additive or
+reversible. Commands without an effect have none declared.
+
+response lists the records a command prints on success and their top-level
+fields, which --fields selects, with any recommended_fields; none means it prints
+nothing. Add --full, or --response-field for specific fields, to see their
+descriptions. Commands without a response have none declared.
+
+--flag and --response-field show only the named flags and response fields.`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			target, err := lookupDiscoverable(cmd.Root(), args)
 			if err != nil {
 				return err
 			}
-			description, err := describeCommand(target, full, onlyFlags)
+			description, err := describeCommand(target, full, onlyFlags, onlyFields)
 			if err != nil {
 				return err
 			}
-			return writeDiscovery(cmd, format, description, func(out io.Writer) { writeDescriptionText(out, description) })
+			if description.Workflows, err = relatedWorkflows(target); err != nil {
+				return err
+			}
+			root := cmd.Root().Name()
+			return writeDiscovery(cmd, format, description, func(out io.Writer) { writeDescriptionText(out, root, description) })
 		},
 	}
-	describe.Flags().BoolVar(&full, "full", false, "Show complete flag descriptions")
+	describe.Flags().BoolVar(&full, "full", false, "Show complete flag and response field descriptions")
 	describe.Flags().StringSliceVar(&onlyFlags, "flag", []string{}, "Show only these flags, with complete descriptions")
+	describe.Flags().StringSliceVar(&onlyFields, "response-field", []string{}, "Show only these response fields, with descriptions")
 	commands.AddCommand(describe)
 
+	markReadOnly(commands)
 	return commands
 }
 
@@ -226,7 +301,24 @@ func summarizeCommand(cmd *cobra.Command) commandSummary {
 		Short:           cmd.Short,
 		Aliases:         commandAliases(cmd),
 		Args:            commandArgs(cmd),
+		Effect:          commandEffect(cmd),
 		SubcommandCount: len(discoverableSubcommands(cmd)),
+	}
+}
+
+// commandEffect returns the effect hint recorded for cmd, or "" when it has
+// none.
+func commandEffect(cmd *cobra.Command) string {
+	effect, _ := lib.GetCommandEffect(cmd)
+	return string(effect)
+}
+
+// markReadOnly records that cmd and its subcommands only read data. Used for
+// the discovery commands, which read the command tree and embedded guides.
+func markReadOnly(cmd *cobra.Command) {
+	lib.SetCommandEffect(cmd, lib.EffectReadOnly)
+	for _, subcommand := range cmd.Commands() {
+		markReadOnly(subcommand)
 	}
 }
 
@@ -311,13 +403,14 @@ func describableFlag(flag *pflag.Flag) bool {
 	return !flag.Hidden && flag.Deprecated == "" && flag.Name != "help"
 }
 
-func describeCommand(cmd *cobra.Command, full bool, onlyFlags []string) (commandDescription, error) {
+func describeCommand(cmd *cobra.Command, full bool, onlyFlags []string, onlyFields []string) (commandDescription, error) {
 	description := commandDescription{
 		Command:     commandName(cmd),
 		Usage:       cmd.UseLine(),
 		Short:       cmd.Short,
 		Aliases:     commandAliases(cmd),
 		Args:        commandArgs(cmd),
+		Effect:      commandEffect(cmd),
 		Example:     cmd.Example,
 		Subcommands: summarizeCommands(discoverableSubcommands(cmd)),
 	}
@@ -345,15 +438,97 @@ func describeCommand(cmd *cobra.Command, full bool, onlyFlags []string) (command
 		})
 		return descriptions
 	}
-	description.Flags = describeFlags(cmd.LocalFlags())
-	description.InheritedFlags = describeFlags(cmd.InheritedFlags())
+	// --response-field alone selects no flags.
+	if len(onlyFields) == 0 || len(onlyFlags) > 0 {
+		description.Flags = describeFlags(cmd.LocalFlags())
+		description.InheritedFlags = describeFlags(cmd.InheritedFlags())
+	}
 
 	for name, found := range selected {
 		if !found {
 			return description, clierr.Errorf(clierr.ErrorCodeUsage, "unknown flag --%s for %q", name, description.Command)
 		}
 	}
-	return description, nil
+
+	var err error
+	description.Response, err = describeResponse(cmd, full, onlyFlags, onlyFields)
+	return description, err
+}
+
+// describeResponse describes what cmd prints, from the response recorded on
+// the command and the generated entity fields. Field descriptions are included
+// with full or when fields are selected; --flag alone selects none.
+func describeResponse(cmd *cobra.Command, full bool, onlyFlags []string, onlyFields []string) (*commandResponse, error) {
+	entity, list, ok := lib.GetCommandResponse(cmd)
+	if !ok {
+		if len(onlyFields) > 0 {
+			return nil, clierr.Errorf(clierr.ErrorCodeUsage, "%q has no described response fields", commandName(cmd))
+		}
+		return nil, nil
+	}
+	entities, err := loadResponseEntities()
+	if err != nil {
+		return nil, err
+	}
+
+	selected := make(map[string]bool)
+	for _, name := range onlyFields {
+		selected[strings.ToLower(strings.ReplaceAll(name, "-", "_"))] = false
+	}
+	showFields := len(onlyFields) > 0 || len(onlyFlags) == 0
+	describe := func(entity string, list bool) responseDescription {
+		if entity == "" {
+			return responseDescription{None: true}
+		}
+		description := responseDescription{Type: entity, List: list, RecommendedFields: entities[entity].Recommended}
+		if !showFields {
+			return description
+		}
+		for _, field := range entities[entity].Fields {
+			if len(selected) > 0 {
+				if _, ok := selected[field.Name]; !ok {
+					continue
+				}
+				selected[field.Name] = true
+			} else if !full {
+				field.Description = ""
+			}
+			description.Fields = append(description.Fields, field)
+		}
+		return description
+	}
+
+	response := &commandResponse{responseDescription: describe(entity, list)}
+	if flag, entity, list, ok := lib.GetCommandResponseWithFlag(cmd); ok {
+		response.WithFlag = &flagResponse{Flag: flag, responseDescription: describe(entity, list)}
+	}
+	for name, found := range selected {
+		if !found {
+			return nil, clierr.Errorf(clierr.ErrorCodeUsage, "unknown response field %q for %q", name, commandName(cmd))
+		}
+	}
+	return response, nil
+}
+
+// relatedWorkflows returns the guides for cmd: the domain guide of its command
+// group, then the recipes that list the command.
+func relatedWorkflows(cmd *cobra.Command) ([]workflowLink, error) {
+	guides, err := loadWorkflowGuides()
+	if err != nil {
+		return nil, err
+	}
+	name := commandName(cmd)
+	group, _, _ := strings.Cut(name, " ")
+	var domains, recipes []workflowLink
+	for _, guide := range guides {
+		link := workflowLink{Name: guide.Name, Kind: guide.Kind, Description: guide.Description}
+		if guide.Group != "" && guide.Group == group {
+			domains = append(domains, link)
+		} else if slices.Contains(guide.Commands, name) {
+			recipes = append(recipes, link)
+		}
+	}
+	return append(domains, recipes...), nil
 }
 
 // describeFlag reports the flag's static definition. DefValue is the default
@@ -383,13 +558,18 @@ func describeFlag(flag *pflag.Flag, full bool) flagDescription {
 	return description
 }
 
-func writeDescriptionText(out io.Writer, description commandDescription) {
+func writeDescriptionText(out io.Writer, root string, description commandDescription) {
 	fmt.Fprintf(out, "%s\n", description.Usage)
 	if description.Short != "" {
 		fmt.Fprintf(out, "  %s\n", description.Short)
 	}
 	if description.Long != "" {
 		fmt.Fprintf(out, "\n%s\n", description.Long)
+	}
+	if effect := effectText(description.Effect); effect != "" {
+		fmt.Fprintf(out, "\nEffect (a hint, not enforced): %s\n", effect)
+	} else if len(description.Subcommands) == 0 {
+		fmt.Fprint(out, "\nEffect: not declared for this command.\n")
 	}
 	if len(description.Aliases) > 0 {
 		fmt.Fprintf(out, "\nAliases: %s\n", strings.Join(description.Aliases, ", "))
@@ -444,4 +624,99 @@ func writeDescriptionText(out io.Writer, description commandDescription) {
 	if truncated {
 		fmt.Fprint(out, "\nDescriptions ending in … are truncated; use --full or --flag NAME for the complete text.\n")
 	}
+
+	if description.Response != nil {
+		writeResponseText(out, description.Response)
+	}
+	if len(description.Workflows) > 0 {
+		fmt.Fprintf(out, "\nWorkflow guides; read one with \"%s workflows show <name>\":\n", root)
+		table := tabwriter.NewWriter(out, 0, 0, 2, ' ', 0)
+		for _, link := range description.Workflows {
+			summary, _ := truncateText(oneLine(link.Description), maxFlagDescription)
+			fmt.Fprintf(table, "  %s\t%s\n", link.Name, summary)
+		}
+		table.Flush()
+	}
+}
+
+func effectText(effect string) string {
+	switch lib.CommandEffect(effect) {
+	case lib.EffectReadOnly:
+		return "read_only, reads data without changing it."
+	case lib.EffectMutating:
+		return "mutating, changes data or starts an action. It is not known to be destructive, which does not make it additive or reversible."
+	case lib.EffectDestructive:
+		return "destructive, can delete, overwrite, or replace existing data."
+	}
+	return ""
+}
+
+func writeResponseText(out io.Writer, response *commandResponse) {
+	fmt.Fprintf(out, "\nResponse: %s.\n", responseSummary(response.responseDescription))
+	fields := response.Fields
+	writeResponseFields(out, response.responseDescription)
+	if response.WithFlag != nil {
+		fmt.Fprintf(out, "With --%s, it can print %s instead.\n", response.WithFlag.Flag, responseSummary(response.WithFlag.responseDescription))
+		writeResponseFields(out, response.WithFlag.responseDescription)
+		fields = append(fields, response.WithFlag.Fields...)
+	}
+	if len(fields) > 0 && !slices.ContainsFunc(fields, func(field responseField) bool { return field.Description != "" }) {
+		fmt.Fprint(out, "Add --full, or --response-field NAME, for field descriptions.\n")
+	}
+}
+
+func responseSummary(response responseDescription) string {
+	switch {
+	case response.None:
+		return "prints nothing on success"
+	case response.List:
+		return fmt.Sprintf("a list of %s records", response.Type)
+	}
+	return fmt.Sprintf("one %s record", response.Type)
+}
+
+// writeResponseFields lists the fields one per line when they carry
+// descriptions, otherwise as a wrapped "name type" list.
+func writeResponseFields(out io.Writer, response responseDescription) {
+	if len(response.RecommendedFields) > 0 {
+		fmt.Fprintf(out, "  Recommended: --fields=%s\n", strings.Join(response.RecommendedFields, ","))
+	}
+	if len(response.Fields) == 0 {
+		return
+	}
+	fmt.Fprint(out, "  Fields, selected with --fields=NAME,...:\n")
+	if slices.ContainsFunc(response.Fields, func(field responseField) bool { return field.Description != "" }) {
+		for _, field := range response.Fields {
+			fmt.Fprintf(out, "    %s %s\n", field.Name, field.Type)
+			if field.Description != "" {
+				fmt.Fprintf(out, "        %s\n", oneLine(field.Description))
+			}
+		}
+		return
+	}
+	items := make([]string, len(response.Fields))
+	for i, field := range response.Fields {
+		items[i] = field.Name + " " + field.Type
+	}
+	writeWrapped(out, "    ", items, 100)
+}
+
+// writeWrapped writes items separated by commas, wrapping lines before width.
+func writeWrapped(out io.Writer, indent string, items []string, width int) {
+	line := indent
+	for i, item := range items {
+		if i < len(items)-1 {
+			item += ","
+		}
+		if len(line) > len(indent) {
+			if len(line)+1+len(item) > width {
+				fmt.Fprintln(out, line)
+				line = indent
+			} else {
+				line += " "
+			}
+		}
+		line += item
+	}
+	fmt.Fprintln(out, line)
 }

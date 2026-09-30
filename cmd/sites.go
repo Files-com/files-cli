@@ -45,6 +45,8 @@ func Sites() *cobra.Command {
 	cmdGet.Flags().StringSliceVar(&formatGet, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGet.Flags().BoolVar(&usePagerGet, "use-pager", usePagerGet, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdGet, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGet, "Site", false)
 	Sites.AddCommand(cmdGet)
 	var fieldsGetUsage []string
 	var formatGetUsage []string
@@ -70,6 +72,8 @@ func Sites() *cobra.Command {
 	cmdGetUsage.Flags().StringSliceVar(&formatGetUsage, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetUsage.Flags().BoolVar(&usePagerGetUsage, "use-pager", usePagerGetUsage, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdGetUsage, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetUsage, "UsageSnapshot", false)
 	Sites.AddCommand(cmdGetUsage)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -974,6 +978,8 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "Site", false)
 	Sites.AddCommand(cmdUpdate)
 	return Sites
 }

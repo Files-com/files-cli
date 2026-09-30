@@ -2,6 +2,8 @@
 name: recipe-folder-size-and-counts
 description: |
   Determine storage usage and file/folder counts on Files.com from the data the agent can actually read back, without recursively walking the tree; use this when the user asks "how big is this folder", "how much storage are we using", or "how many files do we have". The agent-readable source is `usage-snapshots` / `usage-daily-snapshots` (size and file count per top-level folder) and `site/usage` (site totals). Note the important limits: usage data only breaks down by top-level folder, and the `folder_size_audit` scheduled export is emailed to a Site Admin rather than returned to the API.
+metadata:
+  files-cli-commands: usage-snapshots list, usage-daily-snapshots list, sites get-usage, scheduled-exports create, folders list-for
 ---
 
 # recipe-folder-size-and-counts
@@ -29,7 +31,9 @@ For a day-by-day series with the same per-top-level-folder breakdown:
 
     files-cli usage-daily-snapshots list --format=json
 
-Site-wide totals on their own are also available from `site/usage`.
+Site-wide totals on their own are also available from `site/usage`:
+
+    files-cli sites get-usage --format=json
 
 ## Limitation: only top-level folders are broken out
 

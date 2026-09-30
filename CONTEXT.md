@@ -21,11 +21,22 @@ files-cli commands list folders                         # the commands in one gr
 files-cli commands search share link                    # keyword search, 20 results by default (--limit)
 files-cli commands describe folders list-for --format json
 files-cli commands describe users list --flag cursor    # one flag, full description
-files-cli workflows                                     # task guides
+files-cli commands describe remote-servers list --response-field server-type
+files-cli workflows                                     # this guide and the recipes
+files-cli workflows list --domains                      # one domain guide per command group
 files-cli workflows show recipe-searching-for-files     # one guide as Markdown
+files-cli workflows show filescom-permissions
 ```
 
-`commands describe` reports usage, positional arguments, and local and inherited flags with their type, static default, and enum values. `required` marks flags the CLI rejects a command without; `api_required` marks parameters the Files.com API requires, which the CLI sends without checking. Flag descriptions longer than 200 characters are cut and marked `truncated`; add `--full` or `--flag NAME` for the complete text.
+`commands describe` reports usage, positional arguments, and local and inherited flags with their type, static default, and enum values. A default is the CLI flag's, not necessarily the API's: generated flags for optional API booleans, such as `files copy --overwrite` and `--structure`, are sent only when given, so leaving one out leaves the choice to the API. Pass `--overwrite=true` or `--overwrite=false` explicitly for the behavior you intend. `required` marks flags the CLI rejects a command without; `api_required` marks parameters the Files.com API requires, which the CLI sends without checking. Flag descriptions longer than 200 characters are cut and marked `truncated`; add `--full` or `--flag NAME` for the complete text.
+
+It also reports:
+
+- `effect`, a hint about the command's Files.com API request: `read_only`; `mutating`, which changes data or starts an action and is not known to be destructive (that does not make it additive or reversible); or `destructive`, which can delete, overwrite, or replace existing data. It is guidance, not an enforced guarantee, and does not cover local effects such as a saved session or config. A command with no `effect` has none declared; read its description and flags before running it.
+- `response`, the records the command prints on success: their `type`, whether it is a `list`, and the top-level `fields` that `--fields` selects, or `none` when it prints nothing. Pass `recommended_fields`, where given, as `--fields=id,name,server_type` for a compact result. Field descriptions appear with `--full` or `--response-field NAME`. `with_flag` describes what the command can print instead when that flag, such as `--block`, is given. Handwritten commands such as `upload` have no `response`.
+- `workflows`, the guides for the command: the domain guide of its command group (`filescom-<group>`) and any recipe that explains it. Read one with `files-cli workflows show <name>`.
+
+The JSON of `commands list` and `commands search` includes each command's `effect`.
 
 ## Bounded listing with continuation
 
@@ -135,7 +146,7 @@ files-cli users update --id=USER_ID --workspace-id=0
 files-cli permissions create --path=_/Workspaces/WORKSPACE_ID/FOLDER_PATH --user-id=USER_ID --permission=LEVEL
 ```
 
-If `$FOLDER_PATH` is empty, the permission applies to the Workspace's root folder; granting `admin` on a Workspace's root folder grants Workspace Admin access to the entire Workspace. See the `filescom-permissions` skill for permission levels and the `filescom-workspaces` skill for managing Workspaces.
+If `$FOLDER_PATH` is empty, the permission applies to the Workspace's root folder; granting `admin` on a Workspace's root folder grants Workspace Admin access to the entire Workspace. For permission levels, run `files-cli workflows show filescom-permissions`; for managing Workspaces, `files-cli workflows show filescom-workspaces`.
 
 ## Errors
 

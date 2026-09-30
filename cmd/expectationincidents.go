@@ -112,6 +112,8 @@ func ExpectationIncidents() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "ExpectationIncident", true)
 	ExpectationIncidents.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -141,6 +143,8 @@ func ExpectationIncidents() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdFind)
 	var fieldsResolve []string
 	var formatResolve []string
@@ -170,6 +174,8 @@ func ExpectationIncidents() *cobra.Command {
 	cmdResolve.Flags().StringSliceVar(&formatResolve, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdResolve.Flags().BoolVar(&usePagerResolve, "use-pager", usePagerResolve, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdResolve, lib.EffectMutating)
+	lib.SetCommandResponse(cmdResolve, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdResolve)
 	var fieldsSnooze []string
 	var formatSnooze []string
@@ -206,6 +212,8 @@ func ExpectationIncidents() *cobra.Command {
 	cmdSnooze.Flags().StringSliceVar(&formatSnooze, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdSnooze.Flags().BoolVar(&usePagerSnooze, "use-pager", usePagerSnooze, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdSnooze, lib.EffectMutating)
+	lib.SetCommandResponse(cmdSnooze, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdSnooze)
 	var fieldsAcknowledge []string
 	var formatAcknowledge []string
@@ -235,6 +243,8 @@ func ExpectationIncidents() *cobra.Command {
 	cmdAcknowledge.Flags().StringSliceVar(&formatAcknowledge, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdAcknowledge.Flags().BoolVar(&usePagerAcknowledge, "use-pager", usePagerAcknowledge, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdAcknowledge, lib.EffectMutating)
+	lib.SetCommandResponse(cmdAcknowledge, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdAcknowledge)
 	return ExpectationIncidents
 }

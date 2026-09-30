@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"io/fs"
-	"path"
 	"strings"
 	"text/tabwriter"
 
@@ -12,13 +10,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Guides holds the agent guides that package main embeds from this build:
-// CONTEXT.md and skills/recipes/<name>/SKILL.md.
-var Guides fs.FS
-
 const (
 	contextGuideName        = "context"
 	contextGuideDescription = "CLI-wide invocation guidance for agents: JSON output, non-interactive use, authentication, global flags, offline discovery, bounded listing with continuation, workspaces, and errors."
+)
+
+// Guide kinds: CONTEXT.md, the recipes for multi-step workflows, and one
+// generated domain guide per command group.
+const (
+	guideKindContext = "context"
+	guideKindRecipe  = "recipe"
+	guideKindDomain  = "domain"
+)
+
+// Front matter metadata that links guides to commands. A domain guide names the
+// command group it covers; a recipe lists, comma-separated, the commands it
+// explains.
+const (
+	guideMetadataGroup    = "files-cli-group"
+	guideMetadataCommands = "files-cli-commands"
 )
 
 func init() {
@@ -26,14 +36,18 @@ func init() {
 }
 
 type workflowGuide struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Content     string `json:"content,omitempty"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Kind        string   `json:"kind"`
+	Group       string   `json:"group,omitempty"`
+	Commands    []string `json:"commands,omitempty"`
+	Content     string   `json:"content,omitempty"`
 	source      string
 }
 
 type workflowList struct {
-	Workflows []workflowGuide `json:"workflows"`
+	Workflows        []workflowGuide `json:"workflows"`
+	DomainGuideCount int             `json:"domain_guide_count,omitempty"`
 }
 
 type workflowSearch struct {
@@ -49,34 +63,44 @@ func Workflows() *cobra.Command {
 		Use:   "workflows",
 		Short: "Read task guides for common workflows offline",
 		Long: `Read the task guides shipped with this build of the CLI: the CLI-wide agent
-guidance ("context") and recipes for common multi-step workflows.
+guidance ("context"), recipes for common multi-step workflows, and a domain
+guide for each command group (filescom-<group>).
 Works offline, without credentials, and without reading or writing the config file.
 
-With no subcommand, lists the guides.`,
+With no subcommand, lists the context guide and the recipes.`,
 		Example: `files-cli workflows
+files-cli workflows list --domains
 files-cli workflows search large folder size
-files-cli workflows show recipe-searching-for-files`,
+files-cli workflows show recipe-searching-for-files
+files-cli workflows show filescom-permissions`,
 		Args:              cobra.NoArgs,
 		PersistentPreRunE: offlinePreRun,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return writeWorkflowList(cmd, format)
+			return writeWorkflowList(cmd, format, false)
 		},
 	}
 	addDiscoveryFormatFlag(workflows, &format)
 
-	workflows.AddCommand(&cobra.Command{
+	var domains bool
+	list := &cobra.Command{
 		Use:   "list",
 		Short: "List workflow guides",
-		Args:  cobra.NoArgs,
+		Long: `List the context guide and the recipes, or with --domains the domain guides,
+one per command group.`,
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return writeWorkflowList(cmd, format)
+			return writeWorkflowList(cmd, format, domains)
 		},
-	})
+	}
+	list.Flags().BoolVar(&domains, "domains", false, "List the domain guides, one per command group")
+	workflows.AddCommand(list)
 
 	workflows.AddCommand(&cobra.Command{
 		Use:   "show <name>",
 		Short: "Show one workflow guide as Markdown",
-		Args:  cobra.ExactArgs(1),
+		Long: `Show one workflow guide as Markdown. A domain guide ends with the commands of
+its group in this build.`,
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			guides, err := loadWorkflowGuides()
 			if err != nil {
@@ -85,11 +109,16 @@ files-cli workflows show recipe-searching-for-files`,
 			var names []string
 			for _, guide := range guides {
 				if guide.Name == args[0] {
+					if guide.Kind == guideKindDomain {
+						guide = withGroupCommands(cmd.Root(), guide)
+					}
 					return writeDiscovery(cmd, format, guide, func(out io.Writer) { fmt.Fprint(out, guide.source) })
 				}
-				names = append(names, guide.Name)
+				if guide.Kind != guideKindDomain {
+					names = append(names, guide.Name)
+				}
 			}
-			return clierr.Errorf(clierr.ErrorCodeUsage, "unknown workflow %q; available: %s", args[0], strings.Join(names, ", "))
+			return clierr.Errorf(clierr.ErrorCodeUsage, "unknown workflow %q; available: %s, and the domain guides filescom-<group> (\"%s workflows list --domains\")", args[0], strings.Join(names, ", "), cmd.Root().Name())
 		},
 	})
 
@@ -108,43 +137,33 @@ files-cli workflows show recipe-searching-for-files`,
 	search.Flags().IntVar(&limit, "limit", 5, "Maximum number of results; 0 returns all matches")
 	workflows.AddCommand(search)
 
+	markReadOnly(workflows)
 	return workflows
 }
 
-// loadWorkflowGuides reads CONTEXT.md and the recipe skills from Guides. The
-// recipe name and description come from each SKILL.md front matter, and
-// Content holds the Markdown after it.
+// loadWorkflowGuides reads the embedded guides. A recipe or domain guide takes
+// its name, description, and command links from its front matter, and Content
+// holds the Markdown after it.
 func loadWorkflowGuides() ([]workflowGuide, error) {
-	if Guides == nil {
-		return nil, clierr.Errorf(clierr.ErrorCodeFatal, "workflow guides are not included in this build")
-	}
-	contextGuide, err := fs.ReadFile(Guides, "CONTEXT.md")
+	bundledGuides, err := loadGuides()
 	if err != nil {
-		return nil, clierr.New(clierr.ErrorCodeFatal, err)
+		return nil, err
 	}
-	guides := []workflowGuide{{Name: contextGuideName, Description: contextGuideDescription, Content: string(contextGuide), source: string(contextGuide)}}
-
-	recipes, err := fs.Glob(Guides, "skills/recipes/*/SKILL.md")
-	if err != nil {
-		return nil, clierr.New(clierr.ErrorCodeFatal, err)
-	}
-	for _, recipe := range recipes {
-		data, err := fs.ReadFile(Guides, recipe)
-		if err != nil {
-			return nil, clierr.New(clierr.ErrorCodeFatal, err)
-		}
-		guide := parseWorkflowGuide(string(data))
-		if guide.Name == "" {
-			guide.Name = path.Base(path.Dir(recipe))
+	guides := make([]workflowGuide, 0, len(bundledGuides))
+	for _, bundled := range bundledGuides {
+		guide := parseWorkflowGuide(bundled.Source)
+		guide.Kind = bundled.Kind
+		if guide.Kind == guideKindContext {
+			guide.Name, guide.Description = contextGuideName, contextGuideDescription
 		}
 		guides = append(guides, guide)
 	}
 	return guides, nil
 }
 
-// parseWorkflowGuide reads the name and description from a SKILL.md YAML
-// front matter block. It supports the plain and block-scalar (|) values the
-// recipes use rather than general YAML.
+// parseWorkflowGuide reads the name, description, and metadata from a guide's
+// YAML front matter block. It supports the plain values, block scalars (|),
+// and metadata map the guides use rather than general YAML.
 func parseWorkflowGuide(source string) workflowGuide {
 	guide := workflowGuide{Content: source, source: source}
 	rest, ok := strings.CutPrefix(source, "---\n")
@@ -161,41 +180,98 @@ func parseWorkflowGuide(source string) workflowGuide {
 	for i := 0; i < len(lines); i++ {
 		key, value, _ := strings.Cut(lines[i], ":")
 		value = strings.TrimSpace(value)
+		var nested []string
+		for i+1 < len(lines) && strings.HasPrefix(lines[i+1], " ") {
+			i++
+			nested = append(nested, strings.TrimSpace(lines[i]))
+		}
 		if value == "|" || value == ">" {
-			var block []string
-			for i+1 < len(lines) && strings.HasPrefix(lines[i+1], " ") {
-				i++
-				block = append(block, strings.TrimSpace(lines[i]))
-			}
-			value = strings.Join(block, " ")
+			value = strings.Join(nested, " ")
 		}
 		switch key {
 		case "name":
 			guide.Name = value
 		case "description":
 			guide.Description = value
+		case "metadata":
+			for _, line := range nested {
+				metadataKey, metadataValue, _ := strings.Cut(line, ":")
+				switch strings.TrimSpace(metadataKey) {
+				case guideMetadataGroup:
+					guide.Group = strings.TrimSpace(metadataValue)
+				case guideMetadataCommands:
+					for _, command := range strings.Split(metadataValue, ",") {
+						if command = strings.Join(strings.Fields(command), " "); command != "" {
+							guide.Commands = append(guide.Commands, command)
+						}
+					}
+				}
+			}
 		}
 	}
+	return guide
+}
+
+// withGroupCommands appends the commands of the guide's group, read from the
+// command tree, so the guide lists what this build runs.
+func withGroupCommands(root *cobra.Command, guide workflowGuide) workflowGuide {
+	group, err := lookupDiscoverable(root, []string{guide.Group})
+	if err != nil {
+		return guide
+	}
+	var section strings.Builder
+	fmt.Fprintf(&section, "\n## Commands\n\nThe %s commands in this build. For arguments, flags, effect, and response fields, run `%s commands describe %s <command>`.\n\n", guide.Group, root.Name(), guide.Group)
+	for _, command := range summarizeCommands(discoverableSubcommands(group)) {
+		fmt.Fprintf(&section, "- `%s`", strings.Join(append([]string{command.Command}, command.Args...), " "))
+		if command.Short != "" {
+			fmt.Fprintf(&section, ": %s", oneLine(command.Short))
+		}
+		if command.Effect != "" {
+			fmt.Fprintf(&section, " (%s)", command.Effect)
+		}
+		section.WriteString("\n")
+	}
+	guide.Content += section.String()
+	guide.source += section.String()
 	return guide
 }
 
 func summarizeWorkflows(guides []workflowGuide) []workflowGuide {
 	summaries := make([]workflowGuide, len(guides))
 	for i, guide := range guides {
-		summaries[i] = workflowGuide{Name: guide.Name, Description: guide.Description}
+		summaries[i] = workflowGuide{Name: guide.Name, Description: guide.Description, Kind: guide.Kind, Group: guide.Group, Commands: guide.Commands}
 	}
 	return summaries
 }
 
-func writeWorkflowList(cmd *cobra.Command, format []string) error {
+// writeWorkflowList lists the context guide and the recipes with a count of
+// the domain guides, or with domains only the domain guides.
+func writeWorkflowList(cmd *cobra.Command, format []string, domains bool) error {
 	guides, err := loadWorkflowGuides()
 	if err != nil {
 		return err
 	}
-	list := workflowList{Workflows: summarizeWorkflows(guides)}
+	var list workflowList
+	for _, guide := range guides {
+		switch {
+		case (guide.Kind == guideKindDomain) == domains:
+			list.Workflows = append(list.Workflows, guide)
+		case guide.Kind == guideKindDomain:
+			list.DomainGuideCount++
+		}
+	}
+	list.Workflows = summarizeWorkflows(list.Workflows)
+	root := cmd.Root().Name()
 	return writeDiscovery(cmd, format, list, func(out io.Writer) {
-		fmt.Fprintf(out, "Workflow guides. Next: \"%s workflows show <name>\".\n\n", cmd.Root().Name())
+		if domains {
+			fmt.Fprintf(out, "Domain guides, one per command group. Next: \"%s workflows show <name>\".\n\n", root)
+		} else {
+			fmt.Fprintf(out, "Workflow guides. Next: \"%s workflows show <name>\".\n\n", root)
+		}
 		writeWorkflowsText(out, list.Workflows)
+		if list.DomainGuideCount > 0 {
+			fmt.Fprintf(out, "\n%d domain guides, one per command group and named filescom-<group>, are listed by \"%s workflows list --domains\". \"%s commands describe <command>\" links the guides for a command.\n", list.DomainGuideCount, root, root)
+		}
 	})
 }
 

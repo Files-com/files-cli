@@ -114,6 +114,8 @@ func AiTasks() *cobra.Command {
 	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
 	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "AiTask", true)
 	AiTasks.AddCommand(cmdList)
 	var fieldsFind []string
 	var formatFind []string
@@ -143,6 +145,8 @@ func AiTasks() *cobra.Command {
 	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "AiTask", false)
 	AiTasks.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
@@ -213,6 +217,8 @@ func AiTasks() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdCreate.Flags().BoolVar(&usePagerCreate, "use-pager", usePagerCreate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreate, "AiTask", false)
 	AiTasks.AddCommand(cmdCreate)
 	var fieldsManualRun []string
 	var formatManualRun []string
@@ -244,6 +250,8 @@ func AiTasks() *cobra.Command {
 	cmdManualRun.Flags().StringSliceVar(&formatManualRun, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdManualRun.Flags().BoolVar(&usePagerManualRun, "use-pager", usePagerManualRun, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdManualRun, lib.EffectMutating)
+	lib.SetCommandResponse(cmdManualRun, "", false)
 	AiTasks.AddCommand(cmdManualRun)
 	var fieldsUpdate []string
 	var formatUpdate []string
@@ -373,6 +381,8 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdUpdate.Flags().BoolVar(&usePagerUpdate, "use-pager", usePagerUpdate, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdate, "AiTask", false)
 	AiTasks.AddCommand(cmdUpdate)
 	var fieldsDelete []string
 	var formatDelete []string
@@ -404,6 +414,8 @@ func AiTasks() *cobra.Command {
 	cmdDelete.Flags().StringSliceVar(&formatDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdDelete.Flags().BoolVar(&usePagerDelete, "use-pager", usePagerDelete, "Use $PAGER (.ie less, more, etc)")
 
+	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdDelete, "", false)
 	AiTasks.AddCommand(cmdDelete)
 	return AiTasks
 }

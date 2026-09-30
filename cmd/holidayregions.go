@@ -88,6 +88,8 @@ func HolidayRegions() *cobra.Command {
 	cmdGetSupported.Flags().StringSliceVar(&formatGetSupported, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGetSupported.Flags().BoolVar(&usePagerGetSupported, "use-pager", usePagerGetSupported, "Use $PAGER (.ie less, more, etc)")
 	cmdGetSupported.Flags().BoolVar(&jsonEnvelopeGetSupported, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetSupported, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetSupported, "HolidayRegion", true)
 	HolidayRegions.AddCommand(cmdGetSupported)
 	return HolidayRegions
 }
