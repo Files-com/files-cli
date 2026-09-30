@@ -13164,7 +13164,7 @@
           "name": "--ai-feature-availability",
           "type": "object",
           "required": false,
-          "description": "Availability settings for AI features by user class"
+          "description": "Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings."
         },
         {
           "name": "--mcp-dcr-enabled",
@@ -13573,6 +13573,12 @@
           "type": "bool",
           "required": false,
           "description": "Is FTP enabled?"
+        },
+        {
+          "name": "--s3-compatible-endpoint-enabled",
+          "type": "bool",
+          "required": false,
+          "description": "Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access."
         },
         {
           "name": "--sftp-enabled",

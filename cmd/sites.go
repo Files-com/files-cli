@@ -145,6 +145,7 @@ func Sites() *cobra.Command {
 	updateUserRequestsNotifyAdmins := true
 	updateDavEnabled := true
 	updateFtpEnabled := true
+	updateS3CompatibleEndpointEnabled := true
 	updateSftpEnabled := true
 	updateSftpFinalizePartialUploads := true
 	updateUsersCanCreateApiKeys := true
@@ -525,6 +526,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("ftp-enabled") {
 				mapParams["ftp_enabled"] = updateFtpEnabled
 			}
+			if cmd.Flags().Changed("s3-compatible-endpoint-enabled") {
+				mapParams["s3_compatible_endpoint_enabled"] = updateS3CompatibleEndpointEnabled
+			}
 			if cmd.Flags().Changed("sftp-enabled") {
 				mapParams["sftp_enabled"] = updateSftpEnabled
 			}
@@ -823,7 +827,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&updateLeftNavigationVisibilityJSON, "left-navigation-visibility", "", "Visibility settings for account navigation Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "left-navigation-visibility", "json")
 	cmdUpdate.Flags().BoolVar(&updateDisableAllAiFeatures, "disable-all-ai-features", updateDisableAllAiFeatures, "If true, all AI features are disabled for this site.")
-	cmdUpdate.Flags().StringVar(&updateAiFeatureAvailabilityJSON, "ai-feature-availability", "", "Availability settings for AI features by user class Provide as a JSON object.")
+	cmdUpdate.Flags().StringVar(&updateAiFeatureAvailabilityJSON, "ai-feature-availability", "", "Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "ai-feature-availability", "json")
 	cmdUpdate.Flags().BoolVar(&updateMcpDcrEnabled, "mcp-dcr-enabled", updateMcpDcrEnabled, "Is OAuth DCR (dynamic client registration) for MCP enabled?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.AdditionalTextFileTypes, "additional-text-file-types", []string{}, "Additional extensions that are considered text files")
@@ -893,6 +897,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
 	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
+	cmdUpdate.Flags().BoolVar(&updateS3CompatibleEndpointEnabled, "s3-compatible-endpoint-enabled", updateS3CompatibleEndpointEnabled, "Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access.")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateSftpFinalizePartialUploads, "sftp-finalize-partial-uploads", updateSftpFinalizePartialUploads, "Finalize partial SFTP uploads from interrupted connections? Default: true.")
 	cmdUpdate.Flags().BoolVar(&updateUsersCanCreateApiKeys, "users-can-create-api-keys", updateUsersCanCreateApiKeys, "Allow users to create their own API keys?")

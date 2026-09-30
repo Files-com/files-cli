@@ -465,6 +465,12 @@
       "category": "not-authorized"
     },
     {
+      "type": "not-authorized/cannot-administer-higher-level-user",
+      "title": "Cannot Administer Higher Level User",
+      "http_code": 403,
+      "category": "not-authorized"
+    },
+    {
       "type": "not-authorized/cannot-login-while-using-key",
       "title": "Cannot Login While Using Key",
       "http_code": 403,
@@ -1079,6 +1085,12 @@
     {
       "type": "processing-failure/recipient-already-shared",
       "title": "Recipient Already Shared",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/remote-entry-read-only",
+      "title": "Remote Entry Read Only",
       "http_code": 422,
       "category": "processing-failure"
     },
