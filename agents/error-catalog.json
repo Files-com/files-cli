@@ -1215,6 +1215,12 @@
       "category": "service-unavailable"
     },
     {
+      "type": "service-unavailable/search-unavailable",
+      "title": "Search Unavailable",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
       "type": "service-unavailable/site-disabled",
       "title": "Site Disabled",
       "http_code": 422,
