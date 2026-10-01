@@ -11275,25 +11275,25 @@
           "name": "--earliest-date",
           "type": "datetime",
           "required": true,
-          "description": "Restore all files deleted after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request."
+          "description": "Restore files or users deleted on or after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request."
         },
         {
           "name": "--prefix",
           "type": "string",
           "required": false,
-          "description": "Prefix of the files/folders to restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items, specify an empty string (`''`) in the prefix field or omit the field from the request."
+          "description": "Prefix of the files/folders to restore, or a case-insensitive username prefix for a user restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items of the selected restoration type, specify an empty string (`''`) in the prefix field or omit the field from the request."
         },
         {
           "name": "--restoration-type",
           "type": "enum",
           "required": false,
-          "description": "Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated access/authentication records."
+          "description": "Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated access/authentication records removed as part of deleting those users."
         },
         {
           "name": "--restore-deleted-permissions",
           "type": "bool",
           "required": false,
-          "description": "If true, we will also restore any Permissions that match the same path prefix from the same dates."
+          "description": "If true, restore permissions removed as part of deleting the selected users for a user restore, or permissions matching the selected path prefix and deletion dates for a file restore."
         },
         {
           "name": "--restore-in-place",
