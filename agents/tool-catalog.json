@@ -9529,7 +9529,7 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `id`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`."
         },
         {
           "name": "--filter",
@@ -13867,6 +13867,12 @@
           "type": "int64",
           "required": false,
           "description": "SMTP server port"
+        },
+        {
+          "name": "--smtp-ssl",
+          "type": "string",
+          "required": false,
+          "description": "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address."
         },
         {
           "name": "--ldap-enabled",

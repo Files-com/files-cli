@@ -673,6 +673,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("smtp-port") {
 				lib.FlagUpdate(cmd, "smtp_port", paramsSiteUpdate.SmtpPort, mapParams)
 			}
+			if cmd.Flags().Changed("smtp-ssl") {
+				lib.FlagUpdate(cmd, "smtp_ssl", paramsSiteUpdate.SmtpSsl, mapParams)
+			}
 			if cmd.Flags().Changed("ldap-enabled") {
 				mapParams["ldap_enabled"] = updateLdapEnabled
 			}
@@ -946,6 +949,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpFrom, "smtp-from", "", "From address to use when mailing through custom SMTP")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpUsername, "smtp-username", "", "SMTP server username")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SmtpPort, "smtp-port", 0, "SMTP server port")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpSsl, "smtp-ssl", "", "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address.")
 	cmdUpdate.Flags().BoolVar(&updateLdapEnabled, "ldap-enabled", updateLdapEnabled, "Main LDAP setting: is LDAP enabled?")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapType, "ldap-type", "", "LDAP type")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapHost, "ldap-host", "", "LDAP host")
