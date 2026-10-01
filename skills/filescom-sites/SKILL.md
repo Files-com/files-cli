@@ -185,7 +185,7 @@ Update Site Settings.
 | `--smtp-from` | string | From address to use when mailing through custom SMTP |
 | `--smtp-username` | string | SMTP server username |
 | `--smtp-port` | int64 | SMTP server port |
-| `--smtp-ssl` | string | Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. |
+| `--smtp-ssl` | string | Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded. |
 | `--ldap-enabled` | bool | Main LDAP setting: is LDAP enabled? |
 | `--ldap-type` | string | LDAP type |
 | `--ldap-host` | string | LDAP host |

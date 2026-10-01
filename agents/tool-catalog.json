@@ -11281,7 +11281,7 @@
           "name": "--prefix",
           "type": "string",
           "required": false,
-          "description": "Prefix of the files/folders to restore, or a case-insensitive username prefix for a user restore. To restore a folder, add a trailing slash to the folder name. Do not use a leading slash. To restore all deleted items of the selected restoration type, specify an empty string (`''`) in the prefix field or omit the field from the request."
+          "description": "Prefix of the files/folders to restore, or a case-insensitive username prefix for a user restore. A trailing slash selects that folder and its contents only; without it, the prefix matches any path beginning with that text. Do not use a leading slash. To restore all deleted items of the selected restoration type within the selected site or workspace scope, specify an empty string (`''`) or omit the field."
         },
         {
           "name": "--restoration-type",
@@ -11293,7 +11293,7 @@
           "name": "--restore-deleted-permissions",
           "type": "bool",
           "required": false,
-          "description": "If true, restore permissions removed as part of deleting the selected users for a user restore, or permissions matching the selected path prefix and deletion dates for a file restore."
+          "description": "If true, a user restore restores permissions removed as part of deleting the selected users. An in-place file restore restores user and group permissions on returned folders and their subfolders that were deleted from the time of the folder's deletion through 24 hours afterward, including permissions removed independently within that window. File restores into a new folder do not restore permissions."
         },
         {
           "name": "--restore-in-place",
@@ -13872,7 +13872,7 @@
           "name": "--smtp-ssl",
           "type": "string",
           "required": false,
-          "description": "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address."
+          "description": "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded."
         },
         {
           "name": "--ldap-enabled",
