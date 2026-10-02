@@ -15108,7 +15108,7 @@
           "name": "--apply-to-all-workspaces",
           "type": "bool",
           "required": false,
-          "description": "If true, a default-workspace rule also applies to users in all workspaces."
+          "description": "If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`."
         },
         {
           "name": "--authentication-method",
@@ -15132,7 +15132,7 @@
           "name": "--include-site-admins",
           "type": "bool",
           "required": false,
-          "description": "If true, the rule will apply to site admins."
+          "description": "If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`."
         },
         {
           "name": "--include-folder-admins",
@@ -15174,7 +15174,7 @@
           "name": "--workspace-id",
           "type": "int64",
           "required": false,
-          "description": "Workspace ID. `0` means the default workspace."
+          "description": "Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users."
         }
       ]
     },
@@ -15194,7 +15194,7 @@
           "name": "--apply-to-all-workspaces",
           "type": "bool",
           "required": false,
-          "description": "If true, a default-workspace rule also applies to users in all workspaces."
+          "description": "If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`."
         },
         {
           "name": "--authentication-method",
@@ -15218,7 +15218,7 @@
           "name": "--include-site-admins",
           "type": "bool",
           "required": false,
-          "description": "If true, the rule will apply to site admins."
+          "description": "If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`."
         },
         {
           "name": "--include-folder-admins",
@@ -15260,7 +15260,7 @@
           "name": "--workspace-id",
           "type": "int64",
           "required": false,
-          "description": "Workspace ID. `0` means the default workspace."
+          "description": "Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users."
         }
       ]
     },

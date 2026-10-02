@@ -14,6 +14,8 @@ The authentication_method property specifies the authentication method for the r
 
 The rule can also include or exclude site and folder admins from the action.
 
+A Custom Workspace rule applies only to users who belong to that Workspace. Default Workspace users with access to a Custom Workspace, including Workspace Administrators, remain covered by Default Workspace rules.
+
 All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
@@ -41,18 +43,18 @@ Create User Lifecycle Rule.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--apply-to-all-workspaces` | bool | If true, a default-workspace rule also applies to users in all workspaces. |
+| `--apply-to-all-workspaces` | bool | If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`. |
 | `--authentication-method` | enum | User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. One of: `all`, `password`, `sso`, `none`, `email_signup`, `password_with_imported_hash`, `password_and_ssh_key`, `all_non_sso`. |
 | `--group-ids` | []int64 | Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users. |
 | `--inactivity-days` | int64 | Number of days of inactivity before the rule applies |
-| `--include-site-admins` | bool | If true, the rule will apply to site admins. |
+| `--include-site-admins` | bool | If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`. |
 | `--include-folder-admins` | bool | If true, the rule will apply to folder admins. |
 | `--name` | string | User Lifecycle Rule name |
 | `--notify-users` | bool | If true, users will be emailed before the rule disables or deletes them. |
 | `--partner-tag` | string | If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--user-state` | enum | State of the users to apply the rule to (inactive or disabled). One of: `inactive`, `disabled`. |
 | `--user-tag` | string | If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens. |
-| `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
+| `--workspace-id` | int64 | Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users. |
 
 ### `files-cli user-lifecycle-rules update`
 
@@ -61,18 +63,18 @@ Update User Lifecycle Rule.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | User Lifecycle Rule ID. **Required.** |
-| `--apply-to-all-workspaces` | bool | If true, a default-workspace rule also applies to users in all workspaces. |
+| `--apply-to-all-workspaces` | bool | If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`. |
 | `--authentication-method` | enum | User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule. One of: `all`, `password`, `sso`, `none`, `email_signup`, `password_with_imported_hash`, `password_and_ssh_key`, `all_non_sso`. |
 | `--group-ids` | []int64 | Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users. |
 | `--inactivity-days` | int64 | Number of days of inactivity before the rule applies |
-| `--include-site-admins` | bool | If true, the rule will apply to site admins. |
+| `--include-site-admins` | bool | If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`. |
 | `--include-folder-admins` | bool | If true, the rule will apply to folder admins. |
 | `--name` | string | User Lifecycle Rule name |
 | `--notify-users` | bool | If true, users will be emailed before the rule disables or deletes them. |
 | `--partner-tag` | string | If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens. |
 | `--user-state` | enum | State of the users to apply the rule to (inactive or disabled). One of: `inactive`, `disabled`. |
 | `--user-tag` | string | If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens. |
-| `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
+| `--workspace-id` | int64 | Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users. |
 
 ### `files-cli user-lifecycle-rules delete`
 
