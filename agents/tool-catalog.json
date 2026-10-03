@@ -716,13 +716,13 @@
           "name": "--path",
           "type": "string",
           "required": false,
-          "description": "Restricts the file and folder operations made with this key, meaning the files, folders, and file_actions endpoints, to the specified folder and its descendants, including copy and move destinations. Other endpoints do not apply the path restriction; use the `files_only` permission set to confine a key to the endpoints that do. Does not grant access beyond the owning user's permissions. Optional except for `office_integration` keys, which require a path the owning user can read."
+          "description": "Restricts the file and folder operations made with this key, meaning the files, folders, and file_actions endpoints, to the specified folder and its descendants, including copy and move destinations. For `GET /file_migrations/{id}`, a key with a path can read only migrations it started. Other endpoints do not apply the path restriction; use the `files_only` permission set to confine a key to file operations and their supporting lookups. Does not grant access beyond the owning user's permissions. Optional except for `office_integration` keys, which require a path the owning user can read."
         },
         {
           "name": "--permission-set",
           "type": "enum",
           "required": false,
-          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can use only the files, folders, and file_actions endpoints, where they perform file operations as a full-access file user in the key's workspace scope, along with `GET /file_migrations/{id}` and `GET /api_key`. They cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user, and every other endpoint denies them with `not-authorized/api-key-only-for-file-operations`."
+          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can use only the files, folders, and file_actions endpoints, where they perform file operations as a full-access file user in the key's workspace scope, along with `GET /file_migrations/{id}` and `GET /api_key`. On the migration lookup, any key with a `path` can read only migrations it started. Without a `path`, user-owned keys retain user-scoped access; site-wide Workspace-bound keys can read only migrations whose source and destination are both in their Workspace. Every `files_only` key is Workspace-bound, including Workspace `0`, as is a full-access key in a named Workspace. A full-access site-wide key in the default Workspace retains Site-wide migration access. Migrations outside the caller's visibility return `not-found`. Keys with `files_only` cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user, and every other endpoint denies them with `not-authorized/api-key-only-for-file-operations`."
         },
         {
           "name": "--workspace-id",
@@ -754,7 +754,7 @@
           "name": "--permission-set",
           "type": "enum",
           "required": false,
-          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can use only the files, folders, and file_actions endpoints, where they perform file operations as a full-access file user in the key's workspace scope, along with `GET /file_migrations/{id}` and `GET /api_key`. They cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user, and every other endpoint denies them with `not-authorized/api-key-only-for-file-operations`."
+          "description": "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can use only the files, folders, and file_actions endpoints, where they perform file operations as a full-access file user in the key's workspace scope, along with `GET /file_migrations/{id}` and `GET /api_key`. On the migration lookup, any key with a `path` can read only migrations it started. Without a `path`, user-owned keys retain user-scoped access; site-wide Workspace-bound keys can read only migrations whose source and destination are both in their Workspace. Every `files_only` key is Workspace-bound, including Workspace `0`, as is a full-access key in a named Workspace. A full-access site-wide key in the default Workspace retains Site-wide migration access. Migrations outside the caller's visibility return `not-found`. Keys with `files_only` cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user, and every other endpoint denies them with `not-authorized/api-key-only-for-file-operations`."
         }
       ]
     },
@@ -10357,19 +10357,19 @@
           "name": "--files-agent-permission-set",
           "type": "enum",
           "required": false,
-          "description": "Local permissions for files agent. read_only, write_only, or read_write"
+          "description": "Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value."
         },
         {
           "name": "--files-agent-root",
           "type": "string",
           "required": false,
-          "description": "Agent local root path"
+          "description": "Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value."
         },
         {
           "name": "--files-agent-version",
           "type": "string",
           "required": false,
-          "description": "Files Agent version"
+          "description": "Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent."
         },
         {
           "name": "--outbound-agent-id",
@@ -10417,7 +10417,7 @@
           "name": "--hostname",
           "type": "string",
           "required": false,
-          "description": "Hostname or IP address"
+          "description": "Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent."
         },
         {
           "name": "--linode-access-key",
@@ -10465,7 +10465,7 @@
           "name": "--port",
           "type": "int64",
           "required": false,
-          "description": "Port for remote server."
+          "description": "Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent."
         },
         {
           "name": "--upload-staging-path",
@@ -10889,19 +10889,19 @@
           "name": "--files-agent-permission-set",
           "type": "enum",
           "required": false,
-          "description": "Local permissions for files agent. read_only, write_only, or read_write"
+          "description": "Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value."
         },
         {
           "name": "--files-agent-root",
           "type": "string",
           "required": false,
-          "description": "Agent local root path"
+          "description": "Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value."
         },
         {
           "name": "--files-agent-version",
           "type": "string",
           "required": false,
-          "description": "Files Agent version"
+          "description": "Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent."
         },
         {
           "name": "--outbound-agent-id",
@@ -10949,7 +10949,7 @@
           "name": "--hostname",
           "type": "string",
           "required": false,
-          "description": "Hostname or IP address"
+          "description": "Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent."
         },
         {
           "name": "--linode-access-key",
@@ -10997,7 +10997,7 @@
           "name": "--port",
           "type": "int64",
           "required": false,
-          "description": "Port for remote server."
+          "description": "Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent."
         },
         {
           "name": "--upload-staging-path",
@@ -13567,6 +13567,12 @@
           "type": "bool",
           "required": false,
           "description": "Is WebDAV enabled?"
+        },
+        {
+          "name": "--files-com-remote-server-enabled",
+          "type": "bool",
+          "required": false,
+          "description": "Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites."
         },
         {
           "name": "--ftp-enabled",

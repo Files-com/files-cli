@@ -144,6 +144,7 @@ func Sites() *cobra.Command {
 	updateUserRequestsEnabled := true
 	updateUserRequestsNotifyAdmins := true
 	updateDavEnabled := true
+	updateFilesComRemoteServerEnabled := true
 	updateFtpEnabled := true
 	updateS3CompatibleEndpointEnabled := true
 	updateSftpEnabled := true
@@ -523,6 +524,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("dav-enabled") {
 				mapParams["dav_enabled"] = updateDavEnabled
 			}
+			if cmd.Flags().Changed("files-com-remote-server-enabled") {
+				mapParams["files_com_remote_server_enabled"] = updateFilesComRemoteServerEnabled
+			}
 			if cmd.Flags().Changed("ftp-enabled") {
 				mapParams["ftp_enabled"] = updateFtpEnabled
 			}
@@ -899,6 +903,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsEnabled, "user-requests-enabled", updateUserRequestsEnabled, "Enable User Requests feature")
 	cmdUpdate.Flags().BoolVar(&updateUserRequestsNotifyAdmins, "user-requests-notify-admins", updateUserRequestsNotifyAdmins, "Send email to site admins when a user request is received?")
 	cmdUpdate.Flags().BoolVar(&updateDavEnabled, "dav-enabled", updateDavEnabled, "Is WebDAV enabled?")
+	cmdUpdate.Flags().BoolVar(&updateFilesComRemoteServerEnabled, "files-com-remote-server-enabled", updateFilesComRemoteServerEnabled, "Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites.")
 	cmdUpdate.Flags().BoolVar(&updateFtpEnabled, "ftp-enabled", updateFtpEnabled, "Is FTP enabled?")
 	cmdUpdate.Flags().BoolVar(&updateS3CompatibleEndpointEnabled, "s3-compatible-endpoint-enabled", updateS3CompatibleEndpointEnabled, "Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access.")
 	cmdUpdate.Flags().BoolVar(&updateSftpEnabled, "sftp-enabled", updateSftpEnabled, "Is SFTP enabled?")

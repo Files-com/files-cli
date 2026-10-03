@@ -135,6 +135,7 @@ Update Site Settings.
 | `--user-requests-enabled` | bool | Enable User Requests feature |
 | `--user-requests-notify-admins` | bool | Send email to site admins when a user request is received? |
 | `--dav-enabled` | bool | Is WebDAV enabled? |
+| `--files-com-remote-server-enabled` | bool | Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites. |
 | `--ftp-enabled` | bool | Is FTP enabled? |
 | `--s3-compatible-endpoint-enabled` | bool | Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access. |
 | `--sftp-enabled` | bool | Is SFTP enabled? |

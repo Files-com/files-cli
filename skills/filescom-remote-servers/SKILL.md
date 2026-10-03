@@ -139,9 +139,9 @@ Create Remote Server.
 | `--filebase-access-key` | string | Filebase: Access Key. |
 | `--filebase-bucket` | string | Filebase: Bucket name |
 | `--files-api-key` | string | Files.com direct link: API key used once to pair the remote server. |
-| `--files-agent-permission-set` | enum | Local permissions for files agent. read_only, write_only, or read_write. One of: `read_write`, `read_only`, `write_only`. |
-| `--files-agent-root` | string | Agent local root path |
-| `--files-agent-version` | string | Files Agent version |
+| `--files-agent-permission-set` | enum | Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value. One of: `read_write`, `read_only`, `write_only`. |
+| `--files-agent-root` | string | Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value. |
+| `--files-agent-version` | string | Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent. |
 | `--outbound-agent-id` | int64 | Route traffic to outbound on a files-agent |
 | `--custom-domain-id` | int64 | Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs. |
 | `--google-cloud-storage-authentication-method` | enum | Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. One of: `json`, `hmac`, `oauth`. |
@@ -149,7 +149,7 @@ Create Remote Server.
 | `--google-cloud-storage-oauth-scope` | string | Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write. |
 | `--google-cloud-storage-project-id` | string | Google Cloud Storage: Project ID |
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
-| `--hostname` | string | Hostname or IP address |
+| `--hostname` | string | Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent. |
 | `--linode-access-key` | string | Linode: Access Key |
 | `--linode-bucket` | string | Linode: Bucket name |
 | `--linode-region` | string | Linode: region |
@@ -157,7 +157,7 @@ Create Remote Server.
 | `--name` | string | Internal name for your reference |
 | `--one-drive-account-type` | enum | OneDrive: Either personal or business_other account types. One of: `personal`, `business_other`. |
 | `--pin-to-site-region` | bool | If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true. |
-| `--port` | int64 | Port for remote server. |
+| `--port` | int64 | Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent. |
 | `--upload-staging-path` | string | Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP. |
 | `--remote-server-credential-id` | int64 | ID of Remote Server Credential, if applicable. |
 | `--s3-assume-role-arn` | string | AWS IAM Role ARN for AssumeRole authentication. |
@@ -239,9 +239,9 @@ Update Remote Server.
 | `--filebase-access-key` | string | Filebase: Access Key. |
 | `--filebase-bucket` | string | Filebase: Bucket name |
 | `--files-api-key` | string | Files.com direct link: API key used once to pair the remote server. |
-| `--files-agent-permission-set` | enum | Local permissions for files agent. read_only, write_only, or read_write. One of: `read_write`, `read_only`, `write_only`. |
-| `--files-agent-root` | string | Agent local root path |
-| `--files-agent-version` | string | Files Agent version |
+| `--files-agent-permission-set` | enum | Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value. One of: `read_write`, `read_only`, `write_only`. |
+| `--files-agent-root` | string | Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value. |
+| `--files-agent-version` | string | Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent. |
 | `--outbound-agent-id` | int64 | Route traffic to outbound on a files-agent |
 | `--custom-domain-id` | int64 | Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs. |
 | `--google-cloud-storage-authentication-method` | enum | Google Cloud Storage: Authentication method. Can be json, hmac, or oauth. One of: `json`, `hmac`, `oauth`. |
@@ -249,7 +249,7 @@ Update Remote Server.
 | `--google-cloud-storage-oauth-scope` | string | Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write. |
 | `--google-cloud-storage-project-id` | string | Google Cloud Storage: Project ID |
 | `--google-cloud-storage-s3-compatible-access-key` | string | Google Cloud Storage: S3-compatible Access Key. |
-| `--hostname` | string | Hostname or IP address |
+| `--hostname` | string | Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent. |
 | `--linode-access-key` | string | Linode: Access Key |
 | `--linode-bucket` | string | Linode: Bucket name |
 | `--linode-region` | string | Linode: region |
@@ -257,7 +257,7 @@ Update Remote Server.
 | `--name` | string | Internal name for your reference |
 | `--one-drive-account-type` | enum | OneDrive: Either personal or business_other account types. One of: `personal`, `business_other`. |
 | `--pin-to-site-region` | bool | If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true. |
-| `--port` | int64 | Port for remote server. |
+| `--port` | int64 | Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent. |
 | `--upload-staging-path` | string | Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP. |
 | `--remote-server-credential-id` | int64 | ID of Remote Server Credential, if applicable. |
 | `--s3-assume-role-arn` | string | AWS IAM Role ARN for AssumeRole authentication. |
