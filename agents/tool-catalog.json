@@ -8995,7 +8995,7 @@
           "name": "--group-ids",
           "type": "string",
           "required": false,
-          "description": "Group IDs when the permission requires multiple groups. If sent as a string, it should be comma-delimited."
+          "description": "Group IDs when the Permission requires membership in every listed group. If sent as a string, it should be comma-delimited."
         },
         {
           "name": "--permission",
@@ -9007,7 +9007,7 @@
           "name": "--recursive",
           "type": "bool",
           "required": false,
-          "description": "Apply to subfolders recursively?"
+          "description": "Apply to subfolders recursively? Must be true for `admin` Permissions."
         },
         {
           "name": "--partner-id",
@@ -15907,7 +15907,7 @@
           "name": "--workspace-admin",
           "type": "bool",
           "required": false,
-          "description": "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set."
+          "description": "Whether the user is an administrator of their own Custom Workspace. Does not reflect administration granted through Permissions."
         },
         {
           "name": "--username",
@@ -15919,7 +15919,7 @@
           "name": "--workspace-id",
           "type": "int64",
           "required": false,
-          "description": "Workspace ID"
+          "description": "ID of the Workspace the user belongs to. 0 is the Default Workspace."
         }
       ]
     },
@@ -16377,7 +16377,7 @@
           "name": "--workspace-admin",
           "type": "bool",
           "required": false,
-          "description": "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set."
+          "description": "Whether the user is an administrator of their own Custom Workspace. Does not reflect administration granted through Permissions."
         },
         {
           "name": "--username",

@@ -8,7 +8,7 @@ description: |
 
 A Permission object represents a grant of access permission on a specific Path to a User or Group.
 
-They can be optionally recursive or nonrecursive into the subfolders of that path.
+A Permission can apply to the folder alone or recursively to its subfolders.
 
 A Permission may be applied to a User *or* a Group, but not both at once.
 
@@ -16,7 +16,7 @@ The following table sets forth the available Permission types:
 
 | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
 | --- | ----------- | --------------------- |
-| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. On a Custom Workspace's root folder, also grants Workspace Administrator access. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
 | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
 | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
 | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
@@ -53,9 +53,9 @@ Create Permission.
 | --- | --- | --- |
 | `--path` | string | Folder path **Required.** |
 | `--group-id` | int64 | Group ID. Provide `group_name` or `group_id` |
-| `--group-ids` | string | Group IDs when the permission requires multiple groups. If sent as a string, it should be comma-delimited. |
+| `--group-ids` | string | Group IDs when the Permission requires membership in every listed group. If sent as a string, it should be comma-delimited. |
 | `--permission` | string | Permission type.  Can be `admin`, `full`, `readonly`, `writeonly`, `list`, or `history` |
-| `--recursive` | bool | Apply to subfolders recursively? |
+| `--recursive` | bool | Apply to subfolders recursively? Must be true for `admin` Permissions. |
 | `--partner-id` | int64 | Partner ID if this Permission belongs to a partner. |
 | `--user-id` | int64 | User ID.  Provide `username` or `user_id` |
 | `--username` | string | User username.  Provide `username` or `user_id` |
