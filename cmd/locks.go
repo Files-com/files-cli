@@ -141,6 +141,8 @@ func Locks() *cobra.Command {
 		},
 	}
 	cmdCreate.Flags().StringVar(&paramsLockCreate.Path, "path", "", "Path")
+	cmdCreate.Flags().StringVar(&paramsLockCreate.Token, "token", "", "Lock token. With expected_token, use the same value to refresh or a different value to replace the existing token.")
+	cmdCreate.Flags().StringVar(&paramsLockCreate.ExpectedToken, "expected-token", "", "Require this existing, unexpired token before refreshing or replacing a lock. Set token to the same value to refresh, or a different value to replace.")
 	cmdCreate.Flags().BoolVar(&createAllowAccessByAnyUser, "allow-access-by-any-user", createAllowAccessByAnyUser, "Can lock be modified by users other than its creator?")
 	cmdCreate.Flags().BoolVar(&createExclusive, "exclusive", createExclusive, "Is lock exclusive?")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Does lock apply to subfolders?")

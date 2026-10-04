@@ -7577,6 +7577,18 @@
           "description": "Path"
         },
         {
+          "name": "--token",
+          "type": "string",
+          "required": false,
+          "description": "Lock token. With expected_token, use the same value to refresh or a different value to replace the existing token."
+        },
+        {
+          "name": "--expected-token",
+          "type": "string",
+          "required": false,
+          "description": "Require this existing, unexpired token before refreshing or replacing a lock. Set token to the same value to refresh, or a different value to replace."
+        },
+        {
           "name": "--allow-access-by-any-user",
           "type": "bool",
           "required": false,
