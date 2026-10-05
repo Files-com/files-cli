@@ -8602,7 +8602,7 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `id`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`."
         },
         {
           "name": "--filter",
@@ -15440,6 +15440,12 @@
           "type": "int64",
           "required": false,
           "description": "User ID. If provided, will return uses for this user."
+        },
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`."
         }
       ]
     },

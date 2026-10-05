@@ -19,4 +19,5 @@ List User SFTP Client Uses.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--user-id` | int64 | User ID. If provided, will return uses for this user. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
 

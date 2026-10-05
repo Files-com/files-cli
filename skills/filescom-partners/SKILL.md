@@ -18,7 +18,7 @@ List Partners.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `id`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`. |
 | `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id`. |
 
 ### `files-cli partners find`

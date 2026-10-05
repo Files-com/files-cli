@@ -28,6 +28,7 @@ func UserSftpClientUses() *cobra.Command {
 	paramsUserSftpClientUseList := files_sdk.UserSftpClientUseListParams{}
 	var MaxPagesList int64
 	var jsonEnvelopeList bool
+	var listSortByArgs string
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -46,6 +47,14 @@ func UserSftpClientUses() *cobra.Command {
 				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
 					return envelopeErr
 				}
+			}
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
 			}
 
 			client := user_sftp_client_use.Client{Config: config}
@@ -80,6 +89,8 @@ func UserSftpClientUses() *cobra.Command {
 
 	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
 	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort user sftp client uses by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
 
 	cmdList.Flags().Int64Var(&paramsUserSftpClientUseList.UserId, "user-id", 0, "User ID. If provided, will return uses for this user.")
 	cmdList.Flags().StringVar(&paramsUserSftpClientUseList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
