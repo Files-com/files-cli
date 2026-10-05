@@ -1209,6 +1209,12 @@
       "category": "service-unavailable"
     },
     {
+      "type": "service-unavailable/lock-operation-busy",
+      "title": "Lock Operation Busy",
+      "http_code": 422,
+      "category": "service-unavailable"
+    },
+    {
       "type": "service-unavailable/migration-in-progress",
       "title": "Migration In Progress",
       "http_code": 422,

@@ -146,6 +146,7 @@ func Locks() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createAllowAccessByAnyUser, "allow-access-by-any-user", createAllowAccessByAnyUser, "Can lock be modified by users other than its creator?")
 	cmdCreate.Flags().BoolVar(&createExclusive, "exclusive", createExclusive, "Is lock exclusive?")
 	cmdCreate.Flags().BoolVar(&createRecursive, "recursive", createRecursive, "Does lock apply to subfolders?")
+	cmdCreate.Flags().StringVar(&paramsLockCreate.Owner, "owner", "", "Arbitrary descriptive label for the lock. Does not change the lock creator or permissions.")
 	cmdCreate.Flags().Int64Var(&paramsLockCreate.Timeout, "timeout", 0, "Lock timeout in seconds")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")

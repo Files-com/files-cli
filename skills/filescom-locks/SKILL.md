@@ -12,6 +12,8 @@ The lock feature is designed to emulate the locking functionality provided by We
 
 Files.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files.  It is not used within the Files.com web interface.
 
+The optional owner parameter is a descriptive label, not the lock creator or a grant of permission. It can be set when creating a lock; refreshing a lock or replacing its token preserves it.
+
 To refresh only an existing lock or replace its token, send expected_token, token, and timeout to the create endpoint. Set token to expected_token to refresh, or to a different value to replace. The expected token must identify an existing, unexpired lock on that path, and the caller must have permission to modify it. The token check and update happen together; invalid replacement values leave the stored lock unchanged.
 
 A missing, expired, or mismatched expected token returns processing-failure/resource-locked with data.lock_token containing an active token on that path, or an empty string when none exists. Omitting expected_token retains the existing acquire-or-refresh behavior. Shared locks retain their existing semantics.
@@ -41,6 +43,7 @@ Create Lock.
 | `--allow-access-by-any-user` | bool | Can lock be modified by users other than its creator? |
 | `--exclusive` | bool | Is lock exclusive? |
 | `--recursive` | bool | Does lock apply to subfolders? |
+| `--owner` | string | Arbitrary descriptive label for the lock. Does not change the lock creator or permissions. |
 | `--timeout` | int64 | Lock timeout in seconds |
 
 ### `files-cli locks delete [path]`

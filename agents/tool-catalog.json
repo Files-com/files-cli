@@ -7607,6 +7607,12 @@
           "description": "Does lock apply to subfolders?"
         },
         {
+          "name": "--owner",
+          "type": "string",
+          "required": false,
+          "description": "Arbitrary descriptive label for the lock. Does not change the lock creator or permissions."
+        },
+        {
           "name": "--timeout",
           "type": "int64",
           "required": false,
