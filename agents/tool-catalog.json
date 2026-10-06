@@ -313,7 +313,7 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `id`, `disabled` or `updated_at`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `name`, `disabled` or `updated_at`."
         },
         {
           "name": "--filter",

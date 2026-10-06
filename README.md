@@ -586,21 +586,48 @@ The operation logs will be made available in the web interface at
 
 ## Mock Server
 
-Files.com publishes a Files.com API server, which is useful for testing your use of the Files.com
+Files.com publishes a mock Files.com API server, which is useful for testing your use of the Files.com
 SDKs and other direct integrations against the Files.com API in an integration test environment.
+It never checks credentials: send any placeholder API key, and never use real Files.com credentials
+with it.
 
-It is a Ruby app that operates as a minimal server for the purpose of testing basic network
-operations and JSON encoding for your SDK or API client. It does not maintain state and it does not
-deeply inspect your submissions for correctness.
+The server has two modes, chosen when it starts:
 
-Eventually we will add more features intended for integration testing, such as the ability to
-intentionally provoke errors.
+* **Legacy mode** (the default) checks required parameters and parameter types, then returns a fixed
+  example response for each API endpoint. It does not maintain state and it does not deeply inspect
+  your submissions for correctness, which makes it useful for testing basic network operations and
+  JSON encoding for your SDK or API client.
+* **Simulation mode** keeps records, files and folders in memory, so a test can create, list, update
+  and delete resources, upload a file and download the same bytes, and make chosen requests fail,
+  stall or lose their connection on purpose. Requests it does not simulate fail with a clear error
+  instead of returning an example response.
+
+Start the server from its source with Ruby and Bundler. `FILES_MOCK_MODE` is read once at startup:
+leaving it unset or setting it to `legacy` starts legacy mode, `simulation` starts simulation mode,
+and any other value stops startup with an error. Legacy mode listens on port 4041 on all IPv4
+interfaces, and simulation mode on `127.0.0.1:4041`.
+
+Simulation mode keeps its state only in the server process. Its control endpoints under
+`/__files_mock/v1` report when the server is ready, reset it with your fixtures, add fault rules
+and return the journal of the requests it received. It refuses work over its limits instead of
+truncating it. The README in the source describes all of these, the operations it simulates and
+how to configure its limits.
 
 Download the server as a Docker image via [Docker Hub](https://hub.docker.com/r/filescom/files-mock-server).
+The image's `latest` tag moves to whichever server was published last, so it need not include
+simulation mode; to run exactly the server the README describes, build the image from the source.
 
 The Source Code is also available on [GitHub](https://github.com/Files-com/files-mock-server).
 
-A README is available on the GitHub link.
+```shell title="Start the Mock Server"
+bundle install
+
+## Legacy mode
+bundle exec puma
+
+## Simulation mode
+FILES_MOCK_MODE=simulation bundle exec puma
+```
 
 ## Output Formatting
 
