@@ -28,7 +28,7 @@ List Public Keys.
 | --- | --- | --- |
 | `--user-id` | int64 | User ID.  Provide a value of `0` to operate the current session's user. |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id`, `user_id`, `title` or `created_at`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at` and `workspace_id`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at` and `workspace_id`. Valid field combinations are `[ workspace_id, created_at ]`. |
 | `--filter-gt` | object | If set, return records where the specified field is greater than the supplied value. Valid fields are `created_at`. |
 | `--filter-gteq` | object | If set, return records where the specified field is greater than or equal the supplied value. Valid fields are `created_at`. |
 | `--filter-lt` | object | If set, return records where the specified field is less than the supplied value. Valid fields are `created_at`. |
