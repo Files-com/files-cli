@@ -390,6 +390,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible: endpoint")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible: region")
 	cmdCreate.Flags().BoolVar(&createS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", createS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
+	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3KmsKeyId, "s3-kms-key-id", "", "ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.S3Region, "s3-region", "", "S3 region")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerCreate.ServerCertificate.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "server-certificate", paramsRemoteServerCreate.ServerCertificate.Enum())
@@ -740,6 +741,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("s3-compatible-virtual-hosted-style") {
 				mapParams["s3_compatible_virtual_hosted_style"] = updateS3CompatibleVirtualHostedStyle
 			}
+			if cmd.Flags().Changed("s3-kms-key-id") {
+				lib.FlagUpdate(cmd, "s3_kms_key_id", paramsRemoteServerUpdate.S3KmsKeyId, mapParams)
+			}
 			if cmd.Flags().Changed("s3-region") {
 				lib.FlagUpdate(cmd, "s3_region", paramsRemoteServerUpdate.S3Region, mapParams)
 			}
@@ -860,6 +864,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleEndpoint, "s3-compatible-endpoint", "", "S3-compatible: endpoint")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3CompatibleRegion, "s3-compatible-region", "", "S3-compatible: region")
 	cmdUpdate.Flags().BoolVar(&updateS3CompatibleVirtualHostedStyle, "s3-compatible-virtual-hosted-style", updateS3CompatibleVirtualHostedStyle, "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs")
+	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3KmsKeyId, "s3-kms-key-id", "", "ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.S3Region, "s3-region", "", "S3 region")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerCertificate, "server-certificate", "", fmt.Sprintf("Remote server certificate %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerCertificate.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "server-certificate", paramsRemoteServerUpdate.ServerCertificate.Enum())

@@ -12,7 +12,9 @@ Depending on the behavior, it may also operate on child folders.  It may be over
 
 Each behavior type also has a recursion mode in the behavior type documentation. `always` means the behavior is always recursive, `never` means it is never recursive, and `sometimes` means callers may choose the value of the `recursive` field.
 
-Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins.  All the details are below.
+Some behavior types are visible to users without administrative permission on the behavior's folder, as indicated by `Visible to non-admins?` below. List Behaviors and List Behaviors by Path return these types when the user can see that the folder exists through a permission on that folder, an applicable permission on an ancestor folder, or a permission on a descendant folder. Seeing that a folder exists does not grant access to its files. Every user can see the site root, so root-level behaviors of these types appear in site-wide lists even for users with no folder permissions. Lists remain subject to the request's workspace scope. The same folder visibility rules apply to exports of these lists.
+
+In API list responses, site administrators and users with administrative permission on the behavior's own folder receive administrator values. Other users receive reduced values with sensitive settings removed. For Serve Publicly, these responses retain `value.key` and `public_hosting_url`, when configured, but omit the hosting `username` and `password`. The password is write-only for everyone. Some behavior types are also settable by users without administrative permission, as described below.
 
 Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the `value` field.
 

@@ -16,7 +16,7 @@ FTP Servers require that you specify their `hostname`, `port`, `username`, `pass
 
 SFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`.  Optionally, provide `server_certificate`, `private_key_passphrase`.
 
-S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
+S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.  If your bucket requires a customer-managed KMS key, provide its ARN in `s3_kms_key_id`.
 
 S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.
 
@@ -168,6 +168,7 @@ Create Remote Server.
 | `--s3-compatible-endpoint` | string | S3-compatible: endpoint |
 | `--s3-compatible-region` | string | S3-compatible: region |
 | `--s3-compatible-virtual-hosted-style` | bool | S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs |
+| `--s3-kms-key-id` | string | ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key. |
 | `--s3-region` | string | S3 region |
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Pinned SSH host key or OpenSSH host certificate for SFTP. If omitted, Files.com detects and stores a host key, preferring plain keys over certificates. With `server_certificate=require_match` (the default), the server must present the exact pinned key or certificate and prove it holds the matching private key. A pinned certificate is compared in full, so renewal can require updating `server_host_key` even when its underlying key is unchanged. Files.com does not check certificate CA signatures, principals, or validity periods. Certificate expiration alone does not end the pin. Update `server_host_key` to replace the pin. |
@@ -268,6 +269,7 @@ Update Remote Server.
 | `--s3-compatible-endpoint` | string | S3-compatible: endpoint |
 | `--s3-compatible-region` | string | S3-compatible: region |
 | `--s3-compatible-virtual-hosted-style` | bool | S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs |
+| `--s3-kms-key-id` | string | ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key. |
 | `--s3-region` | string | S3 region |
 | `--server-certificate` | enum | Remote server certificate. One of: `require_match`, `allow_any`. |
 | `--server-host-key` | string | Pinned SSH host key or OpenSSH host certificate for SFTP. If omitted, Files.com detects and stores a host key, preferring plain keys over certificates. With `server_certificate=require_match` (the default), the server must present the exact pinned key or certificate and prove it holds the matching private key. A pinned certificate is compared in full, so renewal can require updating `server_host_key` even when its underlying key is unchanged. Files.com does not check certificate CA signatures, principals, or validity periods. Certificate expiration alone does not end the pin. Update `server_host_key` to replace the pin. |

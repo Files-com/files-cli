@@ -10546,6 +10546,12 @@
           "description": "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs"
         },
         {
+          "name": "--s3-kms-key-id",
+          "type": "string",
+          "required": false,
+          "description": "ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key."
+        },
+        {
           "name": "--s3-region",
           "type": "string",
           "required": false,
@@ -11076,6 +11082,12 @@
           "type": "bool",
           "required": false,
           "description": "S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs"
+        },
+        {
+          "name": "--s3-kms-key-id",
+          "type": "string",
+          "required": false,
+          "description": "ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key."
         },
         {
           "name": "--s3-region",
