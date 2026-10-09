@@ -46,7 +46,9 @@ Create AS2 Partner.
 | `--as2-station-id` | int64 | ID of the AS2 Station associated with this partner. **Required.** |
 | `--name` | string | The partner's formal AS2 name. **Required.** |
 | `--uri` | string | Public URI where we will send the AS2 messages (via HTTP/HTTPS). **Required.** |
-| `--public-certificate` | string | Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication. **Required.** |
+| `--public-certificate` | string | Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication. |
+| `--pkcs12` | string | Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate. |
+| `--pkcs12-password` | string | Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM. |
 
 ### `files-cli as2-partners update`
 
@@ -66,6 +68,8 @@ Update AS2 Partner.
 | `--name` | string | The partner's formal AS2 name. |
 | `--uri` | string | Public URI where we will send the AS2 messages (via HTTP/HTTPS). |
 | `--public-certificate` | string | Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication. |
+| `--pkcs12` | string | Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate. |
+| `--pkcs12-password` | string | Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM. |
 
 ### `files-cli as2-partners delete`
 

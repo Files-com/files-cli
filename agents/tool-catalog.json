@@ -1080,8 +1080,20 @@
         {
           "name": "--public-certificate",
           "type": "string",
-          "required": true,
+          "required": false,
           "description": "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication."
+        },
+        {
+          "name": "--pkcs12",
+          "type": "string",
+          "required": false,
+          "description": "Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate."
+        },
+        {
+          "name": "--pkcs12-password",
+          "type": "string",
+          "required": false,
+          "description": "Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM."
         }
       ]
     },
@@ -1162,6 +1174,18 @@
           "type": "string",
           "required": false,
           "description": "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication."
+        },
+        {
+          "name": "--pkcs12",
+          "type": "string",
+          "required": false,
+          "description": "Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate."
+        },
+        {
+          "name": "--pkcs12-password",
+          "type": "string",
+          "required": false,
+          "description": "Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM."
         }
       ]
     },
@@ -1234,20 +1258,32 @@
         {
           "name": "--public-certificate",
           "type": "string",
-          "required": true,
-          "description": ""
+          "required": false,
+          "description": "Public certificate used for message security."
         },
         {
           "name": "--private-key",
           "type": "string",
-          "required": true,
-          "description": ""
+          "required": false,
+          "description": "PEM-encoded private key matching public_certificate."
         },
         {
           "name": "--private-key-password",
           "type": "string",
           "required": false,
-          "description": ""
+          "description": "Password for the PEM-encoded private key."
+        },
+        {
+          "name": "--pkcs12",
+          "type": "string",
+          "required": false,
+          "description": "Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's certificate and private key. Provide this instead of public_certificate and private_key."
+        },
+        {
+          "name": "--pkcs12-password",
+          "type": "string",
+          "required": false,
+          "description": "Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM."
         }
       ]
     },
@@ -1273,19 +1309,31 @@
           "name": "--public-certificate",
           "type": "string",
           "required": false,
-          "description": ""
+          "description": "Public certificate used for message security."
         },
         {
           "name": "--private-key",
           "type": "string",
           "required": false,
-          "description": ""
+          "description": "PEM-encoded private key matching public_certificate."
         },
         {
           "name": "--private-key-password",
           "type": "string",
           "required": false,
-          "description": ""
+          "description": "Password for the PEM-encoded private key."
+        },
+        {
+          "name": "--pkcs12",
+          "type": "string",
+          "required": false,
+          "description": "Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's replacement certificate and private key. Provide this instead of public_certificate and private_key."
+        },
+        {
+          "name": "--pkcs12-password",
+          "type": "string",
+          "required": false,
+          "description": "Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM."
         }
       ]
     },
@@ -4184,7 +4232,7 @@
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "Structured event payload filter."
+          "description": "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match."
         },
         {
           "name": "--delivery-policy",
@@ -4270,7 +4318,7 @@
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "Structured event payload filter."
+          "description": "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match."
         },
         {
           "name": "--delivery-policy",

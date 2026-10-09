@@ -168,11 +168,11 @@ func As2Stations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "The station's formal AS2 name.")
 	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64Var(&paramsAs2StationCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this AS2 Station.")
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PublicCertificate, "public-certificate", "", "")
-	lib.SetFlagAPIRequired(cmdCreate.Flags(), "public-certificate")
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKey, "private-key", "", "")
-	lib.SetFlagAPIRequired(cmdCreate.Flags(), "private-key")
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKeyPassword, "private-key-password", "", "")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PublicCertificate, "public-certificate", "", "Public certificate used for message security.")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKey, "private-key", "", "PEM-encoded private key matching public_certificate.")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PrivateKeyPassword, "private-key-password", "", "Password for the PEM-encoded private key.")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Pkcs12, "pkcs12", "", "Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's certificate and private key. Provide this instead of public_certificate and private_key.")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Pkcs12Password, "pkcs12-password", "", "Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -216,6 +216,12 @@ func As2Stations() *cobra.Command {
 			if cmd.Flags().Changed("private-key-password") {
 				lib.FlagUpdate(cmd, "private_key_password", paramsAs2StationUpdate.PrivateKeyPassword, mapParams)
 			}
+			if cmd.Flags().Changed("pkcs12") {
+				lib.FlagUpdate(cmd, "pkcs12", paramsAs2StationUpdate.Pkcs12, mapParams)
+			}
+			if cmd.Flags().Changed("pkcs12-password") {
+				lib.FlagUpdate(cmd, "pkcs12_password", paramsAs2StationUpdate.Pkcs12Password, mapParams)
+			}
 
 			var as2Station interface{}
 			var err error
@@ -226,9 +232,11 @@ func As2Stations() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
 	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Name, "name", "", "The station's formal AS2 name.")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PublicCertificate, "public-certificate", "", "")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKey, "private-key", "", "")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKeyPassword, "private-key-password", "", "")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PublicCertificate, "public-certificate", "", "Public certificate used for message security.")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKey, "private-key", "", "PEM-encoded private key matching public_certificate.")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKeyPassword, "private-key-password", "", "Password for the PEM-encoded private key.")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Pkcs12, "pkcs12", "", "Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's replacement certificate and private key. Provide this instead of public_certificate and private_key.")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Pkcs12Password, "pkcs12-password", "", "Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

@@ -37,9 +37,11 @@ Create AS2 Station.
 | --- | --- | --- |
 | `--name` | string | The station's formal AS2 name. **Required.** |
 | `--workspace-id` | int64 | ID of the Workspace associated with this AS2 Station. |
-| `--public-certificate` | string | (no description) **Required.** |
-| `--private-key` | string | (no description) **Required.** |
-| `--private-key-password` | string | (no description) |
+| `--public-certificate` | string | Public certificate used for message security. |
+| `--private-key` | string | PEM-encoded private key matching public_certificate. |
+| `--private-key-password` | string | Password for the PEM-encoded private key. |
+| `--pkcs12` | string | Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's certificate and private key. Provide this instead of public_certificate and private_key. |
+| `--pkcs12-password` | string | Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM. |
 
 ### `files-cli as2-stations update`
 
@@ -49,9 +51,11 @@ Update AS2 Station.
 | --- | --- | --- |
 | `--id` | int64 | As2 Station ID. **Required.** |
 | `--name` | string | The station's formal AS2 name. |
-| `--public-certificate` | string | (no description) |
-| `--private-key` | string | (no description) |
-| `--private-key-password` | string | (no description) |
+| `--public-certificate` | string | Public certificate used for message security. |
+| `--private-key` | string | PEM-encoded private key matching public_certificate. |
+| `--private-key-password` | string | Password for the PEM-encoded private key. |
+| `--pkcs12` | string | Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's replacement certificate and private key. Provide this instead of public_certificate and private_key. |
+| `--pkcs12-password` | string | Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM. |
 
 ### `files-cli as2-stations delete`
 

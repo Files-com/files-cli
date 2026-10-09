@@ -221,7 +221,8 @@ func As2Partners() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
 	lib.SetFlagAPIRequired(cmdCreate.Flags(), "uri")
 	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.PublicCertificate, "public-certificate", "", "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.")
-	lib.SetFlagAPIRequired(cmdCreate.Flags(), "public-certificate")
+	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Pkcs12, "pkcs12", "", "Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate.")
+	cmdCreate.Flags().StringVar(&paramsAs2PartnerCreate.Pkcs12Password, "pkcs12-password", "", "Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)
@@ -312,6 +313,12 @@ func As2Partners() *cobra.Command {
 			if cmd.Flags().Changed("public-certificate") {
 				lib.FlagUpdate(cmd, "public_certificate", paramsAs2PartnerUpdate.PublicCertificate, mapParams)
 			}
+			if cmd.Flags().Changed("pkcs12") {
+				lib.FlagUpdate(cmd, "pkcs12", paramsAs2PartnerUpdate.Pkcs12, mapParams)
+			}
+			if cmd.Flags().Changed("pkcs12-password") {
+				lib.FlagUpdate(cmd, "pkcs12_password", paramsAs2PartnerUpdate.Pkcs12Password, mapParams)
+			}
 
 			var as2Partner interface{}
 			var err error
@@ -336,6 +343,8 @@ func As2Partners() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Name, "name", "", "The partner's formal AS2 name.")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Uri, "uri", "", "Public URI where we will send the AS2 messages (via HTTP/HTTPS).")
 	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.PublicCertificate, "public-certificate", "", "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.")
+	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Pkcs12, "pkcs12", "", "Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate.")
+	cmdUpdate.Flags().StringVar(&paramsAs2PartnerUpdate.Pkcs12Password, "pkcs12-password", "", "Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)
