@@ -3,7 +3,7 @@ module github.com/Files-com/files-cli
 go 1.27.1
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.298
+	github.com/Files-com/files-sdk-go/v3 v3.3.299
 	github.com/IGLOU-EU/go-wildcard v1.0.3
 	github.com/VividCortex/ewma v1.2.0
 	github.com/atotto/clipboard v0.1.4
@@ -62,9 +62,9 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.60.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/term v0.46.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	moul.io/http2curl/v2 v2.3.0 // indirect
