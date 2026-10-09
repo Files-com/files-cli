@@ -21,12 +21,11 @@ func TestSyncCmd(t *testing.T) {
 		t.Fatal(err)
 	}
 	tests := []struct {
-		name        string
-		args        []string
-		outputFile  string
-		progressOut string
-		stdout      string
-		stderr      string
+		name       string
+		args       []string
+		outputFile string
+		stdout     string
+		stderr     string
 	}{
 		{
 			name: "push DisableProgressOutput",
@@ -42,10 +41,9 @@ func TestSyncCmd(t *testing.T) {
 			stdout: "%v complete size 9 B",
 		},
 		{
-			name:        "push with output and output-format",
-			args:        []string{"push", "--retry-count", "0", "--output-format", "text"},
-			progressOut: "", // mpb no longer outputs to a file
-			outputFile:  "%v complete size 9 B",
+			name:       "push with output and output-format",
+			args:       []string{"push", "--retry-count", "0", "--output-format", "text"},
+			outputFile: "%v complete size 9 B",
 		},
 		{
 			name:   "push with output output-format progress",
@@ -53,10 +51,9 @@ func TestSyncCmd(t *testing.T) {
 			stderr: "Error: ''--output-format progress' unsupported",
 		},
 		{
-			name:        "push with progress and output csv",
-			args:        []string{"push", "--retry-count", "0", "--output-format", "csv", "--format", "progress"},
-			progressOut: "", // mpb no longer outputs to a file
-			outputFile:  "status,transferred_bytes,size_bytes,local_path,remote_path,completed_at,started_at,error,attempts",
+			name:       "push with progress and output csv",
+			args:       []string{"push", "--retry-count", "0", "--output-format", "csv", "--format", "progress"},
+			outputFile: "status,transferred_bytes,size_bytes,local_path,remote_path,completed_at,started_at,error,attempts",
 		},
 	}
 
@@ -74,8 +71,6 @@ func TestSyncCmd(t *testing.T) {
 			if len(tt.outputFile) > 0 {
 				tt.args = append(tt.args, "--output", outputPath)
 			}
-			progressBarFileName := strings.ReplaceAll(tt.name, " ", "_") + "-progressbar"
-			tt.args = append(tt.args, "--test-progress-bar-out", progressBarFileName)
 			tt.args = append(tt.args, "--local-path", uploadFile)
 			remotePath := filepath.Join("cli-test", "sync", uploadFile)
 			tt.args = append(tt.args, "--remote-path", remotePath)
@@ -93,19 +88,6 @@ func TestSyncCmd(t *testing.T) {
 				}
 				assert.Contains(t, string(b), maybeInsert(tt.outputFile, uploadFile))
 				os.Remove(outputPath)
-			}
-			_, err = os.Stat(progressBarFileName)
-			if !os.IsNotExist(err) {
-				progressBarFile, err := os.Open(progressBarFileName)
-				if err != nil {
-					require.NoError(t, err)
-				}
-				b, err := io.ReadAll(progressBarFile)
-				if err != nil {
-					require.NoError(t, err)
-				}
-				assert.Contains(t, string(b), tt.progressOut)
-				os.Remove(progressBarFileName)
 			}
 			assert.Contains(t, string(stdOut), maybeInsert(tt.stdout, uploadFile))
 

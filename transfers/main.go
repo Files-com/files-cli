@@ -1435,17 +1435,14 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringSliceVar(&t.Format, "format", []string{"progress"}, `formats: {progress, text, json, csv, none}.`)
 	cmd.Flags().StringSliceVar(&t.OutFormat, "output-format", []string{"csv"}, `For use with '--output'. formats: {text, json, csv}.`)
 	cmd.Flags().BoolVar(&t.UsePager, "use-pager", t.UsePager, "Use $PAGER (.ie less, more, etc)")
-	cmd.Flags().StringVar(&t.TestProgressBarOut, "test-progress-bar-out", "", "redirect progress bar to file for testing.")
 	cmd.Flags().BoolVar(&t.OpenConnectionStats, "connection-metrics", t.OpenConnectionStats, "See open connection metrics. Includes active and idle connections.")
 	cmd.Flags().IntVar(&t.AdaptiveConcurrencyInitialTarget, "adaptive-concurrency-initial-target", 0, "Set the number of concurrent connections an adaptive transfer starts with.")
 	cmd.Flags().IntVar(&t.AdaptiveConcurrencySoftCeiling, "adaptive-concurrency-soft-ceiling", 0, "Set the number of concurrent connections an adaptive transfer may reach before further growth must improve throughput.")
 	cmd.Flags().BoolVar(&t.DirectTransfers, "direct-transfers", t.DirectTransfers, "Attempt direct transfer paths to the Files Agent when available; set to false to use proxied paths only.")
-	cmd.Flags().MarkHidden("test-progress-bar-out")
 	cmd.Flags().BoolVar(&t.DryRun, "dry-run", t.DryRun, "Index files and compare with destination but don't transfer files.")
 	cmd.Flags().BoolVar(&t.DumpGoroutinesOnExit, "dump-goroutines-on-exit", false, "Dump all goroutines on exit.")
-	cmd.Flags().StringVar(&t.CPUProfilePath, "cpu-profile", "", "Write a Go CPU profile for benchmark or PGO analysis.")
 	cmd.Flags().MarkHidden("dump-goroutines-on-exit")
-	cmd.Flags().MarkHidden("cpu-profile")
+	t.addInternalFlags(cmd)
 }
 
 func (t *Transfers) UploadFlags(cmd *cobra.Command) {

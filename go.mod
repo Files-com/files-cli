@@ -28,7 +28,7 @@ require (
 	github.com/vbauerster/mpb/v8 v8.9.3
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/yuin/goldmark v1.7.8
-	golang.org/x/crypto v0.57.0
+	golang.org/x/crypto v0.58.0
 	golang.org/x/sys v0.49.0
 )
 
@@ -63,7 +63,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
+	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
