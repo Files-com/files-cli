@@ -171,7 +171,7 @@ the method used in the examples on this site.
 
 To use an API Key, first generate an API key from the [web
 interface](https://www.files.com/docs/sdk-and-apis/api-keys) or [via the API or an
-SDK](/cli/resources/developers/api-keys).
+SDK](https://developers.files.com/cli/resources/developers/api-keys).
 
 Note that when using a user-specific API key, if the user is an administrator, you will have full
 access to the entire API. If the user is not an administrator, you will only be able to access files
