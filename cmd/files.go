@@ -296,6 +296,45 @@ func Files() *cobra.Command {
 	lib.SetCommandEffect(cmdZipListContents, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdZipListContents, "ZipListEntry", true)
 	Files.AddCommand(cmdZipListContents)
+	var fieldsBeginDelete []string
+	var formatBeginDelete []string
+	usePagerBeginDelete := true
+	beginDeleteRecursive := true
+	paramsFileBeginDelete := files_sdk.FileBeginDeleteParams{}
+
+	cmdBeginDelete := &cobra.Command{
+		Use:   "begin-delete [path]",
+		Short: `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
+		Long:  `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("recursive") {
+				paramsFileBeginDelete.Recursive = flib.Bool(beginDeleteRecursive)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileBeginDelete.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.BeginDelete(paramsFileBeginDelete, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatBeginDelete), fieldsBeginDelete, usePagerBeginDelete, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdBeginDelete.Flags().StringVar(&paramsFileBeginDelete.Path, "path", "", "Path to operate on.")
+	cmdBeginDelete.Flags().BoolVar(&beginDeleteRecursive, "recursive", beginDeleteRecursive, "If true, will recursively delete folders.  Otherwise, will error on non-empty folders.")
+
+	cmdBeginDelete.Flags().StringSliceVar(&fieldsBeginDelete, "fields", []string{}, "comma separated list of field names")
+	cmdBeginDelete.Flags().StringSliceVar(&formatBeginDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdBeginDelete.Flags().BoolVar(&usePagerBeginDelete, "use-pager", usePagerBeginDelete, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdBeginDelete, lib.EffectMutating)
+	lib.SetCommandResponse(cmdBeginDelete, "FileAction", false)
+	Files.AddCommand(cmdBeginDelete)
 	var fieldsCopy []string
 	var formatCopy []string
 	usePagerCopy := true

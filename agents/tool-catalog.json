@@ -5465,6 +5465,26 @@
       ]
     },
     {
+      "name": "files begin-delete",
+      "group": "files",
+      "description": "Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Path to operate on."
+        },
+        {
+          "name": "--recursive",
+          "type": "bool",
+          "required": false,
+          "description": "If true, will recursively delete folders.  Otherwise, will error on non-empty folders."
+        }
+      ]
+    },
+    {
       "name": "files copy",
       "group": "files",
       "description": "Copy File/Folder",

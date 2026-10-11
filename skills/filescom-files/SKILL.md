@@ -85,6 +85,15 @@ List the contents of a ZIP file.
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
 
+### `files-cli files begin-delete [path]`
+
+Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--recursive` | bool | If true, will recursively delete folders.  Otherwise, will error on non-empty folders. |
+
 ### `files-cli files copy [path]`
 
 Copy File/Folder.

@@ -12,7 +12,7 @@ func init() {
 func FileActions() *cobra.Command {
 	FileActions := &cobra.Command{
 		Use:   "file-actions [command]",
-		Short: "A FileAction is an operation status for copy/move file.",
+		Short: "A FileAction is an operation status for a copy, move or delete.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command file-actions\n\t%v", args[0])
