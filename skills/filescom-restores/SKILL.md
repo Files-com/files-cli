@@ -31,12 +31,12 @@ Restore supports multiple restoration types, controlled by the `restoration_type
 * Use `earliest_date` to select users deleted on or after that date/time. Restore all matching users by omitting `prefix` (or using `''`).
 * To restore specific deleted users by username, use `prefix` as a case-insensitive username prefix.
   Example: A prefix of `john` will match `john`, `johnny`, `John.Doe`, etc.
-* For each restored user, we also restore associated authentication and access records removed as part of deleting that user:
+* For each restored user, we also restore associated authentication and access records deleted along with that user:
   - Permissions (when `restore_deleted_permissions=true`)
   - Two-factor authentication methods
   - SFTP/SSH keys
   - API keys
-* Records deleted independently of the user remain deleted, even if they were deleted after `earliest_date`.
+* To allow for batch deletion processes, records deleted within the 5 minutes before the user are treated as deleted along with the user, even if removed independently. Records deleted earlier, or before `earliest_date`, remain deleted.
 
 All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
@@ -59,8 +59,8 @@ Create Restore.
 | --- | --- | --- |
 | `--earliest-date` | datetime | Restore files or users deleted on or after this date/time. Don't set this earlier than you need. Can not be greater than 365 days prior to the restore request. **Required.** |
 | `--prefix` | string | Prefix of the files/folders to restore, or a case-insensitive username prefix for a user restore. A trailing slash selects that folder and its contents only; without it, the prefix matches any path beginning with that text. Do not use a leading slash. To restore all deleted items of the selected restoration type within the selected site or workspace scope, specify an empty string (`''`) or omit the field. |
-| `--restoration-type` | enum | Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated access/authentication records removed as part of deleting those users. One of: `files`, `users`. |
-| `--restore-deleted-permissions` | bool | If true, a user restore restores permissions removed as part of deleting the selected users. An in-place file restore restores user and group permissions on returned folders and their subfolders that were deleted from the time of the folder's deletion through 24 hours afterward, including permissions removed independently within that window. File restores into a new folder do not restore permissions. |
+| `--restoration-type` | enum | Type of restoration to perform. `files` restores deleted filesystem items. `users` restores deleted users and associated authentication records, plus permissions when `restore_deleted_permissions=true`. A 5-minute grace period allows for batch deletion processes: associated records deleted within the 5 minutes before the user are included, even if removed independently. Records deleted earlier, or before `earliest_date`, remain deleted. One of: `files`, `users`. |
+| `--restore-deleted-permissions` | bool | If true, a user restore restores permissions deleted along with the selected users, including permissions removed independently within the 5 minutes before user deletion. Permissions deleted earlier, or before `earliest_date`, remain deleted. An in-place file restore restores user and group permissions on returned folders and their subfolders that were deleted from the time of the folder's deletion through 24 hours afterward, including permissions removed independently within that window. File restores into a new folder do not restore permissions. |
 | `--restore-in-place` | bool | If true, we will restore the files in place (into their original paths). If false, we will create a new restoration folder in the root and restore files there. |
 | `--update-timestamps` | bool | If true, we will update the last modified timestamp of restored files to today's date. If false, we might trigger File Expiration to delete the file again. |
 | `--workspace-id` | int64 | Workspace ID for a workspace-scoped restore. `0` means the default site-wide scope. |
