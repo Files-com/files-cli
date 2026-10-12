@@ -11,6 +11,8 @@ import (
 	"regexp"
 	"runtime/pprof"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -19,12 +21,15 @@ import (
 	"github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/files-sdk-go/v3/file/manager"
 	"github.com/Files-com/files-sdk-go/v3/file/status"
+	sdklib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/Files-com/files-sdk-go/v3/lib/direction"
 	"github.com/Files-com/files-sdk-go/v3/lib/ostuning"
+	"github.com/Files-com/files-sdk-go/v3/lib/timer"
 	"github.com/mattn/go-runewidth"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vbauerster/mpb/v8"
 )
 
 var ansiPattern = regexp.MustCompile(`\x1b\[[0-9;]*m`)
@@ -874,4 +879,173 @@ func TestFormatConnectionMetricsIncludesSuccessRate(t *testing.T) {
 	assert.Contains(t, line, "Avg/Data: 1.0 kB/s)")
 	assert.Contains(t, line, "Success: 9/10 (90.0%)")
 	assert.Contains(t, line, "Active: 3")
+}
+
+// afterActions runs for every completed or skipped file. In a dry run it must
+// leave the source in place and report no after-action, whichever source
+// follow-up actions are configured.
+func TestAfterActionsDryRunLeavesSourceInPlace(t *testing.T) {
+	tests := []struct {
+		name   string
+		delete bool
+		move   bool
+	}{
+		{name: "delete only", delete: true},
+		{name: "move only", move: true},
+		{name: "delete and move", delete: true, move: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			source := filepath.Join(dir, "source.txt")
+			content := []byte("dry run source")
+			require.NoError(t, os.WriteFile(source, content, 0600))
+			moveDestination := filepath.Join(dir, "moved")
+
+			transfer := &Transfers{
+				DryRun:                 true,
+				AfterDeleteSourceFiles: tt.delete,
+				eventBody:              []string{},
+				eventBodyMutex:         &sync.RWMutex{},
+				eventErrors:            map[string]string{},
+				eventErrorsMutex:       &sync.RWMutex{},
+			}
+			if tt.move {
+				transfer.AfterMove = moveDestination
+			}
+
+			transfer.afterActions(context.Background(), file.JobFile{
+				Status:    status.Complete,
+				LocalPath: source,
+				File:      files_sdk.File{Path: source},
+			}, files_sdk.Config{})
+
+			got, err := os.ReadFile(source)
+			require.NoError(t, err)
+			assert.Equal(t, content, got)
+			_, err = os.Stat(moveDestination)
+			assert.True(t, errors.Is(err, os.ErrNotExist), "move destination must not exist: %v", err)
+			assert.Empty(t, transfer.eventBody)
+			assert.Empty(t, transfer.eventErrors)
+		})
+	}
+}
+
+func TestSetupSignalsFinishedDryRunSkipsEmptySourceFolderCleanup(t *testing.T) {
+	root := t.TempDir()
+	source := filepath.Join(root, "source")
+	emptyFolder := filepath.Join(source, "empty")
+	require.NoError(t, os.MkdirAll(emptyFolder, 0755))
+
+	// The report afterActionLog gives the empty source folder cleanup, whose action the SDK names "delete source
+	// folder" whether the cleanup succeeds or fails.
+	reporter := &Transfers{
+		eventBody:        []string{},
+		eventBodyMutex:   &sync.RWMutex{},
+		eventErrors:      map[string]string{},
+		eventErrorsMutex: &sync.RWMutex{},
+	}
+	reporter.afterActionLog(status.Log{Action: "delete source folder"}, nil)
+	require.Len(t, reporter.eventBody, 1)
+	cleanupReport := strings.TrimSpace(reporter.eventBody[0])
+	require.Contains(t, cleanupReport, "delete source folder")
+
+	transferManager := manager.New(1, 1, 1)
+	elapsed := timer.New()
+	elapsed.Start()
+	elapsed.Stop()
+	job := (&file.Job{}).Init()
+	job.LocalPath = source
+	job.Direction = direction.UploadType
+	job.Sync = false
+	job.Config = files_sdk.Config{}
+	job.Statuses = []file.IFile{}
+	job.CompletedPaths = map[string]struct{}{}
+	job.Timer = elapsed
+	job.Manager = transferManager
+	job.Logger = log.New(io.Discard, "", 0)
+	job.Started = &sdklib.Signal{C: make(chan bool)}
+	job.Finished = &sdklib.Signal{C: make(chan bool)}
+	job.Canceled = &sdklib.Signal{C: make(chan bool)}
+	job.Scanning = &sdklib.Signal{C: make(chan bool)}
+	job.EndScanning = &sdklib.Signal{C: make(chan bool)}
+	close(job.Started.C)
+	close(job.Scanning.C)
+	close(job.EndScanning.C)
+
+	filesRate := &atomic.Value{}
+	filesRate.Store(newTransferRate())
+	transferRate := &atomic.Value{}
+	transferRate.Store(newTransferRate())
+	lastEndedFile := &atomic.Value{}
+	lastEndedFile.Store(LastEndedFile{})
+	transfer := &Transfers{
+		Job:                           job,
+		Manager:                       transferManager,
+		DryRun:                        true,
+		AfterDeleteEmptySourceFolders: true,
+		DisableProgressOutput:         true,
+		Progress:                      mpb.New(mpb.WithOutput(io.Discard)),
+		Stdout:                        io.Discard,
+		Stderr:                        io.Discard,
+		eventBody:                     []string{},
+		eventBodyMutex:                &sync.RWMutex{},
+		eventErrors:                   map[string]string{},
+		eventErrorsMutex:              &sync.RWMutex{},
+		ETA:                           newTransferRate(),
+		ETAMutex:                      &sync.RWMutex{},
+		filesRate:                     filesRate,
+		filesRateMutex:                &sync.RWMutex{},
+		transferRate:                  transferRate,
+		transferRateMutex:             &sync.RWMutex{},
+		lastEndedFile:                 lastEndedFile,
+		finishedForDisplay:            &atomic.Bool{},
+		waitForEndingMessage:          make(chan bool, 1),
+	}
+	require.Zero(t, job.Count(status.Errored))
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	transfer.SetupSignals(ctx)
+	close(job.Finished.C)
+
+	select {
+	case <-transfer.waitForEndingMessage:
+	case <-time.After(10 * time.Second):
+		require.FailNow(t, "SetupSignals did not finish after the job finished")
+	}
+	require.True(t, transfer.finishedForDisplay.Load())
+
+	settled := make(chan struct{})
+	go func() {
+		transfer.Progress.Wait()
+		close(settled)
+	}()
+	select {
+	case <-settled:
+	case <-time.After(10 * time.Second):
+		require.FailNow(t, "progress bars did not settle after the job finished")
+	}
+
+	entries, err := os.ReadDir(root)
+	require.NoError(t, err)
+	require.Len(t, entries, 1)
+	assert.Equal(t, "source", entries[0].Name())
+	entries, err = os.ReadDir(source)
+	require.NoError(t, err)
+	require.Len(t, entries, 1)
+	assert.Equal(t, "empty", entries[0].Name())
+	assert.DirExists(t, emptyFolder)
+
+	transfer.eventBodyMutex.RLock()
+	defer transfer.eventBodyMutex.RUnlock()
+	for _, report := range transfer.eventBody {
+		assert.NotContains(t, report, cleanupReport)
+	}
+	transfer.eventErrorsMutex.RLock()
+	defer transfer.eventErrorsMutex.RUnlock()
+	for _, report := range transfer.eventErrors {
+		assert.NotContains(t, report, cleanupReport)
+	}
 }

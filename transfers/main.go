@@ -422,6 +422,11 @@ func (t *Transfers) RegisterFileEvents(ctx context.Context, config files_sdk.Con
 }
 
 func (t *Transfers) afterActions(ctx context.Context, f file.JobFile, config files_sdk.Config) {
+	// A dry run only indexes and compares; it must not move or delete source files.
+	if t.DryRun {
+		return
+	}
+
 	if t.AfterDeleteSourceFiles {
 		t.afterActionLog(file.DeleteSource{Direction: f.Direction, Config: config}.Call(f, files_sdk.WithContext(ctx)))
 	}

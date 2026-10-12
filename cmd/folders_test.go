@@ -3,17 +3,30 @@ package cmd
 import (
 	"bytes"
 	"log"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFolders_ListFor_WithPreviews(t *testing.T) {
 	assert := assert.New(t)
-	_, config, err := CreateConfig("TestFolders_ListFor_WithPreviews")
-	if err != nil {
-		t.Fatal(err)
-	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, "/api/rest/v1/folders") {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`[]`))
+	}))
+	defer server.Close()
+
+	config := files_sdk.Config{}.Init()
+	config.EndpointOverride = server.URL
+	config.APIKey = "test"
 
 	var buf bytes.Buffer
 

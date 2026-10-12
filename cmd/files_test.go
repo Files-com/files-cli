@@ -25,14 +25,40 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// replayOnlyTransport is the recorder's real transport in replay mode. go-vcr's
+// NewAsMode switches a requested replay to recording when the cassette file is
+// missing, and recording sends requests through http.DefaultTransport when no
+// transport is given. With this transport such a request fails instead of
+// reaching the network.
+type replayOnlyTransport struct {
+	cassette string
+}
+
+func (t replayOnlyTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req.Body != nil {
+		req.Body.Close()
+	}
+	return nil, fmt.Errorf("replay only: %s %s is not recorded in %s and network access is disabled", req.Method, req.URL, t.cassette)
+}
+
 func CreateConfig(fixture string) (*recorder.Recorder, files_sdk.Config, error) {
 	var r *recorder.Recorder
 	var err error
+	name := filepath.Join("fixtures", fixture)
 	if os.Getenv("GITLAB") != "" {
 		fmt.Println("using ModeReplaying")
-		r, err = recorder.NewAsMode(filepath.Join("fixtures", fixture), recorder.ModeReplaying, nil)
+		offline := replayOnlyTransport{cassette: name + ".yaml"}
+		if _, statErr := os.Stat(offline.cassette); statErr != nil {
+			err = fmt.Errorf("replay requires cassette %s: %w", offline.cassette, statErr)
+		} else {
+			r, err = recorder.NewAsMode(name, recorder.ModeReplaying, offline)
+		}
+		if err != nil {
+			// Even a caller that ignores the error gets a config that cannot reach the network.
+			return r, files_sdk.Config{}.Init().SetCustomClient(&http.Client{Transport: offline}), err
+		}
 	} else {
-		r, err = recorder.New(filepath.Join("fixtures", fixture))
+		r, err = recorder.New(name)
 	}
 	if err != nil {
 		return r, files_sdk.Config{}, err
@@ -67,6 +93,39 @@ func CreateConfig(fixture string) (*recorder.Recorder, files_sdk.Config, error) 
 	})
 
 	return r, config, nil
+}
+
+func TestCreateConfigReplayFailsClosedWithoutCassette(t *testing.T) {
+	t.Setenv("GITLAB", "true")
+	fixture := "TestCreateConfigReplayFailsClosedWithoutCassette"
+	cassettePath := filepath.Join("fixtures", fixture+".yaml")
+	requests := make(chan string, 8)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		select {
+		case requests <- req.Method + " " + req.URL.Path:
+		default:
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	r, config, err := CreateConfig(fixture)
+
+	require.Error(t, err)
+	assert.ErrorIs(t, err, os.ErrNotExist)
+	assert.Contains(t, err.Error(), cassettePath)
+	assert.Nil(t, r)
+
+	// The returned config must not reach a server even when a caller ignores the error.
+	config.EndpointOverride = server.URL
+	config.APIKey = "test"
+	folderClient := folder.Client{Config: config}
+	_, err = folderClient.Create(files_sdk.FolderCreateParams{Path: fixture})
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(requests), "no request may leave the replay route")
+
+	_, statErr := os.Stat(cassettePath)
+	assert.True(t, os.IsNotExist(statErr), "replay must not record a cassette")
 }
 
 func TestFiles_Delete_Recursive(t *testing.T) {
