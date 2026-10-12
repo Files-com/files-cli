@@ -3253,7 +3253,7 @@
     {
       "name": "child-site-management-policies list",
       "group": "child-site-management-policies",
-      "description": "List Child Site Management Policies",
+      "description": "List Child Site Management Policies. On a Child Site, returns only the policy covering that site. Its value contains managed setting names with null values",
       "auth_required": true,
       "parameters": [
 

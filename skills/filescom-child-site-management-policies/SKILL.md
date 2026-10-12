@@ -12,13 +12,15 @@ Non-default policies apply only to the child sites listed in `child_site_ids`, a
 
 One policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
 
+On a Child Site, listing policies returns only the policy covering that site. Each key in `value` identifies a managed setting, but its value is always `null`. Read non-secret effective setting values from the Child Site's own Site settings response.
+
 All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
 
 ### `files-cli child-site-management-policies list`
 
-List Child Site Management Policies.
+List Child Site Management Policies. On a Child Site, returns only the policy covering that site. Its value contains managed setting names with null values.
 
 No flags beyond the global ones.
 

@@ -35,8 +35,8 @@ func ChildSiteManagementPolicies() *cobra.Command {
 
 	cmdList := &cobra.Command{
 		Use:     "list",
-		Short:   "List Child Site Management Policies",
-		Long:    `List Child Site Management Policies`,
+		Short:   "List Child Site Management Policies. On a Child Site, returns only the policy covering that site. Its value contains managed setting names with null values",
+		Long:    `List Child Site Management Policies. On a Child Site, returns only the policy covering that site. Its value contains managed setting names with null values`,
 		Args:    cobra.NoArgs,
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
