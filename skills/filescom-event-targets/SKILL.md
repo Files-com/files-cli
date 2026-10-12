@@ -40,7 +40,7 @@ Create Event Target.
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace target can receive events from all workspaces. |
 | `--enabled` | bool | Whether this Event Target can receive events. |
 | `--config` | object | Event Target configuration. Folder targets accept path and format (json or csv). **Required.** |
-| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. |
+| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery. |
 | `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`, `folder`. **Required.** |
 
 ### `files-cli event-targets update`
@@ -55,7 +55,7 @@ Update Event Target.
 | `--apply-to-all-workspaces` | bool | If true, this default-workspace target can receive events from all workspaces. |
 | `--enabled` | bool | Whether this Event Target can receive events. |
 | `--config` | object | Event Target configuration. Folder targets accept path and format (json or csv). |
-| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. |
+| `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery. |
 
 ### `files-cli event-targets delete`
 

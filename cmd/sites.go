@@ -105,6 +105,7 @@ func Sites() *cobra.Command {
 	updateCalculateFileChecksumsSha256 := true
 	updateLegacyChecksumsMode := true
 	updateMigrateRemoteServerSyncToSync := true
+	updateFileActivityEventsEnabled := true
 	updateSslRequired := true
 	updateSftpInsecureCiphers := true
 	updateSftpInsecureDiffieHellman := true
@@ -358,6 +359,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("as2-message-retention-days") {
 				lib.FlagUpdate(cmd, "as2_message_retention_days", paramsSiteUpdate.As2MessageRetentionDays, mapParams)
+			}
+			if cmd.Flags().Changed("file-activity-events-enabled") {
+				mapParams["file_activity_events_enabled"] = updateFileActivityEventsEnabled
 			}
 			if cmd.Flags().Changed("username-display") {
 				lib.FlagUpdate(cmd, "username_display", paramsSiteUpdate.UsernameDisplay, mapParams)
@@ -848,6 +852,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateLegacyChecksumsMode, "legacy-checksums-mode", updateLegacyChecksumsMode, "Use legacy checksums mode?")
 	cmdUpdate.Flags().BoolVar(&updateMigrateRemoteServerSyncToSync, "migrate-remote-server-sync-to-sync", updateMigrateRemoteServerSyncToSync, "If true, we will migrate all remote server syncs to the new Sync model.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.As2MessageRetentionDays, "as2-message-retention-days", 0, "Number of days to retain AS2 messages (incoming and outgoing).")
+	cmdUpdate.Flags().BoolVar(&updateFileActivityEventsEnabled, "file-activity-events-enabled", updateFileActivityEventsEnabled, "If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.UsernameDisplay, "username-display", "", "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")

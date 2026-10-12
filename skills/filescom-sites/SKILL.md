@@ -80,6 +80,7 @@ Update Site Settings.
 | `--legacy-checksums-mode` | bool | Use legacy checksums mode? |
 | `--migrate-remote-server-sync-to-sync` | bool | If true, we will migrate all remote server syncs to the new Sync model. |
 | `--as2-message-retention-days` | int64 | Number of days to retain AS2 messages (incoming and outgoing). |
+| `--file-activity-events-enabled` | bool | If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery. |
 | `--username-display` | string | How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`. |
 | `--session-expiry-minutes` | int64 | Session expiry in minutes |
 | `--ssl-required` | bool | Is SSL required?  Disabling this is insecure. |

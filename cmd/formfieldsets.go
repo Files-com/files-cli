@@ -128,6 +128,7 @@ func FormFieldSets() *cobra.Command {
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
+	createRequireCompleteMetadataCapture := true
 	createSkipEmail := true
 	createSkipName := true
 	createSkipCompany := true
@@ -145,6 +146,9 @@ func FormFieldSets() *cobra.Command {
 			config := ctx.Value("config").(files_sdk.Config)
 			client := form_field_set.Client{Config: config}
 
+			if cmd.Flags().Changed("require-complete-metadata-capture") {
+				paramsFormFieldSetCreate.RequireCompleteMetadataCapture = flib.Bool(createRequireCompleteMetadataCapture)
+			}
 			if cmd.Flags().Changed("skip-email") {
 				paramsFormFieldSetCreate.SkipEmail = flib.Bool(createSkipEmail)
 			}
@@ -170,6 +174,7 @@ func FormFieldSets() *cobra.Command {
 	}
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.UserId, "user-id", 0, "User ID.  Provide a value of `0` to operate the current session's user.")
 	cmdCreate.Flags().StringVar(&paramsFormFieldSetCreate.Title, "title", "", "Title to be displayed")
+	cmdCreate.Flags().BoolVar(&createRequireCompleteMetadataCapture, "require-complete-metadata-capture", createRequireCompleteMetadataCapture, "Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture")
 	cmdCreate.Flags().Int64Var(&paramsFormFieldSetCreate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdCreate.Flags().BoolVar(&createSkipEmail, "skip-email", createSkipEmail, "Skip validating form email")
 	cmdCreate.Flags().BoolVar(&createSkipName, "skip-name", createSkipName, "Skip validating form name")
@@ -187,6 +192,7 @@ func FormFieldSets() *cobra.Command {
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
+	updateRequireCompleteMetadataCapture := true
 	updateSkipEmail := true
 	updateSkipName := true
 	updateSkipCompany := true
@@ -214,6 +220,9 @@ func FormFieldSets() *cobra.Command {
 			}
 			if cmd.Flags().Changed("title") {
 				lib.FlagUpdate(cmd, "title", paramsFormFieldSetUpdate.Title, mapParams)
+			}
+			if cmd.Flags().Changed("require-complete-metadata-capture") {
+				mapParams["require_complete_metadata_capture"] = updateRequireCompleteMetadataCapture
 			}
 			if cmd.Flags().Changed("workspace-id") {
 				lib.FlagUpdate(cmd, "workspace_id", paramsFormFieldSetUpdate.WorkspaceId, mapParams)
@@ -244,6 +253,7 @@ func FormFieldSets() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.Id, "id", 0, "Form Field Set ID.")
 	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
 	cmdUpdate.Flags().StringVar(&paramsFormFieldSetUpdate.Title, "title", "", "Title to be displayed")
+	cmdUpdate.Flags().BoolVar(&updateRequireCompleteMetadataCapture, "require-complete-metadata-capture", updateRequireCompleteMetadataCapture, "Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture")
 	cmdUpdate.Flags().Int64Var(&paramsFormFieldSetUpdate.WorkspaceId, "workspace-id", 0, "Workspace ID")
 	cmdUpdate.Flags().BoolVar(&updateSkipEmail, "skip-email", updateSkipEmail, "Skip validating form email")
 	cmdUpdate.Flags().BoolVar(&updateSkipName, "skip-name", updateSkipName, "Skip validating form name")

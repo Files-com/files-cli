@@ -210,7 +210,7 @@ func EventTargets() *cobra.Command {
 	cmdCreate.Flags().StringVar(&createConfigJSON, "config", "", "Event Target configuration. Folder targets accept path and format (json or csv). Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "config", "json")
 	lib.SetFlagAPIRequired(cmdCreate.Flags(), "config")
-	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
+	cmdCreate.Flags().StringVar(&createDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdCreate.Flags(), "delivery-policy", "json")
 	cmdCreate.Flags().StringVar(&EventTargetCreateTargetType, "target-type", "", fmt.Sprintf("Event Target type. %v", reflect.ValueOf(paramsEventTargetCreate.TargetType.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "target-type", paramsEventTargetCreate.TargetType.Enum())
@@ -292,7 +292,7 @@ func EventTargets() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateEnabled, "enabled", updateEnabled, "Whether this Event Target can receive events.")
 	cmdUpdate.Flags().StringVar(&updateConfigJSON, "config", "", "Event Target configuration. Folder targets accept path and format (json or csv). Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "config", "json")
-	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Provide as a JSON object.")
+	cmdUpdate.Flags().StringVar(&updateDeliveryPolicyJSON, "delivery-policy", "", "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery. Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "delivery-policy", "json")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
