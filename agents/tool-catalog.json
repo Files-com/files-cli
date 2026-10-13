@@ -13811,6 +13811,12 @@
           "description": "Allow group admins to set password authentication method"
         },
         {
+          "name": "--child-site-folder-admins-can-see-parent-site-directory",
+          "type": "bool",
+          "required": false,
+          "description": "If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths."
+        },
+        {
           "name": "--bundle-recipient-blacklist-free-email-domains",
           "type": "bool",
           "required": false,

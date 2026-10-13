@@ -163,6 +163,7 @@ func Sites() *cobra.Command {
 	updateGroupAdminsCanBypassUserLifecycleRules := true
 	updateGroupAdminsCanResetPasswords := true
 	updateGroupAdminsCanSetUserPassword := true
+	updateChildSiteFolderAdminsCanSeeParentSiteDirectory := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAdminsBypassLockedSubfolders := true
 	updateAllowed2faMethodSms := true
@@ -591,6 +592,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("group-admins-can-set-user-password") {
 				mapParams["group_admins_can_set_user_password"] = updateGroupAdminsCanSetUserPassword
 			}
+			if cmd.Flags().Changed("child-site-folder-admins-can-see-parent-site-directory") {
+				mapParams["child_site_folder_admins_can_see_parent_site_directory"] = updateChildSiteFolderAdminsCanSeeParentSiteDirectory
+			}
 			if cmd.Flags().Changed("bundle-recipient-blacklist-free-email-domains") {
 				mapParams["bundle_recipient_blacklist_free_email_domains"] = updateBundleRecipientBlacklistFreeEmailDomains
 			}
@@ -929,6 +933,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanBypassUserLifecycleRules, "group-admins-can-bypass-user-lifecycle-rules", updateGroupAdminsCanBypassUserLifecycleRules, "Allow group admins to exempt users in their groups from lifecycle rules")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanResetPasswords, "group-admins-can-reset-passwords", updateGroupAdminsCanResetPasswords, "Allow group admins to reset passwords for users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins to set password authentication method")
+	cmdUpdate.Flags().BoolVar(&updateChildSiteFolderAdminsCanSeeParentSiteDirectory, "child-site-folder-admins-can-see-parent-site-directory", updateChildSiteFolderAdminsCanSeeParentSiteDirectory, "If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths.")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
 	cmdUpdate.Flags().BoolVar(&updateAdminsBypassLockedSubfolders, "admins-bypass-locked-subfolders", updateAdminsBypassLockedSubfolders, "Allow admins to bypass the locked subfolders setting.")

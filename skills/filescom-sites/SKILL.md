@@ -157,6 +157,7 @@ Update Site Settings.
 | `--group-admins-can-bypass-user-lifecycle-rules` | bool | Allow group admins to exempt users in their groups from lifecycle rules |
 | `--group-admins-can-reset-passwords` | bool | Allow group admins to reset passwords for users in their groups |
 | `--group-admins-can-set-user-password` | bool | Allow group admins to set password authentication method |
+| `--child-site-folder-admins-can-see-parent-site-directory` | bool | If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths. |
 | `--bundle-recipient-blacklist-free-email-domains` | bool | Disallow free email domains for Bundle/Inbox recipients? |
 | `--bundle-recipient-blacklist-domains` | []string | List of email domains to disallow when entering a Bundle/Inbox recipients |
 | `--admins-bypass-locked-subfolders` | bool | Allow admins to bypass the locked subfolders setting. |
