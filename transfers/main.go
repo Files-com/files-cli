@@ -100,6 +100,11 @@ type Transfers struct {
 	AdaptiveConcurrencyInitialTarget int
 	// AdaptiveConcurrencySoftCeiling overrides the adaptive transfer soft growth ceiling.
 	AdaptiveConcurrencySoftCeiling int
+	// AggressiveStart skips gradual concurrency probing on known high-throughput networks.
+	// Default startup probes toward the same throughput and has the same concurrency ceiling.
+	AggressiveStart bool
+	// AdaptiveUploadStartup is the startup AggressiveStart selects (file.UploadStartup).
+	AdaptiveUploadStartup file.UploadStartup
 	// AdaptiveUploadV2FileConcurrency overrides the adaptive upload file admission cap for benchmarks.
 	AdaptiveUploadV2FileConcurrency int
 	// ConcurrentConnectionLimit caps concurrent file-part work. With adaptive upload V2 it is a max cap, not a target.
@@ -544,6 +549,19 @@ func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
 	}
 	if t.AdaptiveConcurrencySoftCeiling < 0 {
 		return clierr.Errorf(clierr.ErrorCodeUsage, "--adaptive-concurrency-soft-ceiling cannot be negative")
+	}
+	t.AdaptiveUploadStartup = file.UploadStartupDefault
+	if t.AggressiveStart {
+		// An explicit initial target conflicts with this shortcut; static uploads have no adaptive startup.
+		for _, conflicting := range []string{"adaptive-concurrency-initial-target", "adaptive-upload-v2-s3-initial-target"} {
+			if cmd.Flags().Changed(conflicting) {
+				return clierr.Errorf(clierr.ErrorCodeUsage, "--aggressive-start cannot be combined with --%s, which sets where uploads start", conflicting)
+			}
+		}
+		if !t.AdaptiveConcurrency {
+			return clierr.Errorf(clierr.ErrorCodeUsage, "--aggressive-start requires --adaptive-concurrency")
+		}
+		t.AdaptiveUploadStartup = file.UploadStartupAggressive
 	}
 	if cmd.Flags().Changed("adaptive-concurrency-initial-target") {
 		t.AdaptiveUploadV2Tuning.InitialTarget = t.AdaptiveConcurrencyInitialTarget
@@ -1453,6 +1471,7 @@ func (t *Transfers) CommonFlags(cmd *cobra.Command) {
 func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
 	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive upload concurrency. The concurrent connection limit becomes a maximum cap.")
+	cmd.Flags().BoolVar(&t.AggressiveStart, "aggressive-start", false, "Start adaptive S3 uploads at high concurrency instead of gradually probing available bandwidth. Use on known high-throughput networks to avoid the initial ramp-up. The default probes toward the same throughput and concurrency ceiling; concurrency limits and adaptive backoff still apply.")
 	cmd.Flags().IntVar(&t.AdaptiveUploadReadyRunwayParts, "adaptive-upload-ready-runway-parts", 4, "Diagnostic override for upload parts prepared ahead of adaptive HTTP concurrency.")
 	cmd.Flags().Int64Var(&t.AdaptiveUploadReadyRunwayBytes, "adaptive-upload-ready-runway-bytes", 256*1024*1024, "Diagnostic override for queued bytes in prepared adaptive upload runway parts.")
 	cmd.Flags().IntVar(&t.AdaptiveUploadV2Tuning.S3InitialTarget, "adaptive-upload-v2-s3-initial-target", 0, "Diagnostic override for upload V2 S3 initial adaptive target.")

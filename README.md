@@ -709,3 +709,18 @@ files-cli folders list-for --fields path,type --format json
     "type": "directory"
 }]
 ```
+
+## Upload startup
+
+Uploads and `sync push` gradually probe available bandwidth by default. This
+startup can reach the same throughput as `--aggressive-start`; it takes longer
+to ramp up and does not impose a lower concurrency or performance ceiling.
+
+Use `--aggressive-start` on a known high-throughput network, such as a cloud VM
+with ample network capacity, to skip the initial concurrency probes for adaptive
+S3 uploads. For example, `files-cli upload ./backup.tar backups/ --aggressive-start`.
+The upload still adapts and backs off, and all concurrency limits still apply.
+Keep the default when gradual startup helps avoid overwhelming a residential
+or constrained connection. This option changes startup, not part sizes, and
+requires adaptive concurrency; it cannot be combined with an explicit initial
+concurrency target.

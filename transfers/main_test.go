@@ -697,6 +697,49 @@ func TestUnsetAdaptiveConcurrencyFlagsUseDetectedProfile(t *testing.T) {
 	assert.Equal(t, manager.ConcurrentFileParts, transfer.ConcurrentConnectionLimit)
 }
 
+// --aggressive-start is an ordinary, public boolean upload flag. Combined with a flag that sets where uploads
+// start, or without adaptive uploads, which have no startup, it is a usage error rather than silently ignored.
+func TestUploadStartupFlagIsPublicAndRefusesWhatWouldIgnoreIt(t *testing.T) {
+	command := func(flags func(*Transfers, *cobra.Command)) (*Transfers, *cobra.Command) {
+		transfer := New()
+		transfer.Format = []string{"progress"}
+		transfer.OutFormat = []string{"csv"}
+		cmd := &cobra.Command{}
+		cmd.SetContext(context.Background())
+		flags(transfer, cmd)
+		return transfer, cmd
+	}
+	upload := func(transfer *Transfers, cmd *cobra.Command) { transfer.UploadFlags(cmd) }
+
+	transfer, cmd := command(upload)
+	flag := cmd.Flags().Lookup("aggressive-start")
+	require.NotNil(t, flag)
+	assert.False(t, flag.Hidden)
+	assert.Equal(t, "false", flag.DefValue)
+	assert.Equal(t, "true", flag.NoOptDefVal)
+	require.NoError(t, transfer.ArgsCheck(cmd))
+	assert.Equal(t, file.UploadStartupDefault, transfer.AdaptiveUploadStartup)
+
+	transfer, cmd = command(upload)
+	require.NoError(t, cmd.Flags().Set("aggressive-start", "true"))
+	require.NoError(t, transfer.ArgsCheck(cmd))
+	assert.Equal(t, file.UploadStartupAggressive, transfer.AdaptiveUploadStartup)
+
+	for _, conflicting := range []struct{ flag, value, message string }{
+		{"adaptive-concurrency-initial-target", "50", "--aggressive-start cannot be combined with --adaptive-concurrency-initial-target"},
+		{"adaptive-upload-v2-s3-initial-target", "50", "--aggressive-start cannot be combined with --adaptive-upload-v2-s3-initial-target"},
+		{"adaptive-concurrency", "false", "--aggressive-start requires --adaptive-concurrency"},
+	} {
+		transfer, cmd := command(upload)
+		require.NoError(t, cmd.Flags().Set("aggressive-start", "true"))
+		require.NoError(t, cmd.Flags().Set(conflicting.flag, conflicting.value))
+		assert.ErrorContains(t, transfer.ArgsCheck(cmd), conflicting.message, conflicting.flag)
+	}
+
+	_, cmd = command(func(transfer *Transfers, cmd *cobra.Command) { transfer.DownloadFlags(cmd) })
+	assert.Nil(t, cmd.Flags().Lookup("aggressive-start"), "downloads have no aggressive startup yet")
+}
+
 func TestAdaptiveConcurrencyInitialTargetFlagAppliesToUpload(t *testing.T) {
 	transfer := New()
 	transfer.Format = []string{"progress"}

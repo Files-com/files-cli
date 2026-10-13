@@ -11,7 +11,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
+	"sync"
 	"testing"
 	"time"
 
@@ -78,21 +80,37 @@ func createRecorder(fixture string) (sdkConfig files_sdk.Config, r *recorder.Rec
 	return
 }
 
+// StubInput types the keys of the prompts CreateSession shows: prompts holds each prompt's keys, and each Read gives
+// one of them. Each prompt runs its own Bubble Tea program on this reader, and each program's read loop reads into a
+// buffer of its own. A program that ends cannot interrupt a Read here, so it does not wait for its read loop, which may read again
+// after the next prompt has begun, or stop without reading again. The read buffer tells the prompts apart: a new buffer
+// begins the next prompt, a buffer reads only its own prompt's keys and then io.EOF, and an earlier prompt's buffer reads
+// io.EOF. Keeping each buffer also keeps it from being reused for a later prompt.
 type StubInput struct {
-	index  int
-	inputs []string
+	prompts [][]string
+
+	mu      sync.Mutex
+	buffers []*byte
+	next    int
 }
 
 func (s *StubInput) Read(b []byte) (int, error) {
-	if s.index+1 > len(s.inputs) {
+	if len(b) == 0 {
 		return 0, nil
 	}
-	defer func() { s.index = s.index + 1 }()
-	value := s.inputs[s.index]
-	if value == "" {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	prompt := slices.Index(s.buffers, &b[0])
+	if prompt < 0 {
+		s.buffers = append(s.buffers, &b[0])
+		prompt = len(s.buffers) - 1
+		s.next = 0
+	}
+	if prompt != len(s.buffers)-1 || prompt >= len(s.prompts) || s.next >= len(s.prompts[prompt]) {
 		return 0, io.EOF
 	}
-	return bytes.NewBufferString(s.inputs[s.index]).Read(b)
+	s.next++
+	return copy(b, s.prompts[prompt][s.next-1]), nil
 }
 
 func TestProfiles_Load(t *testing.T) {
@@ -375,7 +393,7 @@ func TestCreateSession_CustomDomain(t *testing.T) {
 	_, config := createTempConfig(&sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
-	stdIn := &StubInput{inputs: []string{"testdomain.com", "\r", "", "testuser", "\r"}}
+	stdIn := &StubInput{prompts: [][]string{{"testdomain.com", "\r"}, {"testuser", "\r"}}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -394,7 +412,7 @@ func TestCreateSession_InvalidPassword(t *testing.T) {
 	_, config := createTempConfig(&sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
-	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
+	stdIn := &StubInput{prompts: [][]string{{"testdomain", "\r"}, {"testuser", "\r"}}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}.Init()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -417,7 +435,7 @@ func TestCreateSession_ValidPassword(t *testing.T) {
 	_, config := createTempConfig(&sdkConfig)
 	var err error
 	stdOut := bytes.NewBufferString("")
-	stdIn := &StubInput{inputs: []string{"testdomain", "\r", "", "testuser", "\r"}}
+	stdIn := &StubInput{prompts: [][]string{{"testdomain", "\r"}, {"testuser", "\r"}}}
 	config.Overrides = Overrides{Out: stdOut, In: stdIn}
 	parentCtx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
@@ -470,7 +488,7 @@ func TestCreateSession_SingleUseAPIKeyDoesNotPersist(t *testing.T) {
 	profile.SetSingleUseAPIKey("CANARY_VALUE_12345")
 	profile.Overrides = Overrides{
 		Out: bytes.NewBufferString(""),
-		In:  &StubInput{inputs: []string{"\r", "", "\r", ""}},
+		In:  &StubInput{prompts: [][]string{{"\r"}, {"\r"}}},
 	}.Init()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)

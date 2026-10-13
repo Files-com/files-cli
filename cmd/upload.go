@@ -84,6 +84,8 @@ files-cli upload --include="*.txt,*.md" --ignore=".*" source/ destination/
 						PreserveTimes:                        transfer.UploadPreserveTimes,
 						AdaptiveConcurrency:                  transfer.AdaptiveUploadEnabled(),
 						AdaptiveConcurrencyUseSDKDefaultCaps: transfer.AdaptiveUploadEnabled() && !transfer.ConcurrentConnectionLimitSet,
+						AdaptiveConcurrencyShareJobLearning:  transfer.AdaptiveUploadEnabled() && transfer.ConcurrentConnectionLimitSet,
+						AdaptiveUploadStartup:                transfer.AdaptiveUploadStartup,
 						AdaptiveUploadReadyRunwaySet:         transfer.AdaptiveUploadReadyRunwaySet,
 						AdaptiveUploadReadyRunwayParts:       transfer.AdaptiveUploadReadyRunwayParts,
 						AdaptiveUploadReadyRunwayBytes:       transfer.AdaptiveUploadReadyRunwayBytes,
