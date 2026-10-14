@@ -588,8 +588,8 @@ The operation logs will be made available in the web interface at
 
 Files.com publishes a mock Files.com API server, which is useful for testing your use of the Files.com
 SDKs and other direct integrations against the Files.com API in an integration test environment.
-It never checks credentials: send any placeholder API key, and never use real Files.com credentials
-with it.
+It never checks credentials: send any placeholder API key, such as `YOUR_API_KEY`, and never use
+real Files.com credentials with it.
 
 The server has two modes, chosen when it starts:
 
@@ -602,10 +602,38 @@ The server has two modes, chosen when it starts:
   stall or lose their connection on purpose. Requests it does not simulate fail with a clear error
   instead of returning an example response.
 
-Start the server from its source with Ruby and Bundler. `FILES_MOCK_MODE` is read once at startup:
-leaving it unset or setting it to `legacy` starts legacy mode, `simulation` starts simulation mode,
-and any other value stops startup with an error. Legacy mode listens on port 4041 on all IPv4
-interfaces, and simulation mode on `127.0.0.1:4041`.
+### Quick Start with Docker
+
+With [Docker](https://docs.docker.com/get-docker/) installed, start the published image from
+[Docker Hub](https://hub.docker.com/r/filescom/files-mock-server) with the command shown. It runs
+legacy mode at `http://127.0.0.1:4041`, reachable from your machine only: point your integration's
+Files.com API base URL there and use a placeholder API key. Stop it with Ctrl+C; `--rm` removes its
+container.
+
+The published image is built for `linux/amd64` only, so the command asks for that platform;
+without it, Docker on a machine of another architecture, such as an Apple silicon Mac, looks for
+an image the tag does not have. The `latest` tag moves to whichever server was published last,
+and `--pull=always` fetches it again each time, so it need not include simulation mode. To run
+simulation mode, build the image from the source as below.
+
+```shell title="Start the Mock Server with Docker"
+docker run --platform linux/amd64 --rm --pull=always -p 127.0.0.1:4041:4041 filescom/files-mock-server:latest
+
+## In another terminal, with a placeholder API key:
+curl -H "X-FilesAPI-Key: YOUR_API_KEY" http://127.0.0.1:4041/api/rest/v1/users
+```
+
+### Simulation Mode in Docker
+
+To run exactly the server the source's README describes, simulation mode included, build the image
+from a checkout of the source on [GitHub](https://github.com/Files-com/files-mock-server) and run
+it by the image ID you record with your test results. Only `linux/amd64` builds of the source have
+been checked, so both commands ask for that platform.
+
+Simulation mode listens only on loopback unless told otherwise, so the command binds it to the
+container's interfaces with `-b tcp://0.0.0.0:4041` and publishes the port on your machine's
+loopback address only. `FILES_MOCK_TRANSFER_ORIGIN` tells it the address your tests use, so the
+upload and download URLs it returns point at the published port.
 
 Simulation mode keeps its state only in the server process. Its control endpoints under
 `/__files_mock/v1` report when the server is ready, reset it with your fixtures, add fault rules
@@ -613,13 +641,27 @@ and return the journal of the requests it received. It refuses work over its lim
 truncating it. The README in the source describes all of these, the operations it simulates and
 how to configure its limits.
 
-Download the server as a Docker image via [Docker Hub](https://hub.docker.com/r/filescom/files-mock-server).
-The image's `latest` tag moves to whichever server was published last, so it need not include
-simulation mode; to run exactly the server the README describes, build the image from the source.
+```shell title="Simulation Mode from the Source"
+## In a checkout of the source:
+docker build --platform linux/amd64 -t files-mock-server:local .
+image=$(docker image inspect --format '{{.Id}}' files-mock-server:local)
+echo "$image"   # record this ID with your test results
+docker run --platform linux/amd64 --rm -e FILES_MOCK_MODE=simulation \
+  -e FILES_MOCK_TRANSFER_ORIGIN=http://127.0.0.1:40410 \
+  -p 127.0.0.1:40410:4041 "$image" -b tcp://0.0.0.0:4041
 
-The Source Code is also available on [GitHub](https://github.com/Files-com/files-mock-server).
+## In another terminal:
+curl http://127.0.0.1:40410/__files_mock/v1/ready
+```
 
-```shell title="Start the Mock Server"
+### From the Source with Ruby
+
+Start the server from its source with Ruby and Bundler. `FILES_MOCK_MODE` is read once at startup:
+leaving it unset or setting it to `legacy` starts legacy mode, `simulation` starts simulation mode,
+and any other value stops startup with an error. Legacy mode listens on port 4041 on all IPv4
+interfaces, and simulation mode on `127.0.0.1:4041`.
+
+```shell title="Start the Mock Server with Ruby"
 bundle install
 
 ## Legacy mode
