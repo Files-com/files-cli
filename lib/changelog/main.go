@@ -60,6 +60,7 @@ func GetLog(ctx context.Context, cmd *cobra.Command, config files_sdk.Config, ta
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
@@ -95,6 +96,7 @@ func GetAllTags(ctx context.Context, config files_sdk.Config, min string, max st
 	if err != nil {
 		return versions, err
 	}
+	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return versions, err

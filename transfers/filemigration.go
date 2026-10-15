@@ -66,6 +66,9 @@ func WaitFileMigration(ctx context.Context, config files_sdk.Config, i interface
 		if result.LogUrl != "" {
 			client := file_migration.Client{Config: config}
 			it := client.LogIterator(ctx, result)
+			if closer, ok := it.(io.Closer); ok {
+				defer closer.Close()
+			}
 			var filter lib.FilterIter
 			err = lib.FormatIter(ctx, it, format, []string{}, false, filter, out)
 		}
