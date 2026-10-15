@@ -1092,3 +1092,39 @@ func TestSetupSignalsFinishedDryRunSkipsEmptySourceFolderCleanup(t *testing.T) {
 		assert.NotContains(t, report, cleanupReport)
 	}
 }
+
+// A transfer can end before its status reporting gets to run, as a single small file can. With progress output on,
+// the transfer then waits for the progress bars, which can't be added once that wait has begun; it must still finish
+// and report its completion.
+func TestTransferWithProgressOutputFinishesWhenTheJobEndsAsItStarts(t *testing.T) {
+	transfer := New()
+	// Static concurrency leaves the test process's open file limit alone.
+	transfer.AdaptiveConcurrency = false
+	// Progress output stays on, written nowhere.
+	transfer.TestProgressBarOut = os.DevNull
+	config := files_sdk.Config{Logger: log.New(io.Discard, "", 0)}.Init()
+	ctx := context.Background()
+	transfer.Init(ctx, io.Discard, io.Discard, func() *file.Job {
+		job := (&file.Job{}).Init()
+		job.Config = config
+		job.Logger = config.Logger
+		job.CodeStart = job.Finish
+		return job
+	})
+	require.False(t, transfer.DisableProgressOutput)
+
+	it := transfer.Iter(ctx, config)
+	ended := make(chan struct{})
+	go func() {
+		defer close(ended)
+		for it.Next() {
+		}
+	}()
+	select {
+	case <-ended:
+	case <-time.After(10 * time.Second):
+		require.FailNow(t, "the transfer did not finish after its job ended")
+	}
+	require.NoError(t, it.Err())
+	assert.True(t, transfer.finishedForDisplay.Load(), "the transfer reports that it finished")
+}

@@ -672,15 +672,18 @@ func (t *Transfers) ProcessJob(ctx context.Context, config files_sdk.Config) {
 }
 
 func (t *Transfers) SetupSignals(ctx context.Context) {
+	// The bars are added before the job starts: a job can finish before the
+	// goroutine below runs, and ProcessJob then waits for the progress
+	// container, which accepts no bars once that wait has begun.
+	t.buildMainTotalTransfer()
+	t.buildStatusTransfer()
+	if t.Sync {
+		t.buildStatusSync()
+	}
+	if t.OpenConnectionStats {
+		t.buildOpenConnections()
+	}
 	go func() {
-		t.buildMainTotalTransfer()
-		t.buildStatusTransfer()
-		if t.Sync {
-			t.buildStatusSync()
-		}
-		if t.OpenConnectionStats {
-			t.buildOpenConnections()
-		}
 		updateStatusTick := time.NewTicker(time.Millisecond * 250)
 		metricsLoggerBackoff := time.Second * 15
 		metricsLoggerTick := time.NewTicker(metricsLoggerBackoff)
