@@ -27,6 +27,7 @@ List Groups.
 | `--filter-prefix` | object | If set, return records where the specified field is prefixed by the supplied value. Valid fields are `name`. |
 | `--ids` | string | Comma-separated list of group ids to include in results. |
 | `--include-parent-site-groups` | bool | Include groups from the parent site. |
+| `--include-default-workspace-groups` | bool | When scoped to a Custom Workspace, include Default Workspace groups that have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces. |
 
 ### `files-cli groups find`
 

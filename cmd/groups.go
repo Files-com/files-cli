@@ -33,6 +33,7 @@ func Groups() *cobra.Command {
 	var listFilterArgs []string
 	var listFilterPrefixArgs []string
 	listIncludeParentSiteGroups := true
+	listIncludeDefaultWorkspaceGroups := true
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -78,6 +79,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("include-parent-site-groups") {
 				params.IncludeParentSiteGroups = flib.Bool(listIncludeParentSiteGroups)
 			}
+			if cmd.Flags().Changed("include-default-workspace-groups") {
+				params.IncludeDefaultWorkspaceGroups = flib.Bool(listIncludeDefaultWorkspaceGroups)
+			}
 
 			client := group.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -122,6 +126,7 @@ func Groups() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsGroupList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsGroupList.Ids, "ids", "", "Comma-separated list of group ids to include in results.")
 	cmdList.Flags().BoolVar(&listIncludeParentSiteGroups, "include-parent-site-groups", listIncludeParentSiteGroups, "Include groups from the parent site.")
+	cmdList.Flags().BoolVar(&listIncludeDefaultWorkspaceGroups, "include-default-workspace-groups", listIncludeDefaultWorkspaceGroups, "When scoped to a Custom Workspace, include Default Workspace groups that have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")

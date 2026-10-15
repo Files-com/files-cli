@@ -164,6 +164,7 @@ func Sites() *cobra.Command {
 	updateGroupAdminsCanResetPasswords := true
 	updateGroupAdminsCanSetUserPassword := true
 	updateChildSiteFolderAdminsCanSeeParentSiteDirectory := true
+	updateWorkspaceFolderAdminsCanSeeDefaultWorkspaceDirectory := true
 	updateBundleRecipientBlacklistFreeEmailDomains := true
 	updateAdminsBypassLockedSubfolders := true
 	updateAllowed2faMethodSms := true
@@ -595,6 +596,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("child-site-folder-admins-can-see-parent-site-directory") {
 				mapParams["child_site_folder_admins_can_see_parent_site_directory"] = updateChildSiteFolderAdminsCanSeeParentSiteDirectory
 			}
+			if cmd.Flags().Changed("workspace-folder-admins-can-see-default-workspace-directory") {
+				mapParams["workspace_folder_admins_can_see_default_workspace_directory"] = updateWorkspaceFolderAdminsCanSeeDefaultWorkspaceDirectory
+			}
 			if cmd.Flags().Changed("bundle-recipient-blacklist-free-email-domains") {
 				mapParams["bundle_recipient_blacklist_free_email_domains"] = updateBundleRecipientBlacklistFreeEmailDomains
 			}
@@ -934,6 +938,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanResetPasswords, "group-admins-can-reset-passwords", updateGroupAdminsCanResetPasswords, "Allow group admins to reset passwords for users in their groups")
 	cmdUpdate.Flags().BoolVar(&updateGroupAdminsCanSetUserPassword, "group-admins-can-set-user-password", updateGroupAdminsCanSetUserPassword, "Allow group admins to set password authentication method")
 	cmdUpdate.Flags().BoolVar(&updateChildSiteFolderAdminsCanSeeParentSiteDirectory, "child-site-folder-admins-can-see-parent-site-directory", updateChildSiteFolderAdminsCanSeeParentSiteDirectory, "If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths.")
+	cmdUpdate.Flags().BoolVar(&updateWorkspaceFolderAdminsCanSeeDefaultWorkspaceDirectory, "workspace-folder-admins-can-see-default-workspace-directory", updateWorkspaceFolderAdminsCanSeeDefaultWorkspaceDirectory, "If true, Workspace Administrators and Folder Admins in a Custom Workspace can list the Default Workspace users and groups that have permissions in that Workspace and choose them as Email Notification recipients.")
 	cmdUpdate.Flags().BoolVar(&updateBundleRecipientBlacklistFreeEmailDomains, "bundle-recipient-blacklist-free-email-domains", updateBundleRecipientBlacklistFreeEmailDomains, "Disallow free email domains for Bundle/Inbox recipients?")
 	cmdUpdate.Flags().StringSliceVar(&paramsSiteUpdate.BundleRecipientBlacklistDomains, "bundle-recipient-blacklist-domains", []string{}, "List of email domains to disallow when entering a Bundle/Inbox recipients")
 	cmdUpdate.Flags().BoolVar(&updateAdminsBypassLockedSubfolders, "admins-bypass-locked-subfolders", updateAdminsBypassLockedSubfolders, "Allow admins to bypass the locked subfolders setting.")

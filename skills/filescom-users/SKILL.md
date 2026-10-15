@@ -43,6 +43,7 @@ List Users.
 | `--filter-lteq` | object | If set, return records where the specified field is less than or equal the supplied value. Valid fields are `password_validity_days`, `last_login_at` or `authenticate_until`. |
 | `--ids` | string | comma-separated list of User IDs |
 | `--include-parent-site-users` | bool | Include users from the parent site. |
+| `--include-default-workspace-users` | bool | When scoped to a Custom Workspace, include Default Workspace users who have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces. |
 | `--search` | string | Searches for partial matches of name, username, or email. |
 
 ### `files-cli users find`

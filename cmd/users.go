@@ -41,6 +41,7 @@ func Users() *cobra.Command {
 	var listFilterLtArgs []string
 	var listFilterLteqArgs []string
 	listIncludeParentSiteUsers := true
+	listIncludeDefaultWorkspaceUsers := true
 
 	cmdList := &cobra.Command{
 		Use:     "list",
@@ -114,6 +115,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("include-parent-site-users") {
 				params.IncludeParentSiteUsers = flib.Bool(listIncludeParentSiteUsers)
 			}
+			if cmd.Flags().Changed("include-default-workspace-users") {
+				params.IncludeDefaultWorkspaceUsers = flib.Bool(listIncludeDefaultWorkspaceUsers)
+			}
 
 			client := user.Client{Config: config}
 			it, err := client.List(params, files_sdk.WithContext(ctx))
@@ -166,6 +170,7 @@ func Users() *cobra.Command {
 	cmdList.Flags().Int64Var(&paramsUserList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
 	cmdList.Flags().StringVar(&paramsUserList.Ids, "ids", "", "comma-separated list of User IDs")
 	cmdList.Flags().BoolVar(&listIncludeParentSiteUsers, "include-parent-site-users", listIncludeParentSiteUsers, "Include users from the parent site.")
+	cmdList.Flags().BoolVar(&listIncludeDefaultWorkspaceUsers, "include-default-workspace-users", listIncludeDefaultWorkspaceUsers, "When scoped to a Custom Workspace, include Default Workspace users who have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces.")
 	cmdList.Flags().StringVar(&paramsUserList.Search, "search", "", "Searches for partial matches of name, username, or email.")
 
 	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")

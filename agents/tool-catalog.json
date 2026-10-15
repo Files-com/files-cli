@@ -6457,6 +6457,12 @@
           "type": "bool",
           "required": false,
           "description": "Include groups from the parent site."
+        },
+        {
+          "name": "--include-default-workspace-groups",
+          "type": "bool",
+          "required": false,
+          "description": "When scoped to a Custom Workspace, include Default Workspace groups that have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces."
         }
       ]
     },
@@ -13817,6 +13823,12 @@
           "description": "If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths."
         },
         {
+          "name": "--workspace-folder-admins-can-see-default-workspace-directory",
+          "type": "bool",
+          "required": false,
+          "description": "If true, Workspace Administrators and Folder Admins in a Custom Workspace can list the Default Workspace users and groups that have permissions in that Workspace and choose them as Email Notification recipients."
+        },
+        {
           "name": "--bundle-recipient-blacklist-free-email-domains",
           "type": "bool",
           "required": false,
@@ -15612,6 +15624,12 @@
           "type": "bool",
           "required": false,
           "description": "Include users from the parent site."
+        },
+        {
+          "name": "--include-default-workspace-users",
+          "type": "bool",
+          "required": false,
+          "description": "When scoped to a Custom Workspace, include Default Workspace users who have permissions in that Workspace. Available to Site Administrators, and to Workspace Administrators and Folder Admins in that Workspace when the site shares its Default Workspace directory with Workspaces."
         },
         {
           "name": "--search",
