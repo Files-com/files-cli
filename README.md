@@ -8,7 +8,7 @@ The content included here should be enough to get started, but please visit our
 [Developer Documentation Website](https://developers.files.com/cli/) for the complete documentation.
 
 The macOS binaries require macOS 13 or later. Building from source requires
-Go 1.27.2 or later.
+Go 1.27.3 or later.
 
 ## Introduction
 
