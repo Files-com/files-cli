@@ -98,6 +98,7 @@ Update Site Settings.
 | `--allow-user-level-2fa-override` | bool | Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis? |
 | `--allow-user-level-allowed-ip-override` | bool | Allow the site-wide allowed IP restriction to be overriden on a per-user-basis? |
 | `--allow-user-level-ssl-override` | bool | Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis? |
+| `--enforce-parent-site-user-ip-restrictions` | bool | Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false. |
 | `--disallowed-countries` | string | Comma separated list of disallowed Country codes |
 | `--days-to-retain-backups` | int64 | Number of days to keep deleted files |
 | `--max-prior-passwords` | int64 | Number of prior passwords to disallow |

@@ -116,6 +116,7 @@ func Sites() *cobra.Command {
 	updateAllowUserLevel2faOverride := true
 	updateAllowUserLevelAllowedIpOverride := true
 	updateAllowUserLevelSslOverride := true
+	updateEnforceParentSiteUserIpRestrictions := true
 	updatePasswordRequireLetter := true
 	updatePasswordRequireMixed := true
 	updatePasswordRequireSpecial := true
@@ -415,6 +416,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("allow-user-level-ssl-override") {
 				mapParams["allow_user_level_ssl_override"] = updateAllowUserLevelSslOverride
+			}
+			if cmd.Flags().Changed("enforce-parent-site-user-ip-restrictions") {
+				mapParams["enforce_parent_site_user_ip_restrictions"] = updateEnforceParentSiteUserIpRestrictions
 			}
 			if cmd.Flags().Changed("disallowed-countries") {
 				lib.FlagUpdate(cmd, "disallowed_countries", paramsSiteUpdate.DisallowedCountries, mapParams)
@@ -878,6 +882,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevel2faOverride, "allow-user-level-2fa-override", updateAllowUserLevel2faOverride, "Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelAllowedIpOverride, "allow-user-level-allowed-ip-override", updateAllowUserLevelAllowedIpOverride, "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelSslOverride, "allow-user-level-ssl-override", updateAllowUserLevelSslOverride, "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?")
+	cmdUpdate.Flags().BoolVar(&updateEnforceParentSiteUserIpRestrictions, "enforce-parent-site-user-ip-restrictions", updateEnforceParentSiteUserIpRestrictions, "Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DisallowedCountries, "disallowed-countries", "", "Comma separated list of disallowed Country codes")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DaysToRetainBackups, "days-to-retain-backups", 0, "Number of days to keep deleted files")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.MaxPriorPasswords, "max-prior-passwords", 0, "Number of prior passwords to disallow")
