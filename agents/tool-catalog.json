@@ -899,7 +899,7 @@
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `as2_station_id`, `workspace_id` or `as2_partner_id`. Valid field combinations are `[ as2_station_id, created_at ]`, `[ workspace_id, created_at ]`, `[ as2_partner_id, created_at ]`, `[ workspace_id, as2_station_id ]`, `[ workspace_id, as2_partner_id ]`, `[ workspace_id, as2_station_id, created_at ]` or `[ workspace_id, as2_partner_id, created_at ]`."
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `as2_station_id`, `workspace_id`, `replayed_from_message_id` or `as2_partner_id`. Valid field combinations are `[ as2_station_id, created_at ]`, `[ workspace_id, created_at ]`, `[ replayed_from_message_id, created_at ]`, `[ as2_partner_id, created_at ]`, `[ workspace_id, as2_station_id ]`, `[ workspace_id, replayed_from_message_id ]`, `[ workspace_id, as2_partner_id ]`, `[ workspace_id, as2_station_id, created_at ]`, `[ workspace_id, replayed_from_message_id, created_at ]` or `[ workspace_id, as2_partner_id, created_at ]`."
         },
         {
           "name": "--filter-gt",
@@ -924,6 +924,20 @@
           "type": "object",
           "required": false,
           "description": "If set, return records where the specified field is less than or equal the supplied value. Valid fields are `created_at`."
+        }
+      ]
+    },
+    {
+      "name": "as2-incoming-messages find",
+      "group": "as2-incoming-messages",
+      "description": "Show AS2 Incoming Message",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "As2 Incoming Message ID."
         }
       ]
     },

@@ -153,6 +153,37 @@ func As2IncomingMessages() *cobra.Command {
 	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdList, "As2IncomingMessage", true)
 	As2IncomingMessages.AddCommand(cmdList)
+	var fieldsFind []string
+	var formatFind []string
+	usePagerFind := true
+	paramsAs2IncomingMessageFind := files_sdk.As2IncomingMessageFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use:   "find",
+		Short: `Show AS2 Incoming Message`,
+		Long:  `Show AS2 Incoming Message`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_incoming_message.Client{Config: config}
+
+			var as2IncomingMessage interface{}
+			var err error
+			as2IncomingMessage, err = client.Find(paramsAs2IncomingMessageFind, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), as2IncomingMessage, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsAs2IncomingMessageFind.Id, "id", 0, "As2 Incoming Message ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
+
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "As2IncomingMessage", false)
+	As2IncomingMessages.AddCommand(cmdFind)
 	var fieldsReplay []string
 	var formatReplay []string
 	usePagerReplay := true
