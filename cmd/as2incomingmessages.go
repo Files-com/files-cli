@@ -153,5 +153,36 @@ func As2IncomingMessages() *cobra.Command {
 	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdList, "As2IncomingMessage", true)
 	As2IncomingMessages.AddCommand(cmdList)
+	var fieldsReplay []string
+	var formatReplay []string
+	usePagerReplay := true
+	paramsAs2IncomingMessageReplay := files_sdk.As2IncomingMessageReplayParams{}
+
+	cmdReplay := &cobra.Command{
+		Use:   "replay",
+		Short: `Replay AS2 Incoming Message`,
+		Long:  `Replay AS2 Incoming Message`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := as2_incoming_message.Client{Config: config}
+
+			var as2IncomingMessage interface{}
+			var err error
+			as2IncomingMessage, err = client.Replay(paramsAs2IncomingMessageReplay, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), as2IncomingMessage, err, Profile(cmd).Current().SetResourceFormat(cmd, formatReplay), fieldsReplay, usePagerReplay, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdReplay.Flags().Int64Var(&paramsAs2IncomingMessageReplay.Id, "id", 0, "As2 Incoming Message ID.")
+	lib.SetFlagAPIRequired(cmdReplay.Flags(), "id")
+
+	cmdReplay.Flags().StringSliceVar(&fieldsReplay, "fields", []string{}, "comma separated list of field names")
+	cmdReplay.Flags().StringSliceVar(&formatReplay, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdReplay.Flags().BoolVar(&usePagerReplay, "use-pager", usePagerReplay, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdReplay, lib.EffectMutating)
+	lib.SetCommandResponse(cmdReplay, "As2IncomingMessage", false)
+	As2IncomingMessages.AddCommand(cmdReplay)
 	return As2IncomingMessages
 }

@@ -928,6 +928,20 @@
       ]
     },
     {
+      "name": "as2-incoming-messages replay",
+      "group": "as2-incoming-messages",
+      "description": "Replay AS2 Incoming Message",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "As2 Incoming Message ID."
+        }
+      ]
+    },
+    {
       "name": "as2-outgoing-messages list",
       "group": "as2-outgoing-messages",
       "description": "List AS2 Outgoing Messages",

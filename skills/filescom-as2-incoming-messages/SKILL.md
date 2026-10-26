@@ -8,6 +8,8 @@ description: |
 
 An AS2IncomingMessage is a single record created for each individual AS2 file transfer incoming from a Partner. It contains the message details and tracks the lifecycle status with milestones of the transfer.
 
+Replaying a retained message creates a new incoming message. Its `replayed_from_message_id` identifies the incoming-message record that was replayed. The original AS2 `message_id` is preserved. The source record ID remains available after that record is removed by message retention.
+
 All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT.md) (`--api-key`, `--format`, `--workspace-id`, `--debug`, and the pagination flags `--cursor` / `--per-page` / `--max-pages` on `list`). Those are not repeated below.
 
 ## Commands
@@ -24,4 +26,12 @@ List AS2 Incoming Messages.
 | `--filter-gteq` | object | If set, return records where the specified field is greater than or equal the supplied value. Valid fields are `created_at`. |
 | `--filter-lt` | object | If set, return records where the specified field is less than the supplied value. Valid fields are `created_at`. |
 | `--filter-lteq` | object | If set, return records where the specified field is less than or equal the supplied value. Valid fields are `created_at`. |
+
+### `files-cli as2-incoming-messages replay`
+
+Replay AS2 Incoming Message.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | As2 Incoming Message ID. **Required.** |
 
