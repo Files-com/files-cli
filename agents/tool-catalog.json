@@ -16020,12 +16020,6 @@
           "description": "SSO (Single Sign On) strategy ID for the user, if applicable."
         },
         {
-          "name": "--subscribe-to-newsletter",
-          "type": "bool",
-          "required": false,
-          "description": "Is the user subscribed to the newsletter?"
-        },
-        {
           "name": "--require-2fa",
           "type": "enum",
           "required": false,
@@ -16488,12 +16482,6 @@
           "type": "int64",
           "required": false,
           "description": "SSO (Single Sign On) strategy ID for the user, if applicable."
-        },
-        {
-          "name": "--subscribe-to-newsletter",
-          "type": "bool",
-          "required": false,
-          "description": "Is the user subscribed to the newsletter?"
         },
         {
           "name": "--require-2fa",

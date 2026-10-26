@@ -243,7 +243,6 @@ func Users() *cobra.Command {
 	createSftpPermission := true
 	createSiteAdmin := true
 	createSkipWelcomeScreen := true
-	createSubscribeToNewsletter := true
 	createWorkspaceAdmin := true
 	paramsUserCreate := files_sdk.UserCreateParams{}
 	UserCreateAuthenticationMethod := ""
@@ -366,9 +365,6 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("skip-welcome-screen") {
 				paramsUserCreate.SkipWelcomeScreen = flib.Bool(createSkipWelcomeScreen)
 			}
-			if cmd.Flags().Changed("subscribe-to-newsletter") {
-				paramsUserCreate.SubscribeToNewsletter = flib.Bool(createSubscribeToNewsletter)
-			}
 			if cmd.Flags().Changed("workspace-admin") {
 				paramsUserCreate.WorkspaceAdmin = flib.Bool(createWorkspaceAdmin)
 			}
@@ -450,7 +446,6 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().StringVar(&UserCreateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserCreate.SslRequired.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "ssl-required", paramsUserCreate.SslRequired.Enum())
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
-	cmdCreate.Flags().BoolVar(&createSubscribeToNewsletter, "subscribe-to-newsletter", createSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdCreate.Flags().StringVar(&UserCreateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserCreate.Require2fa.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "require-2fa", paramsUserCreate.Require2fa.Enum())
 	cmdCreate.Flags().StringVar(&paramsUserCreate.Tags, "tags", "", "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
@@ -599,7 +594,6 @@ func Users() *cobra.Command {
 	updateSftpPermission := true
 	updateSiteAdmin := true
 	updateSkipWelcomeScreen := true
-	updateSubscribeToNewsletter := true
 	updateWorkspaceAdmin := true
 	updateClear2fa := true
 	updateConvertToPartnerUser := true
@@ -827,9 +821,6 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("sso-strategy-id") {
 				lib.FlagUpdate(cmd, "sso_strategy_id", paramsUserUpdate.SsoStrategyId, mapParams)
 			}
-			if cmd.Flags().Changed("subscribe-to-newsletter") {
-				mapParams["subscribe_to_newsletter"] = updateSubscribeToNewsletter
-			}
 			if cmd.Flags().Changed("require-2fa") {
 				lib.FlagUpdate(cmd, "require_2fa", paramsUserUpdate.Require2fa, mapParams)
 			}
@@ -940,7 +931,6 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&UserUpdateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserUpdate.SslRequired.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "ssl-required", paramsUserUpdate.SslRequired.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
-	cmdUpdate.Flags().BoolVar(&updateSubscribeToNewsletter, "subscribe-to-newsletter", updateSubscribeToNewsletter, "Is the user subscribed to the newsletter?")
 	cmdUpdate.Flags().StringVar(&UserUpdateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserUpdate.Require2fa.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "require-2fa", paramsUserUpdate.Require2fa.Enum())
 	cmdUpdate.Flags().StringVar(&paramsUserUpdate.Tags, "tags", "", "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.")
