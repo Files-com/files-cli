@@ -4266,7 +4266,7 @@
           "name": "--delivery-policy",
           "type": "object",
           "required": false,
-          "description": "Event Subscription delivery policy."
+          "description": "Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy."
         },
         {
           "name": "--event-target-ids",
@@ -4352,7 +4352,7 @@
           "name": "--delivery-policy",
           "type": "object",
           "required": false,
-          "description": "Event Subscription delivery policy."
+          "description": "Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy."
         },
         {
           "name": "--event-target-ids",
@@ -4444,7 +4444,7 @@
           "name": "--config",
           "type": "object",
           "required": true,
-          "description": "Event Target configuration. Folder targets accept path and format (json or csv)."
+          "description": "Event Target configuration. Fields depend on target_type."
         },
         {
           "name": "--delivery-policy",
@@ -4500,7 +4500,7 @@
           "name": "--config",
           "type": "object",
           "required": false,
-          "description": "Event Target configuration. Folder targets accept path and format (json or csv)."
+          "description": "Event Target configuration. Fields depend on target_type."
         },
         {
           "name": "--delivery-policy",
@@ -11521,7 +11521,7 @@
           "name": "--export-options",
           "type": "object",
           "required": false,
-          "description": "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`."
+          "description": "Options for the report selected by export_type."
         },
         {
           "name": "--user-id",
@@ -11619,7 +11619,7 @@
           "name": "--export-options",
           "type": "object",
           "required": false,
-          "description": "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`."
+          "description": "Options for the report selected by export_type."
         },
         {
           "name": "--user-id",

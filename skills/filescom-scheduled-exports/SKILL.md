@@ -38,7 +38,7 @@ Create Scheduled Export.
 | --- | --- | --- |
 | `--name` | string | Name for this scheduled export. **Required.** |
 | `--export-type` | string | Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit **Required.** |
-| `--export-options` | object | Report-specific options. `permission_audit` supports `group_by` with `user` or `path`. |
+| `--export-options` | object | Options for the report selected by export_type. |
 | `--user-id` | int64 | Site Admin user who receives the completed export e-mail. |
 | `--disabled` | bool | If true, this scheduled export will not run. |
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
@@ -60,7 +60,7 @@ Update Scheduled Export.
 | `--id` | int64 | Scheduled Export ID. **Required.** |
 | `--name` | string | Name for this scheduled export. |
 | `--export-type` | string | Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit |
-| `--export-options` | object | Report-specific options. `permission_audit` supports `group_by` with `user` or `path`. |
+| `--export-options` | object | Options for the report selected by export_type. |
 | `--user-id` | int64 | Site Admin user who receives the completed export e-mail. |
 | `--disabled` | bool | If true, this scheduled export will not run. |
 | `--trigger` | enum | Schedule trigger type: `daily` or `custom_schedule`. One of: `daily`, `custom_schedule`. |
