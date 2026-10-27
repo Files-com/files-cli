@@ -332,7 +332,7 @@ func Files() *cobra.Command {
 	cmdBeginDelete.Flags().StringSliceVar(&formatBeginDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdBeginDelete.Flags().BoolVar(&usePagerBeginDelete, "use-pager", usePagerBeginDelete, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdBeginDelete, lib.EffectMutating)
+	lib.SetCommandEffect(cmdBeginDelete, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdBeginDelete, "FileAction", false)
 	Files.AddCommand(cmdBeginDelete)
 	var fieldsCopy []string
@@ -500,7 +500,7 @@ func Files() *cobra.Command {
 	cmdTransform.Flags().StringSliceVar(&formatTransform, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdTransform.Flags().BoolVar(&usePagerTransform, "use-pager", usePagerTransform, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdTransform, lib.EffectMutating)
+	lib.SetCommandEffect(cmdTransform, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdTransform, "FileAction", false)
 	Files.AddCommand(cmdTransform)
 	var fieldsGpgDecrypt []string
@@ -553,7 +553,7 @@ func Files() *cobra.Command {
 	cmdGpgDecrypt.Flags().StringSliceVar(&formatGpgDecrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGpgDecrypt.Flags().BoolVar(&usePagerGpgDecrypt, "use-pager", usePagerGpgDecrypt, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdGpgDecrypt, lib.EffectMutating)
+	lib.SetCommandEffect(cmdGpgDecrypt, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdGpgDecrypt, "FileAction", false)
 	Files.AddCommand(cmdGpgDecrypt)
 	var fieldsGpgEncrypt []string
@@ -602,7 +602,7 @@ func Files() *cobra.Command {
 	cmdGpgEncrypt.Flags().StringSliceVar(&formatGpgEncrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
 	cmdGpgEncrypt.Flags().BoolVar(&usePagerGpgEncrypt, "use-pager", usePagerGpgEncrypt, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdGpgEncrypt, lib.EffectMutating)
+	lib.SetCommandEffect(cmdGpgEncrypt, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdGpgEncrypt, "FileAction", false)
 	Files.AddCommand(cmdGpgEncrypt)
 	var fieldsUnzip []string
