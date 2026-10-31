@@ -35,7 +35,7 @@ Create AS2 Station.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--name` | string | The station's formal AS2 name. **Required.** |
+| `--name` | string | The station's formal AS2 name, unique across all Workspaces on the Site. **Required.** |
 | `--workspace-id` | int64 | ID of the Workspace associated with this AS2 Station. |
 | `--public-certificate` | string | Public certificate used for message security. |
 | `--private-key` | string | PEM-encoded private key matching public_certificate. |
@@ -50,7 +50,7 @@ Update AS2 Station.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | As2 Station ID. **Required.** |
-| `--name` | string | The station's formal AS2 name. |
+| `--name` | string | The station's formal AS2 name, unique across all Workspaces on the Site. |
 | `--public-certificate` | string | Public certificate used for message security. |
 | `--private-key` | string | PEM-encoded private key matching public_certificate. |
 | `--private-key-password` | string | Password for the PEM-encoded private key. |

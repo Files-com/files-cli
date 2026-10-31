@@ -165,7 +165,7 @@ func As2Stations() *cobra.Command {
 			return lib.HandleResponse(ctx, Profile(cmd), as2Station, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreate), fieldsCreate, usePagerCreate, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "The station's formal AS2 name.")
+	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.Name, "name", "", "The station's formal AS2 name, unique across all Workspaces on the Site.")
 	lib.SetFlagAPIRequired(cmdCreate.Flags(), "name")
 	cmdCreate.Flags().Int64Var(&paramsAs2StationCreate.WorkspaceId, "workspace-id", 0, "ID of the Workspace associated with this AS2 Station.")
 	cmdCreate.Flags().StringVar(&paramsAs2StationCreate.PublicCertificate, "public-certificate", "", "Public certificate used for message security.")
@@ -231,7 +231,7 @@ func As2Stations() *cobra.Command {
 	}
 	cmdUpdate.Flags().Int64Var(&paramsAs2StationUpdate.Id, "id", 0, "As2 Station ID.")
 	lib.SetFlagAPIRequired(cmdUpdate.Flags(), "id")
-	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Name, "name", "", "The station's formal AS2 name.")
+	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.Name, "name", "", "The station's formal AS2 name, unique across all Workspaces on the Site.")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PublicCertificate, "public-certificate", "", "Public certificate used for message security.")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKey, "private-key", "", "PEM-encoded private key matching public_certificate.")
 	cmdUpdate.Flags().StringVar(&paramsAs2StationUpdate.PrivateKeyPassword, "private-key-password", "", "Password for the PEM-encoded private key.")

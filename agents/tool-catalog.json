@@ -1275,7 +1275,7 @@
           "name": "--name",
           "type": "string",
           "required": true,
-          "description": "The station's formal AS2 name."
+          "description": "The station's formal AS2 name, unique across all Workspaces on the Site."
         },
         {
           "name": "--workspace-id",
@@ -1331,7 +1331,7 @@
           "name": "--name",
           "type": "string",
           "required": false,
-          "description": "The station's formal AS2 name."
+          "description": "The station's formal AS2 name, unique across all Workspaces on the Site."
         },
         {
           "name": "--public-certificate",
