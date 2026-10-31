@@ -82,6 +82,7 @@ Update Site Settings.
 | `--as2-message-retention-days` | int64 | Number of days to retain AS2 messages (incoming and outgoing). |
 | `--file-activity-events-enabled` | bool | If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery. |
 | `--username-display` | string | How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`. |
+| `--integration-centric-remote-server-admin-access` | string | Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default. |
 | `--session-expiry-minutes` | int64 | Session expiry in minutes |
 | `--ssl-required` | bool | Is SSL required?  Disabling this is insecure. |
 | `--sftp-insecure-ciphers` | bool | If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility. |

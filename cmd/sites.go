@@ -369,6 +369,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("username-display") {
 				lib.FlagUpdate(cmd, "username_display", paramsSiteUpdate.UsernameDisplay, mapParams)
 			}
+			if cmd.Flags().Changed("integration-centric-remote-server-admin-access") {
+				lib.FlagUpdate(cmd, "integration_centric_remote_server_admin_access", paramsSiteUpdate.IntegrationCentricRemoteServerAdminAccess, mapParams)
+			}
 			if cmd.Flags().Changed("session-expiry-minutes") {
 				lib.FlagUpdate(cmd, "session_expiry_minutes", paramsSiteUpdate.SessionExpiryMinutes, mapParams)
 			}
@@ -866,6 +869,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.As2MessageRetentionDays, "as2-message-retention-days", 0, "Number of days to retain AS2 messages (incoming and outgoing).")
 	cmdUpdate.Flags().BoolVar(&updateFileActivityEventsEnabled, "file-activity-events-enabled", updateFileActivityEventsEnabled, "If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.UsernameDisplay, "username-display", "", "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.")
+	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.IntegrationCentricRemoteServerAdminAccess, "integration-centric-remote-server-admin-access", "", "Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")

@@ -231,6 +231,7 @@ func RemoteServers() *cobra.Command {
 	createEnableDedicatedIps := true
 	createPinToSiteRegion := true
 	createS3CompatibleVirtualHostedStyle := true
+	createSiteAdminAccess := true
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
 	RemoteServerCreateBufferUploads := ""
 	RemoteServerCreateFilesAgentPermissionSet := ""
@@ -306,6 +307,9 @@ func RemoteServers() *cobra.Command {
 			}
 			if cmd.Flags().Changed("s3-compatible-virtual-hosted-style") {
 				paramsRemoteServerCreate.S3CompatibleVirtualHostedStyle = flib.Bool(createS3CompatibleVirtualHostedStyle)
+			}
+			if cmd.Flags().Changed("site-admin-access") {
+				paramsRemoteServerCreate.SiteAdminAccess = flib.Bool(createSiteAdminAccess)
 			}
 
 			var remoteServer interface{}
@@ -397,6 +401,7 @@ func RemoteServers() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.ServerHostKey, "server-host-key", "", "Pinned SSH host key or OpenSSH host certificate for SFTP. If omitted, Files.com detects and stores a host key, preferring plain keys over certificates. With `server_certificate=require_match` (the default), the server must present the exact pinned key or certificate and prove it holds the matching private key. A pinned certificate is compared in full, so renewal can require updating `server_host_key` even when its underlying key is unchanged. Files.com does not check certificate CA signatures, principals, or validity periods. Certificate expiration alone does not end the pin. Update `server_host_key` to replace the pin.")
 	cmdCreate.Flags().StringVar(&RemoteServerCreateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerCreate.ServerType.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "server-type", paramsRemoteServerCreate.ServerType.Enum())
+	cmdCreate.Flags().BoolVar(&createSiteAdminAccess, "site-admin-access", createSiteAdminAccess, "Owner's preference for administrator access to this user-owned Remote Server. Null uses the Site policy's default. Only the owner may change it when the Site policy allows user choice.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
 	cmdCreate.Flags().StringVar(&paramsRemoteServerCreate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
@@ -465,6 +470,7 @@ func RemoteServers() *cobra.Command {
 	updateEnableDedicatedIps := true
 	updatePinToSiteRegion := true
 	updateS3CompatibleVirtualHostedStyle := true
+	updateSiteAdminAccess := true
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	RemoteServerUpdateBufferUploads := ""
 	RemoteServerUpdateFilesAgentPermissionSet := ""
@@ -756,6 +762,9 @@ func RemoteServers() *cobra.Command {
 			if cmd.Flags().Changed("server-type") {
 				lib.FlagUpdate(cmd, "server_type", paramsRemoteServerUpdate.ServerType, mapParams)
 			}
+			if cmd.Flags().Changed("site-admin-access") {
+				mapParams["site_admin_access"] = updateSiteAdminAccess
+			}
 			if cmd.Flags().Changed("sharepoint-client-id") {
 				lib.FlagUpdate(cmd, "sharepoint_client_id", paramsRemoteServerUpdate.SharepointClientId, mapParams)
 			}
@@ -871,6 +880,7 @@ func RemoteServers() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.ServerHostKey, "server-host-key", "", "Pinned SSH host key or OpenSSH host certificate for SFTP. If omitted, Files.com detects and stores a host key, preferring plain keys over certificates. With `server_certificate=require_match` (the default), the server must present the exact pinned key or certificate and prove it holds the matching private key. A pinned certificate is compared in full, so renewal can require updating `server_host_key` even when its underlying key is unchanged. Files.com does not check certificate CA signatures, principals, or validity periods. Certificate expiration alone does not end the pin. Update `server_host_key` to replace the pin.")
 	cmdUpdate.Flags().StringVar(&RemoteServerUpdateServerType, "server-type", "", fmt.Sprintf("Remote server type. %v", reflect.ValueOf(paramsRemoteServerUpdate.ServerType.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "server-type", paramsRemoteServerUpdate.ServerType.Enum())
+	cmdUpdate.Flags().BoolVar(&updateSiteAdminAccess, "site-admin-access", updateSiteAdminAccess, "Owner's preference for administrator access to this user-owned Remote Server. Null uses the Site policy's default. Only the owner may change it when the Site policy allows user choice.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointClientId, "sharepoint-client-id", "", "SharePoint: Microsoft Entra application client ID for app-only authentication.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointSiteUrl, "sharepoint-site-url", "", "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.")
 	cmdUpdate.Flags().StringVar(&paramsRemoteServerUpdate.SharepointTenantId, "sharepoint-tenant-id", "", "SharePoint: Microsoft Entra tenant ID for app-only authentication.")
