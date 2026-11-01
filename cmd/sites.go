@@ -106,6 +106,7 @@ func Sites() *cobra.Command {
 	updateLegacyChecksumsMode := true
 	updateMigrateRemoteServerSyncToSync := true
 	updateFileActivityEventsEnabled := true
+	updateLegacyPairingEnabled := true
 	updateSslRequired := true
 	updateSftpInsecureCiphers := true
 	updateSftpInsecureDiffieHellman := true
@@ -374,6 +375,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("session-expiry-minutes") {
 				lib.FlagUpdate(cmd, "session_expiry_minutes", paramsSiteUpdate.SessionExpiryMinutes, mapParams)
+			}
+			if cmd.Flags().Changed("legacy-pairing-enabled") {
+				mapParams["legacy_pairing_enabled"] = updateLegacyPairingEnabled
 			}
 			if cmd.Flags().Changed("ssl-required") {
 				mapParams["ssl_required"] = updateSslRequired
@@ -871,6 +875,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.UsernameDisplay, "username-display", "", "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.IntegrationCentricRemoteServerAdminAccess, "integration-centric-remote-server-admin-access", "", "Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
+	cmdUpdate.Flags().BoolVar(&updateLegacyPairingEnabled, "legacy-pairing-enabled", updateLegacyPairingEnabled, "Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureDiffieHellman, "sftp-insecure-diffie-hellman", updateSftpInsecureDiffieHellman, "If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.")

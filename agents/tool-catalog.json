@@ -13419,6 +13419,12 @@
           "description": "Session expiry in minutes"
         },
         {
+          "name": "--legacy-pairing-enabled",
+          "type": "bool",
+          "required": false,
+          "description": "Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it."
+        },
+        {
           "name": "--ssl-required",
           "type": "bool",
           "required": false,
