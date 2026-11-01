@@ -193,23 +193,6 @@ Update Site Settings.
 | `--smtp-username` | string | SMTP server username |
 | `--smtp-port` | int64 | SMTP server port |
 | `--smtp-ssl` | string | Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded. |
-| `--ldap-enabled` | bool | Main LDAP setting: is LDAP enabled? |
-| `--ldap-type` | string | LDAP type |
-| `--ldap-host` | string | LDAP host |
-| `--ldap-host-2` | string | LDAP backup host |
-| `--ldap-host-3` | string | LDAP backup host |
-| `--ldap-port` | int64 | LDAP port |
-| `--ldap-secure` | bool | Use secure LDAP? |
-| `--ldap-server-certificate` | string | How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation. |
-| `--ldap-username` | string | Username for signing in to LDAP server. |
-| `--ldap-username-field` | string | LDAP username field |
-| `--ldap-domain` | string | Domain name that will be appended to usernames |
-| `--ldap-user-action` | string | Should we sync users from LDAP server? |
-| `--ldap-group-action` | string | Should we sync groups from LDAP server? |
-| `--ldap-user-include-groups` | string | Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced. |
-| `--ldap-group-exclusion` | string | Comma or newline separated list of group names (with optional wildcards) to exclude when syncing. |
-| `--ldap-group-inclusion` | string | Comma or newline separated list of group names (with optional wildcards) to include when syncing. |
-| `--ldap-base-dn` | string | Base DN for looking up users in LDAP server |
 | `--uploads-via-email-authentication` | bool | Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site? |
 | `--bundle-watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--icon16-file` | file | (no description) |
@@ -227,8 +210,6 @@ Update Site Settings.
 | `--login-page-background-image-file` | file | (no description) |
 | `--login-page-background-image-delete` | bool | If true, will delete the file stored in login_page_background_image |
 | `--disable-2fa-with-delay` | bool | If set to true, we will begin the process of disabling 2FA on this site. |
-| `--ldap-password-change` | string | New LDAP password. |
-| `--ldap-password-change-confirmation` | string | Confirm new LDAP password. |
 | `--redirect-old-subdomain` | bool | If true, and if changing the site subdomain, then create a redirect from the previous Files.com subdomain to the new Files.com subdomain. |
 | `--smtp-password` | string | Password for SMTP server. |
 

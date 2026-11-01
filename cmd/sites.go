@@ -179,8 +179,6 @@ func Sites() *cobra.Command {
 	updateRequire2fa := true
 	updateRequire2faExemptAllSsoUsers := true
 	updateUseDedicatedIpsForSmtp := true
-	updateLdapEnabled := true
-	updateLdapSecure := true
 	updateUploadsViaEmailAuthentication := true
 	updateIcon16Delete := true
 	updateIcon32Delete := true
@@ -703,57 +701,6 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("smtp-ssl") {
 				lib.FlagUpdate(cmd, "smtp_ssl", paramsSiteUpdate.SmtpSsl, mapParams)
 			}
-			if cmd.Flags().Changed("ldap-enabled") {
-				mapParams["ldap_enabled"] = updateLdapEnabled
-			}
-			if cmd.Flags().Changed("ldap-type") {
-				lib.FlagUpdate(cmd, "ldap_type", paramsSiteUpdate.LdapType, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-host") {
-				lib.FlagUpdate(cmd, "ldap_host", paramsSiteUpdate.LdapHost, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-host-2") {
-				lib.FlagUpdate(cmd, "ldap_host_2", paramsSiteUpdate.LdapHost2, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-host-3") {
-				lib.FlagUpdate(cmd, "ldap_host_3", paramsSiteUpdate.LdapHost3, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-port") {
-				lib.FlagUpdate(cmd, "ldap_port", paramsSiteUpdate.LdapPort, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-secure") {
-				mapParams["ldap_secure"] = updateLdapSecure
-			}
-			if cmd.Flags().Changed("ldap-server-certificate") {
-				lib.FlagUpdate(cmd, "ldap_server_certificate", paramsSiteUpdate.LdapServerCertificate, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-username") {
-				lib.FlagUpdate(cmd, "ldap_username", paramsSiteUpdate.LdapUsername, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-username-field") {
-				lib.FlagUpdate(cmd, "ldap_username_field", paramsSiteUpdate.LdapUsernameField, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-domain") {
-				lib.FlagUpdate(cmd, "ldap_domain", paramsSiteUpdate.LdapDomain, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-user-action") {
-				lib.FlagUpdate(cmd, "ldap_user_action", paramsSiteUpdate.LdapUserAction, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-group-action") {
-				lib.FlagUpdate(cmd, "ldap_group_action", paramsSiteUpdate.LdapGroupAction, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-user-include-groups") {
-				lib.FlagUpdate(cmd, "ldap_user_include_groups", paramsSiteUpdate.LdapUserIncludeGroups, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-group-exclusion") {
-				lib.FlagUpdate(cmd, "ldap_group_exclusion", paramsSiteUpdate.LdapGroupExclusion, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-group-inclusion") {
-				lib.FlagUpdate(cmd, "ldap_group_inclusion", paramsSiteUpdate.LdapGroupInclusion, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-base-dn") {
-				lib.FlagUpdate(cmd, "ldap_base_dn", paramsSiteUpdate.LdapBaseDn, mapParams)
-			}
 			if cmd.Flags().Changed("uploads-via-email-authentication") {
 				mapParams["uploads_via_email_authentication"] = updateUploadsViaEmailAuthentication
 			}
@@ -801,12 +748,6 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("disable-2fa-with-delay") {
 				mapParams["disable_2fa_with_delay"] = updateDisable2faWithDelay
-			}
-			if cmd.Flags().Changed("ldap-password-change") {
-				lib.FlagUpdate(cmd, "ldap_password_change", paramsSiteUpdate.LdapPasswordChange, mapParams)
-			}
-			if cmd.Flags().Changed("ldap-password-change-confirmation") {
-				lib.FlagUpdate(cmd, "ldap_password_change_confirmation", paramsSiteUpdate.LdapPasswordChangeConfirmation, mapParams)
 			}
 			if cmd.Flags().Changed("redirect-old-subdomain") {
 				mapParams["redirect_old_subdomain"] = updateRedirectOldSubdomain
@@ -984,23 +925,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpUsername, "smtp-username", "", "SMTP server username")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SmtpPort, "smtp-port", 0, "SMTP server port")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpSsl, "smtp-ssl", "", "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded.")
-	cmdUpdate.Flags().BoolVar(&updateLdapEnabled, "ldap-enabled", updateLdapEnabled, "Main LDAP setting: is LDAP enabled?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapType, "ldap-type", "", "LDAP type")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapHost, "ldap-host", "", "LDAP host")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapHost2, "ldap-host-2", "", "LDAP backup host")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapHost3, "ldap-host-3", "", "LDAP backup host")
-	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.LdapPort, "ldap-port", 0, "LDAP port")
-	cmdUpdate.Flags().BoolVar(&updateLdapSecure, "ldap-secure", updateLdapSecure, "Use secure LDAP?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapServerCertificate, "ldap-server-certificate", "", "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUsername, "ldap-username", "", "Username for signing in to LDAP server.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUsernameField, "ldap-username-field", "", "LDAP username field")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapDomain, "ldap-domain", "", "Domain name that will be appended to usernames")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUserAction, "ldap-user-action", "", "Should we sync users from LDAP server?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupAction, "ldap-group-action", "", "Should we sync groups from LDAP server?")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapUserIncludeGroups, "ldap-user-include-groups", "", "Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupExclusion, "ldap-group-exclusion", "", "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapGroupInclusion, "ldap-group-inclusion", "", "Comma or newline separated list of group names (with optional wildcards) to include when syncing.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapBaseDn, "ldap-base-dn", "", "Base DN for looking up users in LDAP server")
 	cmdUpdate.Flags().BoolVar(&updateUploadsViaEmailAuthentication, "uploads-via-email-authentication", updateUploadsViaEmailAuthentication, "Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site?")
 	cmdUpdate.Flags().StringVar(&updateBundleWatermarkValueJSON, "bundle-watermark-value", "", "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value Provide as a JSON object.")
 	lib.SetFlagDisplayType(cmdUpdate.Flags(), "bundle-watermark-value", "json")
@@ -1012,8 +936,6 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateBundleWatermarkAttachmentDelete, "bundle-watermark-attachment-delete", updateBundleWatermarkAttachmentDelete, "If true, will delete the file stored in bundle_watermark_attachment")
 	cmdUpdate.Flags().BoolVar(&updateLoginPageBackgroundImageDelete, "login-page-background-image-delete", updateLoginPageBackgroundImageDelete, "If true, will delete the file stored in login_page_background_image")
 	cmdUpdate.Flags().BoolVar(&updateDisable2faWithDelay, "disable-2fa-with-delay", updateDisable2faWithDelay, "If set to true, we will begin the process of disabling 2FA on this site.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChange, "ldap-password-change", "", "New LDAP password.")
-	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.LdapPasswordChangeConfirmation, "ldap-password-change-confirmation", "", "Confirm new LDAP password.")
 	cmdUpdate.Flags().BoolVar(&updateRedirectOldSubdomain, "redirect-old-subdomain", updateRedirectOldSubdomain, "If true, and if changing the site subdomain, then create a redirect from the previous Files.com subdomain to the new Files.com subdomain.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.SmtpPassword, "smtp-password", "", "Password for SMTP server.")
 

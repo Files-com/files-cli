@@ -14073,108 +14073,6 @@
           "description": "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded."
         },
         {
-          "name": "--ldap-enabled",
-          "type": "bool",
-          "required": false,
-          "description": "Main LDAP setting: is LDAP enabled?"
-        },
-        {
-          "name": "--ldap-type",
-          "type": "string",
-          "required": false,
-          "description": "LDAP type"
-        },
-        {
-          "name": "--ldap-host",
-          "type": "string",
-          "required": false,
-          "description": "LDAP host"
-        },
-        {
-          "name": "--ldap-host-2",
-          "type": "string",
-          "required": false,
-          "description": "LDAP backup host"
-        },
-        {
-          "name": "--ldap-host-3",
-          "type": "string",
-          "required": false,
-          "description": "LDAP backup host"
-        },
-        {
-          "name": "--ldap-port",
-          "type": "int64",
-          "required": false,
-          "description": "LDAP port"
-        },
-        {
-          "name": "--ldap-secure",
-          "type": "bool",
-          "required": false,
-          "description": "Use secure LDAP?"
-        },
-        {
-          "name": "--ldap-server-certificate",
-          "type": "string",
-          "required": false,
-          "description": "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation."
-        },
-        {
-          "name": "--ldap-username",
-          "type": "string",
-          "required": false,
-          "description": "Username for signing in to LDAP server."
-        },
-        {
-          "name": "--ldap-username-field",
-          "type": "string",
-          "required": false,
-          "description": "LDAP username field"
-        },
-        {
-          "name": "--ldap-domain",
-          "type": "string",
-          "required": false,
-          "description": "Domain name that will be appended to usernames"
-        },
-        {
-          "name": "--ldap-user-action",
-          "type": "string",
-          "required": false,
-          "description": "Should we sync users from LDAP server?"
-        },
-        {
-          "name": "--ldap-group-action",
-          "type": "string",
-          "required": false,
-          "description": "Should we sync groups from LDAP server?"
-        },
-        {
-          "name": "--ldap-user-include-groups",
-          "type": "string",
-          "required": false,
-          "description": "Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced."
-        },
-        {
-          "name": "--ldap-group-exclusion",
-          "type": "string",
-          "required": false,
-          "description": "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing."
-        },
-        {
-          "name": "--ldap-group-inclusion",
-          "type": "string",
-          "required": false,
-          "description": "Comma or newline separated list of group names (with optional wildcards) to include when syncing."
-        },
-        {
-          "name": "--ldap-base-dn",
-          "type": "string",
-          "required": false,
-          "description": "Base DN for looking up users in LDAP server"
-        },
-        {
           "name": "--uploads-via-email-authentication",
           "type": "bool",
           "required": false,
@@ -14275,18 +14173,6 @@
           "type": "bool",
           "required": false,
           "description": "If set to true, we will begin the process of disabling 2FA on this site."
-        },
-        {
-          "name": "--ldap-password-change",
-          "type": "string",
-          "required": false,
-          "description": "New LDAP password."
-        },
-        {
-          "name": "--ldap-password-change-confirmation",
-          "type": "string",
-          "required": false,
-          "description": "Confirm new LDAP password."
         },
         {
           "name": "--redirect-old-subdomain",
