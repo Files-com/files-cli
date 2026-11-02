@@ -178,6 +178,7 @@ Create a ZIP from one or more paths and save it to a destination path.
 | --- | --- | --- |
 | `--paths` | []string | Paths to include in the ZIP. **Required.** |
 | `--destination` | string | Destination file path for the ZIP. **Required.** |
+| `--archive-format` | enum | Archive format to create. One of: `zip`, `tar`, `tar.gz`, `tgz`. |
 | `--overwrite` | bool | Overwrite existing file in the destination? |
 
 ### `files-cli files begin-upload [path]`

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/Files-com/files-cli/lib"
@@ -652,6 +654,7 @@ func Files() *cobra.Command {
 	usePagerZip := true
 	zipOverwrite := true
 	paramsFileZip := files_sdk.FileZipParams{}
+	FileZipArchiveFormat := ""
 
 	cmdZip := &cobra.Command{
 		Use:   "zip",
@@ -662,6 +665,12 @@ func Files() *cobra.Command {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
+
+			var FileZipArchiveFormatErr error
+			paramsFileZip.ArchiveFormat, FileZipArchiveFormatErr = lib.FetchKey("archive-format", paramsFileZip.ArchiveFormat.Enum(), FileZipArchiveFormat)
+			if FileZipArchiveFormat != "" && FileZipArchiveFormatErr != nil {
+				return FileZipArchiveFormatErr
+			}
 
 			if cmd.Flags().Changed("overwrite") {
 				paramsFileZip.Overwrite = flib.Bool(zipOverwrite)
@@ -677,6 +686,8 @@ func Files() *cobra.Command {
 	lib.SetFlagAPIRequired(cmdZip.Flags(), "paths")
 	cmdZip.Flags().StringVar(&paramsFileZip.Destination, "destination", "", "Destination file path for the ZIP.")
 	lib.SetFlagAPIRequired(cmdZip.Flags(), "destination")
+	cmdZip.Flags().StringVar(&FileZipArchiveFormat, "archive-format", "", fmt.Sprintf("Archive format to create. %v", reflect.ValueOf(paramsFileZip.ArchiveFormat.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdZip.Flags(), "archive-format", paramsFileZip.ArchiveFormat.Enum())
 	cmdZip.Flags().BoolVar(&zipOverwrite, "overwrite", zipOverwrite, "Overwrite existing file in the destination?")
 
 	cmdZip.Flags().StringSliceVar(&fieldsZip, "fields", []string{}, "comma separated list of field names")

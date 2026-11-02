@@ -5783,6 +5783,12 @@
           "description": "Destination file path for the ZIP."
         },
         {
+          "name": "--archive-format",
+          "type": "enum",
+          "required": false,
+          "description": "Archive format to create."
+        },
+        {
           "name": "--overwrite",
           "type": "bool",
           "required": false,
