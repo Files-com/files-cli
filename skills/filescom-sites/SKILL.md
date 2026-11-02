@@ -26,6 +26,14 @@ Get the most recent usage snapshot (usage data for billing purposes) for a Site.
 
 No flags beyond the global ones.
 
+### `files-cli sites extend-automation-migration-window`
+
+Extend the Automations conversion window by up to six weeks beyond its originally announced end date.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--end-date` | string | New conversion-window end date in YYYY-MM-DD format, in Eastern Time (EST/EDT). Must be a Tuesday, Wednesday, or Thursday. Can only extend the current end date, within six weeks of the originally announced end date. **Required.** |
+
 ### `files-cli sites update`
 
 Update Site Settings.

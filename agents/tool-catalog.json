@@ -13101,6 +13101,20 @@
       ]
     },
     {
+      "name": "sites extend-automation-migration-window",
+      "group": "sites",
+      "description": "Extend the Automations conversion window by up to six weeks beyond its originally announced end date",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--end-date",
+          "type": "string",
+          "required": true,
+          "description": "New conversion-window end date in YYYY-MM-DD format, in Eastern Time (EST/EDT). Must be a Tuesday, Wednesday, or Thursday. Can only extend the current end date, within six weeks of the originally announced end date."
+        }
+      ]
+    },
+    {
       "name": "sites update",
       "group": "sites",
       "description": "Update Site Settings",

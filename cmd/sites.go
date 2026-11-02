@@ -75,6 +75,39 @@ func Sites() *cobra.Command {
 	lib.SetCommandEffect(cmdGetUsage, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdGetUsage, "UsageSnapshot", false)
 	Sites.AddCommand(cmdGetUsage)
+	var fieldsExtendAutomationMigrationWindow []string
+	var formatExtendAutomationMigrationWindow []string
+	usePagerExtendAutomationMigrationWindow := true
+	paramsSiteExtendAutomationMigrationWindow := files_sdk.SiteExtendAutomationMigrationWindowParams{}
+
+	cmdExtendAutomationMigrationWindow := &cobra.Command{
+		Use:   "extend-automation-migration-window",
+		Short: `Extend the Automations conversion window by up to six weeks beyond its originally announced end date`,
+		Long:  `Extend the Automations conversion window by up to six weeks beyond its originally announced end date`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := site.Client{Config: config}
+
+			var err error
+			err = client.ExtendAutomationMigrationWindow(paramsSiteExtendAutomationMigrationWindow, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdExtendAutomationMigrationWindow.Flags().StringVar(&paramsSiteExtendAutomationMigrationWindow.EndDate, "end-date", "", "New conversion-window end date in YYYY-MM-DD format, in Eastern Time (EST/EDT). Must be a Tuesday, Wednesday, or Thursday. Can only extend the current end date, within six weeks of the originally announced end date.")
+	lib.SetFlagAPIRequired(cmdExtendAutomationMigrationWindow.Flags(), "end-date")
+
+	cmdExtendAutomationMigrationWindow.Flags().StringSliceVar(&fieldsExtendAutomationMigrationWindow, "fields", []string{}, "comma separated list of field names")
+	cmdExtendAutomationMigrationWindow.Flags().StringSliceVar(&formatExtendAutomationMigrationWindow, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdExtendAutomationMigrationWindow.Flags().BoolVar(&usePagerExtendAutomationMigrationWindow, "use-pager", usePagerExtendAutomationMigrationWindow, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdExtendAutomationMigrationWindow, lib.EffectMutating)
+	lib.SetCommandResponse(cmdExtendAutomationMigrationWindow, "", false)
+	Sites.AddCommand(cmdExtendAutomationMigrationWindow)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
