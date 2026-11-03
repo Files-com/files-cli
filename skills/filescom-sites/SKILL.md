@@ -94,6 +94,7 @@ Update Site Settings.
 | `--session-expiry-minutes` | int64 | Session expiry in minutes |
 | `--legacy-pairing-enabled` | bool | Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it. |
 | `--ssl-required` | bool | Is SSL required?  Disabling this is insecure. |
+| `--ftp-tls-session-reuse-required` | bool | Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces. |
 | `--sftp-insecure-ciphers` | bool | If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility. |
 | `--sftp-insecure-diffie-hellman` | bool | If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option. |
 | `--disable-files-certificate-generation` | bool | If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain. |
@@ -108,6 +109,7 @@ Update Site Settings.
 | `--allow-user-level-2fa-override` | bool | Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis? |
 | `--allow-user-level-allowed-ip-override` | bool | Allow the site-wide allowed IP restriction to be overriden on a per-user-basis? |
 | `--allow-user-level-ssl-override` | bool | Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis? |
+| `--allow-user-level-ftp-tls-session-reuse-override` | bool | Allow per-user overrides of the FTP TLS session reuse requirement? |
 | `--enforce-parent-site-user-ip-restrictions` | bool | Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false. |
 | `--disallowed-countries` | string | Comma separated list of disallowed Country codes |
 | `--days-to-retain-backups` | int64 | Number of days to keep deleted files |

@@ -13451,6 +13451,12 @@
           "description": "Is SSL required?  Disabling this is insecure."
         },
         {
+          "name": "--ftp-tls-session-reuse-required",
+          "type": "bool",
+          "required": false,
+          "description": "Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces."
+        },
+        {
           "name": "--sftp-insecure-ciphers",
           "type": "bool",
           "required": false,
@@ -13533,6 +13539,12 @@
           "type": "bool",
           "required": false,
           "description": "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?"
+        },
+        {
+          "name": "--allow-user-level-ftp-tls-session-reuse-override",
+          "type": "bool",
+          "required": false,
+          "description": "Allow per-user overrides of the FTP TLS session reuse requirement?"
         },
         {
           "name": "--enforce-parent-site-user-ip-restrictions",
@@ -15978,6 +15990,12 @@
           "description": "SSL required setting"
         },
         {
+          "name": "--ftp-tls-session-reuse-required",
+          "type": "enum",
+          "required": false,
+          "description": "FTP TLS session reuse requirement: use_system_setting, always_require, or never_require"
+        },
+        {
           "name": "--sso-strategy-id",
           "type": "int64",
           "required": false,
@@ -16440,6 +16458,12 @@
           "type": "enum",
           "required": false,
           "description": "SSL required setting"
+        },
+        {
+          "name": "--ftp-tls-session-reuse-required",
+          "type": "enum",
+          "required": false,
+          "description": "FTP TLS session reuse requirement: use_system_setting, always_require, or never_require"
         },
         {
           "name": "--sso-strategy-id",

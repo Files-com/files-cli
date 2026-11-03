@@ -248,6 +248,7 @@ func Users() *cobra.Command {
 	UserCreateAuthenticationMethod := ""
 	UserCreateFilesystemLayout := ""
 	UserCreateSslRequired := ""
+	UserCreateFtpTlsSessionReuseRequired := ""
 	UserCreateRequire2fa := ""
 
 	cmdCreate := &cobra.Command{
@@ -274,6 +275,11 @@ func Users() *cobra.Command {
 			paramsUserCreate.SslRequired, UserCreateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserCreate.SslRequired.Enum(), UserCreateSslRequired)
 			if UserCreateSslRequired != "" && UserCreateSslRequiredErr != nil {
 				return UserCreateSslRequiredErr
+			}
+			var UserCreateFtpTlsSessionReuseRequiredErr error
+			paramsUserCreate.FtpTlsSessionReuseRequired, UserCreateFtpTlsSessionReuseRequiredErr = lib.FetchKey("ftp-tls-session-reuse-required", paramsUserCreate.FtpTlsSessionReuseRequired.Enum(), UserCreateFtpTlsSessionReuseRequired)
+			if UserCreateFtpTlsSessionReuseRequired != "" && UserCreateFtpTlsSessionReuseRequiredErr != nil {
+				return UserCreateFtpTlsSessionReuseRequiredErr
 			}
 			var UserCreateRequire2faErr error
 			paramsUserCreate.Require2fa, UserCreateRequire2faErr = lib.FetchKey("require-2fa", paramsUserCreate.Require2fa.Enum(), UserCreateRequire2fa)
@@ -445,6 +451,8 @@ func Users() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createSkipWelcomeScreen, "skip-welcome-screen", createSkipWelcomeScreen, "Skip Welcome page in the UI?")
 	cmdCreate.Flags().StringVar(&UserCreateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserCreate.SslRequired.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "ssl-required", paramsUserCreate.SslRequired.Enum())
+	cmdCreate.Flags().StringVar(&UserCreateFtpTlsSessionReuseRequired, "ftp-tls-session-reuse-required", "", fmt.Sprintf("FTP TLS session reuse requirement: use_system_setting, always_require, or never_require %v", reflect.ValueOf(paramsUserCreate.FtpTlsSessionReuseRequired.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdCreate.Flags(), "ftp-tls-session-reuse-required", paramsUserCreate.FtpTlsSessionReuseRequired.Enum())
 	cmdCreate.Flags().Int64Var(&paramsUserCreate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdCreate.Flags().StringVar(&UserCreateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserCreate.Require2fa.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdCreate.Flags(), "require-2fa", paramsUserCreate.Require2fa.Enum())
@@ -601,6 +609,7 @@ func Users() *cobra.Command {
 	UserUpdateAuthenticationMethod := ""
 	UserUpdateFilesystemLayout := ""
 	UserUpdateSslRequired := ""
+	UserUpdateFtpTlsSessionReuseRequired := ""
 	UserUpdateRequire2fa := ""
 
 	cmdUpdate := &cobra.Command{
@@ -632,6 +641,11 @@ func Users() *cobra.Command {
 			paramsUserUpdate.SslRequired, UserUpdateSslRequiredErr = lib.FetchKey("ssl-required", paramsUserUpdate.SslRequired.Enum(), UserUpdateSslRequired)
 			if UserUpdateSslRequired != "" && UserUpdateSslRequiredErr != nil {
 				return UserUpdateSslRequiredErr
+			}
+			var UserUpdateFtpTlsSessionReuseRequiredErr error
+			paramsUserUpdate.FtpTlsSessionReuseRequired, UserUpdateFtpTlsSessionReuseRequiredErr = lib.FetchKey("ftp-tls-session-reuse-required", paramsUserUpdate.FtpTlsSessionReuseRequired.Enum(), UserUpdateFtpTlsSessionReuseRequired)
+			if UserUpdateFtpTlsSessionReuseRequired != "" && UserUpdateFtpTlsSessionReuseRequiredErr != nil {
+				return UserUpdateFtpTlsSessionReuseRequiredErr
 			}
 			var UserUpdateRequire2faErr error
 			paramsUserUpdate.Require2fa, UserUpdateRequire2faErr = lib.FetchKey("require-2fa", paramsUserUpdate.Require2fa.Enum(), UserUpdateRequire2fa)
@@ -818,6 +832,9 @@ func Users() *cobra.Command {
 			if cmd.Flags().Changed("ssl-required") {
 				lib.FlagUpdate(cmd, "ssl_required", paramsUserUpdate.SslRequired, mapParams)
 			}
+			if cmd.Flags().Changed("ftp-tls-session-reuse-required") {
+				lib.FlagUpdate(cmd, "ftp_tls_session_reuse_required", paramsUserUpdate.FtpTlsSessionReuseRequired, mapParams)
+			}
 			if cmd.Flags().Changed("sso-strategy-id") {
 				lib.FlagUpdate(cmd, "sso_strategy_id", paramsUserUpdate.SsoStrategyId, mapParams)
 			}
@@ -930,6 +947,8 @@ func Users() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateSkipWelcomeScreen, "skip-welcome-screen", updateSkipWelcomeScreen, "Skip Welcome page in the UI?")
 	cmdUpdate.Flags().StringVar(&UserUpdateSslRequired, "ssl-required", "", fmt.Sprintf("SSL required setting %v", reflect.ValueOf(paramsUserUpdate.SslRequired.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "ssl-required", paramsUserUpdate.SslRequired.Enum())
+	cmdUpdate.Flags().StringVar(&UserUpdateFtpTlsSessionReuseRequired, "ftp-tls-session-reuse-required", "", fmt.Sprintf("FTP TLS session reuse requirement: use_system_setting, always_require, or never_require %v", reflect.ValueOf(paramsUserUpdate.FtpTlsSessionReuseRequired.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdUpdate.Flags(), "ftp-tls-session-reuse-required", paramsUserUpdate.FtpTlsSessionReuseRequired.Enum())
 	cmdUpdate.Flags().Int64Var(&paramsUserUpdate.SsoStrategyId, "sso-strategy-id", 0, "SSO (Single Sign On) strategy ID for the user, if applicable.")
 	cmdUpdate.Flags().StringVar(&UserUpdateRequire2fa, "require-2fa", "", fmt.Sprintf("2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. %v", reflect.ValueOf(paramsUserUpdate.Require2fa.Enum()).MapKeys()))
 	lib.SetFlagEnum(cmdUpdate.Flags(), "require-2fa", paramsUserUpdate.Require2fa.Enum())

@@ -141,6 +141,7 @@ func Sites() *cobra.Command {
 	updateFileActivityEventsEnabled := true
 	updateLegacyPairingEnabled := true
 	updateSslRequired := true
+	updateFtpTlsSessionReuseRequired := true
 	updateSftpInsecureCiphers := true
 	updateSftpInsecureDiffieHellman := true
 	updateDisableFilesCertificateGeneration := true
@@ -150,6 +151,7 @@ func Sites() *cobra.Command {
 	updateAllowUserLevel2faOverride := true
 	updateAllowUserLevelAllowedIpOverride := true
 	updateAllowUserLevelSslOverride := true
+	updateAllowUserLevelFtpTlsSessionReuseOverride := true
 	updateEnforceParentSiteUserIpRestrictions := true
 	updatePasswordRequireLetter := true
 	updatePasswordRequireMixed := true
@@ -413,6 +415,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("ssl-required") {
 				mapParams["ssl_required"] = updateSslRequired
 			}
+			if cmd.Flags().Changed("ftp-tls-session-reuse-required") {
+				mapParams["ftp_tls_session_reuse_required"] = updateFtpTlsSessionReuseRequired
+			}
 			if cmd.Flags().Changed("sftp-insecure-ciphers") {
 				mapParams["sftp_insecure_ciphers"] = updateSftpInsecureCiphers
 			}
@@ -454,6 +459,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("allow-user-level-ssl-override") {
 				mapParams["allow_user_level_ssl_override"] = updateAllowUserLevelSslOverride
+			}
+			if cmd.Flags().Changed("allow-user-level-ftp-tls-session-reuse-override") {
+				mapParams["allow_user_level_ftp_tls_session_reuse_override"] = updateAllowUserLevelFtpTlsSessionReuseOverride
 			}
 			if cmd.Flags().Changed("enforce-parent-site-user-ip-restrictions") {
 				mapParams["enforce_parent_site_user_ip_restrictions"] = updateEnforceParentSiteUserIpRestrictions
@@ -851,6 +859,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.SessionExpiryMinutes, "session-expiry-minutes", 0, "Session expiry in minutes")
 	cmdUpdate.Flags().BoolVar(&updateLegacyPairingEnabled, "legacy-pairing-enabled", updateLegacyPairingEnabled, "Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.")
 	cmdUpdate.Flags().BoolVar(&updateSslRequired, "ssl-required", updateSslRequired, "Is SSL required?  Disabling this is insecure.")
+	cmdUpdate.Flags().BoolVar(&updateFtpTlsSessionReuseRequired, "ftp-tls-session-reuse-required", updateFtpTlsSessionReuseRequired, "Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureCiphers, "sftp-insecure-ciphers", updateSftpInsecureCiphers, "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.")
 	cmdUpdate.Flags().BoolVar(&updateSftpInsecureDiffieHellman, "sftp-insecure-diffie-hellman", updateSftpInsecureDiffieHellman, "If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.")
 	cmdUpdate.Flags().BoolVar(&updateDisableFilesCertificateGeneration, "disable-files-certificate-generation", updateDisableFilesCertificateGeneration, "If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain.")
@@ -865,6 +874,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevel2faOverride, "allow-user-level-2fa-override", updateAllowUserLevel2faOverride, "Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelAllowedIpOverride, "allow-user-level-allowed-ip-override", updateAllowUserLevelAllowedIpOverride, "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?")
 	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelSslOverride, "allow-user-level-ssl-override", updateAllowUserLevelSslOverride, "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?")
+	cmdUpdate.Flags().BoolVar(&updateAllowUserLevelFtpTlsSessionReuseOverride, "allow-user-level-ftp-tls-session-reuse-override", updateAllowUserLevelFtpTlsSessionReuseOverride, "Allow per-user overrides of the FTP TLS session reuse requirement?")
 	cmdUpdate.Flags().BoolVar(&updateEnforceParentSiteUserIpRestrictions, "enforce-parent-site-user-ip-restrictions", updateEnforceParentSiteUserIpRestrictions, "Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false.")
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.DisallowedCountries, "disallowed-countries", "", "Comma separated list of disallowed Country codes")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.DaysToRetainBackups, "days-to-retain-backups", 0, "Number of days to keep deleted files")

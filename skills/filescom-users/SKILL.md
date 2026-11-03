@@ -119,6 +119,7 @@ Create User.
 | `--site-admin` | bool | Is the user an administrator for this site? |
 | `--skip-welcome-screen` | bool | Skip Welcome page in the UI? |
 | `--ssl-required` | enum | SSL required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
+| `--ftp-tls-session-reuse-required` | enum | FTP TLS session reuse requirement: use_system_setting, always_require, or never_require. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--sso-strategy-id` | int64 | SSO (Single Sign On) strategy ID for the user, if applicable. |
 | `--require-2fa` | enum | 2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--tags` | string | Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
@@ -219,6 +220,7 @@ Update User.
 | `--site-admin` | bool | Is the user an administrator for this site? |
 | `--skip-welcome-screen` | bool | Skip Welcome page in the UI? |
 | `--ssl-required` | enum | SSL required setting. One of: `use_system_setting`, `always_require`, `never_require`. |
+| `--ftp-tls-session-reuse-required` | enum | FTP TLS session reuse requirement: use_system_setting, always_require, or never_require. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--sso-strategy-id` | int64 | SSO (Single Sign On) strategy ID for the user, if applicable. |
 | `--require-2fa` | enum | 2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed. One of: `use_system_setting`, `always_require`, `never_require`. |
 | `--tags` | string | Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens. |
