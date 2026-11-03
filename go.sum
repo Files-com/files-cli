@@ -1,5 +1,5 @@
-github.com/Files-com/files-sdk-go/v3 v3.3.344 h1:ql0X/TwSepV/DqKhTEhH2uGJ14EJfS1qvGYUqE3z7do=
-github.com/Files-com/files-sdk-go/v3 v3.3.344/go.mod h1:o1UsIp/aNAIm2e19QPCsRJ+s+x8BndOJD//qg4YSBU4=
+github.com/Files-com/files-sdk-go/v3 v3.3.345 h1:T5ni4c0sOH0/TgXdGkX4G3AWDy5uWqSmease5d/Akh8=
+github.com/Files-com/files-sdk-go/v3 v3.3.345/go.mod h1:o1UsIp/aNAIm2e19QPCsRJ+s+x8BndOJD//qg4YSBU4=
 github.com/IGLOU-EU/go-wildcard v1.0.3 h1:r8T46+8/9V1STciXJomTWRpPEv4nGJATDbJkdU0Nou0=
 github.com/IGLOU-EU/go-wildcard v1.0.3/go.mod h1:/qeV4QLmydCbwH0UMQJmXDryrFKJknWi/jjO8IiuQfY=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
@@ -129,8 +129,8 @@ github.com/quic-go/go-ossfuzz-seeds v0.1.0 h1:APacT+iIaNF6fd8AGEiN3bT/Jtkd2jz4v4
 github.com/quic-go/go-ossfuzz-seeds v0.1.0/go.mod h1:3IOHRbJIc+L6YKMwfDtJAM9Vj9k0YY4muhuyUYk5tbk=
 github.com/quic-go/qpack v0.6.0 h1:g7W+BMYynC1LbYLSqRt8PBg5Tgwxn214ZZR34VIOjz8=
 github.com/quic-go/qpack v0.6.0/go.mod h1:lUpLKChi8njB4ty2bFLX2x4gzDqXwUpaO1DP9qMDZII=
-github.com/quic-go/quic-go v0.64.1 h1:BCNTP+6x6++OPKrGST2FR3f1tycx8O3QOA3QQv09g70=
-github.com/quic-go/quic-go v0.64.1/go.mod h1:RAro2j2yN9a9EiPACLHT9IB2NXCvGQmmo/alT0yYI0w=
+github.com/quic-go/quic-go v0.65.0 h1:BJQSjdTvLPLmWtaCupUphRbgxgpZhdO/GMpr9Eoe3B4=
+github.com/quic-go/quic-go v0.65.0/go.mod h1:RAro2j2yN9a9EiPACLHT9IB2NXCvGQmmo/alT0yYI0w=
 github.com/rivo/uniseg v0.1.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=

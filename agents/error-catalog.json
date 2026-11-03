@@ -1167,6 +1167,12 @@
       "category": "rate-limited"
     },
     {
+      "type": "rate-limited/files-native-storage-overloaded",
+      "title": "Files Native Storage Overloaded",
+      "http_code": 429,
+      "category": "rate-limited"
+    },
+    {
       "type": "rate-limited/reauthentication-rate-limited",
       "title": "Reauthentication Rate Limited",
       "http_code": 429,
