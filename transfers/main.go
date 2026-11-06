@@ -319,7 +319,7 @@ func (t *Transfers) adaptiveUploadV2FileConcurrencyCap() int {
 
 func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 	t.createManager()
-	config.Logger.Printf(keyvalue.New(map[string]interface{}{
+	config.Logger.Printf("%s", keyvalue.New(map[string]interface{}{
 		"message":                    "transfer manager caps",
 		"adaptive_upload_enabled":    t.AdaptiveUploadEnabled(),
 		"adaptive_download_enabled":  t.AdaptiveDownloadEnabled(),
@@ -360,7 +360,7 @@ func (t *Transfers) raiseOpenFileLimit(config files_sdk.Config) {
 	if err != nil {
 		fields["open_file_limit_error"] = err.Error()
 	}
-	config.Logger.Printf(keyvalue.New(fields))
+	config.Logger.Printf("%s", keyvalue.New(fields))
 }
 
 func (t *Transfers) createProgress(ctx context.Context) {
@@ -769,7 +769,7 @@ func (t *Transfers) metricsLogging() {
 		"file_rate":     fmt.Sprintf("%.1f", t.FilesRateValue()),
 	}
 	t.addZipBatchMetrics(fields)
-	t.Logger.Printf(keyvalue.New(fields))
+	t.Logger.Printf("%s", keyvalue.New(fields))
 }
 
 func (t *Transfers) logZipBatchSummary() {
@@ -799,7 +799,7 @@ func (t *Transfers) logZipBatchSummary() {
 		)
 	}
 	t.Log("zip-batch", message, nil)
-	t.Logger.Printf(message)
+	t.Logger.Printf("%s", message)
 }
 
 func (t *Transfers) addZipBatchMetrics(fields map[string]interface{}) {

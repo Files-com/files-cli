@@ -87,14 +87,25 @@ func (s *rangedFileServer) serveRange(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	end = min(end, s.size-1)
+	validator := fmt.Sprintf(`"ranged-v1-%d"`, s.size)
+	if match := r.Header.Get("If-Match"); match != "" && match != validator {
+		w.WriteHeader(http.StatusPreconditionFailed)
+		return
+	}
 	s.mu.Lock()
 	s.requested = append(s.requested, start)
+	held := start == s.hold
 	s.mu.Unlock()
+	w.Header().Set("ETag", validator)
 	w.Header().Set("X-Files-Download-Request-Id", fmt.Sprintf("req-%d", start))
-	w.Header().Set("Content-Range", fmt.Sprintf("bytes %d-%d/%d", start, end, s.size))
 	w.Header().Set("Content-Length", strconv.FormatInt(end-start+1, 10))
-	w.WriteHeader(http.StatusPartialContent)
-	if start == s.hold {
+	if r.Header.Get("Range") != "" {
+		w.Header().Set("Content-Range", fmt.Sprintf("bytes %d-%d/%d", start, end, s.size))
+		w.WriteHeader(http.StatusPartialContent)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+	if held {
 		<-r.Context().Done() // the interrupt cancels this request; nothing is delivered
 		return
 	}
@@ -225,8 +236,14 @@ func TestDownload_interruptPausesAndTheNextRunResumes(t *testing.T) {
 	require.Len(t, kept, 1, "the progress that could be kept is in one temporary download: %v", kept)
 	assert.True(t, strings.HasPrefix(kept[0], ".~files-cli"), "the temporary download stays in the reserved namespace: %v", kept[0])
 
-	// The same command again, against a server that holds nothing back.
-	resumed := newRangedFileServer(t, "big.bin", remote.size, -1)
+	// The same command and source origin again, now holding nothing back.
+	// Keep the validator stable and observe only this command's requests.
+	resumed := remote
+	resumed.mu.Lock()
+	resumed.hold = -1
+	resumed.requested = nil
+	resumed.served = map[int64]int64{}
+	resumed.mu.Unlock()
 	again := Cmd(rangedServerConfig(t, resumed), Download(), []string{"big.bin", dest}, interruptFlags)
 	again.SetOut(&bytes.Buffer{})
 	again.SetErr(&bytes.Buffer{})

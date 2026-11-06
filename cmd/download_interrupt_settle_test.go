@@ -147,8 +147,20 @@ func TestDownload_interruptWaitsForWorkersWhenAnEarlierFileFailed(t *testing.T) 
 	}
 	stage, inFlight := stagedPayload(dest)
 	assert.True(t, inFlight, "the busy worker's stage is still there while the command waits")
+	pausedKind := func(name string) (legacy, bound bool) {
+		if !strings.HasSuffix(name, ".download") {
+			return false, false
+		}
+		return strings.HasPrefix(name, ".~files-cli~p-"), strings.HasPrefix(name, ".~files-cli~b1-")
+	}
 	if inFlight {
-		assert.False(t, strings.Contains(stage, "~p-"), "the stage is still in flight, not yet settled: %s", stage)
+		relative, err := filepath.Rel(dest, stage)
+		require.NoError(t, err)
+		require.True(t, filepath.IsLocal(relative))
+		entry := strings.Split(relative, string(os.PathSeparator))[0]
+		legacy, bound := pausedKind(entry)
+		assert.False(t, legacy, "the stage is still in flight, not yet settled: %s", stage)
+		assert.False(t, bound, "the busy worker has not published a committed bound stage: %s", stage)
 	}
 
 	release()
@@ -162,6 +174,27 @@ func TestDownload_interruptWaitsForWorkersWhenAnEarlierFileFailed(t *testing.T) 
 	entries, err := os.ReadDir(dest)
 	require.NoError(t, err)
 	for _, entry := range entries {
-		assert.False(t, strings.HasPrefix(entry.Name(), ".~files-cli") && !strings.Contains(entry.Name(), "~p-"), "no in-flight stage is left once the command has returned: %s", entry.Name())
+		legacy, bound := pausedKind(entry.Name())
+		assert.False(t, strings.HasPrefix(entry.Name(), ".~files-cli") && !legacy && !bound, "no in-flight stage is left once the command has returned: %s", entry.Name())
+		if bound {
+			container := filepath.Join(dest, entry.Name())
+			info, err := os.Lstat(container)
+			require.NoError(t, err)
+			require.True(t, info.IsDir(), "a committed b1 artifact is a real directory")
+			children, err := os.ReadDir(container)
+			require.NoError(t, err)
+			require.Len(t, children, 2, "a committed b1 has only payload and proof")
+			for _, name := range []string{"DATA.BIN", "BINDING"} {
+				info, err := os.Lstat(filepath.Join(container, name))
+				require.NoError(t, err)
+				require.True(t, info.Mode().IsRegular(), "the settled child is a regular file: %s", name)
+				require.Greater(t, info.Size(), int64(0))
+				if name == "DATA.BIN" {
+					require.LessOrEqual(t, info.Size(), good.size, "the settled prefix cannot exceed its source")
+				} else {
+					require.LessOrEqual(t, info.Size(), int64(1<<20), "the complete proof record obeys its published limit")
+				}
+			}
+		}
 	}
 }

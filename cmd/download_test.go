@@ -18,7 +18,7 @@ func TestDownload(t *testing.T) {
 		destinationFs := lib.ReadWriteFs(lib.LocalFileSystem{})
 		for _, tt := range lib.PathSpec(t, sourceFs.PathSeparator(), destinationFs.PathSeparator()) {
 			t.Run(tt.Name, func(t *testing.T) {
-				r, config, err := CreateConfig(t.Name())
+				r, config, err := createDownloadReplayConfig(t.Name())
 				if err != nil {
 					t.Fatal(err)
 				}
