@@ -5030,13 +5030,13 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`, `status`, `event_type` or `workspace_id`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`, `status` or `event_type`."
         },
         {
           "name": "--filter",
           "type": "object",
           "required": false,
-          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `status` or `workspace_id`. Valid field combinations are `[ status, created_at ]`."
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `created_at`, `status` or `workspace_id`. Valid field combinations are `[ status, created_at ]`, `[ workspace_id, created_at ]`, `[ workspace_id, status ]` or `[ workspace_id, status, created_at ]`."
         },
         {
           "name": "--filter-gt",
@@ -15551,7 +15551,7 @@
           "name": "--sort-by",
           "type": "object",
           "required": false,
-          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `site_id`, `company`, `name`, `disabled`, `authenticate_until`, `email`, `username`, `workspace_id`, `last_desktop_login_at`, `last_login_at`, `site_admin`, `password_validity_days`, `ssl_required` or `ftp_tls_session_reuse_required`."
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `site_id`, `company`, `name`, `email`, `username`, `workspace_id`, `last_desktop_login_at`, `authenticate_until`, `last_login_at`, `site_admin`, `disabled`, `password_validity_days`, `ssl_required` or `ftp_tls_session_reuse_required`."
         },
         {
           "name": "--filter",
