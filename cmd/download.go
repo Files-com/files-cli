@@ -48,6 +48,8 @@ func Download() *cobra.Command {
 						RemotePath:                           remotePath,
 						LocalPath:                            localPath,
 						Sync:                                 transfer.SyncFlag,
+						Ignore:                               *transfer.Ignore,
+						Include:                              *transfer.Include,
 						Manager:                              transfer.Manager,
 						RetryPolicy:                          file.RetryPolicy{Type: file.RetryUnfinished, RetryCount: transfer.RetryCount},
 						PreserveTimes:                        transfer.DownloadPreserveTimes,
