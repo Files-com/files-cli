@@ -40,14 +40,6 @@ Create Partner Site Request.
 | `--host-partner-id` | int64 | Host Partner ID to link with **Required.** |
 | `--guest-site-url` | string | Guest Site URL to link to **Required.** |
 
-### `files-cli partner-site-requests reject`
-
-Reject partner site request.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--pairing-key` | string | Pairing key for the partner site request **Required.** |
-
 ### `files-cli partner-site-requests approve`
 
 Approve partner site request.
@@ -56,6 +48,14 @@ Approve partner site request.
 | --- | --- | --- |
 | `--pairing-key` | string | Pairing key for the partner site request **Required.** |
 | `--partner-id` | int64 | ID of an existing Partner on this site, with the host role, that represents the requesting organization. The connection binds to that Partner and makes it host_and_guest. When omitted, a guest Partner named after the host site is created. |
+
+### `files-cli partner-site-requests reject`
+
+Reject partner site request.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--pairing-key` | string | Pairing key for the partner site request **Required.** |
 
 ### `files-cli partner-site-requests delete`
 

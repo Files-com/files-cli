@@ -220,6 +220,39 @@ func Files() *cobra.Command {
 	lib.SetCommandEffect(cmdDelete, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdDelete, "", false)
 	Files.AddCommand(cmdDelete)
+	var fieldsZipListContents []string
+	var formatZipListContents []string
+	usePagerZipListContents := true
+	paramsFileZipListContents := files_sdk.FileZipListContentsParams{}
+
+	cmdZipListContents := &cobra.Command{
+		Use:   "zip-list-contents [path]",
+		Short: `List the contents of a ZIP file`,
+		Long:  `List the contents of a ZIP file`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileZipListContents.Path = args[0]
+			}
+			var zipListEntryCollection interface{}
+			var err error
+			zipListEntryCollection, err = client.ZipListContents(paramsFileZipListContents, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), zipListEntryCollection, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZipListContents), fieldsZipListContents, usePagerZipListContents, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdZipListContents.Flags().StringVar(&paramsFileZipListContents.Path, "path", "", "Path to operate on.")
+
+	cmdZipListContents.Flags().StringSliceVar(&fieldsZipListContents, "fields", []string{}, "comma separated list of field names")
+	cmdZipListContents.Flags().StringSliceVar(&formatZipListContents, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdZipListContents.Flags().BoolVar(&usePagerZipListContents, "use-pager", usePagerZipListContents, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdZipListContents, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdZipListContents, "ZipListEntry", true)
+	Files.AddCommand(cmdZipListContents)
 	var fieldsFind []string
 	var formatFind []string
 	usePagerFind := true
@@ -265,78 +298,301 @@ func Files() *cobra.Command {
 	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdFind, "File", false)
 	Files.AddCommand(cmdFind)
-	var fieldsZipListContents []string
-	var formatZipListContents []string
-	usePagerZipListContents := true
-	paramsFileZipListContents := files_sdk.FileZipListContentsParams{}
+	var fieldsZip []string
+	var formatZip []string
+	usePagerZip := true
+	zipOverwrite := true
+	paramsFileZip := files_sdk.FileZipParams{}
+	FileZipArchiveFormat := ""
 
-	cmdZipListContents := &cobra.Command{
-		Use:   "zip-list-contents [path]",
-		Short: `List the contents of a ZIP file`,
-		Long:  `List the contents of a ZIP file`,
-		Args:  cobra.RangeArgs(0, 1),
+	cmdZip := &cobra.Command{
+		Use:   "zip",
+		Short: `Create a ZIP from one or more paths and save it to a destination path`,
+		Long:  `Create a ZIP from one or more paths and save it to a destination path`,
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
 
-			if len(args) > 0 && args[0] != "" {
-				paramsFileZipListContents.Path = args[0]
+			var FileZipArchiveFormatErr error
+			paramsFileZip.ArchiveFormat, FileZipArchiveFormatErr = lib.FetchKey("archive-format", paramsFileZip.ArchiveFormat.Enum(), FileZipArchiveFormat)
+			if FileZipArchiveFormat != "" && FileZipArchiveFormatErr != nil {
+				return FileZipArchiveFormatErr
 			}
-			var zipListEntryCollection interface{}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileZip.Overwrite = flib.Bool(zipOverwrite)
+			}
+
+			var fileAction interface{}
 			var err error
-			zipListEntryCollection, err = client.ZipListContents(paramsFileZipListContents, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), zipListEntryCollection, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZipListContents), fieldsZipListContents, usePagerZipListContents, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			fileAction, err = client.Zip(paramsFileZip, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZip), fieldsZip, usePagerZip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdZipListContents.Flags().StringVar(&paramsFileZipListContents.Path, "path", "", "Path to operate on.")
+	cmdZip.Flags().StringSliceVar(&paramsFileZip.Paths, "paths", []string{}, "Paths to include in the ZIP.")
+	lib.SetFlagAPIRequired(cmdZip.Flags(), "paths")
+	cmdZip.Flags().StringVar(&paramsFileZip.Destination, "destination", "", "Destination file path for the ZIP.")
+	lib.SetFlagAPIRequired(cmdZip.Flags(), "destination")
+	cmdZip.Flags().StringVar(&FileZipArchiveFormat, "archive-format", "", fmt.Sprintf("Archive format to create. %v", reflect.ValueOf(paramsFileZip.ArchiveFormat.Enum()).MapKeys()))
+	lib.SetFlagEnum(cmdZip.Flags(), "archive-format", paramsFileZip.ArchiveFormat.Enum())
+	cmdZip.Flags().BoolVar(&zipOverwrite, "overwrite", zipOverwrite, "Overwrite existing file in the destination?")
 
-	cmdZipListContents.Flags().StringSliceVar(&fieldsZipListContents, "fields", []string{}, "comma separated list of field names")
-	cmdZipListContents.Flags().StringSliceVar(&formatZipListContents, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdZipListContents.Flags().BoolVar(&usePagerZipListContents, "use-pager", usePagerZipListContents, "Use $PAGER (.ie less, more, etc)")
+	cmdZip.Flags().StringSliceVar(&fieldsZip, "fields", []string{}, "comma separated list of field names")
+	cmdZip.Flags().StringSliceVar(&formatZip, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdZip.Flags().BoolVar(&usePagerZip, "use-pager", usePagerZip, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdZipListContents, lib.EffectReadOnly)
-	lib.SetCommandResponse(cmdZipListContents, "ZipListEntry", true)
-	Files.AddCommand(cmdZipListContents)
-	var fieldsBeginDelete []string
-	var formatBeginDelete []string
-	usePagerBeginDelete := true
-	beginDeleteRecursive := true
-	paramsFileBeginDelete := files_sdk.FileBeginDeleteParams{}
+	lib.SetCommandEffect(cmdZip, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdZip, "FileAction", false)
+	Files.AddCommand(cmdZip)
+	var fieldsUnzip []string
+	var formatUnzip []string
+	usePagerUnzip := true
+	unzipOverwrite := true
+	paramsFileUnzip := files_sdk.FileUnzipParams{}
 
-	cmdBeginDelete := &cobra.Command{
-		Use:   "begin-delete [path]",
-		Short: `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
-		Long:  `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
+	cmdUnzip := &cobra.Command{
+		Use:   "unzip [path]",
+		Short: `Extract a ZIP file to a destination folder`,
+		Long:  `Extract a ZIP file to a destination folder`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
 
-			if cmd.Flags().Changed("recursive") {
-				paramsFileBeginDelete.Recursive = flib.Bool(beginDeleteRecursive)
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileUnzip.Overwrite = flib.Bool(unzipOverwrite)
 			}
 
 			if len(args) > 0 && args[0] != "" {
-				paramsFileBeginDelete.Path = args[0]
+				paramsFileUnzip.Path = args[0]
 			}
 			var fileAction interface{}
 			var err error
-			fileAction, err = client.BeginDelete(paramsFileBeginDelete, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatBeginDelete), fieldsBeginDelete, usePagerBeginDelete, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			fileAction, err = client.Unzip(paramsFileUnzip, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUnzip), fieldsUnzip, usePagerUnzip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdBeginDelete.Flags().StringVar(&paramsFileBeginDelete.Path, "path", "", "Path to operate on.")
-	cmdBeginDelete.Flags().BoolVar(&beginDeleteRecursive, "recursive", beginDeleteRecursive, "If true, will recursively delete folders.  Otherwise, will error on non-empty folders.")
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Path, "path", "", "ZIP file path to extract.")
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Destination, "destination", "", "Destination folder path for extracted files.")
+	lib.SetFlagAPIRequired(cmdUnzip.Flags(), "destination")
+	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Filename, "filename", "", "Optional single entry filename to extract.")
+	cmdUnzip.Flags().BoolVar(&unzipOverwrite, "overwrite", unzipOverwrite, "Overwrite existing files in the destination?")
 
-	cmdBeginDelete.Flags().StringSliceVar(&fieldsBeginDelete, "fields", []string{}, "comma separated list of field names")
-	cmdBeginDelete.Flags().StringSliceVar(&formatBeginDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdBeginDelete.Flags().BoolVar(&usePagerBeginDelete, "use-pager", usePagerBeginDelete, "Use $PAGER (.ie less, more, etc)")
+	cmdUnzip.Flags().StringSliceVar(&fieldsUnzip, "fields", []string{}, "comma separated list of field names")
+	cmdUnzip.Flags().StringSliceVar(&formatUnzip, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUnzip.Flags().BoolVar(&usePagerUnzip, "use-pager", usePagerUnzip, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdBeginDelete, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdBeginDelete, "FileAction", false)
-	Files.AddCommand(cmdBeginDelete)
+	lib.SetCommandEffect(cmdUnzip, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUnzip, "FileAction", false)
+	Files.AddCommand(cmdUnzip)
+	var fieldsGpgEncrypt []string
+	var formatGpgEncrypt []string
+	usePagerGpgEncrypt := true
+	gpgEncryptArmor := true
+	gpgEncryptOverwrite := true
+	paramsFileGpgEncrypt := files_sdk.FileGpgEncryptParams{}
+
+	cmdGpgEncrypt := &cobra.Command{
+		Use:   "gpg-encrypt [path]",
+		Short: `Encrypt a file with GPG and save it to a destination path`,
+		Long:  `Encrypt a file with GPG and save it to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("armor") {
+				paramsFileGpgEncrypt.Armor = flib.Bool(gpgEncryptArmor)
+			}
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileGpgEncrypt.Overwrite = flib.Bool(gpgEncryptOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileGpgEncrypt.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.GpgEncrypt(paramsFileGpgEncrypt, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgEncrypt), fieldsGpgEncrypt, usePagerGpgEncrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Path, "path", "", "Path to operate on.")
+	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Destination, "destination", "", "Destination file path for the encrypted file.")
+	lib.SetFlagAPIRequired(cmdGpgEncrypt.Flags(), "destination")
+	cmdGpgEncrypt.Flags().Int64SliceVar(&paramsFileGpgEncrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to encrypt with.")
+	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for encryption.")
+	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.SigningKeyId, "signing-key-id", 0, "Optional GPG Key ID to sign with.")
+	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptArmor, "armor", gpgEncryptArmor, "Output ASCII-armored encrypted data.")
+	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptOverwrite, "overwrite", gpgEncryptOverwrite, "Overwrite existing file in the destination?")
+
+	cmdGpgEncrypt.Flags().StringSliceVar(&fieldsGpgEncrypt, "fields", []string{}, "comma separated list of field names")
+	cmdGpgEncrypt.Flags().StringSliceVar(&formatGpgEncrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGpgEncrypt.Flags().BoolVar(&usePagerGpgEncrypt, "use-pager", usePagerGpgEncrypt, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdGpgEncrypt, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdGpgEncrypt, "FileAction", false)
+	Files.AddCommand(cmdGpgEncrypt)
+	var fieldsGpgDecrypt []string
+	var formatGpgDecrypt []string
+	usePagerGpgDecrypt := true
+	gpgDecryptUseAllPrivateKeys := true
+	gpgDecryptIgnoreMdcError := true
+	gpgDecryptOverwrite := true
+	paramsFileGpgDecrypt := files_sdk.FileGpgDecryptParams{}
+
+	cmdGpgDecrypt := &cobra.Command{
+		Use:   "gpg-decrypt [path]",
+		Short: `Decrypt a GPG-encrypted file and save it to a destination path`,
+		Long:  `Decrypt a GPG-encrypted file and save it to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("use-all-private-keys") {
+				paramsFileGpgDecrypt.UseAllPrivateKeys = flib.Bool(gpgDecryptUseAllPrivateKeys)
+			}
+			if cmd.Flags().Changed("ignore-mdc-error") {
+				paramsFileGpgDecrypt.IgnoreMdcError = flib.Bool(gpgDecryptIgnoreMdcError)
+			}
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileGpgDecrypt.Overwrite = flib.Bool(gpgDecryptOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileGpgDecrypt.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.GpgDecrypt(paramsFileGpgDecrypt, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgDecrypt), fieldsGpgDecrypt, usePagerGpgDecrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Path, "path", "", "Path to operate on.")
+	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Destination, "destination", "", "Destination file path for the decrypted file.")
+	lib.SetFlagAPIRequired(cmdGpgDecrypt.Flags(), "destination")
+	cmdGpgDecrypt.Flags().Int64SliceVar(&paramsFileGpgDecrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used.")
+	cmdGpgDecrypt.Flags().Int64Var(&paramsFileGpgDecrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for decryption.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptUseAllPrivateKeys, "use-all-private-keys", gpgDecryptUseAllPrivateKeys, "Use every accessible private GPG key in the source workspace for decryption.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptIgnoreMdcError, "ignore-mdc-error", gpgDecryptIgnoreMdcError, "Ignore errors from the MDC (modification detection code) check.")
+	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptOverwrite, "overwrite", gpgDecryptOverwrite, "Overwrite existing file in the destination?")
+
+	cmdGpgDecrypt.Flags().StringSliceVar(&fieldsGpgDecrypt, "fields", []string{}, "comma separated list of field names")
+	cmdGpgDecrypt.Flags().StringSliceVar(&formatGpgDecrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGpgDecrypt.Flags().BoolVar(&usePagerGpgDecrypt, "use-pager", usePagerGpgDecrypt, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdGpgDecrypt, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdGpgDecrypt, "FileAction", false)
+	Files.AddCommand(cmdGpgDecrypt)
+	var fieldsTransform []string
+	var formatTransform []string
+	usePagerTransform := true
+	transformOverwrite := true
+	paramsFileTransform := files_sdk.FileTransformParams{}
+
+	cmdTransform := &cobra.Command{
+		Use:   "transform [path]",
+		Short: `Transform a file and save the output to a destination path`,
+		Long:  `Transform a file and save the output to a destination path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileTransform.Overwrite = flib.Bool(transformOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileTransform.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.Transform(paramsFileTransform, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatTransform), fieldsTransform, usePagerTransform, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Path, "path", "", "Path to operate on.")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Destination, "destination", "", "Destination file path for the transformed output.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "destination")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "transform-type")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.TargetFormat, "target-format", "", "Destination format to create.")
+	lib.SetFlagAPIRequired(cmdTransform.Flags(), "target-format")
+	cmdTransform.Flags().StringVar(&paramsFileTransform.Script, "script", "", "Files TransformScript source. Required when transform_type is `files_transform_script_execute`.")
+	cmdTransform.Flags().Int64Var(&paramsFileTransform.Width, "width", 0, "Maximum output width for image_convert.")
+	cmdTransform.Flags().Int64Var(&paramsFileTransform.Height, "height", 0, "Maximum output height for image_convert.")
+	cmdTransform.Flags().BoolVar(&transformOverwrite, "overwrite", transformOverwrite, "Overwrite existing file in the destination?")
+
+	cmdTransform.Flags().StringSliceVar(&fieldsTransform, "fields", []string{}, "comma separated list of field names")
+	cmdTransform.Flags().StringSliceVar(&formatTransform, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdTransform.Flags().BoolVar(&usePagerTransform, "use-pager", usePagerTransform, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdTransform, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdTransform, "FileAction", false)
+	Files.AddCommand(cmdTransform)
+	var fieldsMove []string
+	var formatMove []string
+	usePagerMove := true
+	var blockMove bool
+	var noProgressMove bool
+	var eventLogMove bool
+	moveOverwrite := true
+	paramsFileMove := files_sdk.FileMoveParams{}
+
+	cmdMove := &cobra.Command{
+		Use:   "move [path]",
+		Short: `Move File/Folder`,
+		Long:  `Move File/Folder`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := file.Client{Config: config}
+
+			if cmd.Flags().Changed("overwrite") {
+				paramsFileMove.Overwrite = flib.Bool(moveOverwrite)
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				paramsFileMove.Path = args[0]
+			}
+			var fileAction interface{}
+			var err error
+			fileAction, err = client.Move(paramsFileMove, files_sdk.WithContext(ctx))
+			if err != nil {
+				return err
+			}
+			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockMove, noProgressMove, eventLogMove, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), cmd.OutOrStdout())
+			if err != nil {
+				return err
+			}
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
+	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
+	lib.SetFlagAPIRequired(cmdMove.Flags(), "destination")
+	cmdMove.Flags().BoolVar(&moveOverwrite, "overwrite", moveOverwrite, "Overwrite existing file(s) in the destination?")
+
+	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
+	cmdMove.Flags().StringSliceVar(&formatMove, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdMove.Flags().BoolVar(&usePagerMove, "use-pager", usePagerMove, "Use $PAGER (.ie less, more, etc)")
+
+	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
+	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
+	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
+	lib.SetCommandEffect(cmdMove, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdMove, "FileAction", false)
+	lib.SetCommandResponseWithFlag(cmdMove, "block", "FileMigration", false)
+	Files.AddCommand(cmdMove)
 	var fieldsCopy []string
 	var formatCopy []string
 	usePagerCopy := true
@@ -402,301 +658,45 @@ func Files() *cobra.Command {
 	lib.SetCommandResponse(cmdCopy, "FileAction", false)
 	lib.SetCommandResponseWithFlag(cmdCopy, "block", "FileMigration", false)
 	Files.AddCommand(cmdCopy)
-	var fieldsMove []string
-	var formatMove []string
-	usePagerMove := true
-	var blockMove bool
-	var noProgressMove bool
-	var eventLogMove bool
-	moveOverwrite := true
-	paramsFileMove := files_sdk.FileMoveParams{}
+	var fieldsBeginDelete []string
+	var formatBeginDelete []string
+	usePagerBeginDelete := true
+	beginDeleteRecursive := true
+	paramsFileBeginDelete := files_sdk.FileBeginDeleteParams{}
 
-	cmdMove := &cobra.Command{
-		Use:   "move [path]",
-		Short: `Move File/Folder`,
-		Long:  `Move File/Folder`,
+	cmdBeginDelete := &cobra.Command{
+		Use:   "begin-delete [path]",
+		Short: `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
+		Long:  `Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion`,
 		Args:  cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			config := ctx.Value("config").(files_sdk.Config)
 			client := file.Client{Config: config}
 
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileMove.Overwrite = flib.Bool(moveOverwrite)
+			if cmd.Flags().Changed("recursive") {
+				paramsFileBeginDelete.Recursive = flib.Bool(beginDeleteRecursive)
 			}
 
 			if len(args) > 0 && args[0] != "" {
-				paramsFileMove.Path = args[0]
+				paramsFileBeginDelete.Path = args[0]
 			}
 			var fileAction interface{}
 			var err error
-			fileAction, err = client.Move(paramsFileMove, files_sdk.WithContext(ctx))
-			if err != nil {
-				return err
-			}
-			fileAction, err = transfers.WaitFileMigration(ctx, config, fileAction, blockMove, noProgressMove, eventLogMove, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), cmd.OutOrStdout())
-			if err != nil {
-				return err
-			}
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatMove), fieldsMove, usePagerMove, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			fileAction, err = client.BeginDelete(paramsFileBeginDelete, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatBeginDelete), fieldsBeginDelete, usePagerBeginDelete, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdMove.Flags().StringVar(&paramsFileMove.Path, "path", "", "Path to operate on.")
-	cmdMove.Flags().StringVar(&paramsFileMove.Destination, "destination", "", "Move destination path.")
-	lib.SetFlagAPIRequired(cmdMove.Flags(), "destination")
-	cmdMove.Flags().BoolVar(&moveOverwrite, "overwrite", moveOverwrite, "Overwrite existing file(s) in the destination?")
+	cmdBeginDelete.Flags().StringVar(&paramsFileBeginDelete.Path, "path", "", "Path to operate on.")
+	cmdBeginDelete.Flags().BoolVar(&beginDeleteRecursive, "recursive", beginDeleteRecursive, "If true, will recursively delete folders.  Otherwise, will error on non-empty folders.")
 
-	cmdMove.Flags().StringSliceVar(&fieldsMove, "fields", []string{}, "comma separated list of field names")
-	cmdMove.Flags().StringSliceVar(&formatMove, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdMove.Flags().BoolVar(&usePagerMove, "use-pager", usePagerMove, "Use $PAGER (.ie less, more, etc)")
+	cmdBeginDelete.Flags().StringSliceVar(&fieldsBeginDelete, "fields", []string{}, "comma separated list of field names")
+	cmdBeginDelete.Flags().StringSliceVar(&formatBeginDelete, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdBeginDelete.Flags().BoolVar(&usePagerBeginDelete, "use-pager", usePagerBeginDelete, "Use $PAGER (.ie less, more, etc)")
 
-	cmdMove.Flags().BoolVarP(&blockMove, "block", "b", blockMove, "Wait on response for async move with final status")
-	cmdMove.Flags().BoolVar(&noProgressMove, "no-progress", noProgressMove, "Don't display progress bars when using block flag")
-	cmdMove.Flags().BoolVar(&eventLogMove, "event-log", eventLogMove, "Output full event log for move when used with block flag")
-	lib.SetCommandEffect(cmdMove, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdMove, "FileAction", false)
-	lib.SetCommandResponseWithFlag(cmdMove, "block", "FileMigration", false)
-	Files.AddCommand(cmdMove)
-	var fieldsTransform []string
-	var formatTransform []string
-	usePagerTransform := true
-	transformOverwrite := true
-	paramsFileTransform := files_sdk.FileTransformParams{}
-
-	cmdTransform := &cobra.Command{
-		Use:   "transform [path]",
-		Short: `Transform a file and save the output to a destination path`,
-		Long:  `Transform a file and save the output to a destination path`,
-		Args:  cobra.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
-
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileTransform.Overwrite = flib.Bool(transformOverwrite)
-			}
-
-			if len(args) > 0 && args[0] != "" {
-				paramsFileTransform.Path = args[0]
-			}
-			var fileAction interface{}
-			var err error
-			fileAction, err = client.Transform(paramsFileTransform, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatTransform), fieldsTransform, usePagerTransform, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdTransform.Flags().StringVar(&paramsFileTransform.Path, "path", "", "Path to operate on.")
-	cmdTransform.Flags().StringVar(&paramsFileTransform.Destination, "destination", "", "Destination file path for the transformed output.")
-	lib.SetFlagAPIRequired(cmdTransform.Flags(), "destination")
-	cmdTransform.Flags().StringVar(&paramsFileTransform.TransformType, "transform-type", "", "Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`.")
-	lib.SetFlagAPIRequired(cmdTransform.Flags(), "transform-type")
-	cmdTransform.Flags().StringVar(&paramsFileTransform.TargetFormat, "target-format", "", "Destination format to create.")
-	lib.SetFlagAPIRequired(cmdTransform.Flags(), "target-format")
-	cmdTransform.Flags().StringVar(&paramsFileTransform.Script, "script", "", "Files TransformScript source. Required when transform_type is `files_transform_script_execute`.")
-	cmdTransform.Flags().Int64Var(&paramsFileTransform.Width, "width", 0, "Maximum output width for image_convert.")
-	cmdTransform.Flags().Int64Var(&paramsFileTransform.Height, "height", 0, "Maximum output height for image_convert.")
-	cmdTransform.Flags().BoolVar(&transformOverwrite, "overwrite", transformOverwrite, "Overwrite existing file in the destination?")
-
-	cmdTransform.Flags().StringSliceVar(&fieldsTransform, "fields", []string{}, "comma separated list of field names")
-	cmdTransform.Flags().StringSliceVar(&formatTransform, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdTransform.Flags().BoolVar(&usePagerTransform, "use-pager", usePagerTransform, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdTransform, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdTransform, "FileAction", false)
-	Files.AddCommand(cmdTransform)
-	var fieldsGpgDecrypt []string
-	var formatGpgDecrypt []string
-	usePagerGpgDecrypt := true
-	gpgDecryptUseAllPrivateKeys := true
-	gpgDecryptIgnoreMdcError := true
-	gpgDecryptOverwrite := true
-	paramsFileGpgDecrypt := files_sdk.FileGpgDecryptParams{}
-
-	cmdGpgDecrypt := &cobra.Command{
-		Use:   "gpg-decrypt [path]",
-		Short: `Decrypt a GPG-encrypted file and save it to a destination path`,
-		Long:  `Decrypt a GPG-encrypted file and save it to a destination path`,
-		Args:  cobra.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
-
-			if cmd.Flags().Changed("use-all-private-keys") {
-				paramsFileGpgDecrypt.UseAllPrivateKeys = flib.Bool(gpgDecryptUseAllPrivateKeys)
-			}
-			if cmd.Flags().Changed("ignore-mdc-error") {
-				paramsFileGpgDecrypt.IgnoreMdcError = flib.Bool(gpgDecryptIgnoreMdcError)
-			}
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileGpgDecrypt.Overwrite = flib.Bool(gpgDecryptOverwrite)
-			}
-
-			if len(args) > 0 && args[0] != "" {
-				paramsFileGpgDecrypt.Path = args[0]
-			}
-			var fileAction interface{}
-			var err error
-			fileAction, err = client.GpgDecrypt(paramsFileGpgDecrypt, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgDecrypt), fieldsGpgDecrypt, usePagerGpgDecrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Path, "path", "", "Path to operate on.")
-	cmdGpgDecrypt.Flags().StringVar(&paramsFileGpgDecrypt.Destination, "destination", "", "Destination file path for the decrypted file.")
-	lib.SetFlagAPIRequired(cmdGpgDecrypt.Flags(), "destination")
-	cmdGpgDecrypt.Flags().Int64SliceVar(&paramsFileGpgDecrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to decrypt with. If omitted, every accessible private GPG key in the source workspace is used.")
-	cmdGpgDecrypt.Flags().Int64Var(&paramsFileGpgDecrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for decryption.")
-	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptUseAllPrivateKeys, "use-all-private-keys", gpgDecryptUseAllPrivateKeys, "Use every accessible private GPG key in the source workspace for decryption.")
-	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptIgnoreMdcError, "ignore-mdc-error", gpgDecryptIgnoreMdcError, "Ignore errors from the MDC (modification detection code) check.")
-	cmdGpgDecrypt.Flags().BoolVar(&gpgDecryptOverwrite, "overwrite", gpgDecryptOverwrite, "Overwrite existing file in the destination?")
-
-	cmdGpgDecrypt.Flags().StringSliceVar(&fieldsGpgDecrypt, "fields", []string{}, "comma separated list of field names")
-	cmdGpgDecrypt.Flags().StringSliceVar(&formatGpgDecrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdGpgDecrypt.Flags().BoolVar(&usePagerGpgDecrypt, "use-pager", usePagerGpgDecrypt, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdGpgDecrypt, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdGpgDecrypt, "FileAction", false)
-	Files.AddCommand(cmdGpgDecrypt)
-	var fieldsGpgEncrypt []string
-	var formatGpgEncrypt []string
-	usePagerGpgEncrypt := true
-	gpgEncryptArmor := true
-	gpgEncryptOverwrite := true
-	paramsFileGpgEncrypt := files_sdk.FileGpgEncryptParams{}
-
-	cmdGpgEncrypt := &cobra.Command{
-		Use:   "gpg-encrypt [path]",
-		Short: `Encrypt a file with GPG and save it to a destination path`,
-		Long:  `Encrypt a file with GPG and save it to a destination path`,
-		Args:  cobra.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
-
-			if cmd.Flags().Changed("armor") {
-				paramsFileGpgEncrypt.Armor = flib.Bool(gpgEncryptArmor)
-			}
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileGpgEncrypt.Overwrite = flib.Bool(gpgEncryptOverwrite)
-			}
-
-			if len(args) > 0 && args[0] != "" {
-				paramsFileGpgEncrypt.Path = args[0]
-			}
-			var fileAction interface{}
-			var err error
-			fileAction, err = client.GpgEncrypt(paramsFileGpgEncrypt, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatGpgEncrypt), fieldsGpgEncrypt, usePagerGpgEncrypt, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Path, "path", "", "Path to operate on.")
-	cmdGpgEncrypt.Flags().StringVar(&paramsFileGpgEncrypt.Destination, "destination", "", "Destination file path for the encrypted file.")
-	lib.SetFlagAPIRequired(cmdGpgEncrypt.Flags(), "destination")
-	cmdGpgEncrypt.Flags().Int64SliceVar(&paramsFileGpgEncrypt.GpgKeyIds, "gpg-key-ids", []int64{}, "GPG Key IDs to encrypt with.")
-	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.GpgKeyPartnerId, "gpg-key-partner-id", 0, "Partner ID whose GPG keys should be used for encryption.")
-	cmdGpgEncrypt.Flags().Int64Var(&paramsFileGpgEncrypt.SigningKeyId, "signing-key-id", 0, "Optional GPG Key ID to sign with.")
-	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptArmor, "armor", gpgEncryptArmor, "Output ASCII-armored encrypted data.")
-	cmdGpgEncrypt.Flags().BoolVar(&gpgEncryptOverwrite, "overwrite", gpgEncryptOverwrite, "Overwrite existing file in the destination?")
-
-	cmdGpgEncrypt.Flags().StringSliceVar(&fieldsGpgEncrypt, "fields", []string{}, "comma separated list of field names")
-	cmdGpgEncrypt.Flags().StringSliceVar(&formatGpgEncrypt, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdGpgEncrypt.Flags().BoolVar(&usePagerGpgEncrypt, "use-pager", usePagerGpgEncrypt, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdGpgEncrypt, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdGpgEncrypt, "FileAction", false)
-	Files.AddCommand(cmdGpgEncrypt)
-	var fieldsUnzip []string
-	var formatUnzip []string
-	usePagerUnzip := true
-	unzipOverwrite := true
-	paramsFileUnzip := files_sdk.FileUnzipParams{}
-
-	cmdUnzip := &cobra.Command{
-		Use:   "unzip [path]",
-		Short: `Extract a ZIP file to a destination folder`,
-		Long:  `Extract a ZIP file to a destination folder`,
-		Args:  cobra.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
-
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileUnzip.Overwrite = flib.Bool(unzipOverwrite)
-			}
-
-			if len(args) > 0 && args[0] != "" {
-				paramsFileUnzip.Path = args[0]
-			}
-			var fileAction interface{}
-			var err error
-			fileAction, err = client.Unzip(paramsFileUnzip, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUnzip), fieldsUnzip, usePagerUnzip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Path, "path", "", "ZIP file path to extract.")
-	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Destination, "destination", "", "Destination folder path for extracted files.")
-	lib.SetFlagAPIRequired(cmdUnzip.Flags(), "destination")
-	cmdUnzip.Flags().StringVar(&paramsFileUnzip.Filename, "filename", "", "Optional single entry filename to extract.")
-	cmdUnzip.Flags().BoolVar(&unzipOverwrite, "overwrite", unzipOverwrite, "Overwrite existing files in the destination?")
-
-	cmdUnzip.Flags().StringSliceVar(&fieldsUnzip, "fields", []string{}, "comma separated list of field names")
-	cmdUnzip.Flags().StringSliceVar(&formatUnzip, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdUnzip.Flags().BoolVar(&usePagerUnzip, "use-pager", usePagerUnzip, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdUnzip, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdUnzip, "FileAction", false)
-	Files.AddCommand(cmdUnzip)
-	var fieldsZip []string
-	var formatZip []string
-	usePagerZip := true
-	zipOverwrite := true
-	paramsFileZip := files_sdk.FileZipParams{}
-	FileZipArchiveFormat := ""
-
-	cmdZip := &cobra.Command{
-		Use:   "zip",
-		Short: `Create a ZIP from one or more paths and save it to a destination path`,
-		Long:  `Create a ZIP from one or more paths and save it to a destination path`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := file.Client{Config: config}
-
-			var FileZipArchiveFormatErr error
-			paramsFileZip.ArchiveFormat, FileZipArchiveFormatErr = lib.FetchKey("archive-format", paramsFileZip.ArchiveFormat.Enum(), FileZipArchiveFormat)
-			if FileZipArchiveFormat != "" && FileZipArchiveFormatErr != nil {
-				return FileZipArchiveFormatErr
-			}
-
-			if cmd.Flags().Changed("overwrite") {
-				paramsFileZip.Overwrite = flib.Bool(zipOverwrite)
-			}
-
-			var fileAction interface{}
-			var err error
-			fileAction, err = client.Zip(paramsFileZip, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), fileAction, err, Profile(cmd).Current().SetResourceFormat(cmd, formatZip), fieldsZip, usePagerZip, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdZip.Flags().StringSliceVar(&paramsFileZip.Paths, "paths", []string{}, "Paths to include in the ZIP.")
-	lib.SetFlagAPIRequired(cmdZip.Flags(), "paths")
-	cmdZip.Flags().StringVar(&paramsFileZip.Destination, "destination", "", "Destination file path for the ZIP.")
-	lib.SetFlagAPIRequired(cmdZip.Flags(), "destination")
-	cmdZip.Flags().StringVar(&FileZipArchiveFormat, "archive-format", "", fmt.Sprintf("Archive format to create. %v", reflect.ValueOf(paramsFileZip.ArchiveFormat.Enum()).MapKeys()))
-	lib.SetFlagEnum(cmdZip.Flags(), "archive-format", paramsFileZip.ArchiveFormat.Enum())
-	cmdZip.Flags().BoolVar(&zipOverwrite, "overwrite", zipOverwrite, "Overwrite existing file in the destination?")
-
-	cmdZip.Flags().StringSliceVar(&fieldsZip, "fields", []string{}, "comma separated list of field names")
-	cmdZip.Flags().StringSliceVar(&formatZip, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdZip.Flags().BoolVar(&usePagerZip, "use-pager", usePagerZip, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdZip, lib.EffectDestructive)
-	lib.SetCommandResponse(cmdZip, "FileAction", false)
-	Files.AddCommand(cmdZip)
+	lib.SetCommandEffect(cmdBeginDelete, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdBeginDelete, "FileAction", false)
+	Files.AddCommand(cmdBeginDelete)
 	var fieldsBeginUpload []string
 	var formatBeginUpload []string
 	usePagerBeginUpload := true

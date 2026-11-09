@@ -33,6 +33,17 @@ List Behaviors.
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `behavior`. |
 | `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `clickwrap_id`, `form_field_set_id`, `impacts_ui`, `remote_server_id` or `behavior`. Valid field combinations are `[ impacts_ui, behavior ]` and `[ behavior, remote_server_id ]`. |
 
+### `files-cli behaviors list-for [path]`
+
+List Behaviors by Path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `behavior`. |
+| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `impacts_ui` and `behavior`. Valid field combinations are `[ impacts_ui, behavior ]`. |
+| `--ancestor-behaviors` | bool | If `true`, behaviors above this path are shown. |
+
 ### `files-cli behaviors find`
 
 Show Behavior.
@@ -40,17 +51,6 @@ Show Behavior.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Behavior ID. **Required.** |
-
-### `files-cli behaviors list-for [path]`
-
-List Behaviors by Path.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `behavior`. |
-| `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `impacts_ui` and `behavior`. Valid field combinations are `[ impacts_ui, behavior ]`. |
-| `--path` | string | Path to operate on. **Required.** |
-| `--ancestor-behaviors` | bool | If `true`, behaviors above this path are shown. |
 
 ### `files-cli behaviors create [path]`
 

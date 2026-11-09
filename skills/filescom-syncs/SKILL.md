@@ -62,17 +62,17 @@ Create Sync.
 | `--always-write-trigger-file` | bool | If true, the trigger file will be sent at the end of a successful sync even when no files were transferred. |
 | `--workspace-id` | int64 | Workspace ID this sync belongs to |
 
-### `files-cli syncs dry-run`
+### `files-cli syncs manual-run`
 
-Dry Run Sync.
+Manually Run Sync.
 
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--id` | int64 | Sync ID. **Required.** |
 
-### `files-cli syncs manual-run`
+### `files-cli syncs dry-run`
 
-Manually Run Sync.
+Dry Run Sync.
 
 | Flag | Type | Description |
 | --- | --- | --- |

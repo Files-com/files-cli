@@ -114,37 +114,6 @@ func Behaviors() *cobra.Command {
 	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdList, "Behavior", true)
 	Behaviors.AddCommand(cmdList)
-	var fieldsFind []string
-	var formatFind []string
-	usePagerFind := true
-	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
-
-	cmdFind := &cobra.Command{
-		Use:   "find",
-		Short: `Show Behavior`,
-		Long:  `Show Behavior`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := behavior.Client{Config: config}
-
-			var behavior interface{}
-			var err error
-			behavior, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
-	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
-
-	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
-	lib.SetCommandResponse(cmdFind, "Behavior", false)
-	Behaviors.AddCommand(cmdFind)
 	var fieldsListFor []string
 	var formatListFor []string
 	usePagerListFor := true
@@ -234,9 +203,9 @@ func Behaviors() *cobra.Command {
 	cmdListFor.Flags().StringArrayVar(&listForFilterArgs, "filter", []string{}, "Find behaviors where field exactly matches value.")
 	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter", "field=value")
 
+	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Path, "path", "", "Path to operate on.")
 	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListFor.Flags().Int64Var(&paramsBehaviorListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
-	cmdListFor.Flags().StringVar(&paramsBehaviorListFor.Path, "path", "", "Path to operate on.")
 	cmdListFor.Flags().BoolVar(&listForAncestorBehaviors, "ancestor-behaviors", listForAncestorBehaviors, "If `true`, behaviors above this path are shown.")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
@@ -247,6 +216,37 @@ func Behaviors() *cobra.Command {
 	lib.SetCommandEffect(cmdListFor, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdListFor, "Behavior", true)
 	Behaviors.AddCommand(cmdListFor)
+	var fieldsFind []string
+	var formatFind []string
+	usePagerFind := true
+	paramsBehaviorFind := files_sdk.BehaviorFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use:   "find",
+		Short: `Show Behavior`,
+		Long:  `Show Behavior`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := behavior.Client{Config: config}
+
+			var behavior interface{}
+			var err error
+			behavior, err = client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), behavior, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsBehaviorFind.Id, "id", 0, "Behavior ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
+
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "Behavior", false)
+	Behaviors.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true

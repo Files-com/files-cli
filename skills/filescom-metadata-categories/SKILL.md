@@ -25,14 +25,6 @@ List Metadata Categories.
 | --- | --- | --- |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are . |
 
-### `files-cli metadata-categories find`
-
-Show Metadata Category.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--id` | int64 | Metadata Category ID. **Required.** |
-
 ### `files-cli metadata-categories list-for [path]`
 
 List Metadata Categories by Path.
@@ -40,6 +32,14 @@ List Metadata Categories by Path.
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
+
+### `files-cli metadata-categories find`
+
+Show Metadata Category.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Metadata Category ID. **Required.** |
 
 ### `files-cli metadata-categories create`
 

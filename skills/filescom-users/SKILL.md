@@ -130,9 +130,9 @@ Create User.
 | `--username` | string | User's username **Required.** |
 | `--workspace-id` | int64 | ID of the Workspace the user belongs to. 0 is the Default Workspace. |
 
-### `files-cli users unlock`
+### `files-cli users user-2fa-reset`
 
-Unlock user who has been locked out due to failed logins.
+Trigger 2FA Reset process for user who has lost access to their existing 2FA methods.
 
 | Flag | Type | Description |
 | --- | --- | --- |
@@ -146,9 +146,9 @@ Resend user welcome email.
 | --- | --- | --- |
 | `--id` | int64 | User ID. **Required.** |
 
-### `files-cli users user-2fa-reset`
+### `files-cli users unlock`
 
-Trigger 2FA Reset process for user who has lost access to their existing 2FA methods.
+Unlock user who has been locked out due to failed logins.
 
 | Flag | Type | Description |
 | --- | --- | --- |

@@ -44,14 +44,6 @@ Show Automation Run Node.
 | `--id` | int64 | Automation Run ID. **Required.** |
 | `--node-id` | string | Node ID from the pinned Automation definition. **Required.** |
 
-### `files-cli automation-runs cancel`
-
-Cancel Automation Run.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--id` | int64 | Automation Run ID. **Required.** |
-
 ### `files-cli automation-runs rerun`
 
 Re-run Automation from Node.
@@ -60,4 +52,12 @@ Re-run Automation from Node.
 | --- | --- | --- |
 | `--id` | int64 | Automation Run ID. **Required.** |
 | `--node-id` | string | Node ID at which execution should resume. **Required.** |
+
+### `files-cli automation-runs cancel`
+
+Cancel Automation Run.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Automation Run ID. **Required.** |
 

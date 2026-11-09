@@ -66,6 +66,14 @@ Delete File/Folder.
 | `--path` | string | Path to operate on. **Required.** |
 | `--recursive` | bool | If true, will recursively delete folders.  Otherwise, will error on non-empty folders. |
 
+### `files-cli files zip-list-contents [path]`
+
+List the contents of a ZIP file.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+
 ### `files-cli files find [path]`
 
 Find File/Folder by Path.
@@ -77,58 +85,40 @@ Find File/Folder by Path.
 | `--with-previews` | bool | Include file preview information? |
 | `--with-priority-color` | bool | Include file priority color information? |
 
-### `files-cli files zip-list-contents [path]`
+### `files-cli files zip`
 
-List the contents of a ZIP file.
+Create a ZIP from one or more paths and save it to a destination path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--paths` | []string | Paths to include in the ZIP. **Required.** |
+| `--destination` | string | Destination file path for the ZIP. **Required.** |
+| `--archive-format` | enum | Archive format to create. One of: `zip`, `tar`, `tar.gz`, `tgz`. |
+| `--overwrite` | bool | Overwrite existing file in the destination? |
+
+### `files-cli files unzip [path]`
+
+Extract a ZIP file to a destination folder.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | ZIP file path to extract. **Required.** |
+| `--destination` | string | Destination folder path for extracted files. **Required.** |
+| `--filename` | string | Optional single entry filename to extract. |
+| `--overwrite` | bool | Overwrite existing files in the destination? |
+
+### `files-cli files gpg-encrypt [path]`
+
+Encrypt a file with GPG and save it to a destination path.
 
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
-
-### `files-cli files begin-delete [path]`
-
-Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--path` | string | Path to operate on. **Required.** |
-| `--recursive` | bool | If true, will recursively delete folders.  Otherwise, will error on non-empty folders. |
-
-### `files-cli files copy [path]`
-
-Copy File/Folder.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--path` | string | Path to operate on. **Required.** |
-| `--destination` | string | Copy destination path. **Required.** |
-| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree? |
-| `--structure` | bool | Copy structure only? |
-| `--overwrite` | bool | Overwrite existing file(s) in the destination? |
-
-### `files-cli files move [path]`
-
-Move File/Folder.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--path` | string | Path to operate on. **Required.** |
-| `--destination` | string | Move destination path. **Required.** |
-| `--overwrite` | bool | Overwrite existing file(s) in the destination? |
-
-### `files-cli files transform [path]`
-
-Transform a file and save the output to a destination path.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--path` | string | Path to operate on. **Required.** |
-| `--destination` | string | Destination file path for the transformed output. **Required.** |
-| `--transform-type` | string | Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`. **Required.** |
-| `--target-format` | string | Destination format to create. **Required.** |
-| `--script` | string | Files TransformScript source. Required when transform_type is `files_transform_script_execute`. |
-| `--width` | int64 | Maximum output width for image_convert. |
-| `--height` | int64 | Maximum output height for image_convert. |
+| `--destination` | string | Destination file path for the encrypted file. **Required.** |
+| `--gpg-key-ids` | []int64 | GPG Key IDs to encrypt with. |
+| `--gpg-key-partner-id` | int64 | Partner ID whose GPG keys should be used for encryption. |
+| `--signing-key-id` | int64 | Optional GPG Key ID to sign with. |
+| `--armor` | bool | Output ASCII-armored encrypted data. |
 | `--overwrite` | bool | Overwrite existing file in the destination? |
 
 ### `files-cli files gpg-decrypt [path]`
@@ -145,41 +135,51 @@ Decrypt a GPG-encrypted file and save it to a destination path.
 | `--ignore-mdc-error` | bool | Ignore errors from the MDC (modification detection code) check. |
 | `--overwrite` | bool | Overwrite existing file in the destination? |
 
-### `files-cli files gpg-encrypt [path]`
+### `files-cli files transform [path]`
 
-Encrypt a file with GPG and save it to a destination path.
+Transform a file and save the output to a destination path.
 
 | Flag | Type | Description |
 | --- | --- | --- |
 | `--path` | string | Path to operate on. **Required.** |
-| `--destination` | string | Destination file path for the encrypted file. **Required.** |
-| `--gpg-key-ids` | []int64 | GPG Key IDs to encrypt with. |
-| `--gpg-key-partner-id` | int64 | Partner ID whose GPG keys should be used for encryption. |
-| `--signing-key-id` | int64 | Optional GPG Key ID to sign with. |
-| `--armor` | bool | Output ASCII-armored encrypted data. |
+| `--destination` | string | Destination file path for the transformed output. **Required.** |
+| `--transform-type` | string | Transform type. Supported values are `image_convert`, `document_convert`, and `files_transform_script_execute`. **Required.** |
+| `--target-format` | string | Destination format to create. **Required.** |
+| `--script` | string | Files TransformScript source. Required when transform_type is `files_transform_script_execute`. |
+| `--width` | int64 | Maximum output width for image_convert. |
+| `--height` | int64 | Maximum output height for image_convert. |
 | `--overwrite` | bool | Overwrite existing file in the destination? |
 
-### `files-cli files unzip [path]`
+### `files-cli files move [path]`
 
-Extract a ZIP file to a destination folder.
+Move File/Folder.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--path` | string | ZIP file path to extract. **Required.** |
-| `--destination` | string | Destination folder path for extracted files. **Required.** |
-| `--filename` | string | Optional single entry filename to extract. |
-| `--overwrite` | bool | Overwrite existing files in the destination? |
+| `--path` | string | Path to operate on. **Required.** |
+| `--destination` | string | Move destination path. **Required.** |
+| `--overwrite` | bool | Overwrite existing file(s) in the destination? |
 
-### `files-cli files zip`
+### `files-cli files copy [path]`
 
-Create a ZIP from one or more paths and save it to a destination path.
+Copy File/Folder.
 
 | Flag | Type | Description |
 | --- | --- | --- |
-| `--paths` | []string | Paths to include in the ZIP. **Required.** |
-| `--destination` | string | Destination file path for the ZIP. **Required.** |
-| `--archive-format` | enum | Archive format to create. One of: `zip`, `tar`, `tar.gz`, `tgz`. |
-| `--overwrite` | bool | Overwrite existing file in the destination? |
+| `--path` | string | Path to operate on. **Required.** |
+| `--destination` | string | Copy destination path. **Required.** |
+| `--copy-behaviors` | bool | If copying a folder, also copy supported behaviors, email notification subscriptions, and per-folder branding to the destination folder tree? |
+| `--structure` | bool | Copy structure only? |
+| `--overwrite` | bool | Overwrite existing file(s) in the destination? |
+
+### `files-cli files begin-delete [path]`
+
+Delete File/Folder and return its File Action.  A pending or processing deletion continues in the background after this returns; check its File Migration for completion.  Waiting for the File Migration does not cancel the deletion.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--recursive` | bool | If true, will recursively delete folders.  Otherwise, will error on non-empty folders. |
 
 ### `files-cli files begin-upload [path]`
 

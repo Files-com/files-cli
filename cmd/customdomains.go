@@ -148,39 +148,6 @@ func CustomDomains() *cobra.Command {
 	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdFind, "CustomDomain", false)
 	CustomDomains.AddCommand(cmdFind)
-	var fieldsCreateAllocateIp []string
-	var formatCreateAllocateIp []string
-	usePagerCreateAllocateIp := true
-	paramsCustomDomainCreateAllocateIp := files_sdk.CustomDomainCreateAllocateIpParams{}
-
-	cmdCreateAllocateIp := &cobra.Command{
-		Use:   "create-allocate-ip",
-		Short: `Allocate dedicated IP addresses to this Custom Domain`,
-		Long:  `Allocate dedicated IP addresses to this Custom Domain`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := custom_domain.Client{Config: config}
-
-			var customDomain interface{}
-			var err error
-			customDomain, err = client.CreateAllocateIp(paramsCustomDomainCreateAllocateIp, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), customDomain, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreateAllocateIp), fieldsCreateAllocateIp, usePagerCreateAllocateIp, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Id, "id", 0, "Custom Domain ID.")
-	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "id")
-	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Count, "count", 0, "Number of dedicated IP addresses to allocate.")
-	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "count")
-
-	cmdCreateAllocateIp.Flags().StringSliceVar(&fieldsCreateAllocateIp, "fields", []string{}, "comma separated list of field names")
-	cmdCreateAllocateIp.Flags().StringSliceVar(&formatCreateAllocateIp, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdCreateAllocateIp.Flags().BoolVar(&usePagerCreateAllocateIp, "use-pager", usePagerCreateAllocateIp, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdCreateAllocateIp, lib.EffectMutating)
-	lib.SetCommandResponse(cmdCreateAllocateIp, "CustomDomain", false)
-	CustomDomains.AddCommand(cmdCreateAllocateIp)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true
@@ -230,6 +197,39 @@ func CustomDomains() *cobra.Command {
 	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
 	lib.SetCommandResponse(cmdCreate, "CustomDomain", false)
 	CustomDomains.AddCommand(cmdCreate)
+	var fieldsCreateAllocateIp []string
+	var formatCreateAllocateIp []string
+	usePagerCreateAllocateIp := true
+	paramsCustomDomainCreateAllocateIp := files_sdk.CustomDomainCreateAllocateIpParams{}
+
+	cmdCreateAllocateIp := &cobra.Command{
+		Use:   "create-allocate-ip",
+		Short: `Allocate dedicated IP addresses to this Custom Domain`,
+		Long:  `Allocate dedicated IP addresses to this Custom Domain`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := custom_domain.Client{Config: config}
+
+			var customDomain interface{}
+			var err error
+			customDomain, err = client.CreateAllocateIp(paramsCustomDomainCreateAllocateIp, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), customDomain, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCreateAllocateIp), fieldsCreateAllocateIp, usePagerCreateAllocateIp, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Id, "id", 0, "Custom Domain ID.")
+	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "id")
+	cmdCreateAllocateIp.Flags().Int64Var(&paramsCustomDomainCreateAllocateIp.Count, "count", 0, "Number of dedicated IP addresses to allocate.")
+	lib.SetFlagAPIRequired(cmdCreateAllocateIp.Flags(), "count")
+
+	cmdCreateAllocateIp.Flags().StringSliceVar(&fieldsCreateAllocateIp, "fields", []string{}, "comma separated list of field names")
+	cmdCreateAllocateIp.Flags().StringSliceVar(&formatCreateAllocateIp, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdCreateAllocateIp.Flags().BoolVar(&usePagerCreateAllocateIp, "use-pager", usePagerCreateAllocateIp, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdCreateAllocateIp, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCreateAllocateIp, "CustomDomain", false)
+	CustomDomains.AddCommand(cmdCreateAllocateIp)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true

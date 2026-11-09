@@ -29,15 +29,6 @@ Show Custom Domain.
 | --- | --- | --- |
 | `--id` | int64 | Custom Domain ID. **Required.** |
 
-### `files-cli custom-domains create-allocate-ip`
-
-Allocate dedicated IP addresses to this Custom Domain.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--id` | int64 | Custom Domain ID. **Required.** |
-| `--count` | int64 | Number of dedicated IP addresses to allocate. One of: `1`, `2`. **Required.** |
-
 ### `files-cli custom-domains create`
 
 Create Custom Domain.
@@ -50,6 +41,15 @@ Create Custom Domain.
 | `--folder-behavior-id` | int64 | Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`. |
 | `--ssl-certificate-id` | int64 | Current SSL certificate ID. |
 | `--domain` | string | Customer-owned domain name. **Required.** |
+
+### `files-cli custom-domains create-allocate-ip`
+
+Allocate dedicated IP addresses to this Custom Domain.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Custom Domain ID. **Required.** |
+| `--count` | int64 | Number of dedicated IP addresses to allocate. One of: `1`, `2`. **Required.** |
 
 ### `files-cli custom-domains update`
 

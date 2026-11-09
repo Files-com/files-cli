@@ -20,9 +20,9 @@ List IP Addresses associated with the current site.
 
 No flags beyond the global ones.
 
-### `files-cli ip-addresses get-smartfile-reserved`
+### `files-cli ip-addresses get-reserved`
 
-List all possible public SmartFile IP addresses.
+List all possible public IP addresses.
 
 No flags beyond the global ones.
 
@@ -32,9 +32,9 @@ List all possible public ExaVault IP addresses.
 
 No flags beyond the global ones.
 
-### `files-cli ip-addresses get-reserved`
+### `files-cli ip-addresses get-smartfile-reserved`
 
-List all possible public IP addresses.
+List all possible public SmartFile IP addresses.
 
 No flags beyond the global ones.
 

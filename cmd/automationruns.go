@@ -180,37 +180,6 @@ func AutomationRuns() *cobra.Command {
 	lib.SetCommandEffect(cmdFindNode, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdFindNode, "AutomationExecutionNode", false)
 	AutomationRuns.AddCommand(cmdFindNode)
-	var fieldsCancel []string
-	var formatCancel []string
-	usePagerCancel := true
-	paramsAutomationRunCancel := files_sdk.AutomationRunCancelParams{}
-
-	cmdCancel := &cobra.Command{
-		Use:   "cancel",
-		Short: `Cancel Automation Run`,
-		Long:  `Cancel Automation Run`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := automation_run.Client{Config: config}
-
-			var automationRun interface{}
-			var err error
-			automationRun, err = client.Cancel(paramsAutomationRunCancel, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), automationRun, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCancel), fieldsCancel, usePagerCancel, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdCancel.Flags().Int64Var(&paramsAutomationRunCancel.Id, "id", 0, "Automation Run ID.")
-	lib.SetFlagAPIRequired(cmdCancel.Flags(), "id")
-
-	cmdCancel.Flags().StringSliceVar(&fieldsCancel, "fields", []string{}, "comma separated list of field names")
-	cmdCancel.Flags().StringSliceVar(&formatCancel, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdCancel.Flags().BoolVar(&usePagerCancel, "use-pager", usePagerCancel, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdCancel, lib.EffectMutating)
-	lib.SetCommandResponse(cmdCancel, "AutomationRun", false)
-	AutomationRuns.AddCommand(cmdCancel)
 	var fieldsRerun []string
 	var formatRerun []string
 	usePagerRerun := true
@@ -244,5 +213,36 @@ func AutomationRuns() *cobra.Command {
 	lib.SetCommandEffect(cmdRerun, lib.EffectMutating)
 	lib.SetCommandResponse(cmdRerun, "AutomationRun", false)
 	AutomationRuns.AddCommand(cmdRerun)
+	var fieldsCancel []string
+	var formatCancel []string
+	usePagerCancel := true
+	paramsAutomationRunCancel := files_sdk.AutomationRunCancelParams{}
+
+	cmdCancel := &cobra.Command{
+		Use:   "cancel",
+		Short: `Cancel Automation Run`,
+		Long:  `Cancel Automation Run`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation_run.Client{Config: config}
+
+			var automationRun interface{}
+			var err error
+			automationRun, err = client.Cancel(paramsAutomationRunCancel, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automationRun, err, Profile(cmd).Current().SetResourceFormat(cmd, formatCancel), fieldsCancel, usePagerCancel, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdCancel.Flags().Int64Var(&paramsAutomationRunCancel.Id, "id", 0, "Automation Run ID.")
+	lib.SetFlagAPIRequired(cmdCancel.Flags(), "id")
+
+	cmdCancel.Flags().StringSliceVar(&fieldsCancel, "fields", []string{}, "comma separated list of field names")
+	cmdCancel.Flags().StringSliceVar(&formatCancel, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdCancel.Flags().BoolVar(&usePagerCancel, "use-pager", usePagerCancel, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdCancel, lib.EffectMutating)
+	lib.SetCommandResponse(cmdCancel, "AutomationRun", false)
+	AutomationRuns.AddCommand(cmdCancel)
 	return AutomationRuns
 }

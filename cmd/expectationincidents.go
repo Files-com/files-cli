@@ -146,15 +146,15 @@ func ExpectationIncidents() *cobra.Command {
 	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdFind, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdFind)
-	var fieldsResolve []string
-	var formatResolve []string
-	usePagerResolve := true
-	paramsExpectationIncidentResolve := files_sdk.ExpectationIncidentResolveParams{}
+	var fieldsAcknowledge []string
+	var formatAcknowledge []string
+	usePagerAcknowledge := true
+	paramsExpectationIncidentAcknowledge := files_sdk.ExpectationIncidentAcknowledgeParams{}
 
-	cmdResolve := &cobra.Command{
-		Use:   "resolve",
-		Short: `Resolve an expectation incident`,
-		Long:  `Resolve an expectation incident`,
+	cmdAcknowledge := &cobra.Command{
+		Use:   "acknowledge",
+		Short: `Acknowledge an expectation incident`,
+		Long:  `Acknowledge an expectation incident`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -163,20 +163,20 @@ func ExpectationIncidents() *cobra.Command {
 
 			var expectationIncident interface{}
 			var err error
-			expectationIncident, err = client.Resolve(paramsExpectationIncidentResolve, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), expectationIncident, err, Profile(cmd).Current().SetResourceFormat(cmd, formatResolve), fieldsResolve, usePagerResolve, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			expectationIncident, err = client.Acknowledge(paramsExpectationIncidentAcknowledge, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), expectationIncident, err, Profile(cmd).Current().SetResourceFormat(cmd, formatAcknowledge), fieldsAcknowledge, usePagerAcknowledge, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdResolve.Flags().Int64Var(&paramsExpectationIncidentResolve.Id, "id", 0, "Expectation Incident ID.")
-	lib.SetFlagAPIRequired(cmdResolve.Flags(), "id")
+	cmdAcknowledge.Flags().Int64Var(&paramsExpectationIncidentAcknowledge.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdAcknowledge.Flags(), "id")
 
-	cmdResolve.Flags().StringSliceVar(&fieldsResolve, "fields", []string{}, "comma separated list of field names")
-	cmdResolve.Flags().StringSliceVar(&formatResolve, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdResolve.Flags().BoolVar(&usePagerResolve, "use-pager", usePagerResolve, "Use $PAGER (.ie less, more, etc)")
+	cmdAcknowledge.Flags().StringSliceVar(&fieldsAcknowledge, "fields", []string{}, "comma separated list of field names")
+	cmdAcknowledge.Flags().StringSliceVar(&formatAcknowledge, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdAcknowledge.Flags().BoolVar(&usePagerAcknowledge, "use-pager", usePagerAcknowledge, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdResolve, lib.EffectMutating)
-	lib.SetCommandResponse(cmdResolve, "ExpectationIncident", false)
-	ExpectationIncidents.AddCommand(cmdResolve)
+	lib.SetCommandEffect(cmdAcknowledge, lib.EffectMutating)
+	lib.SetCommandResponse(cmdAcknowledge, "ExpectationIncident", false)
+	ExpectationIncidents.AddCommand(cmdAcknowledge)
 	var fieldsSnooze []string
 	var formatSnooze []string
 	usePagerSnooze := true
@@ -215,15 +215,15 @@ func ExpectationIncidents() *cobra.Command {
 	lib.SetCommandEffect(cmdSnooze, lib.EffectMutating)
 	lib.SetCommandResponse(cmdSnooze, "ExpectationIncident", false)
 	ExpectationIncidents.AddCommand(cmdSnooze)
-	var fieldsAcknowledge []string
-	var formatAcknowledge []string
-	usePagerAcknowledge := true
-	paramsExpectationIncidentAcknowledge := files_sdk.ExpectationIncidentAcknowledgeParams{}
+	var fieldsResolve []string
+	var formatResolve []string
+	usePagerResolve := true
+	paramsExpectationIncidentResolve := files_sdk.ExpectationIncidentResolveParams{}
 
-	cmdAcknowledge := &cobra.Command{
-		Use:   "acknowledge",
-		Short: `Acknowledge an expectation incident`,
-		Long:  `Acknowledge an expectation incident`,
+	cmdResolve := &cobra.Command{
+		Use:   "resolve",
+		Short: `Resolve an expectation incident`,
+		Long:  `Resolve an expectation incident`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -232,19 +232,19 @@ func ExpectationIncidents() *cobra.Command {
 
 			var expectationIncident interface{}
 			var err error
-			expectationIncident, err = client.Acknowledge(paramsExpectationIncidentAcknowledge, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), expectationIncident, err, Profile(cmd).Current().SetResourceFormat(cmd, formatAcknowledge), fieldsAcknowledge, usePagerAcknowledge, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+			expectationIncident, err = client.Resolve(paramsExpectationIncidentResolve, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), expectationIncident, err, Profile(cmd).Current().SetResourceFormat(cmd, formatResolve), fieldsResolve, usePagerResolve, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
 		},
 	}
-	cmdAcknowledge.Flags().Int64Var(&paramsExpectationIncidentAcknowledge.Id, "id", 0, "Expectation Incident ID.")
-	lib.SetFlagAPIRequired(cmdAcknowledge.Flags(), "id")
+	cmdResolve.Flags().Int64Var(&paramsExpectationIncidentResolve.Id, "id", 0, "Expectation Incident ID.")
+	lib.SetFlagAPIRequired(cmdResolve.Flags(), "id")
 
-	cmdAcknowledge.Flags().StringSliceVar(&fieldsAcknowledge, "fields", []string{}, "comma separated list of field names")
-	cmdAcknowledge.Flags().StringSliceVar(&formatAcknowledge, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdAcknowledge.Flags().BoolVar(&usePagerAcknowledge, "use-pager", usePagerAcknowledge, "Use $PAGER (.ie less, more, etc)")
+	cmdResolve.Flags().StringSliceVar(&fieldsResolve, "fields", []string{}, "comma separated list of field names")
+	cmdResolve.Flags().StringSliceVar(&formatResolve, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdResolve.Flags().BoolVar(&usePagerResolve, "use-pager", usePagerResolve, "Use $PAGER (.ie less, more, etc)")
 
-	lib.SetCommandEffect(cmdAcknowledge, lib.EffectMutating)
-	lib.SetCommandResponse(cmdAcknowledge, "ExpectationIncident", false)
-	ExpectationIncidents.AddCommand(cmdAcknowledge)
+	lib.SetCommandEffect(cmdResolve, lib.EffectMutating)
+	lib.SetCommandResponse(cmdResolve, "ExpectationIncident", false)
+	ExpectationIncidents.AddCommand(cmdResolve)
 	return ExpectationIncidents
 }

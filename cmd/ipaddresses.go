@@ -92,146 +92,6 @@ func IpAddresses() *cobra.Command {
 	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdList, "IpAddress", true)
 	IpAddresses.AddCommand(cmdList)
-	var fieldsGetSmartfileReserved []string
-	var formatGetSmartfileReserved []string
-	usePagerGetSmartfileReserved := true
-	filterbyGetSmartfileReserved := make(map[string]string)
-	paramsIpAddressGetSmartfileReserved := files_sdk.IpAddressGetSmartfileReservedParams{}
-	var MaxPagesGetSmartfileReserved int64
-	var jsonEnvelopeGetSmartfileReserved bool
-
-	cmdGetSmartfileReserved := &cobra.Command{
-		Use:   "get-smartfile-reserved",
-		Short: "List all possible public SmartFile IP addresses",
-		Long:  `List all possible public SmartFile IP addresses`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			params := paramsIpAddressGetSmartfileReserved
-			params.MaxPages = MaxPagesGetSmartfileReserved
-			var envelopeStyle string
-			if jsonEnvelopeGetSmartfileReserved {
-				var envelopeErr error
-				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), &params.MaxPages); envelopeErr != nil {
-					return envelopeErr
-				}
-			}
-
-			client := ip_address.Client{Config: config}
-			it, err := client.GetSmartfileReserved(params, files_sdk.WithContext(ctx))
-			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
-				values, ok := overriddenValues.([]interface{})
-				if ok {
-					return &values, newErr
-				} else {
-					return &[]interface{}{}, newErr
-				}
-			}
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			var listFilter lib.FilterIter
-			if len(filterbyGetSmartfileReserved) > 0 {
-				listFilter = func(i interface{}) (interface{}, bool, error) {
-					matchOk, err := lib.MatchFilter(filterbyGetSmartfileReserved, i)
-					return i, matchOk, err
-				}
-			}
-			if jsonEnvelopeGetSmartfileReserved {
-				err = lib.JSONEnvelopeIter(it, fieldsGetSmartfileReserved, listFilter, usePagerGetSmartfileReserved, envelopeStyle, cmd.OutOrStdout())
-			} else {
-				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), fieldsGetSmartfileReserved, usePagerGetSmartfileReserved, listFilter, cmd.OutOrStdout())
-			}
-			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-		},
-	}
-
-	cmdGetSmartfileReserved.Flags().StringToStringVar(&filterbyGetSmartfileReserved, "filter-by", filterbyGetSmartfileReserved, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
-	lib.SetFlagDisplayType(cmdGetSmartfileReserved.Flags(), "filter-by", "field=pattern")
-
-	cmdGetSmartfileReserved.Flags().StringVar(&paramsIpAddressGetSmartfileReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
-	cmdGetSmartfileReserved.Flags().Int64Var(&paramsIpAddressGetSmartfileReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
-
-	cmdGetSmartfileReserved.Flags().Int64VarP(&MaxPagesGetSmartfileReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdGetSmartfileReserved.Flags().StringSliceVar(&fieldsGetSmartfileReserved, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdGetSmartfileReserved.Flags().StringSliceVar(&formatGetSmartfileReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdGetSmartfileReserved.Flags().BoolVar(&usePagerGetSmartfileReserved, "use-pager", usePagerGetSmartfileReserved, "Use $PAGER (.ie less, more, etc)")
-	cmdGetSmartfileReserved.Flags().BoolVar(&jsonEnvelopeGetSmartfileReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
-	lib.SetCommandEffect(cmdGetSmartfileReserved, lib.EffectReadOnly)
-	lib.SetCommandResponse(cmdGetSmartfileReserved, "PublicIpAddress", true)
-	IpAddresses.AddCommand(cmdGetSmartfileReserved)
-	var fieldsGetExavaultReserved []string
-	var formatGetExavaultReserved []string
-	usePagerGetExavaultReserved := true
-	filterbyGetExavaultReserved := make(map[string]string)
-	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
-	var MaxPagesGetExavaultReserved int64
-	var jsonEnvelopeGetExavaultReserved bool
-
-	cmdGetExavaultReserved := &cobra.Command{
-		Use:   "get-exavault-reserved",
-		Short: "List all possible public ExaVault IP addresses",
-		Long:  `List all possible public ExaVault IP addresses`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			params := paramsIpAddressGetExavaultReserved
-			params.MaxPages = MaxPagesGetExavaultReserved
-			var envelopeStyle string
-			if jsonEnvelopeGetExavaultReserved {
-				var envelopeErr error
-				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), &params.MaxPages); envelopeErr != nil {
-					return envelopeErr
-				}
-			}
-
-			client := ip_address.Client{Config: config}
-			it, err := client.GetExavaultReserved(params, files_sdk.WithContext(ctx))
-			it.OnPageError = func(err error) (*[]interface{}, error) {
-				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
-				values, ok := overriddenValues.([]interface{})
-				if ok {
-					return &values, newErr
-				} else {
-					return &[]interface{}{}, newErr
-				}
-			}
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			var listFilter lib.FilterIter
-			if len(filterbyGetExavaultReserved) > 0 {
-				listFilter = func(i interface{}) (interface{}, bool, error) {
-					matchOk, err := lib.MatchFilter(filterbyGetExavaultReserved, i)
-					return i, matchOk, err
-				}
-			}
-			if jsonEnvelopeGetExavaultReserved {
-				err = lib.JSONEnvelopeIter(it, fieldsGetExavaultReserved, listFilter, usePagerGetExavaultReserved, envelopeStyle, cmd.OutOrStdout())
-			} else {
-				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
-			}
-			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-		},
-	}
-
-	cmdGetExavaultReserved.Flags().StringToStringVar(&filterbyGetExavaultReserved, "filter-by", filterbyGetExavaultReserved, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
-	lib.SetFlagDisplayType(cmdGetExavaultReserved.Flags(), "filter-by", "field=pattern")
-
-	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
-	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
-
-	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
-	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
-	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
-	cmdGetExavaultReserved.Flags().BoolVar(&jsonEnvelopeGetExavaultReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
-	lib.SetCommandEffect(cmdGetExavaultReserved, lib.EffectReadOnly)
-	lib.SetCommandResponse(cmdGetExavaultReserved, "PublicIpAddress", true)
-	IpAddresses.AddCommand(cmdGetExavaultReserved)
 	var fieldsGetReserved []string
 	var formatGetReserved []string
 	usePagerGetReserved := true
@@ -302,5 +162,145 @@ func IpAddresses() *cobra.Command {
 	lib.SetCommandEffect(cmdGetReserved, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdGetReserved, "PublicIpAddress", true)
 	IpAddresses.AddCommand(cmdGetReserved)
+	var fieldsGetExavaultReserved []string
+	var formatGetExavaultReserved []string
+	usePagerGetExavaultReserved := true
+	filterbyGetExavaultReserved := make(map[string]string)
+	paramsIpAddressGetExavaultReserved := files_sdk.IpAddressGetExavaultReservedParams{}
+	var MaxPagesGetExavaultReserved int64
+	var jsonEnvelopeGetExavaultReserved bool
+
+	cmdGetExavaultReserved := &cobra.Command{
+		Use:   "get-exavault-reserved",
+		Short: "List all possible public ExaVault IP addresses",
+		Long:  `List all possible public ExaVault IP addresses`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			params := paramsIpAddressGetExavaultReserved
+			params.MaxPages = MaxPagesGetExavaultReserved
+			var envelopeStyle string
+			if jsonEnvelopeGetExavaultReserved {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
+
+			client := ip_address.Client{Config: config}
+			it, err := client.GetExavaultReserved(params, files_sdk.WithContext(ctx))
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			if len(filterbyGetExavaultReserved) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyGetExavaultReserved, i)
+					return i, matchOk, err
+				}
+			}
+			if jsonEnvelopeGetExavaultReserved {
+				err = lib.JSONEnvelopeIter(it, fieldsGetExavaultReserved, listFilter, usePagerGetExavaultReserved, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetExavaultReserved), fieldsGetExavaultReserved, usePagerGetExavaultReserved, listFilter, cmd.OutOrStdout())
+			}
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+		},
+	}
+
+	cmdGetExavaultReserved.Flags().StringToStringVar(&filterbyGetExavaultReserved, "filter-by", filterbyGetExavaultReserved, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdGetExavaultReserved.Flags(), "filter-by", "field=pattern")
+
+	cmdGetExavaultReserved.Flags().StringVar(&paramsIpAddressGetExavaultReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
+	cmdGetExavaultReserved.Flags().Int64Var(&paramsIpAddressGetExavaultReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
+
+	cmdGetExavaultReserved.Flags().Int64VarP(&MaxPagesGetExavaultReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetExavaultReserved.Flags().StringSliceVar(&fieldsGetExavaultReserved, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdGetExavaultReserved.Flags().StringSliceVar(&formatGetExavaultReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGetExavaultReserved.Flags().BoolVar(&usePagerGetExavaultReserved, "use-pager", usePagerGetExavaultReserved, "Use $PAGER (.ie less, more, etc)")
+	cmdGetExavaultReserved.Flags().BoolVar(&jsonEnvelopeGetExavaultReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetExavaultReserved, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetExavaultReserved, "PublicIpAddress", true)
+	IpAddresses.AddCommand(cmdGetExavaultReserved)
+	var fieldsGetSmartfileReserved []string
+	var formatGetSmartfileReserved []string
+	usePagerGetSmartfileReserved := true
+	filterbyGetSmartfileReserved := make(map[string]string)
+	paramsIpAddressGetSmartfileReserved := files_sdk.IpAddressGetSmartfileReservedParams{}
+	var MaxPagesGetSmartfileReserved int64
+	var jsonEnvelopeGetSmartfileReserved bool
+
+	cmdGetSmartfileReserved := &cobra.Command{
+		Use:   "get-smartfile-reserved",
+		Short: "List all possible public SmartFile IP addresses",
+		Long:  `List all possible public SmartFile IP addresses`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			params := paramsIpAddressGetSmartfileReserved
+			params.MaxPages = MaxPagesGetSmartfileReserved
+			var envelopeStyle string
+			if jsonEnvelopeGetSmartfileReserved {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
+
+			client := ip_address.Client{Config: config}
+			it, err := client.GetSmartfileReserved(params, files_sdk.WithContext(ctx))
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			if len(filterbyGetSmartfileReserved) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyGetSmartfileReserved, i)
+					return i, matchOk, err
+				}
+			}
+			if jsonEnvelopeGetSmartfileReserved {
+				err = lib.JSONEnvelopeIter(it, fieldsGetSmartfileReserved, listFilter, usePagerGetSmartfileReserved, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatGetSmartfileReserved), fieldsGetSmartfileReserved, usePagerGetSmartfileReserved, listFilter, cmd.OutOrStdout())
+			}
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+		},
+	}
+
+	cmdGetSmartfileReserved.Flags().StringToStringVar(&filterbyGetSmartfileReserved, "filter-by", filterbyGetSmartfileReserved, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdGetSmartfileReserved.Flags(), "filter-by", "field=pattern")
+
+	cmdGetSmartfileReserved.Flags().StringVar(&paramsIpAddressGetSmartfileReserved.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
+	cmdGetSmartfileReserved.Flags().Int64Var(&paramsIpAddressGetSmartfileReserved.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
+
+	cmdGetSmartfileReserved.Flags().Int64VarP(&MaxPagesGetSmartfileReserved, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdGetSmartfileReserved.Flags().StringSliceVar(&fieldsGetSmartfileReserved, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdGetSmartfileReserved.Flags().StringSliceVar(&formatGetSmartfileReserved, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdGetSmartfileReserved.Flags().BoolVar(&usePagerGetSmartfileReserved, "use-pager", usePagerGetSmartfileReserved, "Use $PAGER (.ie less, more, etc)")
+	cmdGetSmartfileReserved.Flags().BoolVar(&jsonEnvelopeGetSmartfileReserved, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdGetSmartfileReserved, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdGetSmartfileReserved, "PublicIpAddress", true)
+	IpAddresses.AddCommand(cmdGetSmartfileReserved)
 	return IpAddresses
 }

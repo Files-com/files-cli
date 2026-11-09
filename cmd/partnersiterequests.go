@@ -179,39 +179,6 @@ func PartnerSiteRequests() *cobra.Command {
 	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
 	lib.SetCommandResponse(cmdCreate, "PartnerSiteRequest", false)
 	PartnerSiteRequests.AddCommand(cmdCreate)
-	var fieldsReject []string
-	var formatReject []string
-	usePagerReject := true
-	paramsPartnerSiteRequestReject := files_sdk.PartnerSiteRequestRejectParams{}
-
-	cmdReject := &cobra.Command{
-		Use:   "reject",
-		Short: `Reject partner site request`,
-		Long:  `Reject partner site request`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := partner_site_request.Client{Config: config}
-
-			var err error
-			err = client.Reject(paramsPartnerSiteRequestReject, files_sdk.WithContext(ctx))
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
-		},
-	}
-	cmdReject.Flags().StringVar(&paramsPartnerSiteRequestReject.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
-	lib.SetFlagAPIRequired(cmdReject.Flags(), "pairing-key")
-
-	cmdReject.Flags().StringSliceVar(&fieldsReject, "fields", []string{}, "comma separated list of field names")
-	cmdReject.Flags().StringSliceVar(&formatReject, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdReject.Flags().BoolVar(&usePagerReject, "use-pager", usePagerReject, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdReject, lib.EffectMutating)
-	lib.SetCommandResponse(cmdReject, "", false)
-	PartnerSiteRequests.AddCommand(cmdReject)
 	var fieldsApprove []string
 	var formatApprove []string
 	usePagerApprove := true
@@ -246,6 +213,39 @@ func PartnerSiteRequests() *cobra.Command {
 	lib.SetCommandEffect(cmdApprove, lib.EffectMutating)
 	lib.SetCommandResponse(cmdApprove, "", false)
 	PartnerSiteRequests.AddCommand(cmdApprove)
+	var fieldsReject []string
+	var formatReject []string
+	usePagerReject := true
+	paramsPartnerSiteRequestReject := files_sdk.PartnerSiteRequestRejectParams{}
+
+	cmdReject := &cobra.Command{
+		Use:   "reject",
+		Short: `Reject partner site request`,
+		Long:  `Reject partner site request`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := partner_site_request.Client{Config: config}
+
+			var err error
+			err = client.Reject(paramsPartnerSiteRequestReject, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdReject.Flags().StringVar(&paramsPartnerSiteRequestReject.PairingKey, "pairing-key", "", "Pairing key for the partner site request")
+	lib.SetFlagAPIRequired(cmdReject.Flags(), "pairing-key")
+
+	cmdReject.Flags().StringSliceVar(&fieldsReject, "fields", []string{}, "comma separated list of field names")
+	cmdReject.Flags().StringSliceVar(&formatReject, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdReject.Flags().BoolVar(&usePagerReject, "use-pager", usePagerReject, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdReject, lib.EffectMutating)
+	lib.SetCommandResponse(cmdReject, "", false)
+	PartnerSiteRequests.AddCommand(cmdReject)
 	var fieldsDelete []string
 	var formatDelete []string
 	usePagerDelete := true

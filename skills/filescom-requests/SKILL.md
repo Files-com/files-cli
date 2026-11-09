@@ -30,9 +30,9 @@ List Requests.
 
 | Flag | Type | Description |
 | --- | --- | --- |
+| `--path` | string | Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory. **Required.** |
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are . |
 | `--mine` | bool | Only show requests of the current user?  (Defaults to true if current user is not a site admin.) |
-| `--path` | string | Path to show requests for.  If omitted, shows all paths. Send `/` to represent the root directory. **Required.** |
 
 ### `files-cli requests create [path]`
 

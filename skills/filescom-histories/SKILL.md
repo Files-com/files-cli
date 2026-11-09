@@ -22,53 +22,6 @@ All subcommands also accept the flags documented in [`CONTEXT.md`](../../CONTEXT
 
 ## Commands
 
-### `files-cli histories list-for-file [path]`
-
-List history for specific file.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
-| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
-| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
-| `--path` | string | Path to operate on. **Required.** |
-
-### `files-cli histories list-for-folder [path]`
-
-List history for specific folder.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
-| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
-| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
-| `--path` | string | Path to operate on. **Required.** |
-
-### `files-cli histories list-for-user`
-
-List history for specific user.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
-| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
-| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
-| `--user-id` | int64 | User ID. **Required.** |
-
-### `files-cli histories list-logins`
-
-List site login history.
-
-| Flag | Type | Description |
-| --- | --- | --- |
-| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
-| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
-| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
-| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
-
 ### `files-cli histories list`
 
 List site full action history.
@@ -81,4 +34,51 @@ List site full action history.
 | `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
 | `--filter` | object | If set, return records where the specified field is equal to the supplied value. Valid fields are `user_id`, `folder` or `path`. Valid field combinations are `[  ]`, `[ path ]`, `[ path ]` or `[ path ]`. |
 | `--filter-prefix` | object | If set, return records where the specified field is prefixed by the supplied value. Valid fields are `path`. |
+
+### `files-cli histories list-logins`
+
+List site login history.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
+| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
+| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
+
+### `files-cli histories list-for-user`
+
+List history for specific user.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--user-id` | int64 | User ID. **Required.** |
+| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
+| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
+| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
+
+### `files-cli histories list-for-folder [path]`
+
+List history for specific folder.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
+| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
+| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
+
+### `files-cli histories list-for-file [path]`
+
+List history for specific file.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--path` | string | Path to operate on. **Required.** |
+| `--start-at` | datetime | Leave blank or set to a date/time to filter earlier entries. |
+| `--end-at` | datetime | Leave blank or set to a date/time to filter later entries. |
+| `--display` | string | Display format. Leave blank or set to `full` or `parent`. |
+| `--sort-by` | object | If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `created_at`. |
 

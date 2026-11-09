@@ -226,39 +226,6 @@ func Syncs() *cobra.Command {
 	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
 	lib.SetCommandResponse(cmdCreate, "Sync", false)
 	Syncs.AddCommand(cmdCreate)
-	var fieldsDryRun []string
-	var formatDryRun []string
-	usePagerDryRun := true
-	paramsSyncDryRun := files_sdk.SyncDryRunParams{}
-
-	cmdDryRun := &cobra.Command{
-		Use:   "dry-run",
-		Short: `Dry Run Sync`,
-		Long:  `Dry Run Sync`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := sync.Client{Config: config}
-
-			var err error
-			err = client.DryRun(paramsSyncDryRun, files_sdk.WithContext(ctx))
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
-		},
-	}
-	cmdDryRun.Flags().Int64Var(&paramsSyncDryRun.Id, "id", 0, "Sync ID.")
-	lib.SetFlagAPIRequired(cmdDryRun.Flags(), "id")
-
-	cmdDryRun.Flags().StringSliceVar(&fieldsDryRun, "fields", []string{}, "comma separated list of field names")
-	cmdDryRun.Flags().StringSliceVar(&formatDryRun, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdDryRun.Flags().BoolVar(&usePagerDryRun, "use-pager", usePagerDryRun, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdDryRun, lib.EffectMutating)
-	lib.SetCommandResponse(cmdDryRun, "", false)
-	Syncs.AddCommand(cmdDryRun)
 	var fieldsManualRun []string
 	var formatManualRun []string
 	usePagerManualRun := true
@@ -292,6 +259,39 @@ func Syncs() *cobra.Command {
 	lib.SetCommandEffect(cmdManualRun, lib.EffectMutating)
 	lib.SetCommandResponse(cmdManualRun, "", false)
 	Syncs.AddCommand(cmdManualRun)
+	var fieldsDryRun []string
+	var formatDryRun []string
+	usePagerDryRun := true
+	paramsSyncDryRun := files_sdk.SyncDryRunParams{}
+
+	cmdDryRun := &cobra.Command{
+		Use:   "dry-run",
+		Short: `Dry Run Sync`,
+		Long:  `Dry Run Sync`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := sync.Client{Config: config}
+
+			var err error
+			err = client.DryRun(paramsSyncDryRun, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdDryRun.Flags().Int64Var(&paramsSyncDryRun.Id, "id", 0, "Sync ID.")
+	lib.SetFlagAPIRequired(cmdDryRun.Flags(), "id")
+
+	cmdDryRun.Flags().StringSliceVar(&fieldsDryRun, "fields", []string{}, "comma separated list of field names")
+	cmdDryRun.Flags().StringSliceVar(&formatDryRun, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdDryRun.Flags().BoolVar(&usePagerDryRun, "use-pager", usePagerDryRun, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdDryRun, lib.EffectMutating)
+	lib.SetCommandResponse(cmdDryRun, "", false)
+	Syncs.AddCommand(cmdDryRun)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true

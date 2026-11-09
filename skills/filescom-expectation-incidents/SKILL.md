@@ -29,9 +29,9 @@ Show Expectation Incident.
 | --- | --- | --- |
 | `--id` | int64 | Expectation Incident ID. **Required.** |
 
-### `files-cli expectation-incidents resolve`
+### `files-cli expectation-incidents acknowledge`
 
-Resolve an expectation incident.
+Acknowledge an expectation incident.
 
 | Flag | Type | Description |
 | --- | --- | --- |
@@ -46,9 +46,9 @@ Snooze an expectation incident until a specified time.
 | `--id` | int64 | Expectation Incident ID. **Required.** |
 | `--snoozed-until` | datetime | Time until which the incident should remain snoozed. **Required.** |
 
-### `files-cli expectation-incidents acknowledge`
+### `files-cli expectation-incidents resolve`
 
-Acknowledge an expectation incident.
+Resolve an expectation incident.
 
 | Flag | Type | Description |
 | --- | --- | --- |

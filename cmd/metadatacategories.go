@@ -103,37 +103,6 @@ func MetadataCategories() *cobra.Command {
 	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdList, "MetadataCategory", true)
 	MetadataCategories.AddCommand(cmdList)
-	var fieldsFind []string
-	var formatFind []string
-	usePagerFind := true
-	paramsMetadataCategoryFind := files_sdk.MetadataCategoryFindParams{}
-
-	cmdFind := &cobra.Command{
-		Use:   "find",
-		Short: `Show Metadata Category`,
-		Long:  `Show Metadata Category`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := metadata_category.Client{Config: config}
-
-			var metadataCategory interface{}
-			var err error
-			metadataCategory, err = client.Find(paramsMetadataCategoryFind, files_sdk.WithContext(ctx))
-			return lib.HandleResponse(ctx, Profile(cmd), metadataCategory, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
-		},
-	}
-	cmdFind.Flags().Int64Var(&paramsMetadataCategoryFind.Id, "id", 0, "Metadata Category ID.")
-	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
-
-	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
-	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
-	lib.SetCommandResponse(cmdFind, "MetadataCategory", false)
-	MetadataCategories.AddCommand(cmdFind)
 	var fieldsListFor []string
 	var formatListFor []string
 	usePagerListFor := true
@@ -197,9 +166,9 @@ func MetadataCategories() *cobra.Command {
 	cmdListFor.Flags().StringToStringVar(&filterbyListFor, "filter-by", filterbyListFor, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
 	lib.SetFlagDisplayType(cmdListFor.Flags(), "filter-by", "field=pattern")
 
+	cmdListFor.Flags().StringVar(&paramsMetadataCategoryListFor.Path, "path", "", "Path to operate on.")
 	cmdListFor.Flags().StringVar(&paramsMetadataCategoryListFor.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
 	cmdListFor.Flags().Int64Var(&paramsMetadataCategoryListFor.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
-	cmdListFor.Flags().StringVar(&paramsMetadataCategoryListFor.Path, "path", "", "Path to operate on.")
 
 	cmdListFor.Flags().Int64VarP(&MaxPagesListFor, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
 	cmdListFor.Flags().StringSliceVar(&fieldsListFor, "fields", []string{}, "comma separated list of field names to include in response")
@@ -209,6 +178,37 @@ func MetadataCategories() *cobra.Command {
 	lib.SetCommandEffect(cmdListFor, lib.EffectReadOnly)
 	lib.SetCommandResponse(cmdListFor, "MetadataCategory", true)
 	MetadataCategories.AddCommand(cmdListFor)
+	var fieldsFind []string
+	var formatFind []string
+	usePagerFind := true
+	paramsMetadataCategoryFind := files_sdk.MetadataCategoryFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use:   "find",
+		Short: `Show Metadata Category`,
+		Long:  `Show Metadata Category`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := metadata_category.Client{Config: config}
+
+			var metadataCategory interface{}
+			var err error
+			metadataCategory, err = client.Find(paramsMetadataCategoryFind, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), metadataCategory, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsMetadataCategoryFind.Id, "id", 0, "Metadata Category ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
+
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "MetadataCategory", false)
+	MetadataCategories.AddCommand(cmdFind)
 	var fieldsCreate []string
 	var formatCreate []string
 	usePagerCreate := true

@@ -472,72 +472,6 @@ func Users() *cobra.Command {
 	lib.SetCommandEffect(cmdCreate, lib.EffectMutating)
 	lib.SetCommandResponse(cmdCreate, "User", false)
 	Users.AddCommand(cmdCreate)
-	var fieldsUnlock []string
-	var formatUnlock []string
-	usePagerUnlock := true
-	paramsUserUnlock := files_sdk.UserUnlockParams{}
-
-	cmdUnlock := &cobra.Command{
-		Use:   "unlock",
-		Short: `Unlock user who has been locked out due to failed logins`,
-		Long:  `Unlock user who has been locked out due to failed logins`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := user.Client{Config: config}
-
-			var err error
-			err = client.Unlock(paramsUserUnlock, files_sdk.WithContext(ctx))
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
-		},
-	}
-	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
-	lib.SetFlagAPIRequired(cmdUnlock.Flags(), "id")
-
-	cmdUnlock.Flags().StringSliceVar(&fieldsUnlock, "fields", []string{}, "comma separated list of field names")
-	cmdUnlock.Flags().StringSliceVar(&formatUnlock, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdUnlock.Flags().BoolVar(&usePagerUnlock, "use-pager", usePagerUnlock, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdUnlock, lib.EffectMutating)
-	lib.SetCommandResponse(cmdUnlock, "", false)
-	Users.AddCommand(cmdUnlock)
-	var fieldsResendWelcomeEmail []string
-	var formatResendWelcomeEmail []string
-	usePagerResendWelcomeEmail := true
-	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
-
-	cmdResendWelcomeEmail := &cobra.Command{
-		Use:   "resend-welcome-email",
-		Short: `Resend user welcome email`,
-		Long:  `Resend user welcome email`,
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := cmd.Context()
-			config := ctx.Value("config").(files_sdk.Config)
-			client := user.Client{Config: config}
-
-			var err error
-			err = client.ResendWelcomeEmail(paramsUserResendWelcomeEmail, files_sdk.WithContext(ctx))
-			if err != nil {
-				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
-			}
-			return nil
-		},
-	}
-	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
-	lib.SetFlagAPIRequired(cmdResendWelcomeEmail.Flags(), "id")
-
-	cmdResendWelcomeEmail.Flags().StringSliceVar(&fieldsResendWelcomeEmail, "fields", []string{}, "comma separated list of field names")
-	cmdResendWelcomeEmail.Flags().StringSliceVar(&formatResendWelcomeEmail, "format", lib.FormatDefaults, lib.FormatHelpText)
-	cmdResendWelcomeEmail.Flags().BoolVar(&usePagerResendWelcomeEmail, "use-pager", usePagerResendWelcomeEmail, "Use $PAGER (.ie less, more, etc)")
-
-	lib.SetCommandEffect(cmdResendWelcomeEmail, lib.EffectMutating)
-	lib.SetCommandResponse(cmdResendWelcomeEmail, "", false)
-	Users.AddCommand(cmdResendWelcomeEmail)
 	var fieldsUser2faReset []string
 	var formatUser2faReset []string
 	usePagerUser2faReset := true
@@ -571,6 +505,72 @@ func Users() *cobra.Command {
 	lib.SetCommandEffect(cmdUser2faReset, lib.EffectMutating)
 	lib.SetCommandResponse(cmdUser2faReset, "", false)
 	Users.AddCommand(cmdUser2faReset)
+	var fieldsResendWelcomeEmail []string
+	var formatResendWelcomeEmail []string
+	usePagerResendWelcomeEmail := true
+	paramsUserResendWelcomeEmail := files_sdk.UserResendWelcomeEmailParams{}
+
+	cmdResendWelcomeEmail := &cobra.Command{
+		Use:   "resend-welcome-email",
+		Short: `Resend user welcome email`,
+		Long:  `Resend user welcome email`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
+
+			var err error
+			err = client.ResendWelcomeEmail(paramsUserResendWelcomeEmail, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdResendWelcomeEmail.Flags().Int64Var(&paramsUserResendWelcomeEmail.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdResendWelcomeEmail.Flags(), "id")
+
+	cmdResendWelcomeEmail.Flags().StringSliceVar(&fieldsResendWelcomeEmail, "fields", []string{}, "comma separated list of field names")
+	cmdResendWelcomeEmail.Flags().StringSliceVar(&formatResendWelcomeEmail, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdResendWelcomeEmail.Flags().BoolVar(&usePagerResendWelcomeEmail, "use-pager", usePagerResendWelcomeEmail, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdResendWelcomeEmail, lib.EffectMutating)
+	lib.SetCommandResponse(cmdResendWelcomeEmail, "", false)
+	Users.AddCommand(cmdResendWelcomeEmail)
+	var fieldsUnlock []string
+	var formatUnlock []string
+	usePagerUnlock := true
+	paramsUserUnlock := files_sdk.UserUnlockParams{}
+
+	cmdUnlock := &cobra.Command{
+		Use:   "unlock",
+		Short: `Unlock user who has been locked out due to failed logins`,
+		Long:  `Unlock user who has been locked out due to failed logins`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := user.Client{Config: config}
+
+			var err error
+			err = client.Unlock(paramsUserUnlock, files_sdk.WithContext(ctx))
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			return nil
+		},
+	}
+	cmdUnlock.Flags().Int64Var(&paramsUserUnlock.Id, "id", 0, "User ID.")
+	lib.SetFlagAPIRequired(cmdUnlock.Flags(), "id")
+
+	cmdUnlock.Flags().StringSliceVar(&fieldsUnlock, "fields", []string{}, "comma separated list of field names")
+	cmdUnlock.Flags().StringSliceVar(&formatUnlock, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUnlock.Flags().BoolVar(&usePagerUnlock, "use-pager", usePagerUnlock, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdUnlock, lib.EffectMutating)
+	lib.SetCommandResponse(cmdUnlock, "", false)
+	Users.AddCommand(cmdUnlock)
 	var fieldsUpdate []string
 	var formatUpdate []string
 	usePagerUpdate := true
