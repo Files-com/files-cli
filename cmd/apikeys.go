@@ -280,7 +280,6 @@ func ApiKeys() *cobra.Command {
 	var formatUpdateCurrent []string
 	usePagerUpdateCurrent := true
 	paramsApiKeyUpdateCurrent := files_sdk.ApiKeyUpdateCurrentParams{}
-	ApiKeyUpdateCurrentPermissionSet := ""
 
 	cmdUpdateCurrent := &cobra.Command{
 		Use:   "update-current",
@@ -297,20 +296,11 @@ func ApiKeys() *cobra.Command {
 				return convertErr
 			}
 
-			var ApiKeyUpdateCurrentPermissionSetErr error
-			paramsApiKeyUpdateCurrent.PermissionSet, ApiKeyUpdateCurrentPermissionSetErr = lib.FetchKey("permission-set", paramsApiKeyUpdateCurrent.PermissionSet.Enum(), ApiKeyUpdateCurrentPermissionSet)
-			if ApiKeyUpdateCurrentPermissionSet != "" && ApiKeyUpdateCurrentPermissionSetErr != nil {
-				return ApiKeyUpdateCurrentPermissionSetErr
-			}
-
 			if cmd.Flags().Changed("expires-at") {
 				lib.FlagUpdate(cmd, "expires_at", paramsApiKeyUpdateCurrent.ExpiresAt, mapParams)
 			}
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsApiKeyUpdateCurrent.Name, mapParams)
-			}
-			if cmd.Flags().Changed("permission-set") {
-				lib.FlagUpdate(cmd, "permission_set", paramsApiKeyUpdateCurrent.PermissionSet, mapParams)
 			}
 
 			if paramsApiKeyUpdateCurrent.ExpiresAt.IsZero() {
@@ -326,8 +316,6 @@ func ApiKeys() *cobra.Command {
 	paramsApiKeyUpdateCurrent.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdUpdateCurrent.Flags(), paramsApiKeyUpdateCurrent.ExpiresAt, "expires-at", "API Key expiration date")
 	cmdUpdateCurrent.Flags().StringVar(&paramsApiKeyUpdateCurrent.Name, "name", "", "Internal name for the API Key.  For your use.")
-	cmdUpdateCurrent.Flags().StringVar(&ApiKeyUpdateCurrentPermissionSet, "permission-set", "", fmt.Sprintf("Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `mobile_app` permission set can only perform the functions provided by our Mobile App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can use only the files, folders, and file_actions endpoints, excluding the GPG Encrypt and GPG Decrypt file actions, where they perform file operations as a full-access file user in the key's workspace scope, along with `GET /file_migrations/{id}` and `GET /api_key`. On the migration lookup, any key with a `path` can read only migrations it started. Without a `path`, user-owned keys retain user-scoped access; site-wide Workspace-bound keys can read only migrations whose source and destination are both in their Workspace. Every `files_only` key is Workspace-bound, including Workspace `0`, as is a full-access key in a named Workspace. A full-access site-wide key in the default Workspace retains Site-wide migration access. Migrations outside the caller's visibility return `not-found`. Keys with `files_only` cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user. Both GPG file actions and every other endpoint deny them with `not-authorized/api-key-only-for-file-operations`. Folder-configured GPG encryption and decryption still apply to files uploaded with a `files_only` key. %v", reflect.ValueOf(paramsApiKeyUpdateCurrent.PermissionSet.Enum()).MapKeys()))
-	lib.SetFlagEnum(cmdUpdateCurrent.Flags(), "permission-set", paramsApiKeyUpdateCurrent.PermissionSet.Enum())
 
 	cmdUpdateCurrent.Flags().StringSliceVar(&fieldsUpdateCurrent, "fields", []string{}, "comma separated list of field names")
 	cmdUpdateCurrent.Flags().StringSliceVar(&formatUpdateCurrent, "format", lib.FormatDefaults, lib.FormatHelpText)
