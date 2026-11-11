@@ -124,6 +124,7 @@ Create Expectation.
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
 | `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
 | `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |
+| `--schedule-time-exceptions` | []object | Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. |
 | `--lookback-interval` | int64 | How many seconds before the due boundary the window starts. |
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |
@@ -161,6 +162,7 @@ Update Expectation.
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
 | `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
 | `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |
+| `--schedule-time-exceptions` | []object | Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. |
 | `--lookback-interval` | int64 | How many seconds before the due boundary the window starts. |
 | `--late-acceptance-interval` | int64 | How many seconds a schedule-driven window may remain eligible to close as late. |
 | `--inactivity-interval` | int64 | How many quiet seconds are required before final closure. |

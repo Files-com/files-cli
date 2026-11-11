@@ -4809,6 +4809,12 @@
           "description": "Optional holiday region used by the Expectation schedule."
         },
         {
+          "name": "--schedule-time-exceptions",
+          "type": "[]object",
+          "required": false,
+          "description": "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict."
+        },
+        {
           "name": "--lookback-interval",
           "type": "int64",
           "required": false,
@@ -4961,6 +4967,12 @@
           "type": "string",
           "required": false,
           "description": "Optional holiday region used by the Expectation schedule."
+        },
+        {
+          "name": "--schedule-time-exceptions",
+          "type": "[]object",
+          "required": false,
+          "description": "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict."
         },
         {
           "name": "--lookback-interval",

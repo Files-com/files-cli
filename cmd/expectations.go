@@ -155,6 +155,7 @@ func Expectations() *cobra.Command {
 	paramsExpectationCreate := files_sdk.ExpectationCreateParams{}
 	ExpectationCreateTrigger := ""
 
+	createScheduleTimeExceptionsJSON := ""
 	createCriteriaJSON := ""
 
 	cmdCreate := &cobra.Command{
@@ -175,6 +176,13 @@ func Expectations() *cobra.Command {
 
 			if cmd.Flags().Changed("disabled") {
 				paramsExpectationCreate.Disabled = flib.Bool(createDisabled)
+			}
+			if cmd.Flags().Changed("schedule-time-exceptions") {
+				parsedCreateScheduleTimeExceptions, parseCreateScheduleTimeExceptionsErr := lib.ParseJSONArrayObjectFlag("schedule-time-exceptions", createScheduleTimeExceptionsJSON)
+				if parseCreateScheduleTimeExceptionsErr != nil {
+					return parseCreateScheduleTimeExceptionsErr
+				}
+				paramsExpectationCreate.ScheduleTimeExceptions = parsedCreateScheduleTimeExceptions
 			}
 			if cmd.Flags().Changed("criteria") {
 				parsedCreateCriteria, parseCreateCriteriaErr := lib.ParseJSONObjectFlag("criteria", createCriteriaJSON)
@@ -209,6 +217,8 @@ func Expectations() *cobra.Command {
 	cmdCreate.Flags().StringSliceVar(&paramsExpectationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the Expectation schedule.")
 	cmdCreate.Flags().StringVar(&paramsExpectationCreate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the Expectation schedule.")
+	cmdCreate.Flags().StringVar(&createScheduleTimeExceptionsJSON, "schedule-time-exceptions", "", "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "schedule-time-exceptions", "json")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LookbackInterval, "lookback-interval", 0, "How many seconds before the due boundary the window starts.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdCreate.Flags().Int64Var(&paramsExpectationCreate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
@@ -262,6 +272,7 @@ func Expectations() *cobra.Command {
 	paramsExpectationUpdate := files_sdk.ExpectationUpdateParams{}
 	ExpectationUpdateTrigger := ""
 
+	updateScheduleTimeExceptionsJSON := ""
 	updateCriteriaJSON := ""
 
 	cmdUpdate := &cobra.Command{
@@ -333,6 +344,13 @@ func Expectations() *cobra.Command {
 			if cmd.Flags().Changed("holiday-region") {
 				lib.FlagUpdate(cmd, "holiday_region", paramsExpectationUpdate.HolidayRegion, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-time-exceptions") {
+				parsedUpdateScheduleTimeExceptions, parseUpdateScheduleTimeExceptionsErr := lib.ParseJSONArrayObjectFlag("schedule-time-exceptions", updateScheduleTimeExceptionsJSON)
+				if parseUpdateScheduleTimeExceptionsErr != nil {
+					return parseUpdateScheduleTimeExceptionsErr
+				}
+				mapParams["schedule_time_exceptions"] = parsedUpdateScheduleTimeExceptions
+			}
 			if cmd.Flags().Changed("lookback-interval") {
 				lib.FlagUpdate(cmd, "lookback_interval", paramsExpectationUpdate.LookbackInterval, mapParams)
 			}
@@ -383,6 +401,8 @@ func Expectations() *cobra.Command {
 	cmdUpdate.Flags().StringSliceVar(&paramsExpectationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the Expectation schedule.")
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the Expectation schedule.")
 	cmdUpdate.Flags().StringVar(&paramsExpectationUpdate.HolidayRegion, "holiday-region", "", "Optional holiday region used by the Expectation schedule.")
+	cmdUpdate.Flags().StringVar(&updateScheduleTimeExceptionsJSON, "schedule-time-exceptions", "", "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "schedule-time-exceptions", "json")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LookbackInterval, "lookback-interval", 0, "How many seconds before the due boundary the window starts.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.LateAcceptanceInterval, "late-acceptance-interval", 0, "How many seconds a schedule-driven window may remain eligible to close as late.")
 	cmdUpdate.Flags().Int64Var(&paramsExpectationUpdate.InactivityInterval, "inactivity-interval", 0, "How many quiet seconds are required before final closure.")
