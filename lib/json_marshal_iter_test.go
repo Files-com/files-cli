@@ -3,8 +3,10 @@ package lib
 import (
 	"bytes"
 	"context"
+	"errors"
 	"testing"
 
+	"github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,6 +43,45 @@ func TestJsonMarshalIter_Raw(t *testing.T) {
 
 	a.Equal(`[{"age":100,"first_name":"Dustin","last_name":"Zeisler"},{"age":99,"first_name":"Tom&Jerry","last_name":"Smith"}]
 `, buf.String())
+}
+
+// A transfer reports how it ended, such as an interrupt, as an iterator error after its records,
+// sometimes before it has sent any record.
+func TestJsonMarshalIter_IteratorErrorIsNotARecord(t *testing.T) {
+	tests := []struct {
+		name    string
+		records []interface{}
+		want    string
+	}{
+		{
+			name:    "after a record",
+			records: []interface{}{Person{FirstName: "Dustin", LastName: "Zeisler", Age: 100}},
+			want:    `[{"age":100,"first_name":"Dustin","last_name":"Zeisler"}]` + "\n",
+		},
+		{
+			name: "before any record",
+			want: "[]\n",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			it := (&lib.IterChan[interface{}]{}).Init(context.Background())
+			interrupted := errors.New("interrupted")
+			go func() {
+				for _, record := range tt.records {
+					it.Send <- record
+				}
+				it.SendError <- interrupted
+				it.Stop()
+			}()
+			buf := bytes.NewBufferString("")
+
+			err := JsonMarshalIter(context.Background(), it, []string{}, nil, false, "raw", buf)
+
+			assert.Equal(t, interrupted, err)
+			assert.Equal(t, tt.want, buf.String())
+		})
+	}
 }
 
 type StringBufferWithClose struct {
