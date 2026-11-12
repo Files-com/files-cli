@@ -1,6 +1,6 @@
 module github.com/Files-com/files-cli
 
-go 1.27.3
+go 1.27.4
 
 require (
 	github.com/Files-com/files-sdk-go/v3 v3.3.362
