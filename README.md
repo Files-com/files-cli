@@ -765,3 +765,19 @@ Keep the default when gradual startup helps avoid overwhelming a residential
 or constrained connection. This option changes startup, not part sizes, and
 requires adaptive concurrency; it cannot be combined with an explicit initial
 concurrency target.
+
+## Upload finishing
+
+For a remote server mount or a Files.com Agent, Files.com can take a while to
+finish an upload after its last byte is sent. The progress display shows this at
+once: once nothing else is left, the main bar reads `Finishing` with a spinner
+and the elapsed time, without a transfer rate, byte percentage or ETA, and the
+file counts of a multi-file upload include how many files are finishing. An
+upload that has been finishing for about two seconds is also named, the oldest
+one in a multi-file upload, with Files.com's approximate percentage when it gives
+one below 100 (`~40%`). The upload is done
+only when it is `complete`.
+
+Other `--format` outputs are unchanged. Interrupting the CLI while an upload is
+finishing stops only the wait: it says so on stderr, and Files.com may still
+complete the upload.

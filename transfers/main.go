@@ -146,6 +146,10 @@ type Transfers struct {
 	*file.Job
 	openConnections atomic.Value
 	CPUProfilePath  string
+	// finalizingOnly is onlyFinalizing for the job, as updateStatus last found it.
+	finalizingOnly atomic.Bool
+	// runningUploads is the uploadPhases updateStatus last found.
+	runningUploads atomic.Value
 }
 
 type LastEndedFile struct {
@@ -245,7 +249,13 @@ func (t *Transfers) onInterrupt(repeated bool) {
 		t.jobMutex.Unlock()
 		return
 	}
+	t.jobMutex.Lock()
+	finalizing := finalizingUploads(t.Job)
+	t.jobMutex.Unlock()
 	t.Progress.Shutdown()
+	if message := interruptedFinalizationMessage(finalizing); message != "" {
+		fmt.Fprintln(t.Stderr, message)
+	}
 	t.jobMutex.Lock()
 	if t.Job != nil {
 		t.Job.Cancel()
@@ -255,6 +265,33 @@ func (t *Transfers) onInterrupt(repeated bool) {
 		os.Exit(1)
 	}
 	os.Exit(0)
+}
+
+// finalizingUploads returns the files of job that are uploading while Files.com is still finishing them.
+func finalizingUploads(job *file.Job) []file.JobFile {
+	if job == nil {
+		return nil
+	}
+	var finalizing []file.JobFile
+	for _, f := range jobFiles(job.Sub(status.Uploading)) {
+		if f.Finalizing {
+			finalizing = append(finalizing, f)
+		}
+	}
+	return finalizing
+}
+
+// interruptedFinalizationMessage says that an interrupt stopped the wait for uploads Files.com was still finishing, which
+// it may still complete: interrupting does not cancel that work.
+func interruptedFinalizationMessage(finalizing []file.JobFile) string {
+	switch len(finalizing) {
+	case 0:
+		return ""
+	case 1:
+		return fmt.Sprintf("Interrupted while Files.com was finishing the upload of %v: stopped waiting for it, but Files.com may still complete it.", sdklib.DefaultString(finalizing[0].RemotePath, bestPath(finalizing[0])))
+	default:
+		return fmt.Sprintf("Interrupted while Files.com was finishing %v uploads: stopped waiting for them, but Files.com may still complete them.", len(finalizing))
+	}
 }
 
 // ErrInterrupted is the command's result after an orderly interrupt: the
@@ -859,8 +896,76 @@ func (t *Transfers) updateStatus() {
 	if t.OpenConnectionStats {
 		t.fetchOpenConnections()
 	}
+	if t.Job.Direction == direction.UploadType {
+		uploading := jobFiles(t.Job.Sub(status.Uploading))
+		t.runningUploads.Store(summarizeUploading(uploading))
+		t.finalizingOnly.Store(t.Job.EndScanning.Called() &&
+			onlyFinalizing(uploading, t.Job.Count(status.Indexed, status.Queued, status.Compared, status.Retrying)))
+	}
 
 	t.findActiveFile()
+}
+
+// uploadPhases is what updateStatus last found of an upload's files that are uploading: how many are still sending
+// bytes, how many Files.com is still finishing, and the oldest of those (olderFinalization).
+type uploadPhases struct {
+	sending    int
+	finalizing int
+	oldest     file.JobFile
+}
+
+func summarizeUploading(uploading []file.JobFile) uploadPhases {
+	var phases uploadPhases
+	for _, f := range uploading {
+		if !f.Finalizing {
+			phases.sending++
+			continue
+		}
+		phases.finalizing++
+		if phases.finalizing == 1 || olderFinalization(f, phases.oldest) {
+			phases.oldest = f
+		}
+	}
+	return phases
+}
+
+// olderFinalization orders finalizing uploads by when Files.com first answered that it was still finishing them, and
+// those that began at the same time by remote then local path, so the same one is chosen every time.
+func olderFinalization(a, b file.JobFile) bool {
+	if !a.FinalizingSince.Equal(b.FinalizingSince) {
+		return a.FinalizingSince.Before(b.FinalizingSince)
+	}
+	if a.RemotePath != b.RemotePath {
+		return a.RemotePath < b.RemotePath
+	}
+	return a.LocalPath < b.LocalPath
+}
+
+func (t *Transfers) uploadPhases() uploadPhases {
+	phases, _ := t.runningUploads.Load().(uploadPhases)
+	return phases
+}
+
+// onlyFinalizing reports whether an upload has no bytes left to send but uploads Files.com is still finishing: every
+// file still uploading is finalizing, and waiting files are not yet uploading.
+func onlyFinalizing(uploading []file.JobFile, waiting int) bool {
+	if waiting > 0 || len(uploading) == 0 {
+		return false
+	}
+	for _, f := range uploading {
+		if !f.Finalizing {
+			return false
+		}
+	}
+	return true
+}
+
+func jobFiles(job *file.Job) []file.JobFile {
+	files := make([]file.JobFile, 0, len(job.Statuses))
+	for _, s := range job.Statuses {
+		files = append(files, file.ToStatusFile(s))
+	}
+	return files
 }
 
 func (t *Transfers) iterateOverErrored() {
@@ -1031,56 +1136,68 @@ func (t *Transfers) EndingStatusErrors() {
 var ScanningBarStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"}
 
 func (t *Transfers) buildMainTotalTransfer() {
+	before, after := t.mainBarDecorators()
 	t.mainBar = t.Progress.AddBar(t.Job.TotalBytes(),
-		mpb.PrependDecorators(
-			decor.Any(func(d decor.Statistics) string {
-				return directionFmt(t.Job.Direction, t.finishedForDisplay.Load())
-			}),
-			decor.CountersKiloByte(" (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
-			decor.Any(func(d decor.Statistics) string {
-				if t.Job.Finished.Called() {
-					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.Job.FinalTransferRate())), directionSymbolFmt(t.Job.Direction))
-				} else {
-					return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.TransferRateValue())), directionSymbolFmt(t.Job.Direction))
-				}
-			}),
-		),
-		mpb.AppendDecorators(
-			decor.Percentage(decor.WCSyncSpace),
-			decor.Any(func(d decor.Statistics) string {
-				eta := fmt.Sprintf("ETA:")
-				value := time.Duration(t.ETAValue()).Round(time.Second)
-				if t.Job.Idle() || !t.Job.EndScanning.Called() {
-					eta = fmt.Sprintf("%v ∞", eta)
-				} else if value.String() == "0s" && !t.Job.Sub(status.Valid...).All(status.Ended...) {
-					eta = fmt.Sprintf("%v ~", eta)
-				} else {
-					eta = fmt.Sprintf("%v %v", eta, value.String())
-				}
-				elapsed := fmt.Sprintf("Elapsed: %v", t.Job.ElapsedTime().Round(time.Second).String())
-				if t.Job.Finished.Called() {
-					return fmt.Sprintf(" %v", elapsed)
-				} else {
-					return fmt.Sprintf(" %v %v", eta, elapsed)
-				}
-			},
-				decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
-			),
-		),
+		mpb.PrependDecorators(before...),
+		mpb.AppendDecorators(after...),
 		mpb.BarFillerMiddleware(func(filler mpb.BarFiller) mpb.BarFiller {
-			return &BarFilter{Job: t.Job, scanner: mpb.SpinnerStyle(ScanningBarStyle...).Build(), progress: mpb.BarStyle().Build()}
+			return &BarFilter{Job: t.Job, scanner: mpb.SpinnerStyle(ScanningBarStyle...).Build(), progress: mpb.BarStyle().Build(), finalizing: t.finalizingForDisplay}
 		}),
 	)
+}
+
+// mainBarDecorators returns the main bar's decorators before and after the bar.
+func (t *Transfers) mainBarDecorators() (before []decor.Decorator, after []decor.Decorator) {
+	before = []decor.Decorator{
+		decor.Any(func(d decor.Statistics) string {
+			return transferLabel(t.Job.Direction, t.finishedForDisplay.Load(), t.finalizingForDisplay())
+		}),
+		decor.CountersKiloByte(" (% .1f/% .1f)", decor.WC{W: 0, C: decor.DSyncWidthR}),
+		hiddenWhile(decor.Any(func(d decor.Statistics) string {
+			if t.Job.Finished.Called() {
+				return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.Job.FinalTransferRate())), directionSymbolFmt(t.Job.Direction))
+			} else {
+				return fmt.Sprintf(" %v/s %v", humanize.Bytes(uint64(t.TransferRateValue())), directionSymbolFmt(t.Job.Direction))
+			}
+		}), t.finalizingForDisplay),
+	}
+	after = []decor.Decorator{
+		hiddenWhile(decor.Percentage(decor.WCSyncSpace), t.finalizingForDisplay),
+		decor.Any(func(d decor.Statistics) string {
+			eta := fmt.Sprintf("ETA:")
+			value := time.Duration(t.ETAValue()).Round(time.Second)
+			if t.Job.Idle() || !t.Job.EndScanning.Called() {
+				eta = fmt.Sprintf("%v ∞", eta)
+			} else if value.String() == "0s" && !t.Job.Sub(status.Valid...).All(status.Ended...) {
+				eta = fmt.Sprintf("%v ~", eta)
+			} else {
+				eta = fmt.Sprintf("%v %v", eta, value.String())
+			}
+			elapsed := fmt.Sprintf("Elapsed: %v", t.Job.ElapsedTime().Round(time.Second).String())
+			// While only finalization is left, no byte rate, percentage or ETA applies.
+			if t.Job.Finished.Called() || t.finalizingForDisplay() {
+				return fmt.Sprintf(" %v", elapsed)
+			} else {
+				return fmt.Sprintf(" %v %v", eta, elapsed)
+			}
+		},
+			decor.WC{W: t.pathPadding + 1, C: decor.DSyncWidthR},
+		),
+	}
+	return before, after
 }
 
 type BarFilter struct {
 	scanner  mpb.BarFiller
 	progress mpb.BarFiller
+	// finalizing, when set, reports that only uploads Files.com is still finishing are left, which the spinner shows
+	// in place of a full byte bar.
+	finalizing func() bool
 	*file.Job
 }
 
 func (b *BarFilter) Fill(w io.Writer, d decor.Statistics) error {
-	if b.Job.EndScanning.Called() {
+	if b.Job.EndScanning.Called() && (b.finalizing == nil || !b.finalizing()) {
 		return b.progress.Fill(w, d)
 	}
 
@@ -1113,12 +1230,33 @@ func (t *Transfers) buildStatusTransfer() {
 				return nil
 			})
 		}),
+		// The upload Files.com has been finishing longest, on a row of its own below, while there is one.
+		mpb.BarExtender(mpb.BarFillerFunc(func(w io.Writer, st decor.Statistics) error {
+			// Indented by the one space mpb puts before the status row.
+			width := st.AvailableWidth - 2
+			if row := t.oldestFinalizationRow(width, time.Now()); row != "" {
+				io.WriteString(w, " "+row+"\n")
+			}
+			return nil
+		}), false),
 		mpb.BarPriority(4),
 	)
 }
 
+// oldestFinalizationRow shows, for a transfer of several files, the upload Files.com has been finishing longest, with
+// its approximate percentage when Files.com gives one, or "" when no upload has been finishing for
+// finishingDetailDelay. It stays whatever other files do; a narrow row shortens the path to keep the label and percentage.
+func (t *Transfers) oldestFinalizationRow(width int, now time.Time) string {
+	phases := t.uploadPhases()
+	if phases.finalizing == 0 || t.finishedForDisplay.Load() || fileCounts(t.Job, 0, phases) == "" || !finishingDetailed(phases.oldest, now) {
+		return ""
+	}
+	path := sdklib.DefaultString(phases.oldest.Path, phases.oldest.DisplayName)
+	return fitStatusLine(finishingDisplayStatus, strings.TrimSpace(fmt.Sprintf("%v %v", path, finalizationProgress(phases.oldest))), width)
+}
+
 func (t *Transfers) statusTransferRow(endedFile LastEndedFile, width int) string {
-	counts := fileCounts(t.Job, t.FilesRateValue())
+	counts := fileCounts(t.Job, t.FilesRateValue(), t.uploadPhases())
 	statusLineWidth := width - runewidth.StringWidth(counts)
 	if counts != "" {
 		statusLineWidth--
@@ -1145,6 +1283,10 @@ func fitStatusTransferRow(counts string, statusLine string, width int) string {
 }
 
 func (t *Transfers) statusTransferLine(endedFile LastEndedFile, width int) string {
+	return t.statusTransferLineAt(endedFile, width, time.Now())
+}
+
+func (t *Transfers) statusTransferLineAt(endedFile LastEndedFile, width int, now time.Time) string {
 	path := endedFile.Path
 	if path == "" {
 		path = endedFile.DisplayName
@@ -1153,6 +1295,11 @@ func (t *Transfers) statusTransferLine(endedFile LastEndedFile, width int) strin
 	body := path
 	if endedFile.Has(status.Errored) && endedFile.Err != nil {
 		body = fmt.Sprintf("%v - %v", path, endedFile.Err.Error())
+	} else if endedFile.Finalizing && endedFile.Status.Is(status.Uploading) && finishingDetailed(endedFile.JobFile, now) {
+		return fitStatusLine(finishingDisplayStatus, strings.TrimSpace(fmt.Sprintf("%v %v", path, finalizationProgress(endedFile.JobFile))), width)
+	} else if endedFile.Finalizing && endedFile.Status.Is(status.Canceled) {
+		// Canceled while waiting for Files.com, which may still complete the upload.
+		body = fmt.Sprintf("%v - Files.com may still complete it", path)
 	} else if !endedFile.Status.Is(status.Complete, status.Queued, status.Indexed) {
 		body = strings.TrimSpace(fmt.Sprintf("%v %v", path, t.transferProgress(endedFile.JobFile)))
 	}
@@ -1300,7 +1447,10 @@ func (t *Transfers) findActiveFile() {
 	lastEndedFile := t.LastEndedFile()
 
 	now := time.Now()
-	if lastEndedFile.Time.IsZero() || now.Sub(lastEndedFile.Time) > time.Second*2 {
+	// A single file whose bytes are sent while Files.com finishes it replaces the file shown without waiting. In a
+	// transfer of several files, the oldest finalization has a row of its own (oldestFinalizationRow).
+	showFinalizing := t.finalizingOnly.Load() && !lastEndedFile.Finalizing && len(t.Job.Statuses) == 1
+	if lastEndedFile.Time.IsZero() || now.Sub(lastEndedFile.Time) > time.Second*2 || showFinalizing {
 		for _, s := range []status.Status{status.Uploading, status.Downloading, status.Queued, status.Indexed} {
 			for _, d := range t.Job.Sub(s).Statuses {
 				var statusChange status.Change
@@ -1310,10 +1460,11 @@ func (t *Transfers) findActiveFile() {
 						break
 					}
 				}
-				diff := now.Sub(file.ToStatusFile(d).EndedAt)
+				jobFile := file.ToStatusFile(d)
+				diff := now.Sub(jobFile.EndedAt)
 				statusDiff := now.Sub(statusChange.Time)
 				if diff < time.Millisecond*500 || statusDiff < time.Millisecond*500 || len(t.Job.Statuses) == 1 {
-					t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: file.ToStatusFile(d)})
+					t.lastEndedFile.Store(LastEndedFile{Time: time.Now(), JobFile: jobFile})
 					return
 				}
 			}
@@ -1330,14 +1481,33 @@ func displayName(path string, terminalWidth int) string {
 	return path
 }
 
-func fileCounts(job *file.Job, rate float64) string {
+func fileCounts(job *file.Job, rate float64, phases uploadPhases) string {
 	includedCount := job.Count(status.Included...)
 	includedCount -= job.Count(status.FolderCreated)
 	if includedCount < 2 {
 		return ""
 	}
 
-	return fmt.Sprintf("Transferring (%v/%v Files) %.1f Files/s %v", formatWithComma(job.Count(status.Complete)), formatWithComma(includedCount), rate, directionSymbolFmt(job.Direction))
+	files := fmt.Sprintf("%v/%v Files", formatWithComma(job.Count(status.Complete)), formatWithComma(includedCount))
+	if phases.finalizing > 0 {
+		// While Files.com is still finishing uploads, the files in each phase, finishing first so a short row keeps it.
+		phaseCounts := []string{fmt.Sprintf("%v finishing", formatWithComma(phases.finalizing))}
+		for _, phase := range []struct {
+			count int
+			name  string
+		}{
+			{phases.sending, "uploading"},
+			{job.Count(status.Indexed, status.Queued, status.Compared), "queued"},
+			{job.Count(status.Retrying), "retrying"},
+			{job.Count(status.Errored), "errored"},
+		} {
+			if phase.count > 0 {
+				phaseCounts = append(phaseCounts, fmt.Sprintf("%v %v", formatWithComma(phase.count), phase.name))
+			}
+		}
+		files = fmt.Sprintf("%v: %v", files, strings.Join(phaseCounts, ", "))
+	}
+	return fmt.Sprintf("Transferring (%v) %.1f Files/s %v", files, rate, directionSymbolFmt(job.Direction))
 }
 
 func directionFmt(p direction.Direction, finished bool) (str string) {
@@ -1381,7 +1551,7 @@ func statusWithColor(s status.Status) string {
 	switch s {
 	case status.Errored:
 		return fmt.Sprintf("\u001b[31m%v\u001b[0m", displayName) // Red
-	case status.Uploading, status.Downloading:
+	case status.Uploading, status.Downloading, finishingDisplayStatus:
 		return fmt.Sprintf("\u001b[32m%v\u001b[0m", displayName) // Green
 	case status.Retrying:
 		return fmt.Sprintf("\u001b[91m%v\u001b[0m", displayName) // Light red
@@ -1394,6 +1564,63 @@ func statusWithColor(s status.Status) string {
 
 func statusDisplayName(s status.Status) string {
 	return strings.ReplaceAll(s.Name, "_", " ")
+}
+
+// finishingDisplayStatus labels an upload whose bytes are sent while Files.com is still finishing it (the SDK's
+// finalization). Its status stays uploading until the File arrives; only the status line shows this label.
+var finishingDisplayStatus = status.Status{Name: "finishing", Value: status.Uploading.Value}
+
+// finishingDetailDelay is how long Files.com must have been finishing an upload before the CLI names it with its
+// percentage, so that a quick finish does not flash a row. The Finishing phase and its counts show at once.
+const finishingDetailDelay = 2 * time.Second
+
+func finishingDetailed(f file.JobFile, now time.Time) bool {
+	return !f.FinalizingSince.IsZero() && now.Sub(f.FinalizingSince) >= finishingDetailDelay
+}
+
+// finalizationProgress describes Files.com's approximate percentage of finishing an upload. A pending 100 is
+// omitted; only the returned File completes the upload.
+func finalizationProgress(f file.JobFile) string {
+	if f.FinalizationProgress != nil && *f.FinalizationProgress < 100 {
+		return fmt.Sprintf("(~%d%%)", *f.FinalizationProgress)
+	}
+	return ""
+}
+
+// finalizingForDisplay reports whether the main bar shows the finishing state: only uploads Files.com is still
+// finishing are left, and the transfer has not finished.
+func (t *Transfers) finalizingForDisplay() bool {
+	return t.finalizingOnly.Load() && !t.finishedForDisplay.Load()
+}
+
+// hiddenWhile shows decorator d except while hide reports true, when it shows nothing.
+func hiddenWhile(d decor.Decorator, hide func() bool) decor.Decorator {
+	return hiddenDecorator{Decorator: d, hide: hide}
+}
+
+type hiddenDecorator struct {
+	decor.Decorator
+	hide func() bool
+}
+
+func (h hiddenDecorator) Decor(st decor.Statistics) (string, int) {
+	if h.hide() {
+		// Formatting nothing still takes part in the bars' width synchronization, which waits for every decorator.
+		return h.Decorator.Format("")
+	}
+	return h.Decorator.Decor(st)
+}
+
+func (h hiddenDecorator) Unwrap() decor.Decorator {
+	return h.Decorator
+}
+
+// transferLabel names the transfer on the main bar: Finishing once only uploads Files.com is still finishing are left.
+func transferLabel(p direction.Direction, finished bool, finalizing bool) string {
+	if finalizing && !finished {
+		return "Finishing"
+	}
+	return directionFmt(p, finished)
 }
 
 func (t *Transfers) transferProgress(file file.JobFile) string {
