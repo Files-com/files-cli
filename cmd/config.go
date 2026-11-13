@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Files-com/files-cli/lib"
+	sdklib "github.com/Files-com/files-sdk-go/v3/lib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -21,6 +22,7 @@ func Config() *cobra.Command {
 	}
 	configParams := &lib.Profile{}
 	directTransfers := true
+	checkDownloadModificationTime := true
 	configSet := &cobra.Command{
 		Use:     "set",
 		Short:   "Stores connection settings and defaults in the config file.",
@@ -56,6 +58,9 @@ func Config() *cobra.Command {
 			if cmd.Flags().Changed("direct-transfers") {
 				Profile(cmd).Current().DisableDirectTransfers = !directTransfers
 			}
+			if cmd.Flags().Changed("check-download-modification-time") {
+				Profile(cmd).Current().CheckDownloadModificationTime = sdklib.Bool(checkDownloadModificationTime)
+			}
 
 			if len(configParams.ResourceFormat) > 0 {
 				Profile(cmd).Current().ResourceFormat = configParams.ResourceFormat
@@ -73,6 +78,7 @@ func Config() *cobra.Command {
 	configSet.Flags().StringVarP(&configParams.Language, "language", "l", configParams.Language, "Language to use")
 	configSet.Flags().IntVarP(&configParams.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", configParams.ConcurrentConnectionLimit, "Set the maximum number of concurrent connections.")
 	configSet.Flags().BoolVar(&directTransfers, "direct-transfers", directTransfers, "Attempt direct transfer paths to the Files Agent when available; set to false to use proxied paths only.")
+	configSet.Flags().BoolVar(&checkDownloadModificationTime, "check-download-modification-time", true, "Check Last-Modified during downloads; set to false to disable timestamp checks while retaining stronger checks.")
 	configSet.Flags().StringSliceVarP(&configParams.ResourceFormat, "format", "f", configParams.ResourceFormat, fmt.Sprintf("Set default resource format: %v", lib.FormatHelpText))
 
 	Config.AddCommand(configSet)
@@ -106,6 +112,7 @@ func Config() *cobra.Command {
 	resetDelete.Flags().BoolVarP(&resetConfig.VersionCheck, "version-check", "v", false, "")
 	resetDelete.Flags().BoolVarP(&resetConfig.ConcurrentConnectionLimit, "concurrent-connection-limit", "c", false, "Reset the maximum number of concurrent connections.")
 	resetDelete.Flags().BoolVar(&resetConfig.DirectTransfers, "direct-transfers", false, "Restore the enabled default for direct transfers to the Files Agent.")
+	resetDelete.Flags().BoolVar(&resetConfig.CheckDownloadModificationTime, "check-download-modification-time", false, "Restore the enabled default for download timestamp checks.")
 	resetDelete.Flags().BoolVarP(&resetConfig.ResourceFormat, "format", "f", false, "Reset default resource format")
 
 	Config.AddCommand(resetDelete)

@@ -420,6 +420,33 @@ func TestBuildConfigSetsDirectTransfers(t *testing.T) {
 	require.True(t, config.DisableDirectTransfers)
 }
 
+func TestDownloadModificationTimeFlagOverridesOnlyWhenExplicit(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		configured *bool
+		flag       string
+		want       bool
+	}{
+		{name: "default", want: true},
+		{name: "configured-false", configured: sdklib.Bool(false)},
+		{name: "flag-false", flag: "false"},
+		{name: "flag-true", configured: sdklib.Bool(false), flag: "true", want: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			transfer := New()
+			cmd := &cobra.Command{}
+			cmd.SetContext(context.Background())
+			transfer.DownloadFlags(cmd)
+			if tc.flag != "" {
+				require.NoError(t, cmd.Flags().Set("check-download-modification-time", tc.flag))
+			}
+			require.NoError(t, transfer.ArgsCheck(cmd))
+			config := transfer.BuildConfig(files_sdk.Config{CheckDownloadModificationTime: tc.configured}.Init())
+			assert.Equal(t, tc.want, config.ChecksDownloadModificationTime())
+		})
+	}
+}
+
 func TestAdaptiveConcurrencyRaisesOpenFileLimit(t *testing.T) {
 	original := raiseCurrentProcessOpenFileLimit
 	defer func() {

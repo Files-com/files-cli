@@ -751,6 +751,19 @@ files-cli folders list-for --fields path,type --format json
 }]
 ```
 
+## Download timestamp checks
+
+Downloads and `sync pull` check modification timestamps by default. Disable
+this for one command with
+`files-cli download remote.bin ./remote.bin --check-download-modification-time=false`.
+To save that choice for the current profile, run
+`files-cli config set --check-download-modification-time=false`. An explicit
+command flag overrides the profile; `config reset --check-download-modification-time`
+restores the enabled default. The value is fixed when the download job starts.
+
+Disabling this check can miss source changes detectable only by timestamps.
+Strong ETag, size and HTTP error checks remain enabled.
+
 ## Upload startup
 
 Uploads and `sync push` gradually probe available bandwidth by default. This

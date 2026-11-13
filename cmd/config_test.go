@@ -78,3 +78,23 @@ func TestConfigResetDirectTransfers(t *testing.T) {
 	assert.False(t, reloaded.Current().DisableDirectTransfers)
 	assert.Equal(t, 5, reloaded.Current().ConcurrentConnectionLimit)
 }
+
+func TestConfigDownloadModificationTimeSettingPersistsAndResets(t *testing.T) {
+	dir := t.TempDir()
+	profile := loadTempProfile(t, dir)
+	assert.True(t, profile.Config.ChecksDownloadModificationTime())
+	runConfigCmd(t, profile, "set", "--check-download-modification-time=false")
+	profile = loadTempProfile(t, dir)
+	assert.False(t, profile.Config.ChecksDownloadModificationTime())
+	runConfigCmd(t, profile, "set", "--subdomain", "testdomain")
+	profile = loadTempProfile(t, dir)
+	assert.False(t, profile.Config.ChecksDownloadModificationTime(), "an unrelated setting must preserve explicit false")
+	runConfigCmd(t, profile, "set", "--check-download-modification-time=true")
+	profile = loadTempProfile(t, dir)
+	assert.True(t, profile.Config.ChecksDownloadModificationTime())
+	runConfigCmd(t, profile, "reset", "--check-download-modification-time")
+	profile = loadTempProfile(t, dir)
+	assert.Nil(t, profile.Current().CheckDownloadModificationTime)
+	assert.True(t, profile.Config.ChecksDownloadModificationTime())
+	assert.Equal(t, "testdomain", profile.Current().Subdomain)
+}

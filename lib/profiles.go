@@ -66,6 +66,8 @@ type Profile struct {
 	ConcurrentConnectionLimit int      `json:"concurrent_connection_limit"`
 	DisableDirectTransfers    bool     `json:"disable_direct_transfers"`
 	ResourceFormat            []string `json:"resource_format"`
+
+	CheckDownloadModificationTime *bool `json:"check_download_modification_time,omitempty"`
 }
 
 func (p Profile) SetResourceFormat(cmd *cobra.Command, defaultFormat []string) []string {
@@ -96,6 +98,8 @@ type ResetConfig struct {
 	DirectTransfers           bool
 	ResourceFormat            bool
 	WorkspaceId               bool
+
+	CheckDownloadModificationTime bool
 }
 
 var SessionExpiry = time.Hour * 6
@@ -139,6 +143,9 @@ func (p *Profiles) ResetWith(reset ResetConfig) error {
 	}
 	if reset.DirectTransfers {
 		p.Current().DisableDirectTransfers = false
+	}
+	if reset.CheckDownloadModificationTime {
+		p.Current().CheckDownloadModificationTime = nil
 	}
 	if reset.ResourceFormat {
 		p.Current().ResourceFormat = nil
@@ -224,6 +231,9 @@ func (p *Profiles) SetOnConfig() {
 	}
 	p.Config.Environment = p.Current().Environment
 	p.Config.Language = p.Current().Language
+	if p.Config.CheckDownloadModificationTime == nil && p.Current().CheckDownloadModificationTime != nil {
+		p.Config.CheckDownloadModificationTime = lib.Bool(*p.Current().CheckDownloadModificationTime)
+	}
 	if p.singleUseWorkspaceId == "" && p.Current().WorkspaceId != "" {
 		p.setWorkspaceId(p.Current().WorkspaceId)
 	}

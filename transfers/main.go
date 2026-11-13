@@ -79,6 +79,10 @@ type Transfers struct {
 	ZipBatchReprobeInterval     time.Duration
 	OpenConnectionStats         bool
 	DirectTransfers             bool
+
+	CheckDownloadModificationTime    bool
+	checkDownloadModificationTimeSet bool
+
 	// AdaptiveConcurrency enables V2 adaptive part concurrency for transfer commands.
 	AdaptiveConcurrency bool
 	adaptiveUploadMode  bool
@@ -191,6 +195,8 @@ func New() *Transfers {
 		lastEndedFile:         endedFile,
 		finishedForDisplay:    &atomic.Bool{},
 		openConnections:       openConnections,
+
+		CheckDownloadModificationTime: true,
 	}
 }
 
@@ -370,6 +376,9 @@ func (t *Transfers) BuildConfig(config files_sdk.Config) files_sdk.Config {
 	}))
 	config = config.SetCustomClient(t.Manager.CreateMatchingClient(config.HTTPClient))
 	config.DisableDirectTransfers = !t.DirectTransfers
+	if t.checkDownloadModificationTimeSet {
+		config.CheckDownloadModificationTime = sdklib.Bool(t.CheckDownloadModificationTime)
+	}
 	return config
 }
 
@@ -503,6 +512,7 @@ func (t *Transfers) TextFilterFormat() lib.FilterIter {
 }
 
 func (t *Transfers) ArgsCheck(cmd *cobra.Command) error {
+	t.checkDownloadModificationTimeSet = cmd.Flags().Changed("check-download-modification-time")
 	if t.ZipBatchExtraction != "" &&
 		t.ZipBatchExtraction != string(file.ZipBatchExtractionSpool) &&
 		t.ZipBatchExtraction != string(file.ZipBatchExtractionStream) {
@@ -1766,6 +1776,7 @@ func (t *Transfers) UploadFlags(cmd *cobra.Command) {
 
 func (t *Transfers) DownloadFlags(cmd *cobra.Command) {
 	t.CommonFlags(cmd)
+	cmd.Flags().BoolVar(&t.CheckDownloadModificationTime, "check-download-modification-time", true, "Check Last-Modified on later download requests; set to false to disable timestamp checks while retaining stronger checks.")
 	cmd.Flags().BoolVar(&t.AdaptiveConcurrency, "adaptive-concurrency", t.AdaptiveConcurrency, "Use adaptive download concurrency. The concurrent connection limit becomes a maximum cap.")
 	cmd.Flags().BoolVarP(&t.DownloadFilesAsSingleStream, "download-files-as-single-stream", "m", t.DownloadFilesAsSingleStream, "Can ensure maximum compatibility with ftp/sftp remote mounts, but reduces download speed.")
 	cmd.Flags().BoolVar(&t.NoZipBatch, "no-zip-batch", t.NoZipBatch, "Disable batching of small files through the ZIP download endpoint")
