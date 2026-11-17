@@ -279,12 +279,6 @@
       "category": "bad-request"
     },
     {
-      "type": "bad-request/unsupported-currency",
-      "title": "Unsupported Currency",
-      "http_code": 422,
-      "category": "bad-request"
-    },
-    {
       "type": "bad-request/unsupported-http-response-format",
       "title": "Unsupported Http Response Format",
       "http_code": 422,
