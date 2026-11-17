@@ -5910,7 +5910,7 @@
           "name": "--search-all",
           "type": "bool",
           "required": false,
-          "description": "Search entire site?  If true, we will search the entire site.  Do not provide a path when using this parameter.  This is the same API used by the search bar in the web UI when running 'Search All Files'.  Search results are a best effort, not real time, and not guaranteed to match every file.  This field should only be used for ad-hoc (human) searching, and not as part of an automated process."
+          "description": "Search entire site?  If true, we will search the entire site.  Do not provide a path when using this parameter.  The search term must contain at least 3 characters after replacing `*` with spaces and trimming leading and trailing whitespace.  This is the same API used by the search bar in the web UI when running 'Search All Files'.  Search results are a best effort, not real time, and not guaranteed to match every file.  This field should only be used for ad-hoc (human) searching, and not as part of an automated process."
         },
         {
           "name": "--with-previews",

@@ -273,6 +273,12 @@
       "category": "bad-request"
     },
     {
+      "type": "bad-request/search-query-too-short",
+      "title": "Search Query Too Short",
+      "http_code": 422,
+      "category": "bad-request"
+    },
+    {
       "type": "bad-request/unrecognized-sort-index",
       "title": "Unrecognized Sort Index",
       "http_code": 422,
@@ -1103,6 +1109,12 @@
     {
       "type": "processing-failure/resource-locked",
       "title": "Resource Locked",
+      "http_code": 422,
+      "category": "processing-failure"
+    },
+    {
+      "type": "processing-failure/search-timed-out",
+      "title": "Search Timed Out",
       "http_code": 422,
       "category": "processing-failure"
     },
