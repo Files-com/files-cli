@@ -10,6 +10,8 @@ A PublicKey is used to authenticate to Files.com via SFTP (SSH File Transfer Pro
 
 When a user configures their PublicKey, it allows them to bypass traditional password-based authentication, leveraging the security of key-based authentication instead.
 
+Partner Administrators can add, rename, or remove another user's SSH keys only when that user belongs to their Partner and **Allow Credential Changes** is enabled for that Partner.
+
 Note that Files.com's SSH support is limited to file operations only. While users can securely transfer files and manage their data via SFTP, they do not have access to a full shell environment for executing arbitrary commands.
 
 When generating new SSH keys, here are the available options: Files.com supports multiple SSH key algorithms: RSA (default 4096 bits, range 1024-4096 in 8-bit increments), DSA (1024 bits only), Ed25519 (256 bits), and ECDSA (256, 384, or 521 bits). When generating keys, the system uses these default lengths unless a specific length is specified.
