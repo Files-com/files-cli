@@ -53,7 +53,7 @@ Update Site Settings.
 | `--ask-about-overwrites` | bool | If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface. |
 | `--show-request-access-link` | bool | Show request access link for users without access?  Currently unused. |
 | `--always-mkdir-parents` | bool | Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step. |
-| `--welcome-email-cc` | string | Include this email in welcome emails if enabled |
+| `--welcome-email-cc` | string | Copy welcome emails to this address when the email contains neither a create-password link nor a password. |
 | `--welcome-email-subject` | string | Include this email subject in welcome emails if enabled |
 | `--welcome-custom-text` | string | Custom text send in user welcome email |
 | `--language` | string | Site default language |

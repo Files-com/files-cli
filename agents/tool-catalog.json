@@ -8798,7 +8798,7 @@
           "name": "--cc-emails-to-responsible-party",
           "type": "bool",
           "required": false,
-          "description": "When `true`, emails sent to Partner users are copied to the responsible User or Group."
+          "description": "When `true`, the responsible User or Group receives eligible email copies for Partner Users without their own Responsible Party. Welcome emails trigger a separate onboarding notice. Password recovery links, email verification codes, and signed export links go only to the primary email address."
         },
         {
           "name": "--notes",
@@ -8908,7 +8908,7 @@
           "name": "--cc-emails-to-responsible-party",
           "type": "bool",
           "required": false,
-          "description": "When `true`, emails sent to Partner users are copied to the responsible User or Group."
+          "description": "When `true`, the responsible User or Group receives eligible email copies for Partner Users without their own Responsible Party. Welcome emails trigger a separate onboarding notice. Password recovery links, email verification codes, and signed export links go only to the primary email address."
         },
         {
           "name": "--notes",
@@ -13214,7 +13214,7 @@
           "name": "--welcome-email-cc",
           "type": "string",
           "required": false,
-          "description": "Include this email in welcome emails if enabled"
+          "description": "Copy welcome emails to this address when the email contains neither a create-password link nor a password."
         },
         {
           "name": "--welcome-email-subject",
