@@ -2850,7 +2850,7 @@
           "name": "--max-uses",
           "type": "int64",
           "required": false,
-          "description": "Maximum number of times bundle can be accessed"
+          "description": "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap."
         },
         {
           "name": "--group-id",
@@ -3106,7 +3106,7 @@
           "name": "--max-uses",
           "type": "int64",
           "required": false,
-          "description": "Maximum number of times bundle can be accessed"
+          "description": "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap."
         },
         {
           "name": "--group-id",
@@ -13185,6 +13185,12 @@
           "type": "int64",
           "required": false,
           "description": "Site-wide Bundle expiration in days"
+        },
+        {
+          "name": "--bundle-max-uses",
+          "type": "int64",
+          "required": false,
+          "description": "Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap."
         },
         {
           "name": "--welcome-email-enabled",

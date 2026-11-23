@@ -49,6 +49,7 @@ Update Site Settings.
 | `--reply-to-email` | string | Reply-to email for this site |
 | `--allow-bundle-names` | bool | Are manual Bundle names allowed? |
 | `--bundle-expiration` | int64 | Site-wide Bundle expiration in days |
+| `--bundle-max-uses` | int64 | Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap. |
 | `--welcome-email-enabled` | bool | Will the welcome email be sent to new users? |
 | `--ask-about-overwrites` | bool | If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface. |
 | `--show-request-access-link` | bool | Show request access link for users without access?  Currently unused. |

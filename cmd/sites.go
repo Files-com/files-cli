@@ -272,6 +272,9 @@ func Sites() *cobra.Command {
 			if cmd.Flags().Changed("bundle-expiration") {
 				lib.FlagUpdate(cmd, "bundle_expiration", paramsSiteUpdate.BundleExpiration, mapParams)
 			}
+			if cmd.Flags().Changed("bundle-max-uses") {
+				lib.FlagUpdate(cmd, "bundle_max_uses", paramsSiteUpdate.BundleMaxUses, mapParams)
+			}
 			if cmd.Flags().Changed("welcome-email-enabled") {
 				mapParams["welcome_email_enabled"] = updateWelcomeEmailEnabled
 			}
@@ -812,6 +815,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsSiteUpdate.ReplyToEmail, "reply-to-email", "", "Reply-to email for this site")
 	cmdUpdate.Flags().BoolVar(&updateAllowBundleNames, "allow-bundle-names", updateAllowBundleNames, "Are manual Bundle names allowed?")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.BundleExpiration, "bundle-expiration", 0, "Site-wide Bundle expiration in days")
+	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.BundleMaxUses, "bundle-max-uses", 0, "Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap.")
 	cmdUpdate.Flags().BoolVar(&updateWelcomeEmailEnabled, "welcome-email-enabled", updateWelcomeEmailEnabled, "Will the welcome email be sent to new users?")
 	cmdUpdate.Flags().BoolVar(&updateAskAboutOverwrites, "ask-about-overwrites", updateAskAboutOverwrites, "If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.")
 	cmdUpdate.Flags().BoolVar(&updateShowRequestAccessLink, "show-request-access-link", updateShowRequestAccessLink, "Show request access link for users without access?  Currently unused.")

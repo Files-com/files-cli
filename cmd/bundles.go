@@ -312,7 +312,7 @@ func Bundles() *cobra.Command {
 	paramsBundleCreate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdCreate.Flags().BoolVar(&createFinalizeSnapshot, "finalize-snapshot", createFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
-	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
+	cmdCreate.Flags().Int64Var(&paramsBundleCreate.MaxUses, "max-uses", 0, "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.GroupId, "group-id", 0, "Owning group ID. If set, members of this group can view, edit, and share this Share Link.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.InternalName, "internal-name", "", "Internal name for identifying this Share Link.")
 	cmdCreate.Flags().StringVar(&paramsBundleCreate.Description, "description", "", "Public description")
@@ -564,7 +564,7 @@ func Bundles() *cobra.Command {
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdUpdate.Flags().BoolVar(&updateFinalizeSnapshot, "finalize-snapshot", updateFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.InboxId, "inbox-id", 0, "ID of the associated inbox, if available.")
-	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Maximum number of times bundle can be accessed")
+	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.MaxUses, "max-uses", 0, "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap.")
 	cmdUpdate.Flags().Int64Var(&paramsBundleUpdate.GroupId, "group-id", 0, "Owning group ID. If set, members of this group can view, edit, and share this Share Link.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.InternalName, "internal-name", "", "Internal name for identifying this Share Link.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Note, "note", "", "Bundle internal note")
