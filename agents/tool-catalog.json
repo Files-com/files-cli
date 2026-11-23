@@ -3239,6 +3239,227 @@
       ]
     },
     {
+      "name": "certificates list",
+      "group": "certificates",
+      "description": "List Certificates",
+      "auth_required": true,
+      "parameters": [
+
+      ]
+    },
+    {
+      "name": "certificates find",
+      "group": "certificates",
+      "description": "Show Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        }
+      ]
+    },
+    {
+      "name": "certificates create",
+      "group": "certificates",
+      "description": "Create CSR or import existing SSL Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Internal name of the SSL certificate."
+        },
+        {
+          "name": "--certificate-domain",
+          "type": "string",
+          "required": false,
+          "description": "Domain for certificate."
+        },
+        {
+          "name": "--certificate-extra-domains",
+          "type": "[]string",
+          "required": false,
+          "description": "Additional domains for the certificate CSR."
+        },
+        {
+          "name": "--certificate-country",
+          "type": "string",
+          "required": false,
+          "description": "Country."
+        },
+        {
+          "name": "--certificate-state-or-province",
+          "type": "string",
+          "required": false,
+          "description": "State or province."
+        },
+        {
+          "name": "--certificate-city-or-locale",
+          "type": "string",
+          "required": false,
+          "description": "City or locale."
+        },
+        {
+          "name": "--certificate-company-name",
+          "type": "string",
+          "required": false,
+          "description": "Company name."
+        },
+        {
+          "name": "--csr-ou1",
+          "type": "string",
+          "required": false,
+          "description": "Department name or organization unit 1"
+        },
+        {
+          "name": "--csr-ou2",
+          "type": "string",
+          "required": false,
+          "description": "Department name or organization unit 2"
+        },
+        {
+          "name": "--csr-ou3",
+          "type": "string",
+          "required": false,
+          "description": "Department name or organization unit 3"
+        },
+        {
+          "name": "--certificate-email-address",
+          "type": "string",
+          "required": false,
+          "description": "Email address for the certificate owner."
+        },
+        {
+          "name": "--key-type",
+          "type": "string",
+          "required": false,
+          "description": "Any supported key type.  Defaults to `RSA-4096`."
+        },
+        {
+          "name": "--certificate",
+          "type": "string",
+          "required": false,
+          "description": "The certificate.  PEM or PKCS7 formats accepted."
+        },
+        {
+          "name": "--private-key",
+          "type": "string",
+          "required": false,
+          "description": "Certificate private key."
+        },
+        {
+          "name": "--password",
+          "type": "string",
+          "required": false,
+          "description": "Certificate password."
+        },
+        {
+          "name": "--intermediates",
+          "type": "string",
+          "required": false,
+          "description": "Intermediate certificates.  PEM or PKCS7 formats accepted."
+        }
+      ]
+    },
+    {
+      "name": "certificates activate",
+      "group": "certificates",
+      "description": "Activate SSL Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        },
+        {
+          "name": "--replace-cert",
+          "type": "string",
+          "required": false,
+          "description": "Leave blank or set to `any` to replace any currently active certificate, if applicable.  Set to `new_ips` to activate this certificate as an additional certificate on your Site by allocating a new set of Dedicated IPs (may require a Plan upgrade).  Set to the ID of a currently active certificate to replace that certificate on its set of dedicated IPs.  A certificate belonging to a Custom Domain activates only for that domain: leave blank, use `any`, or specify that domain's current certificate ID."
+        }
+      ]
+    },
+    {
+      "name": "certificates deactivate",
+      "group": "certificates",
+      "description": "Deactivate SSL Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        }
+      ]
+    },
+    {
+      "name": "certificates replace-with-files",
+      "group": "certificates",
+      "description": "Replace this active custom SSL Certificate for the Primary Custom Domain with a Files.com SSL Certificate.  The Primary Custom Domain's CNAME record must point at the Site's subdomain.  The Files.com certificate is issued and activated in the background",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        }
+      ]
+    },
+    {
+      "name": "certificates update",
+      "group": "certificates",
+      "description": "Update Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Internal certificate name."
+        },
+        {
+          "name": "--intermediates",
+          "type": "string",
+          "required": false,
+          "description": "Any intermediate certificates.  PEM or PKCS7 formats accepted."
+        },
+        {
+          "name": "--certificate",
+          "type": "string",
+          "required": false,
+          "description": "The certificate.  PEM or PKCS7 formats accepted."
+        }
+      ]
+    },
+    {
+      "name": "certificates delete",
+      "group": "certificates",
+      "description": "Delete Certificate",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Certificate ID."
+        }
+      ]
+    },
+    {
       "name": "chat-sessions list",
       "group": "chat-sessions",
       "description": "List Chat Sessions",
@@ -13191,6 +13412,12 @@
           "type": "int64",
           "required": false,
           "description": "Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap."
+        },
+        {
+          "name": "--dangerously-use-custom-domain-for-transfer-urls",
+          "type": "bool",
+          "required": false,
+          "description": "Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default."
         },
         {
           "name": "--welcome-email-enabled",

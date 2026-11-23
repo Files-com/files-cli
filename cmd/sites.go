@@ -113,6 +113,7 @@ func Sites() *cobra.Command {
 	usePagerUpdate := true
 	updateDomainHstsHeader := true
 	updateAllowBundleNames := true
+	updateDangerouslyUseCustomDomainForTransferUrls := true
 	updateWelcomeEmailEnabled := true
 	updateAskAboutOverwrites := true
 	updateShowRequestAccessLink := true
@@ -274,6 +275,9 @@ func Sites() *cobra.Command {
 			}
 			if cmd.Flags().Changed("bundle-max-uses") {
 				lib.FlagUpdate(cmd, "bundle_max_uses", paramsSiteUpdate.BundleMaxUses, mapParams)
+			}
+			if cmd.Flags().Changed("dangerously-use-custom-domain-for-transfer-urls") {
+				mapParams["dangerously_use_custom_domain_for_transfer_urls"] = updateDangerouslyUseCustomDomainForTransferUrls
 			}
 			if cmd.Flags().Changed("welcome-email-enabled") {
 				mapParams["welcome_email_enabled"] = updateWelcomeEmailEnabled
@@ -816,6 +820,7 @@ func Sites() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateAllowBundleNames, "allow-bundle-names", updateAllowBundleNames, "Are manual Bundle names allowed?")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.BundleExpiration, "bundle-expiration", 0, "Site-wide Bundle expiration in days")
 	cmdUpdate.Flags().Int64Var(&paramsSiteUpdate.BundleMaxUses, "bundle-max-uses", 0, "Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap.")
+	cmdUpdate.Flags().BoolVar(&updateDangerouslyUseCustomDomainForTransferUrls, "dangerously-use-custom-domain-for-transfer-urls", updateDangerouslyUseCustomDomainForTransferUrls, "Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.")
 	cmdUpdate.Flags().BoolVar(&updateWelcomeEmailEnabled, "welcome-email-enabled", updateWelcomeEmailEnabled, "Will the welcome email be sent to new users?")
 	cmdUpdate.Flags().BoolVar(&updateAskAboutOverwrites, "ask-about-overwrites", updateAskAboutOverwrites, "If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.")
 	cmdUpdate.Flags().BoolVar(&updateShowRequestAccessLink, "show-request-access-link", updateShowRequestAccessLink, "Show request access link for users without access?  Currently unused.")

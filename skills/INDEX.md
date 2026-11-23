@@ -127,6 +127,7 @@ One skill per top-level CLI command.
 
 | Skill | Resource |
 | --- | --- |
+| [`filescom-certificates`](filescom-certificates/SKILL.md) | Certificates |
 | [`filescom-dns-records`](filescom-dns-records/SKILL.md) | DNS Records |
 | [`filescom-ip-addresses`](filescom-ip-addresses/SKILL.md) | IP Addresses |
 | [`filescom-key-lifecycle-rules`](filescom-key-lifecycle-rules/SKILL.md) | Key Lifecycle Rules |
