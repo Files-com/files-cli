@@ -25,6 +25,7 @@ One skill per top-level CLI command.
 | --- | --- |
 | [`filescom-ai-tasks`](filescom-ai-tasks/SKILL.md) | Ai Tasks |
 | [`filescom-automation-runs`](filescom-automation-runs/SKILL.md) | Automation Runs |
+| [`filescom-automation-versions`](filescom-automation-versions/SKILL.md) | Automation Versions |
 | [`filescom-automations`](filescom-automations/SKILL.md) | Automations |
 | [`filescom-expectation-evaluations`](filescom-expectation-evaluations/SKILL.md) | Expectation Evaluations |
 | [`filescom-expectation-incidents`](filescom-expectation-incidents/SKILL.md) | Expectation Incidents |

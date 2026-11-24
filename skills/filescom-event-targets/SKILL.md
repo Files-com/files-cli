@@ -41,7 +41,7 @@ Create Event Target.
 | `--enabled` | bool | Whether this Event Target can receive events. |
 | `--config` | object | Event Target configuration. Fields depend on target_type. **Required.** |
 | `--delivery-policy` | object | Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery. |
-| `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`, `folder`. **Required.** |
+| `--target-type` | enum | Event Target type. One of: `email`, `webhook`, `slack_webhook`, `teams_webhook`, `amazon_sns`, `google_pubsub`, `folder`, `amazon_sqs`, `azure_service_bus`. **Required.** |
 
 ### `files-cli event-targets update`
 

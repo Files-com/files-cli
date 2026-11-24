@@ -1,0 +1,171 @@
+package cmd
+
+import (
+	"github.com/Files-com/files-cli/lib"
+	"github.com/Files-com/files-cli/lib/clierr"
+	files_sdk "github.com/Files-com/files-sdk-go/v3"
+	automation_version "github.com/Files-com/files-sdk-go/v3/automationversion"
+	"github.com/spf13/cobra"
+)
+
+func init() {
+	RootCmd.AddCommand(AutomationVersions())
+}
+
+func AutomationVersions() *cobra.Command {
+	AutomationVersions := &cobra.Command{
+		Use:   "automation-versions [command]",
+		Short: "An AutomationVersion is an immutable revision of an Automation v2 graph.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command automation-versions\n\t%v", args[0])
+		},
+	}
+	var fieldsList []string
+	var formatList []string
+	usePagerList := true
+	filterbyList := make(map[string]string)
+	paramsAutomationVersionList := files_sdk.AutomationVersionListParams{}
+	var MaxPagesList int64
+	var jsonEnvelopeList bool
+	var listSortByArgs string
+
+	cmdList := &cobra.Command{
+		Use:     "list",
+		Short:   "List Automation Versions",
+		Long:    `List Automation Versions`,
+		Args:    cobra.NoArgs,
+		Aliases: []string{"ls"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			params := paramsAutomationVersionList
+			params.MaxPages = MaxPagesList
+			var envelopeStyle string
+			if jsonEnvelopeList {
+				var envelopeErr error
+				if envelopeStyle, envelopeErr = lib.PrepareJSONEnvelope(cmd, Profile(cmd).Current().SetResourceFormat(cmd, formatList), &params.MaxPages); envelopeErr != nil {
+					return envelopeErr
+				}
+			}
+
+			parsedListSortBy, parseListSortByErr := lib.ParseAPIListSortFlag("sort-by", listSortByArgs)
+			if parseListSortByErr != nil {
+				return parseListSortByErr
+			}
+			if parsedListSortBy != nil {
+				params.SortBy = parsedListSortBy
+			}
+
+			client := automation_version.Client{Config: config}
+			it, err := client.List(params, files_sdk.WithContext(ctx))
+			it.OnPageError = func(err error) (*[]interface{}, error) {
+				overriddenValues, newErr := lib.ErrorWithOriginalResponse(err, config.Logger)
+				values, ok := overriddenValues.([]interface{})
+				if ok {
+					return &values, newErr
+				} else {
+					return &[]interface{}{}, newErr
+				}
+			}
+			if err != nil {
+				return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+			}
+			var listFilter lib.FilterIter
+			if len(filterbyList) > 0 {
+				listFilter = func(i interface{}) (interface{}, bool, error) {
+					matchOk, err := lib.MatchFilter(filterbyList, i)
+					return i, matchOk, err
+				}
+			}
+			if jsonEnvelopeList {
+				err = lib.JSONEnvelopeIter(it, fieldsList, listFilter, usePagerList, envelopeStyle, cmd.OutOrStdout())
+			} else {
+				err = lib.FormatIter(ctx, it, Profile(cmd).Current().SetResourceFormat(cmd, formatList), fieldsList, usePagerList, listFilter, cmd.OutOrStdout())
+			}
+			return lib.CliClientError(Profile(cmd), err, cmd.ErrOrStderr())
+		},
+	}
+
+	cmdList.Flags().StringToStringVar(&filterbyList, "filter-by", filterbyList, "Client-side wildcard filtering, for example field-name=*.jpg or field-name=?ello")
+	lib.SetFlagDisplayType(cmdList.Flags(), "filter-by", "field=pattern")
+	cmdList.Flags().StringVar(&listSortByArgs, "sort-by", "", "Sort automation versions by field in ascending or descending order.")
+	lib.SetFlagDisplayType(cmdList.Flags(), "sort-by", "field=asc|desc")
+
+	cmdList.Flags().StringVar(&paramsAutomationVersionList.Cursor, "cursor", "", "Used for pagination.  When a list request has more records available, cursors are provided in the response headers `X-Files-Cursor-Next` and `X-Files-Cursor-Prev`.  Send one of those cursor value here to resume an existing list from the next available record.  Note: many of our SDKs have iterator methods that will automatically handle cursor-based pagination.")
+	cmdList.Flags().Int64Var(&paramsAutomationVersionList.PerPage, "per-page", 0, "Number of records to show per page.  (Max: 10000, 1,000 or less is recommended).")
+	cmdList.Flags().Int64Var(&paramsAutomationVersionList.AutomationId, "automation-id", 0, "ID of the Automation that owns this revision.")
+	lib.SetFlagAPIRequired(cmdList.Flags(), "automation-id")
+
+	cmdList.Flags().Int64VarP(&MaxPagesList, "max-pages", "m", 0, "When per-page is set max-pages limits the total number of pages requested")
+	cmdList.Flags().StringSliceVar(&fieldsList, "fields", []string{}, "comma separated list of field names to include in response")
+	cmdList.Flags().StringSliceVar(&formatList, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdList.Flags().BoolVar(&usePagerList, "use-pager", usePagerList, "Use $PAGER (.ie less, more, etc)")
+	cmdList.Flags().BoolVar(&jsonEnvelopeList, "json-envelope", false, lib.JSONEnvelopeHelpText)
+	lib.SetCommandEffect(cmdList, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdList, "AutomationVersion", true)
+	AutomationVersions.AddCommand(cmdList)
+	var fieldsFind []string
+	var formatFind []string
+	usePagerFind := true
+	paramsAutomationVersionFind := files_sdk.AutomationVersionFindParams{}
+
+	cmdFind := &cobra.Command{
+		Use:   "find",
+		Short: `Show Automation Version`,
+		Long:  `Show Automation Version`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation_version.Client{Config: config}
+
+			var automationVersion interface{}
+			var err error
+			automationVersion, err = client.Find(paramsAutomationVersionFind, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automationVersion, err, Profile(cmd).Current().SetResourceFormat(cmd, formatFind), fieldsFind, usePagerFind, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdFind.Flags().Int64Var(&paramsAutomationVersionFind.Id, "id", 0, "Automation Version ID.")
+	lib.SetFlagAPIRequired(cmdFind.Flags(), "id")
+
+	cmdFind.Flags().StringSliceVar(&fieldsFind, "fields", []string{}, "comma separated list of field names")
+	cmdFind.Flags().StringSliceVar(&formatFind, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdFind.Flags().BoolVar(&usePagerFind, "use-pager", usePagerFind, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdFind, lib.EffectReadOnly)
+	lib.SetCommandResponse(cmdFind, "AutomationVersion", false)
+	AutomationVersions.AddCommand(cmdFind)
+	var fieldsRestore []string
+	var formatRestore []string
+	usePagerRestore := true
+	paramsAutomationVersionRestore := files_sdk.AutomationVersionRestoreParams{}
+
+	cmdRestore := &cobra.Command{
+		Use:   "restore",
+		Short: `Restore an Automation v2 definition as a new current version`,
+		Long:  `Restore an Automation v2 definition as a new current version`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := automation_version.Client{Config: config}
+
+			var automation interface{}
+			var err error
+			automation, err = client.Restore(paramsAutomationVersionRestore, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), automation, err, Profile(cmd).Current().SetResourceFormat(cmd, formatRestore), fieldsRestore, usePagerRestore, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdRestore.Flags().Int64Var(&paramsAutomationVersionRestore.Id, "id", 0, "Automation Version ID.")
+	lib.SetFlagAPIRequired(cmdRestore.Flags(), "id")
+
+	cmdRestore.Flags().StringSliceVar(&fieldsRestore, "fields", []string{}, "comma separated list of field names")
+	cmdRestore.Flags().StringSliceVar(&formatRestore, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdRestore.Flags().BoolVar(&usePagerRestore, "use-pager", usePagerRestore, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdRestore, lib.EffectMutating)
+	lib.SetCommandResponse(cmdRestore, "Automation", false)
+	AutomationVersions.AddCommand(cmdRestore)
+	return AutomationVersions
+}

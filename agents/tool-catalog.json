@@ -1530,6 +1530,54 @@
       ]
     },
     {
+      "name": "automation-versions list",
+      "group": "automation-versions",
+      "description": "List Automation Versions",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are ."
+        },
+        {
+          "name": "--automation-id",
+          "type": "int64",
+          "required": true,
+          "description": "ID of the Automation that owns this revision."
+        }
+      ]
+    },
+    {
+      "name": "automation-versions find",
+      "group": "automation-versions",
+      "description": "Show Automation Version",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Automation Version ID."
+        }
+      ]
+    },
+    {
+      "name": "automation-versions restore",
+      "group": "automation-versions",
+      "description": "Restore an Automation v2 definition as a new current version",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Automation Version ID."
+        }
+      ]
+    },
+    {
       "name": "automations list",
       "group": "automations",
       "description": "List Automations",
