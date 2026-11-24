@@ -266,7 +266,8 @@ Create Automation.
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
-| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition. |
+| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC. |
 | `--schedule-time-zone` | string | Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC. |
 | `--holiday-region` | string | Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`. |
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |
@@ -327,7 +328,8 @@ Update Automation.
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
-| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition. |
+| `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC. |
 | `--schedule-time-zone` | string | Time zone for schedule fields. Optional for `custom_schedule` without `schedule_id` and for `daily`. If not set, times are interpreted as UTC. |
 | `--holiday-region` | string | Skip automation on holidays in this region. Optional for `custom_schedule` without `schedule_id` and for `daily`. |
 | `--always-overwrite-size-matching-files` | bool | Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`. |

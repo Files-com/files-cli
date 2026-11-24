@@ -52,6 +52,7 @@ Create Sync.
 | `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-time-zone` | string | Time zone for the schedule. If not set, times are interpreted as UTC. |
 | `--schedule-times-of-day` | []string | Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date. |
 | `--src-path` | string | Absolute source path for the sync |
@@ -100,6 +101,7 @@ Update Sync.
 | `--recurring-days` | []int64 | If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-time-zone` | string | Time zone for the schedule. If not set, times are interpreted as UTC. |
 | `--schedule-times-of-day` | []string | Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date. |
 | `--src-path` | string | Absolute source path for the sync |

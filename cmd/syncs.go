@@ -208,6 +208,7 @@ func Syncs() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdCreate.Flags().Int64Var(&paramsSyncCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsSyncCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
+	cmdCreate.Flags().Int64Var(&paramsSyncCreate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")
 	cmdCreate.Flags().StringSliceVar(&paramsSyncCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.")
 	cmdCreate.Flags().StringVar(&paramsSyncCreate.SrcPath, "src-path", "", "Absolute source path for the sync")
@@ -371,6 +372,9 @@ func Syncs() *cobra.Command {
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsSyncUpdate.ScheduleDaysOfWeek, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-interval-minutes") {
+				lib.FlagUpdate(cmd, "schedule_interval_minutes", paramsSyncUpdate.ScheduleIntervalMinutes, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-time-zone") {
 				lib.FlagUpdate(cmd, "schedule_time_zone", paramsSyncUpdate.ScheduleTimeZone, mapParams)
 			}
@@ -419,6 +423,7 @@ func Syncs() *cobra.Command {
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.")
 	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsSyncUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.")
+	cmdUpdate.Flags().Int64Var(&paramsSyncUpdate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone for the schedule. If not set, times are interpreted as UTC.")
 	cmdUpdate.Flags().StringSliceVar(&paramsSyncUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.")
 	cmdUpdate.Flags().StringVar(&paramsSyncUpdate.SrcPath, "src-path", "", "Absolute source path for the sync")

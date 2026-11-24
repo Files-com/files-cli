@@ -205,6 +205,7 @@ func AiTasks() *cobra.Command {
 	cmdCreate.Flags().Int64SliceVar(&paramsAiTaskCreate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAiTaskCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
+	cmdCreate.Flags().Int64Var(&paramsAiTaskCreate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the AI Task schedule.")
 	cmdCreate.Flags().StringSliceVar(&paramsAiTaskCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdCreate.Flags().StringVar(&paramsAiTaskCreate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")
@@ -326,6 +327,9 @@ func AiTasks() *cobra.Command {
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAiTaskUpdate.ScheduleDaysOfWeek, mapParams)
 			}
+			if cmd.Flags().Changed("schedule-interval-minutes") {
+				lib.FlagUpdate(cmd, "schedule_interval_minutes", paramsAiTaskUpdate.ScheduleIntervalMinutes, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-time-zone") {
 				lib.FlagUpdate(cmd, "schedule_time_zone", paramsAiTaskUpdate.ScheduleTimeZone, mapParams)
 			}
@@ -369,6 +373,7 @@ func AiTasks() *cobra.Command {
 	cmdUpdate.Flags().Int64SliceVar(&paramsAiTaskUpdate.RecurringDays, "recurring-days", []int64{}, "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.")
 	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAiTaskUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.")
+	cmdUpdate.Flags().Int64Var(&paramsAiTaskUpdate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.ScheduleTimeZone, "schedule-time-zone", "", "Time zone used by the AI Task schedule.")
 	cmdUpdate.Flags().StringSliceVar(&paramsAiTaskUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day in HH:MM format for the AI Task schedule.")
 	cmdUpdate.Flags().StringVar(&paramsAiTaskUpdate.Source, "source", "", "Source glob used with `path` for action-triggered AI Tasks.")

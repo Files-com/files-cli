@@ -416,6 +416,12 @@
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
+        },
+        {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
@@ -550,6 +556,12 @@
           "type": "[]int64",
           "required": false,
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
         },
         {
           "name": "--schedule-time-zone",
@@ -1657,10 +1669,16 @@
           "description": "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition."
+        },
+        {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC."
+          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC."
         },
         {
           "name": "--schedule-time-zone",
@@ -1921,10 +1939,16 @@
           "description": "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition."
+        },
+        {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
-          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id`. Optional for `daily` triggers; if not set, runs at midnight UTC."
+          "description": "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC."
         },
         {
           "name": "--schedule-time-zone",
@@ -5012,6 +5036,12 @@
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
+        },
+        {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
@@ -5170,6 +5200,12 @@
           "type": "[]int64",
           "required": false,
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
         },
         {
           "name": "--schedule-times-of-day",
@@ -11817,6 +11853,12 @@
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
+        },
+        {
           "name": "--schedule-times-of-day",
           "type": "[]string",
           "required": false,
@@ -11913,6 +11955,12 @@
           "type": "[]int64",
           "required": false,
           "description": "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule."
+        },
+        {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
         },
         {
           "name": "--schedule-times-of-day",
@@ -14967,6 +15015,12 @@
           "description": "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc."
         },
         {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
+        },
+        {
           "name": "--schedule-time-zone",
           "type": "string",
           "required": false,
@@ -15151,6 +15205,12 @@
           "type": "[]int64",
           "required": false,
           "description": "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc."
+        },
+        {
+          "name": "--schedule-interval-minutes",
+          "type": "int64",
+          "required": false,
+          "description": "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`."
         },
         {
           "name": "--schedule-time-zone",

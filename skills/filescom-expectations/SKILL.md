@@ -121,6 +121,7 @@ Create Expectation.
 | `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
+| `--schedule-interval-minutes` | int64 | Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
 | `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
 | `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |
@@ -159,6 +160,7 @@ Update Expectation.
 | `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
+| `--schedule-interval-minutes` | int64 | Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the Expectation schedule. |
 | `--schedule-time-zone` | string | Time zone used by the Expectation schedule. |
 | `--holiday-region` | string | Optional holiday region used by the Expectation schedule. |

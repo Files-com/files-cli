@@ -47,6 +47,7 @@ Create Ai Task.
 | `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the AI Task schedule. |
 | `--source` | string | Source glob used with `path` for action-triggered AI Tasks. |
@@ -81,6 +82,7 @@ Update Ai Task.
 | `--recurring-days` | []int64 | If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule`, the 0-based weekdays used by the schedule. |
+| `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. |
 | `--schedule-time-zone` | string | Time zone used by the AI Task schedule. |
 | `--schedule-times-of-day` | []string | Times of day in HH:MM format for the AI Task schedule. |
 | `--source` | string | Source glob used with `path` for action-triggered AI Tasks. |
