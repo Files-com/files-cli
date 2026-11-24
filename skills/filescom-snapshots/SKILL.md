@@ -38,6 +38,7 @@ Create Snapshot.
 | `--name` | string | A name for the snapshot. |
 | `--paths` | []string | An array of paths to add to the snapshot. |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
+| `--shared-workflow-id` | int64 | Shared Workflow for which the Snapshot was created. |
 
 ### `files-cli snapshots finalize`
 

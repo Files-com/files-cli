@@ -82,7 +82,7 @@ Create User.
 | `--bypass-site-allowed-ips` | bool | Allow this user to skip site-wide IP blacklists? |
 | `--dav-permission` | bool | Can the user connect with WebDAV? |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned directly to this user, if any. |
-| `--default-workspace-id` | int64 | Workspace ID the user should land in by default when more than one Workspace is available. |
+| `--preferred-workspace-id` | int64 | Workspace ID the user should land in by default when more than one Workspace is available. |
 | `--disabled` | bool | Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date. |
 | `--filesystem-layout` | enum | File system layout. One of: `site_root`, `user_root`, `partner_root`, `integration_centric`, `workspace_root`. |
 | `--ftp-permission` | bool | Can the user access with FTP/FTPS? |
@@ -183,7 +183,7 @@ Update User.
 | `--bypass-site-allowed-ips` | bool | Allow this user to skip site-wide IP blacklists? |
 | `--dav-permission` | bool | Can the user connect with WebDAV? |
 | `--desktop-configuration-profile-id` | int64 | Desktop Configuration Profile ID assigned directly to this user, if any. |
-| `--default-workspace-id` | int64 | Workspace ID the user should land in by default when more than one Workspace is available. |
+| `--preferred-workspace-id` | int64 | Workspace ID the user should land in by default when more than one Workspace is available. |
 | `--disabled` | bool | Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date. |
 | `--filesystem-layout` | enum | File system layout. One of: `site_root`, `user_root`, `partner_root`, `integration_centric`, `workspace_root`. |
 | `--ftp-permission` | bool | Can the user access with FTP/FTPS? |

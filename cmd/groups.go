@@ -299,6 +299,9 @@ func Groups() *cobra.Command {
 			if cmd.Flags().Changed("name") {
 				lib.FlagUpdate(cmd, "name", paramsGroupUpdate.Name, mapParams)
 			}
+			if cmd.Flags().Changed("preferred-workspace-id") {
+				lib.FlagUpdate(cmd, "preferred_workspace_id", paramsGroupUpdate.PreferredWorkspaceId, mapParams)
+			}
 
 			var group interface{}
 			var err error
@@ -321,6 +324,7 @@ func Groups() *cobra.Command {
 	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.IntegrationCentricProfileId, "integration-centric-profile-id", 0, "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.AllowedIps, "allowed-ips", "", "A list of allowed IPs if applicable.  Newline delimited")
 	cmdUpdate.Flags().StringVar(&paramsGroupUpdate.Name, "name", "", "Group name.")
+	cmdUpdate.Flags().Int64Var(&paramsGroupUpdate.PreferredWorkspaceId, "preferred-workspace-id", 0, "Custom Workspace a new Group member will use as their Preferred Workspace if they have no saved preference. The Group must have a Permission in that Workspace.")
 
 	cmdUpdate.Flags().StringSliceVar(&fieldsUpdate, "fields", []string{}, "comma separated list of field names")
 	cmdUpdate.Flags().StringSliceVar(&formatUpdate, "format", lib.FormatDefaults, lib.FormatHelpText)

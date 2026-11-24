@@ -30,6 +30,7 @@ One skill per top-level CLI command.
 | [`filescom-expectation-evaluations`](filescom-expectation-evaluations/SKILL.md) | Expectation Evaluations |
 | [`filescom-expectation-incidents`](filescom-expectation-incidents/SKILL.md) | Expectation Incidents |
 | [`filescom-expectations`](filescom-expectations/SKILL.md) | Expectations |
+| [`filescom-shared-workflows`](filescom-shared-workflows/SKILL.md) | Shared Workflows |
 
 ### Billing
 
@@ -72,6 +73,7 @@ One skill per top-level CLI command.
 
 | Skill | Resource |
 | --- | --- |
+| [`filescom-database-destinations`](filescom-database-destinations/SKILL.md) | Database Destinations |
 | [`filescom-remote-mount-backends`](filescom-remote-mount-backends/SKILL.md) | Remote Mount Backends |
 | [`filescom-remote-server-credentials`](filescom-remote-server-credentials/SKILL.md) | Remote Server Credentials |
 | [`filescom-remote-servers`](filescom-remote-servers/SKILL.md) | Remote Servers |

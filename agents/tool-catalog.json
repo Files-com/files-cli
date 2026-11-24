@@ -1711,6 +1711,24 @@
           "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields."
         },
         {
+          "name": "--shared-trigger-user-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Users who can start this Shared Workflow."
+        },
+        {
+          "name": "--shared-trigger-group-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Groups whose members can start this Shared Workflow."
+        },
+        {
+          "name": "--shared-trigger-partner-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Partners whose users can start this Shared Workflow."
+        },
+        {
           "name": "--schedule-days-of-week",
           "type": "[]int64",
           "required": false,
@@ -1979,6 +1997,24 @@
           "type": "int64",
           "required": false,
           "description": "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields."
+        },
+        {
+          "name": "--shared-trigger-user-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Users who can start this Shared Workflow."
+        },
+        {
+          "name": "--shared-trigger-group-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Groups whose members can start this Shared Workflow."
+        },
+        {
+          "name": "--shared-trigger-partner-ids",
+          "type": "[]int64",
+          "required": false,
+          "description": "Partners whose users can start this Shared Workflow."
         },
         {
           "name": "--schedule-days-of-week",
@@ -3991,6 +4027,130 @@
           "type": "int64",
           "required": true,
           "description": "Custom Domain ID."
+        }
+      ]
+    },
+    {
+      "name": "database-destinations list",
+      "group": "database-destinations",
+      "description": "List Database Destinations",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are `workspace_id` and `name`."
+        },
+        {
+          "name": "--filter",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is equal to the supplied value. Valid fields are `workspace_id` and `name`. Valid field combinations are `[ workspace_id, name ]`."
+        },
+        {
+          "name": "--filter-prefix",
+          "type": "object",
+          "required": false,
+          "description": "If set, return records where the specified field is prefixed by the supplied value. Valid fields are `name`."
+        }
+      ]
+    },
+    {
+      "name": "database-destinations find",
+      "group": "database-destinations",
+      "description": "Show Database Destination",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Database Destination ID."
+        }
+      ]
+    },
+    {
+      "name": "database-destinations create",
+      "group": "database-destinations",
+      "description": "Create Database Destination",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--name",
+          "type": "string",
+          "required": true,
+          "description": "Name of the destination."
+        },
+        {
+          "name": "--provider",
+          "type": "enum",
+          "required": true,
+          "description": "Database provider."
+        },
+        {
+          "name": "--config",
+          "type": "object",
+          "required": true,
+          "description": "Provider settings for the destination. Use the schema matching provider. The connection address and table are fixed after creation."
+        },
+        {
+          "name": "--secret-id",
+          "type": "int64",
+          "required": true,
+          "description": "ID of a Secret in the same Workspace. Use a Token Secret for Snowflake, a service account Key/Value Secret for BigQuery, or a Username/Password Secret for a database login."
+        },
+        {
+          "name": "--workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Workspace ID. 0 means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "database-destinations update",
+      "group": "database-destinations",
+      "description": "Update Database Destination",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Database Destination ID."
+        },
+        {
+          "name": "--name",
+          "type": "string",
+          "required": false,
+          "description": "Name of the destination."
+        },
+        {
+          "name": "--secret-id",
+          "type": "int64",
+          "required": false,
+          "description": "ID of a Secret in the same Workspace. Use a Token Secret for Snowflake, a service account Key/Value Secret for BigQuery, or a Username/Password Secret for a database login."
+        },
+        {
+          "name": "--config",
+          "type": "object",
+          "required": false,
+          "description": "Provider settings for the destination. Use the schema matching provider. The connection address and table are fixed after creation."
+        }
+      ]
+    },
+    {
+      "name": "database-destinations delete",
+      "group": "database-destinations",
+      "description": "Delete Database Destination",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Database Destination ID."
         }
       ]
     },
@@ -7006,6 +7166,12 @@
           "type": "string",
           "required": false,
           "description": "Group name."
+        },
+        {
+          "name": "--preferred-workspace-id",
+          "type": "int64",
+          "required": false,
+          "description": "Custom Workspace a new Group member will use as their Preferred Workspace if they have no saved preference. The Group must have a Permission in that Workspace."
         }
       ]
     },
@@ -8586,6 +8752,12 @@
           "description": "Managed folder paths inside the from-Partner folder."
         },
         {
+          "name": "--from-partner-upload-forms",
+          "type": "[]object",
+          "required": false,
+          "description": "Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them."
+        },
+        {
           "name": "--from-partner-route-path-pattern",
           "type": "string",
           "required": false,
@@ -8664,6 +8836,12 @@
           "type": "[]string",
           "required": false,
           "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
+          "name": "--from-partner-upload-forms",
+          "type": "[]object",
+          "required": false,
+          "description": "Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them."
         },
         {
           "name": "--from-partner-route-path-pattern",
@@ -8782,6 +8960,12 @@
           "description": "Managed folder paths inside the from-Partner folder."
         },
         {
+          "name": "--from-partner-upload-forms",
+          "type": "[]object",
+          "required": false,
+          "description": "Form Field Sets for From Partner upload destinations. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Channel has no managed folders. Providing this replaces all assignments, and an empty array removes them."
+        },
+        {
           "name": "--from-partner-route-path",
           "type": "string",
           "required": false,
@@ -8860,6 +9044,12 @@
           "type": "[]string",
           "required": false,
           "description": "Managed folder paths inside the from-Partner folder."
+        },
+        {
+          "name": "--from-partner-upload-forms",
+          "type": "[]object",
+          "required": false,
+          "description": "Form Field Sets for From Partner upload destinations. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Channel has no managed folders. Providing this replaces all assignments, and an empty array removes them."
         },
         {
           "name": "--from-partner-route-path",
@@ -12645,6 +12835,86 @@
       ]
     },
     {
+      "name": "shared-workflows list",
+      "group": "shared-workflows",
+      "description": "List Shared Workflows",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--sort-by",
+          "type": "object",
+          "required": false,
+          "description": "If set, sort records by the specified field in either `asc` or `desc` direction. Valid fields are ."
+        }
+      ]
+    },
+    {
+      "name": "shared-workflows find",
+      "group": "shared-workflows",
+      "description": "Show Shared Workflow",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Shared Workflow ID."
+        }
+      ]
+    },
+    {
+      "name": "shared-workflows find-run",
+      "group": "shared-workflows",
+      "description": "Show a Shared Workflow run started by the recipient",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Shared Workflow ID."
+        },
+        {
+          "name": "--run-id",
+          "type": "int64",
+          "required": true,
+          "description": "ID of the run returned by the Shared Workflow submission."
+        }
+      ]
+    },
+    {
+      "name": "shared-workflows run-workflow",
+      "group": "shared-workflows",
+      "description": "Run a Shared Workflow",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Shared Workflow ID."
+        },
+        {
+          "name": "--submission-revision",
+          "type": "string",
+          "required": true,
+          "description": "Revision returned when opening the Shared Workflow."
+        },
+        {
+          "name": "--submission-id",
+          "type": "string",
+          "required": true,
+          "description": "Client-generated UUID used to retry the same submission without starting another run."
+        },
+        {
+          "name": "--file-path",
+          "type": "string",
+          "required": true,
+          "description": "Path of a file the recipient can read, including a file uploaded to a Snapshot created for this workflow."
+        }
+      ]
+    },
+    {
       "name": "siem-http-destination-events list",
       "group": "siem-http-destination-events",
       "description": "List SIEM HTTP Destination Events",
@@ -14607,6 +14877,12 @@
           "type": "int64",
           "required": false,
           "description": "Workspace ID. `0` means the default workspace."
+        },
+        {
+          "name": "--shared-workflow-id",
+          "type": "int64",
+          "required": false,
+          "description": "Shared Workflow for which the Snapshot was created."
         }
       ]
     },
@@ -16115,7 +16391,7 @@
           "description": "Desktop Configuration Profile ID assigned directly to this user, if any."
         },
         {
-          "name": "--default-workspace-id",
+          "name": "--preferred-workspace-id",
           "type": "int64",
           "required": false,
           "description": "Workspace ID the user should land in by default when more than one Workspace is available."
@@ -16585,7 +16861,7 @@
           "description": "Desktop Configuration Profile ID assigned directly to this user, if any."
         },
         {
-          "name": "--default-workspace-id",
+          "name": "--preferred-workspace-id",
           "type": "int64",
           "required": false,
           "description": "Workspace ID the user should land in by default when more than one Workspace is available."

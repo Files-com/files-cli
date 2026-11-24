@@ -155,6 +155,8 @@ func PartnerChannelTemplates() *cobra.Command {
 	paramsPartnerChannelTemplateCreate := files_sdk.PartnerChannelTemplateCreateParams{}
 	PartnerChannelTemplateCreateDirection := ""
 
+	createFromPartnerUploadFormsJSON := ""
+
 	cmdCreate := &cobra.Command{
 		Use:   "create [path]",
 		Short: `Create Partner Channel Template`,
@@ -174,6 +176,13 @@ func PartnerChannelTemplates() *cobra.Command {
 			if cmd.Flags().Changed("use-channel-root") {
 				paramsPartnerChannelTemplateCreate.UseChannelRoot = flib.Bool(createUseChannelRoot)
 			}
+			if cmd.Flags().Changed("from-partner-upload-forms") {
+				parsedCreateFromPartnerUploadForms, parseCreateFromPartnerUploadFormsErr := lib.ParseJSONArrayObjectFlag("from-partner-upload-forms", createFromPartnerUploadFormsJSON)
+				if parseCreateFromPartnerUploadFormsErr != nil {
+					return parseCreateFromPartnerUploadFormsErr
+				}
+				paramsPartnerChannelTemplateCreate.FromPartnerUploadForms = parsedCreateFromPartnerUploadForms
+			}
 
 			if len(args) > 0 && args[0] != "" {
 				paramsPartnerChannelTemplateCreate.Path = args[0]
@@ -189,6 +198,8 @@ func PartnerChannelTemplates() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createUseChannelRoot, "use-channel-root", createUseChannelRoot, "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelTemplateCreate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
+	cmdCreate.Flags().StringVar(&createFromPartnerUploadFormsJSON, "from-partner-upload-forms", "", "Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdCreate.Flags(), "from-partner-upload-forms", "json")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")
 	cmdCreate.Flags().StringVar(&paramsPartnerChannelTemplateCreate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
 	cmdCreate.Flags().StringSliceVar(&paramsPartnerChannelTemplateCreate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")
@@ -211,6 +222,8 @@ func PartnerChannelTemplates() *cobra.Command {
 	updateUseChannelRoot := true
 	paramsPartnerChannelTemplateUpdate := files_sdk.PartnerChannelTemplateUpdateParams{}
 	PartnerChannelTemplateUpdateDirection := ""
+
+	updateFromPartnerUploadFormsJSON := ""
 
 	cmdUpdate := &cobra.Command{
 		Use:   "update [path]",
@@ -248,6 +261,13 @@ func PartnerChannelTemplates() *cobra.Command {
 			if cmd.Flags().Changed("from-partner-managed-folder-paths") {
 				lib.FlagUpdateLen(cmd, "from_partner_managed_folder_paths", paramsPartnerChannelTemplateUpdate.FromPartnerManagedFolderPaths, mapParams)
 			}
+			if cmd.Flags().Changed("from-partner-upload-forms") {
+				parsedUpdateFromPartnerUploadForms, parseUpdateFromPartnerUploadFormsErr := lib.ParseJSONArrayObjectFlag("from-partner-upload-forms", updateFromPartnerUploadFormsJSON)
+				if parseUpdateFromPartnerUploadFormsErr != nil {
+					return parseUpdateFromPartnerUploadFormsErr
+				}
+				mapParams["from_partner_upload_forms"] = parsedUpdateFromPartnerUploadForms
+			}
 			if cmd.Flags().Changed("from-partner-route-path-pattern") {
 				lib.FlagUpdate(cmd, "from_partner_route_path_pattern", paramsPartnerChannelTemplateUpdate.FromPartnerRoutePathPattern, mapParams)
 			}
@@ -283,6 +303,8 @@ func PartnerChannelTemplates() *cobra.Command {
 	cmdUpdate.Flags().BoolVar(&updateUseChannelRoot, "use-channel-root", updateUseChannelRoot, "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerFolderName, "from-partner-folder-name", "", "Optional Channel-level from-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelTemplateUpdate.FromPartnerManagedFolderPaths, "from-partner-managed-folder-paths", []string{}, "Managed folder paths inside the from-Partner folder.")
+	cmdUpdate.Flags().StringVar(&updateFromPartnerUploadFormsJSON, "from-partner-upload-forms", "", "Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them. Provide as a JSON array of objects.")
+	lib.SetFlagDisplayType(cmdUpdate.Flags(), "from-partner-upload-forms", "json")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.FromPartnerRoutePathPattern, "from-partner-route-path-pattern", "", "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.")
 	cmdUpdate.Flags().StringVar(&paramsPartnerChannelTemplateUpdate.ToPartnerFolderName, "to-partner-folder-name", "", "Optional Channel-level to-Partner folder name override.")
 	cmdUpdate.Flags().StringSliceVar(&paramsPartnerChannelTemplateUpdate.ToPartnerManagedFolderPaths, "to-partner-managed-folder-paths", []string{}, "Managed folder paths inside the to-Partner folder.")

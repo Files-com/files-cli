@@ -155,6 +155,7 @@ func Snapshots() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsSnapshotCreate.Name, "name", "", "A name for the snapshot.")
 	cmdCreate.Flags().StringSliceVar(&paramsSnapshotCreate.Paths, "paths", []string{}, "An array of paths to add to the snapshot.")
 	cmdCreate.Flags().Int64Var(&paramsSnapshotCreate.WorkspaceId, "workspace-id", 0, "Workspace ID. `0` means the default workspace.")
+	cmdCreate.Flags().Int64Var(&paramsSnapshotCreate.SharedWorkflowId, "shared-workflow-id", 0, "Shared Workflow for which the Snapshot was created.")
 
 	cmdCreate.Flags().StringSliceVar(&fieldsCreate, "fields", []string{}, "comma separated list of field names")
 	cmdCreate.Flags().StringSliceVar(&formatCreate, "format", lib.FormatDefaults, lib.FormatHelpText)

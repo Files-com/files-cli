@@ -16,7 +16,7 @@ func init() {
 func FormFieldSets() *cobra.Command {
 	FormFieldSets := &cobra.Command{
 		Use:   "form-field-sets [command]",
-		Short: "A Form Field Set is a custom form to be used for bundle and inbox registrations.",
+		Short: "A Form Field Set is a custom form that can be used for Share Link and Inbox registrations, Partner Channel uploads, and Shared Workflows.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return clierr.Errorf(clierr.ErrorCodeUsage, "invalid command form-field-sets\n\t%v", args[0])

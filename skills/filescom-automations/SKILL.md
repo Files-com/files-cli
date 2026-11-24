@@ -265,6 +265,9 @@ Create Automation.
 | `--user-ids` | string | A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
+| `--shared-trigger-user-ids` | []int64 | Users who can start this Shared Workflow. |
+| `--shared-trigger-group-ids` | []int64 | Groups whose members can start this Shared Workflow. |
+| `--shared-trigger-partner-ids` | []int64 | Partners whose users can start this Shared Workflow. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
 | `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition. |
 | `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC. |
@@ -285,7 +288,7 @@ Create Automation.
 | `--path-time-zone` | string | Timezone to use when rendering timestamps in paths. |
 | `--retry-on-failure-interval-in-minutes` | int64 | If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable. |
 | `--retry-on-failure-number-of-attempts` | int64 | If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable. |
-| `--trigger` | enum | How this automation is triggered to run. One of: `manual`, `daily`, `custom_schedule`, `webhook`, `email`, `action`. |
+| `--trigger` | enum | How this automation is triggered to run. One of: `manual`, `daily`, `custom_schedule`, `webhook`, `email`, `action`, `shared`. |
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |
@@ -327,6 +330,9 @@ Update Automation.
 | `--user-ids` | string | A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--group-ids` | string | A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited. |
 | `--schedule-id` | int64 | If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields. |
+| `--shared-trigger-user-ids` | []int64 | Users who can start this Shared Workflow. |
+| `--shared-trigger-group-ids` | []int64 | Groups whose members can start this Shared Workflow. |
+| `--shared-trigger-partner-ids` | []int64 | Partners whose users can start this Shared Workflow. |
 | `--schedule-days-of-week` | []int64 | If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc. |
 | `--schedule-interval-minutes` | int64 | Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition. |
 | `--schedule-times-of-day` | []string | Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC. |
@@ -347,7 +353,7 @@ Update Automation.
 | `--path-time-zone` | string | Timezone to use when rendering timestamps in paths. |
 | `--retry-on-failure-interval-in-minutes` | int64 | If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable. |
 | `--retry-on-failure-number-of-attempts` | int64 | If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable. |
-| `--trigger` | enum | How this automation is triggered to run. One of: `manual`, `daily`, `custom_schedule`, `webhook`, `email`, `action`. |
+| `--trigger` | enum | How this automation is triggered to run. One of: `manual`, `daily`, `custom_schedule`, `webhook`, `email`, `action`, `shared`. |
 | `--trigger-actions` | []string | If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy |
 | `--value` | object | A Hash of attributes specific to the automation type. |
 | `--recurring-day` | int64 | If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`. |

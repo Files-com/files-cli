@@ -45,6 +45,7 @@ Create Partner Channel Template.
 | `--use-channel-root` | bool | Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
+| `--from-partner-upload-forms` | []object | Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |
@@ -64,6 +65,7 @@ Update Partner Channel Template.
 | `--use-channel-root` | bool | Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way. |
 | `--from-partner-folder-name` | string | Optional Channel-level from-Partner folder name override. |
 | `--from-partner-managed-folder-paths` | []string | Managed folder paths inside the from-Partner folder. |
+| `--from-partner-upload-forms` | []object | Form Field Sets for From Partner upload destinations, copied to managed Partner Channels. Each entry has a `path` relative to the From Partner folder and a `form_field_set_id`. Use an empty `path` when the Template has no managed folders. Providing this replaces all assignments, and an empty array removes them. |
 | `--from-partner-route-path-pattern` | string | Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}. |
 | `--to-partner-folder-name` | string | Optional Channel-level to-Partner folder name override. |
 | `--to-partner-managed-folder-paths` | []string | Managed folder paths inside the to-Partner folder. |

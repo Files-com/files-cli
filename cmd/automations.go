@@ -316,6 +316,9 @@ func Automations() *cobra.Command {
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().StringVar(&paramsAutomationCreate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.")
+	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.SharedTriggerUserIds, "shared-trigger-user-ids", []int64{}, "Users who can start this Shared Workflow.")
+	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.SharedTriggerGroupIds, "shared-trigger-group-ids", []int64{}, "Groups whose members can start this Shared Workflow.")
+	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.SharedTriggerPartnerIds, "shared-trigger-partner-ids", []int64{}, "Partners whose users can start this Shared Workflow.")
 	cmdCreate.Flags().Int64SliceVar(&paramsAutomationCreate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
 	cmdCreate.Flags().Int64Var(&paramsAutomationCreate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition.")
 	cmdCreate.Flags().StringSliceVar(&paramsAutomationCreate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC.")
@@ -510,6 +513,15 @@ func Automations() *cobra.Command {
 			if cmd.Flags().Changed("schedule-id") {
 				lib.FlagUpdate(cmd, "schedule_id", paramsAutomationUpdate.ScheduleId, mapParams)
 			}
+			if cmd.Flags().Changed("shared-trigger-user-ids") {
+				lib.FlagUpdateLen(cmd, "shared_trigger_user_ids", paramsAutomationUpdate.SharedTriggerUserIds, mapParams)
+			}
+			if cmd.Flags().Changed("shared-trigger-group-ids") {
+				lib.FlagUpdateLen(cmd, "shared_trigger_group_ids", paramsAutomationUpdate.SharedTriggerGroupIds, mapParams)
+			}
+			if cmd.Flags().Changed("shared-trigger-partner-ids") {
+				lib.FlagUpdateLen(cmd, "shared_trigger_partner_ids", paramsAutomationUpdate.SharedTriggerPartnerIds, mapParams)
+			}
 			if cmd.Flags().Changed("schedule-days-of-week") {
 				lib.FlagUpdateLen(cmd, "schedule_days_of_week", paramsAutomationUpdate.ScheduleDaysOfWeek, mapParams)
 			}
@@ -622,6 +634,9 @@ func Automations() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.UserIds, "user-ids", "", "A list of user IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().StringVar(&paramsAutomationUpdate.GroupIds, "group-ids", "", "A list of group IDs the automation is associated with. If sent as a string, it should be comma-delimited.")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.ScheduleId, "schedule-id", 0, "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.SharedTriggerUserIds, "shared-trigger-user-ids", []int64{}, "Users who can start this Shared Workflow.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.SharedTriggerGroupIds, "shared-trigger-group-ids", []int64{}, "Groups whose members can start this Shared Workflow.")
+	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.SharedTriggerPartnerIds, "shared-trigger-partner-ids", []int64{}, "Partners whose users can start this Shared Workflow.")
 	cmdUpdate.Flags().Int64SliceVar(&paramsAutomationUpdate.ScheduleDaysOfWeek, "schedule-days-of-week", []int64{}, "If trigger is `custom_schedule` without `schedule_id`, a list of days of the week to run this automation. 0 is Sunday, 1 is Monday, etc.")
 	cmdUpdate.Flags().Int64Var(&paramsAutomationUpdate.ScheduleIntervalMinutes, "schedule-interval-minutes", 0, "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition.")
 	cmdUpdate.Flags().StringSliceVar(&paramsAutomationUpdate.ScheduleTimesOfDay, "schedule-times-of-day", []string{}, "Times of day to run in HH:MM format (24-hour). Required for `custom_schedule` without `schedule_id` or `schedule_interval_minutes`. For `daily` triggers, the default is midnight UTC.")
