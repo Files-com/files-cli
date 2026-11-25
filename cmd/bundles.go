@@ -308,7 +308,7 @@ func Bundles() *cobra.Command {
 	cmdCreate.Flags().BoolVar(&createBypassesSiteExpirationRules, "bypasses-site-expiration-rules", createBypassesSiteExpirationRules, "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.")
 	cmdCreate.Flags().Int64Var(&paramsBundleCreate.FormFieldSetId, "form-field-set-id", 0, "Id of Form Field Set to use with this bundle")
 	cmdCreate.Flags().BoolVar(&createCreateSnapshot, "create-snapshot", createCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
-	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
+	cmdCreate.Flags().BoolVar(&createDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", createDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleCreate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdCreate.Flags(), paramsBundleCreate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdCreate.Flags().BoolVar(&createFinalizeSnapshot, "finalize-snapshot", createFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
@@ -559,7 +559,7 @@ func Bundles() *cobra.Command {
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Code, "code", "", "Bundle code.  This code forms the end part of the Public URL.")
 	cmdUpdate.Flags().BoolVar(&updateCreateSnapshot, "create-snapshot", updateCreateSnapshot, "If true, create a snapshot of this bundle's contents.")
 	cmdUpdate.Flags().StringVar(&paramsBundleUpdate.Description, "description", "", "Public description")
-	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
+	cmdUpdate.Flags().BoolVar(&updateDontSeparateSubmissionsByFolder, "dont-separate-submissions-by-folder", updateDontSeparateSubmissionsByFolder, "Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.")
 	paramsBundleUpdate.ExpiresAt = &time.Time{}
 	lib.TimeVar(cmdUpdate.Flags(), paramsBundleUpdate.ExpiresAt, "expires-at", "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.")
 	cmdUpdate.Flags().BoolVar(&updateFinalizeSnapshot, "finalize-snapshot", updateFinalizeSnapshot, "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.")
@@ -594,6 +594,59 @@ func Bundles() *cobra.Command {
 	lib.SetCommandEffect(cmdUpdate, lib.EffectDestructive)
 	lib.SetCommandResponse(cmdUpdate, "Bundle", false)
 	Bundles.AddCommand(cmdUpdate)
+	var fieldsUpdateBundle []string
+	var formatUpdateBundle []string
+	usePagerUpdateBundle := true
+	updateBundleRecursive := true
+	paramsBundleUpdateBundle := files_sdk.BundleUpdateBundleParams{}
+
+	cmdUpdateBundle := &cobra.Command{
+		Use:   "update-bundle [path]",
+		Short: `Update Bundle Path`,
+		Long:  `Update Bundle Path`,
+		Args:  cobra.RangeArgs(0, 1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+			config := ctx.Value("config").(files_sdk.Config)
+			client := bundle.Client{Config: config}
+
+			mapParams, convertErr := lib.StructToMap(files_sdk.BundleUpdateBundleParams{})
+			if convertErr != nil {
+				return convertErr
+			}
+
+			if cmd.Flags().Changed("id") {
+				lib.FlagUpdate(cmd, "id", paramsBundleUpdateBundle.Id, mapParams)
+			}
+			if cmd.Flags().Changed("path") {
+				lib.FlagUpdate(cmd, "path", paramsBundleUpdateBundle.Path, mapParams)
+			}
+			if cmd.Flags().Changed("recursive") {
+				mapParams["recursive"] = updateBundleRecursive
+			}
+
+			if len(args) > 0 && args[0] != "" {
+				mapParams["path"] = args[0]
+			}
+			var bundlePath interface{}
+			var err error
+			bundlePath, err = client.UpdateBundleWithMap(mapParams, files_sdk.WithContext(ctx))
+			return lib.HandleResponse(ctx, Profile(cmd), bundlePath, err, Profile(cmd).Current().SetResourceFormat(cmd, formatUpdateBundle), fieldsUpdateBundle, usePagerUpdateBundle, cmd.OutOrStdout(), cmd.ErrOrStderr(), config.Logger)
+		},
+	}
+	cmdUpdateBundle.Flags().Int64Var(&paramsBundleUpdateBundle.Id, "id", 0, "Bundle ID.")
+	lib.SetFlagAPIRequired(cmdUpdateBundle.Flags(), "id")
+	cmdUpdateBundle.Flags().StringVar(&paramsBundleUpdateBundle.Path, "path", "", "Path to operate on.")
+	cmdUpdateBundle.Flags().BoolVar(&updateBundleRecursive, "recursive", updateBundleRecursive, "Allow access to subfolders content?")
+	lib.SetFlagAPIRequired(cmdUpdateBundle.Flags(), "recursive")
+
+	cmdUpdateBundle.Flags().StringSliceVar(&fieldsUpdateBundle, "fields", []string{}, "comma separated list of field names")
+	cmdUpdateBundle.Flags().StringSliceVar(&formatUpdateBundle, "format", lib.FormatDefaults, lib.FormatHelpText)
+	cmdUpdateBundle.Flags().BoolVar(&usePagerUpdateBundle, "use-pager", usePagerUpdateBundle, "Use $PAGER (.ie less, more, etc)")
+
+	lib.SetCommandEffect(cmdUpdateBundle, lib.EffectDestructive)
+	lib.SetCommandResponse(cmdUpdateBundle, "BundlePath", false)
+	Bundles.AddCommand(cmdUpdateBundle)
 	var fieldsDelete []string
 	var formatDelete []string
 	usePagerDelete := true

@@ -52,7 +52,7 @@ Create Share Link.
 | `--bypasses-site-expiration-rules` | bool | If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this. |
 | `--form-field-set-id` | int64 | Id of Form Field Set to use with this bundle |
 | `--create-snapshot` | bool | If true, create a snapshot of this bundle's contents. |
-| `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
+| `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
 | `--expires-at` | datetime | Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply. |
 | `--finalize-snapshot` | bool | If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true. |
 | `--max-uses` | int64 | Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap. |
@@ -105,7 +105,7 @@ Update Share Link.
 | `--code` | string | Bundle code.  This code forms the end part of the Public URL. |
 | `--create-snapshot` | bool | If true, create a snapshot of this bundle's contents. |
 | `--description` | string | Public description |
-| `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
+| `--dont-separate-submissions-by-folder` | bool | Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required. |
 | `--expires-at` | datetime | Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply. |
 | `--finalize-snapshot` | bool | If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true. |
 | `--inbox-id` | int64 | ID of the associated inbox, if available. |
@@ -129,6 +129,16 @@ Update Share Link.
 | `--watermark-attachment-file` | file | Preview watermark image applied to all bundle items. |
 | `--watermark-value` | object | Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value |
 | `--workspace-id` | int64 | Workspace ID. `0` means the default workspace. |
+
+### `files-cli bundles update-bundle [path]`
+
+Update Bundle Path.
+
+| Flag | Type | Description |
+| --- | --- | --- |
+| `--id` | int64 | Bundle ID. **Required.** |
+| `--path` | string | Path to operate on. **Required.** |
+| `--recursive` | bool | Allow access to subfolders content? **Required.** |
 
 ### `files-cli bundles delete`
 

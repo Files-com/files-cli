@@ -2940,7 +2940,7 @@
           "name": "--dont-separate-submissions-by-folder",
           "type": "bool",
           "required": false,
-          "description": "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required."
+          "description": "Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required."
         },
         {
           "name": "--expires-at",
@@ -3190,7 +3190,7 @@
           "name": "--dont-separate-submissions-by-folder",
           "type": "bool",
           "required": false,
-          "description": "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required."
+          "description": "Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required."
         },
         {
           "name": "--expires-at",
@@ -3329,6 +3329,32 @@
           "type": "int64",
           "required": false,
           "description": "Workspace ID. `0` means the default workspace."
+        }
+      ]
+    },
+    {
+      "name": "bundles update-bundle",
+      "group": "bundles",
+      "description": "Update Bundle Path",
+      "auth_required": true,
+      "parameters": [
+        {
+          "name": "--id",
+          "type": "int64",
+          "required": true,
+          "description": "Bundle ID."
+        },
+        {
+          "name": "--path",
+          "type": "string",
+          "required": true,
+          "description": "Path to operate on."
+        },
+        {
+          "name": "--recursive",
+          "type": "bool",
+          "required": true,
+          "description": "Allow access to subfolders content?"
         }
       ]
     },
